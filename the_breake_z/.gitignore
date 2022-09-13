@@ -1,7 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # local file
-temp
-node
+/public/temp
+/temp
+/node
 package-lock.json
 
 # dependencies

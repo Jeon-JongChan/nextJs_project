@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>포켓몬 랜덤 페이지</title>
+    <link rel="stylesheet" type="text/css" href="css/admin.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/admin.css"> -->
+    <script src="config.js" type="text/javascript"></script>
+    <script src="data.js" type="text/javascript"></script>
+    <script src="js/firebase.js" type="text/javascript"></script>
+    <script src="js/public.js" type="text/javascript"></script>
+    <script src="js/admin.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-storage.js"></script>
+    <script>
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+      const storage = firebase.storage();
+    </script>
+  </head>
+  <body>
+    <!-- <img class="logo" src="logo.png" width="200px" style="margin-bottom: 10px;"> -->
+    <nav class="menu">
+      <a class="change-menu" style="background-color: rgba(200,0,0,0.3);" onclick="changeMenu('admin')">ADMIN</a>
+      <a class="change-menu" style="background-color: rgba(0,200,0,0.3);" onclick="changeMenu('main')">MAIN</a>
+      <a class="change-menu" style="background-color: rgba(0,0,200,0.3);" onclick="changeMenu('battle')">BATTLE</a>
+    </nav>
+    <div id="battle">
+      <div class="first-input">
+        <label for="bname1">선공포켓몬</label>
+        <input id="bname1" type="text" value="">
+        <label for="bskill1">사용기술</label>
+        <input id="bskill1" type="text" value="">
+        <label for="bhealth1">현재체력</label>
+        <input id="bhealth1" type="number" value=100>
+        <label for="bdamage1">데미지상성</label>
+        <select name="damage" id="bdamage1">
+          <option value="0">x0</option>
+          <option value="1">x0.25</option>
+          <option value="2">x0.5</option>
+          <option value="3" selected>x1.0</option>
+          <option value="4">x2.0</option>
+          <option value="5">x4.0</option>
+        </select>
+      </div>
+      <div class="second-input">
+        <label for="bname2">후공포켓몬</label>
+        <input id="bname2" type="text" value="">
+        <label for="bskill2">사용기술</label>
+        <input id="bskill2" type="text" value="">
+        <label for="bhealth2">현재체력</label>
+        <input id="bhealth2" type="number" value=100>
+        <label for="bdamage2">데미지상성</label>
+        <select name="damage" id="bdamage2">
+          <option value="0">x0</option>
+          <option value="1">x0.25</option>
+          <option value="2">x0.5</option>
+          <option value="3" selected>x1.0</option>
+          <option value="4">x2.0</option>
+          <option value="5">x4.0</option>
+        </select>
+      </div>
+      <div class="battle-dialoger half-div">
+        <button class="generator-btn" onclick="genBattleDialog()">전투 데미지 로그 생성기</button>
+        <button class="generator-btn" onclick="copyToClipBoard('.battle-dialog')">Copy</button>
+        <div class="battle-dialog">
+          <div style="font-size: 16px; text-align: center;">
+            💥&nbsp;<span class="bd-name1"></span>의&nbsp;<span class="bd-skill1"></span>!<br>
+            <span class="bd-effect1"></span>&nbsp;-(<span class="bd-damage1"></span>)%
+            <br><br>
+            💥&nbsp;상대&nbsp;<span class="bd-name2"></span>의&nbsp;<span class="bd-skill2"></span>!<br>
+            <span class="bd-effect2"></span>&nbsp;-(<span class="bd-damage2"></span>)%
+            <br><br>
+            <span class="bd-name1"></span>&nbsp;: 남은체력&nbsp;<span class="bd-health1"></span>%<br>
+            <span class="bd-name2"></span>&nbsp;: 남은체력&nbsp;<span class="bd-health2"></span>%<br>
+            ▶ 다음은 무엇을 할까?
+          </div>
+        </div>
+      </div>
+      <script>
+        function genBattleDialog() {
+          let battle = document.querySelector('#battle');
+          let effectDialog = [
+            "효과가 없는 것 같다...",
+            "효과가 매우 부족한 것 같다...",
+            "효과가 부족한 것 같다...",
+            '',
+            "효과가 굉장했다!",
+            "효과가 매우 굉장했다!"
+          ]
+          let input1 = {
+            name: battle.querySelector("#bname1").value,
+            skill: battle.querySelector("#bskill1").value,
+            health: battle.querySelector("#bhealth1").value,
+            damage: battle.querySelector("#bdamage1").value,
+          }
+          let input2 = {
+            name: battle.querySelector("#bname2").value,
+            skill: battle.querySelector("#bskill2").value,
+            health: battle.querySelector("#bhealth2").value,
+            damage: battle.querySelector("#bdamage2").value,
+          }
+          if(!input1.name || !input2.name) {
+            alert("포켓몬 이름이 다 채워지지 않았습니다.");
+            return null;
+          }
+          if(!input1.skill || !input2.skill) {
+            alert("포켓몬 기술이 다 채워지지 않았습니다.");
+            return null;
+          }
+
+          var names = battle.querySelectorAll('.bd-name1');
+          let damage1 = battleDamage(input1.damage);
+          let damage2 = battleDamage(input2.damage);
+
+          names[0].innerText = input1.name;
+          names[1].innerText = input1.name;
+          battle.querySelector('.bd-skill1').innerText = input1.skill;
+          battle.querySelector('.bd-damage1').innerText = damage1;
+          battle.querySelector('.bd-effect1').innerText = effectDialog[input1.damage*1];
+          battle.querySelector('.bd-health1').innerText = input1.health-damage2;
+          
+          names = battle.querySelectorAll('.bd-name2');
+          names[0].innerText = input2.name;
+          names[1].innerText = input2.name;
+          battle.querySelector('.bd-skill2').innerText = input2.skill;
+          battle.querySelector('.bd-damage2').innerText = damage2;
+          battle.querySelector('.bd-effect2').innerText = effectDialog[input2.damage*1];
+          battle.querySelector('.bd-health2').innerText = input2.health-damage1;
+        }
+        function battleDamage(option = 3) {
+          if(option==="0") return 0
+          else if(option==="1") return getRandomInt(0,10+1)
+          else if(option==="2") return getRandomInt(11,20+1)
+          else if(option==="3") return getRandomInt(21,40+1)
+          else if(option==="4") return getRandomInt(41,70+1)
+          else if(option==="5") return getRandomInt(71,90+1)
+        }
+      </script>
+    </div>
+    <div id="main">
+      <div class="player-local">
+        <label for="player">플레이어</label>
+        <input id="player" type="text" value="">
+        <label for="local">지역</label>
+        <input id="local" type="text" value="">
+      </div>
+      <div class="selected">
+        <label for="selected-poketmon">선택받은 포켓몬</label>
+        <input id="selected-poketmon" type="text" value="">
+      </div>
+      <div class="youtube">
+        <label for="youtube-url">첨부할 유투브 음악 주소</label>
+        <input id="youtube-url" type="text" value="youtu.be/Q9qzH58HtHM">
+      </div>
+      <div class="plevel">
+        <label for="plevel-min">레벨 최소 범위</label>
+        <input id="plevel-min" type="number" value="1">
+        <label for="plevel-max">레벨 최대 범위</label>
+        <input id="plevel-max" type="number" value="50">
+      </div>
+      <div class="poket-dialog">
+        <div class="poketmon-selector half-div">
+          <button class="generator-btn" onclick="genPoketSelector()">포켓몬 랜덤 생성기</button>
+          <button class="generator-btn" onclick="copyToClipBoard('.poketmon-select')">Copy</button>
+          <div class="poketmon-select">
+            <p style="font-size: 16px;">
+              ♫<span class="music"></span><br>
+              야생의 포켓몬이 나타났어. <span class="player1"></span>...<br><br>
+              ...누구를 리서치 해볼까 <span class="player2"></span>?<br>
+              &#9654;<span class="poket1">돌살이</span><br>
+              &#9654;<span class="poket2">끼리동</span><br>
+            </p>
+            <img id="poket1-img" width="49%" src="">
+            <img id="poket2-img" width="49%" src="">
+          </div>
+        </div>
+        <div class="poketmon-battler half-div">
+          <button class="generator-btn" onclick="genPoketBattle()">포켓몬 전투 대사 생성기</button>
+          <button class="generator-btn" onclick="copyToClipBoard('.poketmon-battle')">Copy</button>
+          <div class="poketmon-battle">
+            <p style="font-size: 16px;">
+              ♫<span class="music"></span><br><br>
+              야생의 
+              <span class="pspec"></span>
+              <span class="pname"></span>가 나타났어.<br><br>
+              Lv.&nbsp;<span class="plevel"></span>&nbsp;[&nbsp;<span class="ppersonal"></span>&nbsp;]<br><br>
+              <span class="player1"></span>는 무엇을 할까?<br><br>
+              &#9654; 싸운다<br>
+              &#9654; 대화한다(프렌드볼 전용)<br>
+              &#9654; 몬스터볼<br>
+              &#9654; 도망친다<br>
+            </p>
+            <img id="poket-img" width="100%">
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .search {
+        display: inline-block;
+        width: 120px;
+      }
+      .search-list {
+        width: 100%;
+        height: 50px;
+        overflow-x: scroll;
+        -ms-overflow-style: none;
+        -chrome-overflow-style: none;
+        border: 1px solid black;
+      }
+      .search-list::-webkit-scrollbar{
+         display:none; 
+      }
+      .local-search {
+        width: 100%;
+      }
+      .local-search .search-box {
+        float: right;
+      }
+    </style>
+    <script>
+      function searchLocalPoketmon(){
+        let searchLocal = document.querySelector("#input-search").value;
+        let paranetNode = document.querySelector(".search-list");
+        if(paranetNode.childElementCount > 0) {
+          let deleteNodes = paranetNode.childNodes;
+          while(deleteNodes.length > 1) {
+            deleteNodes[1].remove();
+          }
+        }
+
+        let template = document.querySelector("template").content.querySelector(".search");
+        let names = []
+        for(let i=0; i<json.poketmon.length; i++) {
+          let poketmon = json.poketmon[i];
+          if(searchLocal === poketmon.local) {
+            names.push(poketmon.name);
+          }
+        }
+        for(let i=0; i<names.length; i++) {
+          let dom = template.cloneNode(true);
+          dom.querySelector(".search-name").innerText = names[i];
+          paranetNode.appendChild(dom);
+        }
+
+      }
+      function nodeSearch(search, templateNode=null) {
+        if(!templateNode) {
+          templateNode = document.querySelector("template").content.querySelector(".search");
+        }
+        let dom = templateNode.cloneNode(true);
+        let name = spec.name;
+        dom.querySelector(".spec-name").innerText = name;
+        return dom;
+      }
+    </script>
+    <div id="admin">
+      <div class="frame" style="min-height: 100px;">
+        <article style="width:100%;">
+          <h1 class="list-header">포켓몬 지역별 등록 검색창</h1>
+          <div class="local-search">
+            <input id="input-search" class="input-text" type="text"/>
+            <button class="search-btn" onclick="searchLocalPoketmon()">검색</button>
+          </div>
+          <div class="search-list">    
+          </div>
+        </article>
+      </div>
+      <div class="frame">
+        <article class="article-left">
+            <h1 class="list-header">포켓몬 리스트</h1>
+            <div class="poketmon-list">
+            </div>
+        </article>
+        <article class="article-center input-item">
+          <section class="add-poketmon">
+            <div class="additem add-poketname">
+              <label for="p-add-name" class="add-header">포켓몬 이름 :</label>
+              <input class="input-text" id="p-add-name" type="text"/>
+            </div>
+            <div class="additem add-poketimage">
+              <label class="add-header">이미지 :</label>
+              <div class="input-file">
+                <input id="image-poketmon" type="file"/>
+              </div>
+            </div>
+            <div class="additem add-local">
+              <label for="p-add-local" class="add-header">출몰지 :</label>
+              <input class="input-text" id="p-add-local" type="text"/>
+            </div>
+            <div class="additem add-rare">
+              <label class="add-header">출현율 :</label>
+              <input class="input-text" type="number"/>
+            </div>
+            <div class="additem add-poket-type">
+              <label for="p-add-type" class="add-header">포켓몬 타입 :</label>
+              <input class="input-text" id="p-add-type" type="text"/>
+            </div>
+            <div class="additem add-personal">
+              <label for="p-add-personal" class="add-header">포켓몬 특성1 :</label>
+              <input class="input-text" id="p-add-personal" type="text"/>
+            </div>
+            <div class="additem add-personal">
+              <label for="p-add-personal2" class="add-header">포켓몬 특성2 :</label>
+              <input class="input-text" id="p-add-personal2" type="text"/>
+            </div>
+            <div class="additem add-personal">
+              <label for="p-add-hidden" class="add-header">숨겨진 특성 :</label>
+              <input class="input-text" id="p-add-hidden" type="text"/>
+            </div>
+          </section>
+          <div class="buttons">
+            <button id="add-poketmon-btn" onclick="addPoketmon()">추가</button>
+          </div>
+        </article>
+      </div>
+      <div class="frame">
+        <article class="article-left">
+          <h1 class="list-header">출몰 지역 참조 리스트 <span class="help-text">숫자는 지역에 존재하는 포켓몬 수</span></h1>
+          <div class="local-list">
+          </div>
+        </article>
+        <article class="article-center input-item">
+          <section class="add-poketmon">
+            <div class="additem add-local-name">
+              <label  class="add-header">포켓몬 출몰지 :</label>
+              <input class="input-text" type="text"/>
+            </div>
+          </section>
+          <div class="buttons">
+            <button id="add-spec-btn" onclick="addLocal()">추가</button>
+          </div>
+        </article>
+      </div>
+      <div class="frame">
+        <article class="article-left">
+          <h1 class="list-header">포켓몬 성격 리스트</h1>
+          <div class="spec-list">
+          </div>
+        </article>
+        <article class="article-center input-item">
+          <section class="add-poketmon">
+            <div class="additem add-spec-name">
+              <label class="add-header">포켓몬 성격 :</label>
+              <input class="input-text" type="text"/>
+            </div>
+          </section>
+          <div class="buttons">
+            <button id="add-spec-btn" onclick="addSpec()">추가</button>
+          </div>
+        </article>
+      </div>
+    </div>
+    <template>
+      <section class="poketmon">
+        <div class="poket-img">
+          <div class="poket-modal">
+            <div class="poket-line">
+              <h3 class="poket-name"></h3>
+            </div>
+            <div class="poket-line">
+              <span class="left">타입 :</span>&nbsp;
+              <span class="right poket-type"></span>
+            </div>
+            <div class="poket-line">
+              <span class="left">특성 :</span>&nbsp;
+              <span class="right poket-personal"></span>
+            </div>
+            <div class="poket-line">
+              <span class="left">히든특성</span>&nbsp;
+              <span class="right poket-personal-hidden"></span>
+            </div>
+            <div class="poket-line">
+              <span class="left">지역 :</span>&nbsp;
+              <span class="right poket-local"></span>
+            </div>
+            <div class="poket-line">
+              <span class="left">출현율 :</span>&nbsp;
+              <span class="right poket-rare"></span>%
+            </div>
+          </div>
+        </div>
+        <button style="width: 100%;" class="delete-btn" onclick="deletePoketData('poketmon')">X</button>
+      </section>
+      <section class="local">
+        <span class="local-name"></span>&nbsp;<span class="local-count"></span>&nbsp;
+        <button class="delete-btn" onclick="deletePoketData('local')">X</button>
+      </section>
+      <section class="spec">
+        <!-- 성격 :&nbsp; -->
+        <span class="spec-name"></span>&nbsp;&nbsp;
+        <button class="delete-btn" onclick="deletePoketData('spec')">X</button>
+      </section>
+      <section class="search">
+        <span class="search-name"></span>&nbsp;
+      </section>
+    </template>
+    <script>
+      initAdminPage();
+      changeMenu('main');
+    </script>
+  </body>
+</html>

@@ -76,40 +76,47 @@ const server = {
     dbinit: () => {
         // table 존재여부 확인 및 존재 시 init 함수 종료
         let ret = server.db
-            .prepare("select count(*) from sqlite_master where name='poketmon'")
+            .prepare("select count(*) cnt from sqlite_master")
             .get();
-        console.log("dbinit ret : ", ret);
-        return null;
-        // create table
-        try {
-            console.log();
-            const create = require("/scripts/query/create.js");
-            server.db.prepare(create.create_table_local).run();
-            server.db.prepare(create.create_table_spec).run();
-            server.db.prepare(create.create_table_image).run();
-            server.db.prepare(create.create_table_type).run();
-            server.db.prepare(create.create_table_poketmon).run();
-            server.db.prepare(create.create_table_poketmon_spec).run();
-        } catch (e) {
-            console.log("create query가 존재하지 않습니다.");
+
+        if (ret?.cnt === 0) {
+            // create table
+            try {
+                const create = require("/scripts/query/create.js");
+                server.db.prepare(create.create_table_local).run();
+                server.db.prepare(create.create_table_spec).run();
+                server.db.prepare(create.create_table_image).run();
+                server.db.prepare(create.create_table_type).run();
+                server.db.prepare(create.create_table_poketmon).run();
+                server.db.prepare(create.create_table_poketmon_spec).run();
+            } catch (e) {
+                console.log("create query가 존재하지 않습니다.", e);
+            }
         }
+
         // insert init data
         try {
             const insert = require("/scripts/query/insert.js");
-
-            const insertLocal = server.db.prepare(insert.insert_local);
-            const insertLocalTran = server.db.transaction((lists) => {
-                for (let list of lists) insertLocal.run(list);
-            });
-            const insertSpec = server.db.prepare(insert.insert_spec);
-            const insertSpecTran = server.db.transaction((lists) => {
-                for (let list of lists) insertLocal.run(list);
-            });
             const insertData = require("/temp/initData.js");
-            insertLocalTran(insertData.local);
-            insertSpecTran(insertData.spec);
+            ret = server.db.prepare("select count(*) cnt from local").get();
+            if (ret?.cnt === 0) {
+                const insertLocal = server.db.prepare(insert.insert_local);
+                const insertLocalTran = server.db.transaction((lists) => {
+                    for (let list of lists) insertLocal.run(list);
+                });
+                insertLocalTran(insertData.local);
+            }
+
+            ret = server.db.prepare("select count(*) cnt from spec").get();
+            if (ret?.cnt === 0) {
+                const insertSpec = server.db.prepare(insert.insert_spec);
+                const insertSpecTran = server.db.transaction((lists) => {
+                    for (let list of lists) insertSpec.run(list);
+                });
+                insertSpecTran(insertData.spec);
+            }
         } catch (e) {
-            console.log("init insert 에러.");
+            console.log("init insert 에러.", e);
         }
     },
 };

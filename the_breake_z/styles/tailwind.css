@@ -1,0 +1,9 @@
+/* Tailwind 사용. 중복사용 많은 경우만 apply*/
+.apply-nav-item {
+    @apply text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
+}
+
+/* Layout */
+.apply-tab-item {
+    @apply px-3 py-2 border-2 rounded-md;
+}

@@ -1,9 +1,9 @@
 /* next Module */
 import Script from "next/script";
 /* import component */
-import Battle from "/page_components/Battle";
-import Main from "/page_components/Main";
-import Admin from "/page_components/Admin";
+import Battle from "/page_components/backup/Battle";
+import Main from "/page_components/backup/Main";
+import Admin from "/page_components/backup/Admin";
 
 // * react
 export default function MyLayout() {

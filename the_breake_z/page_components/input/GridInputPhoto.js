@@ -2,16 +2,16 @@
 import Script from "next/script";
 // * react
 export default function Component(props) {
-    let label = props?.label || "Input Text";
-    let inputId = props?.id || "input-text";
-    let colSpenValue = props?.colSpan || 6;
-    let colSmSpenValue = props?.colSmSpan || 4;
+    let label = props?.label || "Cover photo";
+    let inputId = props?.id || "file-input";
+    // let colSpenValue = props?.colSpan || 6;
+    // let colSmSpenValue = props?.colSmSpan || 4;
 
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
             <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                <label className="block text-sm font-medium text-gray-700">Cover photo</label>
+                <label className="block text-sm font-medium text-gray-700">{label}</label>
                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                     <div className="space-y-1 text-center">
                         <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -19,11 +19,11 @@ export default function Component(props) {
                         </svg>
                         <div className="flex text-sm text-gray-600">
                             <label
-                                htmlFor="file-upload"
+                                htmlFor={inputId}
                                 className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                             >
                                 <span>Upload a file</span>
-                                <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                <input id={inputId} name={inputId} type="file" className="sr-only" />
                             </label>
                             <p className="pl-1">or drag and drop</p>
                         </div>

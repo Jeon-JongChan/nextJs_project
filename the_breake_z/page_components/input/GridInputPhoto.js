@@ -1,6 +1,12 @@
 /* next Module */
 import Script from "next/script";
 // * react
+/**
+ *
+ * @param {label} [label] - 상단 라벨에 들어갈 텍스트
+ * @param {label} [id] - input에 들어갈 id
+ * @returns
+ */
 export default function Component(props) {
     let label = props?.label || "Cover photo";
     let inputId = props?.id || "file-input";
@@ -10,7 +16,7 @@ export default function Component(props) {
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
-            <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+            <div className="space-y-6 bg-white px-2 py-3">
                 <label className="block text-sm font-medium text-gray-700">{label}</label>
                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                     <div className="space-y-1 text-center">

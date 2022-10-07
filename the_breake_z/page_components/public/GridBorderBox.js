@@ -26,7 +26,7 @@ export default function Component(props) {
                     ""
                 )}
 
-                <div className="mt-5 md:col-span-5 md:mt-0">
+                <div className="mt-5 md:col-span-8 md:mt-0">
                     <div className="shadow sm:overflow-hidden sm:rounded-md">
                         {/* 여러개의 컴포넌트를 받았을 때 실행되는 부분 */}
                         {props.propComponents

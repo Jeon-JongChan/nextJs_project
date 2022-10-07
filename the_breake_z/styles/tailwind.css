@@ -7,7 +7,12 @@
     @apply text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
 }
 
-/* Layout */
+/* Component : Layout */
 .apply-tab-item {
     @apply px-3 py-2 border-2 rounded-md;
+}
+
+/* Component : ImageLayerText */
+.apply-image-layer-text {
+    @apply absolute w-full h-full overflow-hidden text-sm px-1 z-10 break-words bg-black opacity-0 hover:opacity-80;
 }

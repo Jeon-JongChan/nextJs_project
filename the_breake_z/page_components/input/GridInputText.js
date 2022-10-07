@@ -35,7 +35,7 @@ export default function Component(props) {
                     id={inputId}
                     autoComplete={autoComplete}
                     className="mt-1 block w-full focus:outline-none rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    defalutValue={defaultValue || ""}
+                    defaultValue={defaultValue || ""}
                 />
             </div>
         </>

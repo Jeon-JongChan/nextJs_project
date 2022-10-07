@@ -1,4 +1,4 @@
-defaultData = {
+poketmonData = {
     poketmon: [],
     spec: [
         { name: "외로움을 타는" },
@@ -61,4 +61,3 @@ defaultData = {
         { name: "포켓몬 리그 뒷길" },
     ],
 };
-json = defaultData;

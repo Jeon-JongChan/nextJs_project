@@ -1,5 +1,6 @@
 /* next Module */
 import Script from "next/script";
+import Head from "next/head";
 import Nav from "/page_components/Nav";
 import PoketmonInput from "/page_components/PoketmonInput";
 import ImageLayoutText from "./public/ImageLayerText";
@@ -20,12 +21,7 @@ export default function Layout() {
 
     return (
         <>
-            <Script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    `,
-                }}
-            />
+            <Script src="/scripts/globalvariable.js" />
             <Nav></Nav>
             <div className="mt-2">
                 <ul className="flex items-center justify-center space-x-4">

@@ -9,31 +9,19 @@ import Admin from "/page_components/backup/Admin";
 export default function MyLayout() {
     return (
         <>
-            <Script src="/scripts/data.js" defer />
-            <Script src="/scripts/public.js" defer />
-            <Script src="/scripts/battle.js" defer />
-            <Script src="/scripts/main.js" defer />
-            <Script src="/scripts/admin.js" defer />
+            <Script src="/scripts/temp/data.js" defer />
+            <Script src="/scripts/temp/public.js" defer />
+            <Script src="/scripts/temp/battle.js" defer />
+            <Script src="/scripts/temp/main.js" defer />
+            <Script src="/scripts/temp/admin.js" defer />
             <nav className="menu">
-                <a
-                    className="change-menu"
-                    style={{ backgroundColor: "rgba(200,0,0,0.3)" }}
-                    onClick={() => changeMenu("admin")}
-                >
+                <a className="change-menu" style={{ backgroundColor: "rgba(200,0,0,0.3)" }} onClick={() => changeMenu("admin")}>
                     ADMIN
                 </a>
-                <a
-                    className="change-menu"
-                    style={{ backgroundColor: "rgba(0,200,0,0.3)" }}
-                    onClick={() => changeMenu("main")}
-                >
+                <a className="change-menu" style={{ backgroundColor: "rgba(0,200,0,0.3)" }} onClick={() => changeMenu("main")}>
                     MAIN
                 </a>
-                <a
-                    className="change-menu"
-                    style={{ backgroundColor: "rgba(0,0,200,0.3)" }}
-                    onClick={() => changeMenu("battle")}
-                >
+                <a className="change-menu" style={{ backgroundColor: "rgba(0,0,200,0.3)" }} onClick={() => changeMenu("battle")}>
                     BATTLE
                 </a>
             </nav>

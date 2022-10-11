@@ -20,6 +20,12 @@ export default function Layout() {
 
     return (
         <>
+            <Script
+                dangerouslySetInnerHTML={{
+                    __html: `
+                    `,
+                }}
+            />
             <Nav></Nav>
             <div className="mt-2">
                 <ul className="flex items-center justify-center space-x-4">

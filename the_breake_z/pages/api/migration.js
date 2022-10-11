@@ -1,6 +1,7 @@
 import server from "../../scripts/server";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
-import { getDatabase, ref, onValue, child, get, DataSnapshot, query, limitToLast } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-database.js";
+import { getDatabase, ref, onValue, child, get, set, DataSnapshot, query, limitToLast } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-auth.js";
 // const fb = require("https://www.gstatic.com/firebasejs/8.10.1/firebase.js");
 import fconfig from "../../public/temp/config";
 
@@ -8,12 +9,31 @@ export default async function handler(req, res) {
     // console.log(req.query.method);
     let method = req.query.method;
     const app = initializeApp(fconfig);
-    const firedb = getDatabase();
-    const fireref = ref(firedb, "json/");
+    const auth = getAuth(app);
 
-    await getFireData(fireref);
-    console.log("getFireData is end?");
+    try {
+        signInAnonymously(auth)
+            .then(() => {
+                // Signed in..
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            });
+        console.log("auth : ", auth);
 
+        const firedb = getDatabase();
+        const fireref = ref(firedb, "json/");
+
+        set(ref(firedb, "test/" + "1"), {
+            username: "user",
+        });
+
+        console.log("getFireData is end?");
+    } catch (err) {
+        console.log(err);
+    }
     if ((method = "toLocal")) {
     } else if ((method = "toServer")) {
     }

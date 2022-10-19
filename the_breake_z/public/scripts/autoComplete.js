@@ -39,6 +39,8 @@ async function autoComplete(id, localData = {}) {
         let dom = document.querySelector("#" + id).parentNode;
         dom = appendAutoCompleteDom(dom, localData[target].data);
 
+        /*함수 붙이기*/
+
         return localData;
     } catch (err) {
         console.log("autoComplete error : ", err);
@@ -54,7 +56,7 @@ async function autoComplete(id, localData = {}) {
 function appendAutoCompleteDom(dom, datalist = null) {
     // console.log("appendAutoCompleteDom start : ", dom, datalist[0]);
     let dropList = createAutoCompleteDom();
-    let domDropFrame = dom.querySelector(".absolute");
+    let domDropFrame = dom.querySelector(".overflow-y-scroll");
     if (domDropFrame) {
         while (domDropFrame.hasChildNodes()) {
             domDropFrame.removeChild(domDropFrame.lastChild);
@@ -69,6 +71,11 @@ function appendAutoCompleteDom(dom, datalist = null) {
         let data = datalist[idx];
         let cpButton = dropButton.cloneNode();
         cpButton.innerText = data.NAME;
+        cpButton.onclick = (e) => {
+            e.target.parentNode.classList.remove("block");
+            e.target.parentNode.classList.add("hidden");
+            e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
+        };
         domDropFrame.appendChild(cpButton);
     }
     return dom;
@@ -86,7 +93,7 @@ function createAutoCompleteDom() {
     // dropInnerFrame.appendChild(dropButton);
     // dropFrame.appendChild(dropInnerFrame);
     // dom에 필요한 필수 속성 추가(tailwind 사용중)
-    dropFrame.className = "relative h-80 overflow-y-scroll py-1 right-0 z-10 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90";
+    dropFrame.className = "absolute h-80 overflow-y-scroll py-1 right-0 z-10 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90";
     // dropInnerFrame.className = "py-1 max-h-80 overflow-y-scroll";
     dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";
     dropButton.type = "submit";

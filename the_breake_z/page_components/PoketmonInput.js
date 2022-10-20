@@ -16,12 +16,9 @@ export default function Component() {
                 src="/scripts/autoComplete.js"
                 strategy="lazyOnload"
                 onLoad={() => {
-                    localData = autoComplete("i-spec1", localData);
+                    localData = initAutoComplete("i-spec1", localData);
                 }}
             />
-            <div className="hidden">
-                <div class="relative h-80 overflow-y-scroll py-1 right-0 z-10 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90"></div>
-            </div>
             <div className="flex flex-col w-full">
                 <div className="my-2">
                     <div className="md:grid md:grid-cols-8 md:gap-6">

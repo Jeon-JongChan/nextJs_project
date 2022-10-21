@@ -22,6 +22,7 @@ export default function Layout() {
     return (
         <>
             <Script src="/scripts/globalvariable.js" />
+            <Script src="/scripts/public.js" />
             <Nav></Nav>
             <div className="mt-2">
                 <ul className="flex items-center justify-center space-x-4">

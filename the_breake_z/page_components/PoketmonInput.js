@@ -15,8 +15,8 @@ export default function Component() {
             <Script
                 src="/scripts/autoComplete.js"
                 strategy="lazyOnload"
-                onLoad={() => {
-                    localData = initAutoComplete("i-spec1", localData);
+                onLoad={async () => {
+                    localData = await initAutoComplete("i-spec1", "spec", localData);
                 }}
             />
             <div className="flex flex-col w-full">

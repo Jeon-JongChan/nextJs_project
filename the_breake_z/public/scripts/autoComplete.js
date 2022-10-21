@@ -1,37 +1,13 @@
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
  * @param {string} id 자동다운 드롭다운을 장착할 input 태그 아이디
+ * @param {string} target 자동완성에 사용될 데이터 명
+ * @param {object} localData 자동완성에 사용될 데이터 변수
  */
-async function initAutoComplete(id, localData = {}) {
+async function initAutoComplete(id, target, localData = {}) {
     try {
-        let target = id == "i-local" ? "local" : "spec";
-        let apiurl = "http://localhost:3000/api/data";
-        let isUpdate = false;
-
-        /*
-        현재 저장된 데이터가 있다면 숫자를 비교해 부족하거나 많을 경우 데이터를 교체한다.
-        현재 저장된 데이터가 없다면 데이터와 카운터를 저장한다.
-        */
-        let res = await fetch(apiurl + "?query=count&target=" + target);
-        let resJson = await res.json();
-
-        if (localData?.[target]?.cnt) {
-            if (localData[target].cnt !== resJson.cnt) localData[target].cnt = resJson.cnt;
-            isUpdate = true;
-        } else {
-            localData[target] = { cnt: resJson.cnt, data: null };
-        }
-
-        if (isUpdate || localData[target]?.data === null) {
-            let res = await fetch(apiurl, {
-                method: "POST",
-                body: JSON.stringify({ target: target }),
-            });
-            let data = await res.json();
-
-            localData[target].data = data;
-        }
-
+        localData = await fetchAutoCompleteData(target, localData);
+        console.log(localData);
         /**
          * dom이 없는경우 드롭다운 dom을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
@@ -40,10 +16,73 @@ async function initAutoComplete(id, localData = {}) {
         let dom = inputDom.parentNode;
         dom = appendAutoCompleteDom(dom, localData[target].data);
 
+        /**
+         * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
+         * keyup 후 0.5초 이후에 종료
+         * focus를 잃는경우 바로 종료
+         * focus될 경우 자동완성 보여주기
+         */
+        inputDom.addEventListener(
+            "keyup",
+            delayCallFunction((e) => {
+                console.log("delayCallFunction", e.target.value);
+                let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
+                toggleAutoCompleteDom(domDropFrame, 1);
+            }, 500)
+        );
+        inputDom.addEventListener("focus", (e) => {
+            let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
+            toggleAutoCompleteDom(domDropFrame, 1);
+        });
+        inputDom.addEventListener("focusout", (e) => {
+            let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
+            toggleAutoCompleteDom(domDropFrame);
+        });
+
         return localData;
     } catch (err) {
         console.log("autoComplete error : ", err);
     }
+}
+function autoComplete() {}
+/**
+ *
+ * @param {string} url 데이터를 가져올 url
+ * @param {string} target POST에 보내줄 추출할 데이터명
+ * @param {object} localData 데이터를 저장할 오브젝트. 오브젝트 형태 { target : { cnt, data : [{}]}
+ */
+async function fetchAutoCompleteData(target, localData = {}) {
+    console.log("fetchAutoCompleteData");
+    let isUpdate = false;
+    let baseurl = "http://localhost:3000/api/data";
+    /*
+    현재 저장된 데이터가 있다면 숫자를 비교해 부족하거나 많을 경우 데이터를 교체한다.
+    현재 저장된 데이터가 없다면 데이터와 카운터를 저장한다.
+    */
+    let baseGetUrl = "?query=count&target=" + target;
+    let resJson = await (await fetch(baseurl + baseGetUrl)).json();
+
+    if (localData?.[target]?.cnt) {
+        if (localData[target].cnt !== resJson.cnt) {
+            localData[target].cnt = resJson.cnt;
+            isUpdate = true;
+        }
+    } else {
+        localData[target] = { cnt: resJson.cnt, data: null };
+        isUpdate = true;
+    }
+
+    if (isUpdate) {
+        let res = await fetch(baseurl, {
+            method: "POST",
+            body: JSON.stringify({ target: target }),
+        });
+        let data = await res.json();
+
+        localData[target].data = data;
+    }
+
+    return localData;
 }
 //------------------------------------------ 재사용 가능한 함수들 ------------------------------------------//
 /**
@@ -111,25 +150,6 @@ function appendAutoCompleteDom(dom, datalist = null) {
         });
         domDropFrame.appendChild(cpButton);
     }
-
-    /**
-     * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
-     * keyup 후 0.5초 이후에 종료
-     * focus를 잃는경우 바로 종료
-     */
-    let inputDom = dom.querySelector("input");
-    inputDom.addEventListener(
-        "keyup",
-        delayCallFunction((e) => {
-            let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
-            toggleAutoCompleteDom(domDropFrame, 1);
-        }, 500)
-    );
-    inputDom.addEventListener("focusout", (e) => {
-        let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
-        toggleAutoCompleteDom(domDropFrame);
-    });
-
     return dom;
 }
 /**
@@ -146,7 +166,7 @@ function createAutoCompleteDom() {
     // dropFrame.appendChild(dropInnerFrame);
     // dom에 필요한 필수 속성 추가(tailwind 사용중)
     dropFrame.className =
-        "absolute h-80 overflow-y-scroll py-1 right-0 z-10 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
+        "absolute h-80 overflow-y-scroll py-1 right-0 z-50 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
     // dropInnerFrame.className = "py-1 max-h-80 overflow-y-scroll";
     dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";
     dropButton.type = "submit";

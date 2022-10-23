@@ -47,3 +47,10 @@ export default function Component() {
         </>
     );
 }
+/**
+ * 할당해야될 tawind 모듈 임포트를 위해 선언
+ */
+const tawind = {
+    visible: "visible",
+    invisible: "invisible",
+};

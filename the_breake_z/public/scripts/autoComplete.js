@@ -26,17 +26,13 @@ async function initAutoComplete(id, target, localData = {}) {
             "keyup",
             delayCallFunction((e) => {
                 console.log("delayCallFunction", e.target.value);
-                let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
+                let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteDom(domDropFrame, 1);
             }, 500)
         );
         inputDom.addEventListener("focus", (e) => {
-            let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
+            let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
             toggleAutoCompleteDom(domDropFrame, 1);
-        });
-        inputDom.addEventListener("focusout", (e) => {
-            let domDropFrame = e.target.parentNode.querySelector(".overflow-y-scroll");
-            toggleAutoCompleteDom(domDropFrame);
         });
 
         return localData;
@@ -45,6 +41,7 @@ async function initAutoComplete(id, target, localData = {}) {
     }
 }
 function autoComplete() {}
+
 /**
  *
  * @param {string} url 데이터를 가져올 url
@@ -110,11 +107,11 @@ function toggleAutoCompleteDom(domDropFrame, state = 0) {
     // dom 전달이 잘못된 경우 함수 종료
     if (!domDropFrame) return null;
     if (state === 0) {
-        domDropFrame.classList.remove("block");
-        domDropFrame.classList.add("hidden");
+        domDropFrame.classList.remove("visible");
+        domDropFrame.classList.add("invisible");
     } else if (state === 1) {
-        domDropFrame.classList.remove("hidden");
-        domDropFrame.classList.add("block");
+        domDropFrame.classList.remove("invisible");
+        domDropFrame.classList.add("visible");
     }
 
     return domDropFrame;
@@ -129,7 +126,7 @@ function toggleAutoCompleteDom(domDropFrame, state = 0) {
 function appendAutoCompleteDom(dom, datalist = null) {
     // console.log("appendAutoCompleteDom start : ", dom, datalist[0]);
     let dropList = createAutoCompleteDom();
-    let domDropFrame = dom.querySelector(".overflow-y-scroll");
+    let domDropFrame = dom.querySelector(".autocomplete");
     if (domDropFrame) {
         while (domDropFrame.hasChildNodes()) {
             domDropFrame.removeChild(domDropFrame.lastChild);
@@ -145,8 +142,14 @@ function appendAutoCompleteDom(dom, datalist = null) {
         let cpButton = dropButton.cloneNode();
         cpButton.innerText = data.NAME;
         cpButton.addEventListener("click", (e) => {
-            toggleAutoCompleteDom(e.target.parentNode);
-            e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
+            e.stopPropagation();
+            try {
+                console.log("자동완성 버튼클릭");
+                e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
+                toggleAutoCompleteDom(domDropFrame);
+            } catch (e) {
+                console.log("자동완성 버튼 작동 실패 : ", e);
+            }
         });
         domDropFrame.appendChild(cpButton);
     }
@@ -164,12 +167,13 @@ function createAutoCompleteDom() {
     // 자동완성 드롭다운 배치
     // dropInnerFrame.appendChild(dropButton);
     // dropFrame.appendChild(dropInnerFrame);
-    // dom에 필요한 필수 속성 추가(tailwind 사용중)
-    dropFrame.className =
-        "absolute h-80 overflow-y-scroll py-1 right-0 z-50 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
+    // -- dom에 필요한 필수 속성 추가(tailwind 사용중)
     // dropInnerFrame.className = "py-1 max-h-80 overflow-y-scroll";
-    dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";
-    dropButton.type = "submit";
+    // dropFrame.className = "absolute h-80 overflow-y-scroll py-1 right-0 z-50 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
+    // dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";
+    dropFrame.className = "autocomplete invisible";
+    dropButton.className = "autocomplete-btn";
+    // dropButton.type = "submit";
 
     // return dropFrame;
     return [dropFrame, dropButton];

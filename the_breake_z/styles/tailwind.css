@@ -7,6 +7,14 @@
     @apply text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
 }
 
+/* autocomplete */
+.autocomplete {
+    @apply absolute z-20 h-80 overflow-y-scroll py-1 right-0  w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none;
+}
+.autocomplete-btn {
+    @apply z-30 text-gray-700 block w-full px-4 py-2 text-left text-sm;
+}
+
 /* Component : Layout */
 .apply-tab-item {
     @apply px-3 py-2 border-2 rounded-md;

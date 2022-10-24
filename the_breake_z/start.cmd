@@ -1,10 +1,13 @@
 @ECHO OFF
 ECHO "*********************************************>> THE BREAK Z START BAT"
 
-IF EXIST .\node_modules (
+SET NODEJS=%cd%/node
+SET PATH=%NODEJS%;%PATH%
+
+IF EXIST %cd%/node_modules (
     ECHO "*********************************************>> NODE_MODULES EXIST. START SUCCESS" 
 ) ELSE (
     ECHO "*********************************************>> NODE_MODULES NOT EXIST. INSTALL PROCESS. ENTER key please"
     %cd%/node/npm i
 )
-./node/npm run dev
+%cd%/node/npm run dev

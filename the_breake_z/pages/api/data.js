@@ -12,14 +12,10 @@ export default function handler(req, res) {
         let data = null;
         if (method === "GET") {
             let target = req.query.target;
-            if (req.query.query === "count") {
-                if (target === "spec") sql = select.count_spec;
-                else if (target === "local") sql = select.count_local;
-                else if (target === "poketmon") sql = select.count_poketmon;
-
-                if (sql !== "") data = server.db.prepare(sql).pluck().get();
-                ret = { cnt: data };
-            }
+            let query = req.query.query;
+            sql = select?.[query + "_" + target];
+            if (sql !== "undefined" && sql !== "") data = server.db.prepare(sql).get();
+            ret = data;
         }
         if (method === "POST") {
             let body = JSON.parse(req.body);
@@ -33,6 +29,7 @@ export default function handler(req, res) {
 
         res.status(200).json(ret);
     } catch (e) {
+        console.log(e.message);
         res.status(500).json({ error: e.message });
     }
 }

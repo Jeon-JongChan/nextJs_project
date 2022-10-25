@@ -1,31 +1,31 @@
 const query = {
     create_table_local: `
     CREATE TABLE LOCAL (
-        ID      INT PRIMARY KEY,
+        ID      INT PRIMARY KEY AUTOINCREMENT,
         NAME    NVARCHAR(50)
     )
     `,
     create_table_spec: `
     CREATE TABLE SPEC (
-        ID      INT PRIMARY KEY,
+        ID      INT PRIMARY KEY AUTOINCREMENT,
         NAME    NVARCHAR(20)
     )
     `,
     create_table_image: `
     CREATE TABLE IMAGE (
-        ID      INT PRIMARY KEY,
+        ID      INT PRIMARY KEY AUTOINCREMENT,
         PATH    VARCHAR(100)
     )
     `,
     create_table_type: `
     CREATE TABLE TYPE (
-        ID      INT PRIMARY KEY,
+        ID      INT PRIMARY KEY AUTOINCREMENT,
         NAME    NVARCHAR(10)
     )
     `,
     create_table_poketmon: `
     CREATE TABLE POKETMON (
-        ID      INT PRIMARY KEY,
+        ID      INT PRIMARY KEY AUTOINCREMENT,
         NAME    NVARCHAR(20),
         LOCAL_ID    INT,
         IMAGE_ID    INT,

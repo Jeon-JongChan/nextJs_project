@@ -21,7 +21,7 @@ export default function Layout() {
 
     return (
         <>
-            <Script src="/scripts/globalvariable.js" />
+            <Script src="/scripts/global.js" />
             <Script src="/scripts/public.js" />
             <Nav></Nav>
             <div className="mt-2">

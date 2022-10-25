@@ -1,3 +1,16 @@
+async function autoComplete(input, target) {
+    /**
+     * initAutoComplete 에서 무조건 전역 localData를 선언했어야 함으로 따로 체크 x
+     */
+    /**
+     * 데이터 동기화 체크는 updateLocalData에서 해주므로 무조건 한번 실행
+     */
+    localData = await updateLocalData(target, localData);
+
+    let autoRoot = input.parentNode;
+    let autoFrame = autoRoot.querySelector(".autocomplete");
+    let inputText = input.value;
+}
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
  * @param {string} id 자동다운 드롭다운을 장착할 input 태그 아이디
@@ -6,7 +19,7 @@
  */
 async function initAutoComplete(id, target, localData = {}) {
     try {
-        localData = await fetchAutoCompleteData(target, localData);
+        localData = await updateLocalData(target, localData);
         console.log(localData);
         /**
          * dom이 없는경우 드롭다운 dom을 만들어준다.
@@ -34,53 +47,23 @@ async function initAutoComplete(id, target, localData = {}) {
             let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
             toggleAutoCompleteDom(domDropFrame, 1);
         });
+        /**
+         * delay를 적용안할 경우 자동완성 키워드를 클릭해도 이미 hidden상태여서 실행 x
+         */
+        inputDom.addEventListener(
+            "blur",
+            delayCallFunction((e) => {
+                let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
+                toggleAutoCompleteDom(domDropFrame);
+            }, 200)
+        );
 
         return localData;
     } catch (err) {
         console.log("autoComplete error : ", err);
     }
 }
-function autoComplete() {}
 
-/**
- *
- * @param {string} url 데이터를 가져올 url
- * @param {string} target POST에 보내줄 추출할 데이터명
- * @param {object} localData 데이터를 저장할 오브젝트. 오브젝트 형태 { target : { cnt, data : [{}]}
- */
-async function fetchAutoCompleteData(target, localData = {}) {
-    console.log("fetchAutoCompleteData");
-    let isUpdate = false;
-    let baseurl = "http://localhost:3000/api/data";
-    /*
-    현재 저장된 데이터가 있다면 숫자를 비교해 부족하거나 많을 경우 데이터를 교체한다.
-    현재 저장된 데이터가 없다면 데이터와 카운터를 저장한다.
-    */
-    let baseGetUrl = "?query=count&target=" + target;
-    let resJson = await (await fetch(baseurl + baseGetUrl)).json();
-
-    if (localData?.[target]?.cnt) {
-        if (localData[target].cnt !== resJson.cnt) {
-            localData[target].cnt = resJson.cnt;
-            isUpdate = true;
-        }
-    } else {
-        localData[target] = { cnt: resJson.cnt, data: null };
-        isUpdate = true;
-    }
-
-    if (isUpdate) {
-        let res = await fetch(baseurl, {
-            method: "POST",
-            body: JSON.stringify({ target: target }),
-        });
-        let data = await res.json();
-
-        localData[target].data = data;
-    }
-
-    return localData;
-}
 //------------------------------------------ 재사용 가능한 함수들 ------------------------------------------//
 /**
  * 함수를 입력받아 지연된 시간 후에 해당 함수를 호출
@@ -103,7 +86,6 @@ function delayCallFunction(fn, ms = 1000) {
  * @returns {document} dom
  */
 function toggleAutoCompleteDom(domDropFrame, state = 0) {
-    console.log("자동완성 토글");
     // dom 전달이 잘못된 경우 함수 종료
     if (!domDropFrame) return null;
     if (state === 0) {

@@ -40,3 +40,5 @@ async function updateLocalData(target, localData = {}) {
     }
     return localData;
 }
+
+async function checkSyncLocalData(target, localData = {}) {}

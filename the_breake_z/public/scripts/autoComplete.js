@@ -22,12 +22,12 @@ async function initAutoComplete(id, target, localData = {}) {
         localData = await updateLocalData(target, localData);
         console.log(localData);
         /**
-         * dom이 없는경우 드롭다운 dom을 만들어준다.
+         * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
          */
-        let inputDom = document.querySelector("#" + id);
-        let dom = inputDom.parentNode;
-        dom = appendAutoCompleteDom(dom, localData[target].data);
+        let inputNode = document.querySelector("#" + id);
+        let node = inputNode.parentNode;
+        node = appendAutoCompleteNode(node, localData[target].data);
 
         /**
          * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
@@ -35,26 +35,26 @@ async function initAutoComplete(id, target, localData = {}) {
          * focus를 잃는경우 바로 종료
          * focus될 경우 자동완성 보여주기
          */
-        inputDom.addEventListener(
+        inputNode.addEventListener(
             "keyup",
             delayCallFunction((e) => {
                 console.log("delayCallFunction", e.target.value);
-                let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
-                toggleAutoCompleteDom(domDropFrame, 1);
+                let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
+                toggleAutoCompleteNode(nodeDropFrame, 1);
             }, 500)
         );
-        inputDom.addEventListener("focus", (e) => {
-            let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
-            toggleAutoCompleteDom(domDropFrame, 1);
+        inputNode.addEventListener("focus", (e) => {
+            let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
+            toggleAutoCompleteNode(nodeDropFrame, 1);
         });
         /**
          * delay를 적용안할 경우 자동완성 키워드를 클릭해도 이미 hidden상태여서 실행 x
          */
-        inputDom.addEventListener(
+        inputNode.addEventListener(
             "blur",
             delayCallFunction((e) => {
-                let domDropFrame = e.target.parentNode.querySelector(".autocomplete");
-                toggleAutoCompleteDom(domDropFrame);
+                let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
+                toggleAutoCompleteNode(nodeDropFrame);
             }, 200)
         );
 
@@ -80,42 +80,40 @@ function delayCallFunction(fn, ms = 1000) {
     };
 }
 /**
- * 자동완성 드롭다운의 dom을 입력받아 상태값에 따라 toggle 시켜준다.
- * @param {document} domDropFrame
+ * 자동완성 드롭다운의 node을 입력받아 상태값에 따라 toggle 시켜준다.
+ * @param {document} nodeDropFrame
  * @param {int} state 0-끄기, 1-켜기
- * @returns {document} dom
+ * @returns {document} node
  */
-function toggleAutoCompleteDom(domDropFrame, state = 0) {
-    // dom 전달이 잘못된 경우 함수 종료
-    if (!domDropFrame) return null;
+function toggleAutoCompleteNode(nodeDropFrame, state = 0) {
+    // node 전달이 잘못된 경우 함수 종료
+    if (!nodeDropFrame) return null;
     if (state === 0) {
-        domDropFrame.classList.remove("visible");
-        domDropFrame.classList.add("invisible");
+        nodeDropFrame.classList.remove("visible");
+        nodeDropFrame.classList.add("invisible");
     } else if (state === 1) {
-        domDropFrame.classList.remove("invisible");
-        domDropFrame.classList.add("visible");
+        nodeDropFrame.classList.remove("invisible");
+        nodeDropFrame.classList.add("visible");
     }
 
-    return domDropFrame;
+    return nodeDropFrame;
 }
 /**
- * 드롭다운 dom을 만든 후 전달받은 dom에 추가해주고(리스트를 만들 button 제외) dom 배열 반환 (dom, button dom)
- * dom에 드롭다운dom이 존재할경우 초기화만 진행
- * @param {document} dom
+ * 드롭다운 node를 만든 후 전달받은 node에 추가해주고(리스트를 만들 button 제외) node 배열 반환 (node, button node)
+ * node에 드롭다운node가 존재할경우 초기화만 진행
+ * @param {document} node
  * @param {object[]} datalist
- * @returns {document} dom
+ * @returns {document} node
  */
-function appendAutoCompleteDom(dom, datalist = null) {
-    // console.log("appendAutoCompleteDom start : ", dom, datalist[0]);
-    let dropList = createAutoCompleteDom();
-    let domDropFrame = dom.querySelector(".autocomplete");
-    if (domDropFrame) {
-        while (domDropFrame.hasChildNodes()) {
-            domDropFrame.removeChild(domDropFrame.lastChild);
-        }
+function appendAutoCompleteNode(node, datalist = null) {
+    // console.log("appendAutoCompleteNode start : ", node, datalist[0]);
+    let dropList = createAutoCompleteNode();
+    let nodeDropFrame = node.querySelector(".autocomplete");
+    if (nodeDropFrame) {
+        nodeDropFrame = deleteAllChildNode(node);
     } else {
-        domDropFrame = dropList[0];
-        dom.appendChild(domDropFrame);
+        nodeDropFrame = dropList[0];
+        node.appendChild(nodeDropFrame);
     }
 
     let dropButton = dropList[1];
@@ -128,28 +126,39 @@ function appendAutoCompleteDom(dom, datalist = null) {
             try {
                 console.log("자동완성 버튼클릭");
                 e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
-                toggleAutoCompleteDom(domDropFrame);
+                toggleAutoCompleteNode(nodeDropFrame);
             } catch (e) {
                 console.log("자동완성 버튼 작동 실패 : ", e);
             }
         });
-        domDropFrame.appendChild(cpButton);
+        nodeDropFrame.appendChild(cpButton);
     }
-    return dom;
+    return node;
 }
 /**
- * 자동완성 드롭다운 dom 을 만드는 함수(tailwind 사용)
+ * Dom node를 입력받아 하위 개체를 모두 삭제해준다.
+ * @param {object} node
+ * @returns {object} node
+ */
+function deleteAllChildNode(node) {
+    while (node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+    return node;
+}
+/**
+ * 자동완성 드롭다운 node 를 만드는 함수(tailwind 사용)
  * @returns {object[]} dropList
  */
-function createAutoCompleteDom() {
-    // 자동완성 드롭다운에 필요한 dom 생성
+function createAutoCompleteNode() {
+    // 자동완성 드롭다운에 필요한 Node 생성
     let dropFrame = document.createElement("div");
     let dropInnerFrame = document.createElement("div");
     let dropButton = document.createElement("button");
     // 자동완성 드롭다운 배치
     // dropInnerFrame.appendChild(dropButton);
     // dropFrame.appendChild(dropInnerFrame);
-    // -- dom에 필요한 필수 속성 추가(tailwind 사용중)
+    // -- Node에 필요한 필수 속성 추가(tailwind 사용중)
     // dropInnerFrame.className = "py-1 max-h-80 overflow-y-scroll";
     // dropFrame.className = "absolute h-80 overflow-y-scroll py-1 right-0 z-50 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
     // dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";

@@ -1,15 +1,26 @@
-async function autoComplete(input, target) {
+/**
+ * 자동완성에 사용될 전역변수 localData가 무조건 필요합니다.
+ * 자동완성에 사용되는 함수
+ * @param {*} inputNode
+ * @param {*} target
+ */
+async function autoComplete(inputNode, target) {
     /**
      * initAutoComplete 에서 무조건 전역 localData를 선언했어야 함으로 따로 체크 x
      */
     /**
-     * 데이터 동기화 체크는 updateLocalData에서 해주므로 무조건 한번 실행
+     * 동기화가 필요한지 체크 및 필요하면 동기화
      */
-    localData = await updateLocalData(target, localData);
+    localData = await syncLocalData(tableName, localData);
 
-    let autoRoot = input.parentNode;
+    let autoRoot = inputNode.parentNode;
     let autoFrame = autoRoot.querySelector(".autocomplete");
-    let inputText = input.value;
+    let inputText = inputNode.value;
+    /**
+     * 자동완성에 필요한 데이터 추리기
+     */
+    let addData = localData[target].data.filter((data) => data.name.indexOf(inputText) > -1);
+    console.log("autoComplete : ", appData);
 }
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
@@ -19,15 +30,15 @@ async function autoComplete(input, target) {
  */
 async function initAutoComplete(id, target, localData = {}) {
     try {
-        localData = await updateLocalData(target, localData);
-        console.log(localData);
+        localData = await syncLocalData(target, localData);
+        console.log("initAutoComplete :", localData);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
          */
         let inputNode = document.querySelector("#" + id);
-        let node = inputNode.parentNode;
-        node = appendAutoCompleteNode(node, localData[target].data);
+        let parent = inputNode.parentNode;
+        parent = appendAutoCompleteNode(parent, localData[target].data);
 
         /**
          * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
@@ -37,15 +48,16 @@ async function initAutoComplete(id, target, localData = {}) {
          */
         inputNode.addEventListener(
             "keyup",
-            delayCallFunction((e) => {
+            delayCallFunction(async (e) => {
                 console.log("delayCallFunction", e.target.value);
+                await autoComplete();
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
-                toggleAutoCompleteNode(nodeDropFrame, 1);
+                toggleAutoCompleteNode(nodeDropFrame, true);
             }, 500)
         );
         inputNode.addEventListener("focus", (e) => {
             let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
-            toggleAutoCompleteNode(nodeDropFrame, 1);
+            toggleAutoCompleteNode(nodeDropFrame, true);
         });
         /**
          * delay를 적용안할 경우 자동완성 키워드를 클릭해도 이미 hidden상태여서 실행 x
@@ -82,10 +94,10 @@ function delayCallFunction(fn, ms = 1000) {
 /**
  * 자동완성 드롭다운의 node을 입력받아 상태값에 따라 toggle 시켜준다.
  * @param {document} nodeDropFrame
- * @param {int} state 0-끄기, 1-켜기
+ * @param {boolean} state false-끄기, true-켜기
  * @returns {document} node
  */
-function toggleAutoCompleteNode(nodeDropFrame, state = 0) {
+function toggleAutoCompleteNode(nodeDropFrame, state = false) {
     // node 전달이 잘못된 경우 함수 종료
     if (!nodeDropFrame) return null;
     if (state === 0) {
@@ -99,21 +111,21 @@ function toggleAutoCompleteNode(nodeDropFrame, state = 0) {
     return nodeDropFrame;
 }
 /**
- * 드롭다운 node를 만든 후 전달받은 node에 추가해주고(리스트를 만들 button 제외) node 배열 반환 (node, button node)
- * node에 드롭다운node가 존재할경우 초기화만 진행
- * @param {document} node
+ * 드롭다운 node를 만든 후 전달받은 rootNode 추가해주고(리스트를 만들 button 제외) rootNode
+ * rootNode 드롭다운node가 존재할경우 초기화만 진행
+ * @param {document} rootNode
  * @param {object[]} datalist
  * @returns {document} node
  */
-function appendAutoCompleteNode(node, datalist = null) {
+function appendAutoCompleteNode(rootNode, datalist = null) {
     // console.log("appendAutoCompleteNode start : ", node, datalist[0]);
     let dropList = createAutoCompleteNode();
-    let nodeDropFrame = node.querySelector(".autocomplete");
-    if (nodeDropFrame) {
-        nodeDropFrame = deleteAllChildNode(node);
+    let dropFrameNode = rootNode.querySelector(".autocomplete");
+    if (dropFrameNode) {
+        dropFrameNode = deleteAllChildNode(rootNode);
     } else {
-        nodeDropFrame = dropList[0];
-        node.appendChild(nodeDropFrame);
+        dropFrameNode = dropList[0];
+        rootNode.appendChild(dropFrameNode);
     }
 
     let dropButton = dropList[1];
@@ -126,14 +138,14 @@ function appendAutoCompleteNode(node, datalist = null) {
             try {
                 console.log("자동완성 버튼클릭");
                 e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
-                toggleAutoCompleteNode(nodeDropFrame);
+                toggleAutoCompleteNode(dropFrameNode);
             } catch (e) {
                 console.log("자동완성 버튼 작동 실패 : ", e);
             }
         });
-        nodeDropFrame.appendChild(cpButton);
+        dropFrameNode.appendChild(cpButton);
     }
-    return node;
+    return rootNode;
 }
 /**
  * Dom node를 입력받아 하위 개체를 모두 삭제해준다.
@@ -148,6 +160,7 @@ function deleteAllChildNode(node) {
 }
 /**
  * 자동완성 드롭다운 node 를 만드는 함수(tailwind 사용)
+ * node 배열 반환 (frame node, button node)
  * @returns {object[]} dropList
  */
 function createAutoCompleteNode() {
@@ -160,8 +173,8 @@ function createAutoCompleteNode() {
     // dropFrame.appendChild(dropInnerFrame);
     // -- Node에 필요한 필수 속성 추가(tailwind 사용중)
     // dropInnerFrame.className = "py-1 max-h-80 overflow-y-scroll";
-    // dropFrame.className = "absolute h-80 overflow-y-scroll py-1 right-0 z-50 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90 hidden";
-    // dropButton.className = "text-gray-700 block w-full px-4 py-2 text-left text-sm";
+    // dropFrame.className = "absolute z-20 h-80 overflow-y-scroll py-1 right-0  w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none";
+    // dropButton.className = "z-30 text-gray-700 block w-full px-4 py-2 text-left text-sm";
     dropFrame.className = "autocomplete invisible";
     dropButton.className = "autocomplete-btn";
     // dropButton.type = "submit";

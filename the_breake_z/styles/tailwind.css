@@ -29,3 +29,8 @@
 .apply-gridinputtext-smalllabel {
     @apply text-xs text-red-100;
 }
+
+/* Component : GridInputPhoto */
+.gridinputphoto-frame {
+    @apply bg-no-repeat bg-left bg-cover;
+}

@@ -1,5 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+// import server from "../../scripts/server";
 
 export default function handler(req, res) {
+    console.log(req.body);
+    // server.file.save()
     res.status(200).json({ name: "John Doe" });
 }

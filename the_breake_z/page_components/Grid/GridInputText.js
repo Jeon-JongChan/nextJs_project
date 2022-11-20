@@ -17,7 +17,7 @@ export default function Component(props) {
     let label = props?.label || "Input Text";
     let smallLabel = props?.smallLabel || "";
     let inputId = props?.id || "input-text";
-    let colSpanValue = props?.colSpan || 6;
+    let colSpan = props?.colSpan || 6;
     // let colSmSpenValue = props?.colSmSpan || 4;
     let autoComplete = autoCompleteType.find((e) => e === props?.autoComplete) || "on";
     let dirmode = props?.dirmode || "col";
@@ -27,7 +27,7 @@ export default function Component(props) {
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
             {/* sm:col-span-${colSmSpenValue} 일단 제외 */}
-            <div className={["relative", colSpanClass[colSpanValue], dirmode === "row" ? "flex" : ""].join(" ")}>
+            <div className={["relative", colSpanClass[colSpan], dirmode === "row" ? "flex" : ""].join(" ")}>
                 <label htmlFor={inputId} className={["block text-sm font-medium text-gray-700", dirmode === "row" ? `${rowWidth}` : ""].join(" ")}>
                     {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
                 </label>

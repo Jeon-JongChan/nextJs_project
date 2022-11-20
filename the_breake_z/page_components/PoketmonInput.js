@@ -10,6 +10,38 @@ import GridBorderBox from "./Grid/GridBorderBox";
 // * react
 export default function Component() {
     // autoComplete("i-local");
+    async function submitPoketmonData() {
+        let iname = document.querySelector("#i-name");
+        let ilocal = document.querySelector("#i-local");
+        let irare = document.querySelector("#i-rare");
+        let ispec1 = document.querySelector("#i-spec1");
+        let ispec2 = document.querySelector("#i-spec2");
+        let ispec3 = document.querySelector("#i-spec3");
+        let ilevelmin = document.querySelector("#i-level-min");
+        let ilevelmax = document.querySelector("#i-level-max");
+        let iimage = document.querySelector("#i-image");
+
+        let sendData = new FormData();
+        sendData.append("name", iname.value);
+        sendData.append("local", ilocal.value);
+        sendData.append("rare", irare.value);
+        sendData.append("spec1", ispec1.value);
+        sendData.append("spec2", ispec2.value);
+        sendData.append("spec3", ispec3.value);
+        sendData.append("levelmin", ilevelmin.value);
+        sendData.append("levelmax", ilevelmax.value);
+        sendData.append("image", iimage.files[0]);
+
+        let baseurl = "http://localhost:3000/api/upload/poketmon";
+
+        let res = await fetch(baseurl, {
+            method: "POST",
+            body: sendData,
+        });
+
+        let resData = await res.json();
+        console.log(resData);
+    }
     return (
         <>
             <Script
@@ -29,28 +61,33 @@ export default function Component() {
             />
             <div className="flex flex-col w-full">
                 <div className="my-2">
-                    <div className="md:grid md:grid-cols-8 md:gap-6">
-                        <div className="mt-5 md:col-span-8 md:mt-0">
-                            <div className="shadow rounded-md">
-                                <div className="bg-white px-4 py-3">
-                                    <div className="grid grid-cols-6 gap-6">
-                                        <InputText id={"i-name"} label={"포켓폰 이름"} smallLabel={"* 삭제할경우 필수 요인"}></InputText>
-                                        <InputText id={"i-local"} label={"출몰지"} colSpan={3}></InputText>
-                                        <InputText id={"i-rare"} label={"출현율"} colSpan={3}></InputText>
-                                        <InputText id={"i-spec1"} label={"특성 1"} colSpan={2}></InputText>
-                                        <InputText id={"i-spec2"} label={"특성 2"} colSpan={2}></InputText>
-                                        <InputText id={"i-spec3"} label={"HIDDEN 특성"} colSpan={2}></InputText>
-                                        <InputText id={"i-level-min"} label={"최소레벨"} colSpan={3} default={1}></InputText>
-                                        <InputText id={"i-level-max"} label={"최대레벨"} colSpan={3} default={50}></InputText>
-                                    </div>
-                                </div>
+                    {/* <div className="md:grid md:grid-cols-8 md:gap-6">
+                        <div className="mt-5 md:col-span-8 md:mt-0"> */}
+                    <div className="shadow rounded-md">
+                        <div className="bg-white px-4 py-3">
+                            <div className="grid grid-cols-6 gap-6">
+                                <InputText id={"i-name"} label={"포켓폰 이름"} smallLabel={"* 삭제할경우 필수 요인"}></InputText>
+                                <InputText id={"i-local"} label={"출몰지"} colSpan={3}></InputText>
+                                <InputText id={"i-rare"} label={"출현율"} colSpan={3}></InputText>
+                                <InputText id={"i-spec1"} label={"특성 1"} colSpan={2}></InputText>
+                                <InputText id={"i-spec2"} label={"특성 2"} colSpan={2}></InputText>
+                                <InputText id={"i-spec3"} label={"HIDDEN 특성"} colSpan={2}></InputText>
+                                <InputText id={"i-level-min"} label={"최소레벨"} colSpan={3} default={1}></InputText>
+                                <InputText id={"i-level-max"} label={"최대레벨"} colSpan={3} default={50}></InputText>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="my-2">
-                    <GridBorderBox propComponent={InputPhoto} propComponentProperty={{ label: "포켓몬 사진" }}></GridBorderBox>
-                    <GridBorderBox propComponent={InputButton} propComponentProperty={{ label: "포켓몬 사진" }}></GridBorderBox>
+                    <GridBorderBox propComponent={InputPhoto} propComponentProperty={{ label: "포켓몬 사진", id: "i-image" }}></GridBorderBox>
+                    <div className="shadow rounded-md">
+                        <div className="bg-white px-4 py-3">
+                            <div className="grid grid-cols-6 gap-6">
+                                <InputButton label={"Delete"} buttonColor={"red"} colSpan={4}></InputButton>
+                                <InputButton type="button" colSpan={2} onclick={submitPoketmonData}></InputButton>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

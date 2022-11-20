@@ -11,16 +11,21 @@ async function autoComplete(inputNode, target) {
     /**
      * 동기화가 필요한지 체크 및 필요하면 동기화
      */
-    localData = await syncLocalData(tableName, localData);
-
+    localData = await syncLocalData(target, localData);
+    //console.log("autoComplete - target : ", target, " ", inputNode);
     let autoRoot = inputNode.parentNode;
     let autoFrame = autoRoot.querySelector(".autocomplete");
     let inputText = inputNode.value;
     /**
      * 자동완성에 필요한 데이터 추리기
      */
-    let addData = localData[target].data.filter((data) => data.name.indexOf(inputText) > -1);
-    console.log("autoComplete : ", appData);
+    let addData = localData[target].data.filter((data) => {
+        //console.log("addData : ", data.NAME, inputText);
+        return data.NAME.indexOf(inputText) > -1;
+    });
+
+    appendAutoCompleteNode(autoRoot, addData);
+    console.log("autoComplete : ", addData);
 }
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
@@ -30,8 +35,8 @@ async function autoComplete(inputNode, target) {
  */
 async function initAutoComplete(id, target, localData = {}) {
     try {
-        localData = await syncLocalData(target, localData);
         console.log("initAutoComplete :", localData);
+        localData = await syncLocalData(target, localData);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
@@ -39,7 +44,7 @@ async function initAutoComplete(id, target, localData = {}) {
         let inputNode = document.querySelector("#" + id);
         let parent = inputNode.parentNode;
         parent = appendAutoCompleteNode(parent, localData[target].data);
-
+        inputNode.setAttribute("data-target", target); // 자동완성 때 어느 데이터를 참조할지 input마다 표기
         /**
          * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
          * keyup 후 0.5초 이후에 종료
@@ -49,9 +54,10 @@ async function initAutoComplete(id, target, localData = {}) {
         inputNode.addEventListener(
             "keyup",
             delayCallFunction(async (e) => {
-                console.log("delayCallFunction", e.target.value);
-                await autoComplete();
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
+                toggleAutoCompleteNode(nodeDropFrame);
+                console.log("delayCallFunction", e.target.value);
+                await autoComplete(e.target, e.target.dataset.target);
                 toggleAutoCompleteNode(nodeDropFrame, true);
             }, 500)
         );
@@ -65,6 +71,7 @@ async function initAutoComplete(id, target, localData = {}) {
         inputNode.addEventListener(
             "blur",
             delayCallFunction((e) => {
+                console.log("addEventListener blur : ", e.target);
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteNode(nodeDropFrame);
             }, 200)
@@ -100,12 +107,13 @@ function delayCallFunction(fn, ms = 1000) {
 function toggleAutoCompleteNode(nodeDropFrame, state = false) {
     // node 전달이 잘못된 경우 함수 종료
     if (!nodeDropFrame) return null;
-    if (state === 0) {
-        nodeDropFrame.classList.remove("visible");
-        nodeDropFrame.classList.add("invisible");
-    } else if (state === 1) {
+    console.log("toggleAutoCompleteNode : ", nodeDropFrame, state);
+    if (state) {
         nodeDropFrame.classList.remove("invisible");
         nodeDropFrame.classList.add("visible");
+    } else if (!state) {
+        nodeDropFrame.classList.remove("visible");
+        nodeDropFrame.classList.add("invisible");
     }
 
     return nodeDropFrame;
@@ -118,11 +126,11 @@ function toggleAutoCompleteNode(nodeDropFrame, state = false) {
  * @returns {document} node
  */
 function appendAutoCompleteNode(rootNode, datalist = null) {
-    // console.log("appendAutoCompleteNode start : ", node, datalist[0]);
+    console.log("appendAutoCompleteNode start : ", rootNode, datalist[0]);
     let dropList = createAutoCompleteNode();
     let dropFrameNode = rootNode.querySelector(".autocomplete");
     if (dropFrameNode) {
-        dropFrameNode = deleteAllChildNode(rootNode);
+        dropFrameNode = deleteAllChildNode(dropFrameNode);
     } else {
         dropFrameNode = dropList[0];
         rootNode.appendChild(dropFrameNode);
@@ -134,11 +142,10 @@ function appendAutoCompleteNode(rootNode, datalist = null) {
         let cpButton = dropButton.cloneNode();
         cpButton.innerText = data.NAME;
         cpButton.addEventListener("click", (e) => {
-            e.stopPropagation();
             try {
                 console.log("자동완성 버튼클릭");
                 e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
-                toggleAutoCompleteNode(dropFrameNode);
+                toggleAutoCompleteNode(e.target.parentNode);
             } catch (e) {
                 console.log("자동완성 버튼 작동 실패 : ", e);
             }
@@ -177,6 +184,7 @@ function createAutoCompleteNode() {
     // dropButton.className = "z-30 text-gray-700 block w-full px-4 py-2 text-left text-sm";
     dropFrame.className = "autocomplete invisible";
     dropButton.className = "autocomplete-btn";
+    dropButton.type = "button";
     // dropButton.type = "submit";
 
     // return dropFrame;

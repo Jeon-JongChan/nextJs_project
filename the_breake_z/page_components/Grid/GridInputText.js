@@ -4,6 +4,7 @@ import Script from "next/script";
 /**
  *
  * @param {string} [label=Input Text] - 라벨에 출력할 Inner Text
+ * @param {string} [smallLabel] - 라벨 옆에 주의사항같은걸 적고싶을 때 사용
  * @param {string} [id=input-text] - input tag에 들어갈 ID (name 속성에도 들어감)
  * @param {string} [autoComplete=on] - input 자동완성 옵션
  * @param {int} [colSpan=6] - input 넓이(Grid Column 기준)
@@ -14,6 +15,7 @@ import Script from "next/script";
 //  @param {int} [colSmSpan=4] - 최소 width(640px) 기준 input 넓이(Grid Column 기준)
 export default function Component(props) {
     let label = props?.label || "Input Text";
+    let smallLabel = props?.smallLabel || "";
     let inputId = props?.id || "input-text";
     let colSpanValue = props?.colSpan || 6;
     // let colSmSpenValue = props?.colSmSpan || 4;
@@ -27,7 +29,7 @@ export default function Component(props) {
             {/* sm:col-span-${colSmSpenValue} 일단 제외 */}
             <div className={["relative", colSpanClass[colSpanValue], dirmode === "row" ? "flex" : ""].join(" ")}>
                 <label htmlFor={inputId} className={["block text-sm font-medium text-gray-700", dirmode === "row" ? `${rowWidth}` : ""].join(" ")}>
-                    {label}
+                    {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
                 </label>
                 <input
                     type="text"

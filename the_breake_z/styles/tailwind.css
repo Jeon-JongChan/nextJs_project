@@ -9,7 +9,7 @@
 
 /* autocomplete */
 .autocomplete {
-    @apply absolute z-20 h-80 overflow-y-scroll py-1 right-0  w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none;
+    @apply absolute z-20 max-h-80 overflow-y-scroll py-1 right-0  w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90;
 }
 .autocomplete-btn {
     @apply z-30 text-gray-700 block w-full px-4 py-2 text-left text-sm;
@@ -23,4 +23,9 @@
 /* Component : ImageLayerText */
 .apply-image-layer-text {
     @apply absolute w-full h-full overflow-hidden text-sm px-1 z-10 break-words bg-black opacity-0 hover:opacity-80;
+}
+
+/* Component : GridInputText */
+.apply-gridinputtext-smalllabel {
+    @apply text-xs text-red-100;
 }

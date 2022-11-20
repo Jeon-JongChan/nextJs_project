@@ -1,11 +1,11 @@
 /* next Module */
 import Script from "next/script";
-import InputPhoto from "./input/GridInputPhoto";
-import InputButton from "./input/GridInputButton";
-import InputText from "./input/GridInputText";
-import InputSelectBox from "./input/GridInputSelectBox";
+import InputPhoto from "./Grid/GridInputPhoto";
+import InputButton from "./Grid/GridInputButton";
+import InputText from "./Grid/GridInputText";
+import InputSelectBox from "./Grid/GridInputSelectBox";
 import AreaBorder from "./public/AreaBorder";
-import GridBorderBox from "./public/GridBorderBox";
+import GridBorderBox from "./Grid/GridBorderBox";
 
 // * react
 export default function Component() {
@@ -16,7 +16,15 @@ export default function Component() {
                 src="/scripts/autoComplete.js"
                 strategy="lazyOnload"
                 onLoad={async () => {
+                    if (typeof localData === undefined) {
+                        console.log("localData undefined!. 1초간 대기합니다.");
+                        sleep(2000);
+                    }
+                    localData = await initAutoComplete("i-name", "poketmon", localData);
+                    localData = await initAutoComplete("i-local", "local", localData);
                     localData = await initAutoComplete("i-spec1", "spec", localData);
+                    localData = await initAutoComplete("i-spec2", "spec", localData);
+                    localData = await initAutoComplete("i-spec3", "spec", localData);
                 }}
             />
             <div className="flex flex-col w-full">
@@ -26,12 +34,12 @@ export default function Component() {
                             <div className="shadow rounded-md">
                                 <div className="bg-white px-4 py-3">
                                     <div className="grid grid-cols-6 gap-6">
-                                        <InputText id={"i-name"} label={"포켓폰 이름"}></InputText>
+                                        <InputText id={"i-name"} label={"포켓폰 이름"} smallLabel={"* 삭제할경우 필수 요인"}></InputText>
                                         <InputText id={"i-local"} label={"출몰지"} colSpan={3}></InputText>
                                         <InputText id={"i-rare"} label={"출현율"} colSpan={3}></InputText>
-                                        <InputText id={"i-spec1"} label={"특성 1"} colSpan={3}></InputText>
-                                        <InputText id={"i-spec2"} label={"특성 2"} colSpan={3}></InputText>
-                                        <InputText id={"i-spec3"} label={"HIDDEN 특성"}></InputText>
+                                        <InputText id={"i-spec1"} label={"특성 1"} colSpan={2}></InputText>
+                                        <InputText id={"i-spec2"} label={"특성 2"} colSpan={2}></InputText>
+                                        <InputText id={"i-spec3"} label={"HIDDEN 특성"} colSpan={2}></InputText>
                                         <InputText id={"i-level-min"} label={"최소레벨"} colSpan={3} default={1}></InputText>
                                         <InputText id={"i-level-max"} label={"최대레벨"} colSpan={3} default={50}></InputText>
                                     </div>
@@ -42,6 +50,7 @@ export default function Component() {
                 </div>
                 <div className="my-2">
                     <GridBorderBox propComponent={InputPhoto} propComponentProperty={{ label: "포켓몬 사진" }}></GridBorderBox>
+                    <GridBorderBox propComponent={InputButton} propComponentProperty={{ label: "포켓몬 사진" }}></GridBorderBox>
                 </div>
             </div>
         </>

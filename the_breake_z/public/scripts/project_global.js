@@ -14,6 +14,10 @@ async function syncLocalData(tableName, localData = {}) {
     console.log("fetchAutoCompleteData");
     let isUpdate = false;
     let baseurl = "http://localhost:3000/api/data";
+    if (!tableName) {
+        console.log("syncLocalData tablename is undefined");
+        return localData;
+    }
     /*
     현재 저장된 데이터가 있다면 숫자를 비교해 부족하거나 많을 경우 데이터를 교체한다.
     현재 저장된 데이터가 없다면 데이터와 카운터를 저장한다.
@@ -43,11 +47,16 @@ async function syncLocalData(tableName, localData = {}) {
 async function checkSyncLocalData(tableName, localData = {}, isUpdate = false) {
     let isSync = false;
     let baseurl = "http://localhost:3000/api/data";
+    if (!tableName) {
+        console.log("checkSyncLocalData tablename is undefined");
+        return localData;
+    }
     /*
     현재 저장된 데이터가 있다면 숫자를 비교해 부족하거나 많을 경우 데이터를 교체한다.
     현재 저장된 데이터가 없다면 마지막 데이터ID와 개수를 저장한다.
     */
     let resJson = (await (await fetch(baseurl + "?query=status&tableName=" + tableName)).json())[0];
+    // console.log("checkSyncLocalData : ", baseurl + "?query=status&tableName=" + tableName, resJson);
     // console.log("global.js - resJson : ", resJson);
     if (localData?.[tableName]?.cnt) {
         if (localData[tableName].cnt !== resJson.CNT || localData[tableName].lastid !== resJson.LASTID) {

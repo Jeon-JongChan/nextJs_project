@@ -49,17 +49,9 @@ export default function Layout() {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row w-2/4">
+                <form className="flex flex-row w-2/4">
                     <PoketmonInput></PoketmonInput>
-                    <div className="w-1/4 h-full py-2">
-                        <div className="h-full w-full hidden">
-                            <ListButton items={[{ text: "지역" }]}></ListButton>
-                        </div>
-                        <div className="h-full w-full">
-                            <ListButton items={[{ text: "특성" }]}></ListButton>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
         </>
     );

@@ -11,6 +11,9 @@ const query = {
     alldata_local: "SELECT * FROM LOCAL",
     alldata_spec: "SELECT * FROM SPEC",
     alldata_poketmon: "SELECT * FROM POKETMON",
+    id_local: "SELECT ID FROM LOCAL WHERE NAME=@name",
+    id_spec: "SELECT ID FROM SPEC WHERE NAME=@name",
+    id_poketmon: "SELECT ID FROM POKETMON WHERE NAME=@name",
 };
 
 module.exports = query;

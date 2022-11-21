@@ -24,9 +24,7 @@ const server = {
             } else {
                 data = JSON.parse(fs.readFileSync(defaultJsonPath));
                 if (!data[id]) {
-                    console.log(
-                        "readJson > 해당 id로 저장된 데이터가 없습니다."
-                    );
+                    console.log("readJson > 해당 id로 저장된 데이터가 없습니다.");
                     return null;
                 }
                 if (key) return data[id][key];
@@ -75,9 +73,7 @@ const server = {
     db: db,
     dbinit: () => {
         // table 존재여부 확인 및 존재 시 init 함수 종료
-        let ret = server.db
-            .prepare("select count(*) cnt from sqlite_master")
-            .get();
+        let ret = server.db.prepare("select count(*) cnt from sqlite_master").get();
 
         if (ret?.cnt === 0) {
             // create table
@@ -118,6 +114,15 @@ const server = {
         } catch (e) {
             console.log("init insert 에러.", e);
         }
+    },
+    sqlite: {
+        /**
+         * @param {*} lists 입력 데이터 형식
+         * @param {*} prepare better-sqlite prepare 오브젝트
+         */
+        transaction: (lists, prepare) => {
+            for (let list of lists) prepare.run(list);
+        },
     },
 };
 

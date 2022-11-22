@@ -29,7 +29,7 @@ async function syncLocalData(tableName, localData = {}) {
         // console.log("global.js - 데이터를 갱신합니다.");
         let res = await fetch(baseurl, {
             method: "POST",
-            body: JSON.stringify({ tableName: tableName, query: "allname" }),
+            body: JSON.stringify({ tableName: tableName, query: "localdata" }),
         });
         let data = await res.json();
 

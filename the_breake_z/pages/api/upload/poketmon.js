@@ -64,9 +64,9 @@ export default async function handler(req, res) {
     // image 데이터 INSERT
     upsertPrepare = server.db.prepare(insert.ignore_image);
     server.sqlite.transaction(insertImage, upsertPrepare);
-    // image 데이터 INSERT
-    upsertPrepare = server.db.prepare(insert.ignore_image);
-    server.sqlite.transaction(insertImage, upsertPrepare);
+    // // poketmon-image 데이터 INSERT
+    upsertPrepare = server.db.prepare(insert.ignore_poketmon_image);
+    server.sqlite.transaction(insertPoketmonImage, upsertPrepare);
 
     res.status(200).json({ name: "John Doe" });
 }

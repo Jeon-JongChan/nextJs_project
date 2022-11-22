@@ -42,6 +42,8 @@ export default function handler(req, res) {
                 const insertSpec = server.db.prepare(insert.insert.spec);
                 server.sqlite.transaction(insertData.spec, insertSpec);
             }
+        } else if (query === "delete") {
+            server.db.prepare(deleteDDL.delete_poketmon).run();
         } else if (query === "select") {
             ret = {};
             // ret.local = server.db.prepare(select.alldata_local).all();
@@ -49,7 +51,8 @@ export default function handler(req, res) {
             ret.poketmon = server.db.prepare(select.alldata_poketmon).all();
             ret.poketmon_local = server.db.prepare(select.alldata_poketmon_local).all();
             ret.poketmon_spec = server.db.prepare(select.alldata_poketmon_spec).all();
-            ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
+            // ret.image = server.db.prepare(select.alldata_image).all();
+            // ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
             console.log(ret);
         }
     } catch (e) {

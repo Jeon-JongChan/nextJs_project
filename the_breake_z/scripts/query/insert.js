@@ -1,12 +1,12 @@
 const query = {
     insert: {
-        local: "INSERT INTO LOCAL (ID, NAME) VALUES (@id, @name)",
-        spec: "INSERT INTO SPEC (ID, NAME) VALUES (@id, @name)",
-        image: "INSERT INTO IMAGE (ID, PATH) VALUES (@id, @path)",
-        type: "INSERT INTO TYPE (ID, NAME) VALUES (@id, @name)",
+        local: "INSERT INTO LOCAL (NAME) VALUES (@name)",
+        spec: "INSERT INTO SPEC (NAME) VALUES (@name)",
+        image: "INSERT INTO IMAGE (PATH) VALUES (@path)",
+        type: "INSERT INTO TYPE (NAME) VALUES (@name)",
         poketmon: `
-        INSERT INTO POKETMON (ID, NAME, LOCAL_ID, IMAGE_ID, TYPE_ID, RARE) 
-        VALUES (@id, @name, @local_id, @image_id, @type_id, @rare)
+        INSERT INTO POKETMON (NAME, LOCAL_ID, IMAGE_ID, TYPE_ID, RARE) 
+        VALUES (@name, @local_id, @image_id, @type_id, @rare)
         `,
         poketmon_spec: "INSERT INTO LOCAL (POKETMON_ID, SPEC_ID, HIDDEN_YN) VALUES (@poketmon_id, @spec_id, @priority)",
     },

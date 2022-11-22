@@ -19,6 +19,7 @@ const query = {
         poketmon_image: "DELETE FROM POKETMON_IMAGE",
         poketmon_local: "DELETE FROM POKETMON_LOCAL",
     },
+    delete_poketmon: "DELETE FROM POKETMON WHERE NAME='피카츄'",
 };
 
 module.exports = query;

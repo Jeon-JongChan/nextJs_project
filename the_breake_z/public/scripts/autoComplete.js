@@ -126,7 +126,7 @@ function toggleAutoCompleteNode(nodeDropFrame, state = false) {
  * @returns {document} node
  */
 function appendAutoCompleteNode(rootNode, datalist = null) {
-    console.log("appendAutoCompleteNode start : ", rootNode, datalist[0]);
+    // console.log("appendAutoCompleteNode start : ", rootNode, datalist[0]);
     let dropList = createAutoCompleteNode();
     let dropFrameNode = rootNode.querySelector(".autocomplete");
     if (dropFrameNode) {

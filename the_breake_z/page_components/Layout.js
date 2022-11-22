@@ -17,6 +17,7 @@ export default function Layout() {
             <Script
                 strategy="lazyOnload"
                 onLoad={async () => {
+                    console.log("Layout lazyOnload");
                     if (typeof localData === undefined) {
                         console.log("Layout localData undefined!. 1초간 대기합니다.");
                         sleep(2000);

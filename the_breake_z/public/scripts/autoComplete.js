@@ -25,7 +25,7 @@ async function autoComplete(inputNode, target) {
     });
 
     appendAutoCompleteNode(autoRoot, addData);
-    console.log("autoComplete : ", addData);
+    // console.log("autoComplete : ", addData);
 }
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
@@ -56,7 +56,7 @@ async function initAutoComplete(id, target, localData = {}) {
             delayCallFunction(async (e) => {
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteNode(nodeDropFrame);
-                console.log("delayCallFunction", e.target.value);
+                // console.log("delayCallFunction", e.target.value);
                 await autoComplete(e.target, e.target.dataset.target);
                 toggleAutoCompleteNode(nodeDropFrame, true);
             }, 500)
@@ -71,7 +71,7 @@ async function initAutoComplete(id, target, localData = {}) {
         inputNode.addEventListener(
             "blur",
             delayCallFunction((e) => {
-                console.log("addEventListener blur : ", e.target);
+                // console.log("addEventListener blur : ", e.target);
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteNode(nodeDropFrame);
             }, 200)
@@ -107,7 +107,7 @@ function delayCallFunction(fn, ms = 1000) {
 function toggleAutoCompleteNode(nodeDropFrame, state = false) {
     // node 전달이 잘못된 경우 함수 종료
     if (!nodeDropFrame) return null;
-    console.log("toggleAutoCompleteNode : ", nodeDropFrame, state);
+    // console.log("toggleAutoCompleteNode : ", nodeDropFrame, state);
     if (state) {
         nodeDropFrame.classList.remove("invisible");
         nodeDropFrame.classList.add("visible");
@@ -143,7 +143,7 @@ function appendAutoCompleteNode(rootNode, datalist = null) {
         cpButton.innerText = data.NAME;
         cpButton.addEventListener("click", (e) => {
             try {
-                console.log("자동완성 버튼클릭");
+                // console.log("자동완성 버튼클릭");
                 e.target.parentNode.parentNode.querySelector("input").value = e.target.innerText;
                 toggleAutoCompleteNode(e.target.parentNode);
             } catch (e) {

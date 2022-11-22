@@ -11,7 +11,7 @@ localData = {};
  * @param {object} localData 데이터를 저장할 오브젝트. 오브젝트 형태 { target : { cnt, data : [{}]}
  */
 async function syncLocalData(tableName, localData = {}) {
-    console.log("fetchAutoCompleteData");
+    //console.log("fetchAutoCompleteData");
     let isUpdate = false;
     let baseurl = "http://localhost:3000/api/data";
     if (!tableName) {
@@ -26,7 +26,7 @@ async function syncLocalData(tableName, localData = {}) {
     // console.log("global.js - resJson : ", localData);
 
     if (isUpdate) {
-        console.log("global.js - 데이터를 갱신합니다.");
+        // console.log("global.js - 데이터를 갱신합니다.");
         let res = await fetch(baseurl, {
             method: "POST",
             body: JSON.stringify({ tableName: tableName, query: "allname" }),
@@ -48,7 +48,7 @@ async function checkSyncLocalData(tableName, localData = {}, isUpdate = false) {
     let isSync = false;
     let baseurl = "http://localhost:3000/api/data";
     if (!tableName) {
-        console.log("checkSyncLocalData tablename is undefined");
+        // console.log("checkSyncLocalData tablename is undefined");
         return localData;
     }
     /*

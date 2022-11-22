@@ -7,22 +7,22 @@ import ImageLayoutText from "./public/ImageLayerText";
 import ListButton from "./public/ListButton";
 // * react
 export default function Layout() {
-    const poketmons = [];
-    // let productContainer = {
-    //     imageSrc: "",
-    //     imageAlt: "",
-    //     layer: [
-    //         {name: "1", content:""}
-    //     ]
-    // }
-    function refreshAdminPage() {
-        console.log("test");
+    async function syncPoketmonList() {
+        let frameNode = document.querySelector("poketmon");
     }
-
     return (
         <>
             <Script src="/scripts/project_global.js" />
             <Script src="/scripts/public.js" />
+            <Script
+                strategy="lazyOnload"
+                onLoad={async () => {
+                    if (typeof localData === undefined) {
+                        console.log("Layout localData undefined!. 1초간 대기합니다.");
+                        sleep(2000);
+                    }
+                }}
+            />
             <Nav></Nav>
             <div className="mt-2">
                 <ul className="flex items-center justify-center space-x-4">
@@ -43,8 +43,8 @@ export default function Layout() {
                         <div className="mx-auto max-w-2xl py-4 px-4">
                             <h2 className="sr-only">Products</h2>
 
-                            <div className="grid grid-cols-4 gap-y-10 gap-x-6">
-                                {poketmons.length > 0 ? poketmons.map((object, idx) => <ImageLayoutText key={idx} {...object}></ImageLayoutText>) : ""}
+                            <div className="poketmon-list grid grid-cols-4 gap-y-10 gap-x-6">
+                                {/* {poketmons.length > 0 ? poketmons.map((object, idx) => <ImageLayoutText key={idx} {...object}></ImageLayoutText>) : ""} */}
                             </div>
                         </div>
                     </div>

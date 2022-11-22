@@ -96,20 +96,14 @@ const server = {
             const insertData = require("/temp/initData.js");
             ret = server.db.prepare("select count(*) cnt from local").get();
             if (ret?.cnt === 0) {
-                const insertLocal = server.db.prepare(insert.insert_local);
-                const insertLocalTran = server.db.transaction((lists) => {
-                    for (let list of lists) insertLocal.run(list);
-                });
-                insertLocalTran(insertData.local);
+                const insertLocal = server.db.prepare(insert.insert.local);
+                server.sqlite.transaction(insertData.local, insertLocal);
             }
 
             ret = server.db.prepare("select count(*) cnt from spec").get();
             if (ret?.cnt === 0) {
-                const insertSpec = server.db.prepare(insert.insert_spec);
-                const insertSpecTran = server.db.transaction((lists) => {
-                    for (let list of lists) insertSpec.run(list);
-                });
-                insertSpecTran(insertData.spec);
+                const insertSpec = server.db.prepare(insert.insert.spec);
+                server.sqlite.transaction(insertData.spec, insertSpec);
             }
         } catch (e) {
             console.log("init insert 에러.", e);

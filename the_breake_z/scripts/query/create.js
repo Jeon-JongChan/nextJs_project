@@ -2,25 +2,25 @@ const query = {
     create_table_local: `
     CREATE TABLE LOCAL (
         ID      INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME    NVARCHAR(50)
+        NAME    NVARCHAR(50) UNIQUE
     )
     `,
     create_table_spec: `
     CREATE TABLE SPEC (
         ID      INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME    NVARCHAR(20)
+        NAME    NVARCHAR(20) UNIQUE
     )
     `,
     create_table_image: `
     CREATE TABLE IMAGE (
         ID      INTEGER PRIMARY KEY AUTOINCREMENT,
-        PATH    VARCHAR(100)
+        PATH    VARCHAR(100) UNIQUE
     )
     `,
     create_table_type: `
     CREATE TABLE TYPE (
         ID      INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME    NVARCHAR(10)
+        NAME    NVARCHAR(10) UNIQUE
     )
     `,
     create_table_poketmon: `
@@ -36,7 +36,25 @@ const query = {
     CREATE TABLE POKETMON_SPEC (
         POKETMON_ID INTEGER,
         SPEC_ID     INTEGER,
-        PRIORITY    INTEGER
+        PRIORITY    INTEGER,
+        UNIQUE(POKETMON_ID, SPEC_ID, PRIORITY),
+        FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
+    )
+    `,
+    create_table_poketmon_image: `
+    CREATE TABLE POKETMON_IMAGE (
+        POKETMON_ID INTEGER,
+        IMAGE_ID     INTEGER,
+        UNIQUE(POKETMON_ID, IMAGE_ID)
+        FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
+    )
+    `,
+    create_table_poketmon_local: `
+    CREATE TABLE POKETMON_LOCAL (
+        POKETMON_ID INTEGER,
+        LOCAL_ID     INTEGER,
+        UNIQUE(POKETMON_ID, LOCAL_ID)
+        FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
     )
     `,
 };

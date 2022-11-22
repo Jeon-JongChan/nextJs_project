@@ -42,6 +42,12 @@ export default function Component() {
         let resData = await res.json();
         console.log(resData);
     }
+    /**
+     * 포켓몬 리스트를 출력하는 함수
+     */
+    async function syncPoketmonList() {
+        let frameNode = document.querySelector("poketmon-list");
+    }
     return (
         <>
             <Script

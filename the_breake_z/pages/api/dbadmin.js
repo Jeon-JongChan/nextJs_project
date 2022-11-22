@@ -2,7 +2,8 @@
 import server from "/scripts/server";
 import select from "/scripts/query/select";
 import create from "/scripts/query/create";
-import drop from "/scripts/query/drop";
+import insert from "/scripts/query/insert";
+import deleteDDL from "/scripts/query/delete";
 
 export default function handler(req, res) {
     let ret = null;
@@ -17,45 +18,39 @@ export default function handler(req, res) {
     try {
         let query = req.query.query;
         if (query === "drop") {
-            server.db.prepare(drop.drop_local).run();
-            server.db.prepare(drop.drop_spec).run();
-            server.db.prepare(drop.drop_image).run();
-            server.db.prepare(drop.drop_type).run();
-            server.db.prepare(drop.drop_poketmon).run();
-            server.db.prepare(drop.drop_poketmon_spec).run();
+            for (let v of Object.values(deleteDDL.drop)) {
+                server.db.prepare(v).run();
+            }
+        } else if (query === "truncate") {
+            for (let v of Object.values(deleteDDL.truncate)) {
+                server.db.prepare(v).run();
+            }
         } else if (query === "create") {
-            server.db.prepare(create.create_table_local).run();
-            server.db.prepare(create.create_table_spec).run();
-            server.db.prepare(create.create_table_image).run();
-            server.db.prepare(create.create_table_type).run();
-            server.db.prepare(create.create_table_poketmon).run();
-            server.db.prepare(create.create_table_poketmon_spec).run();
-        } else if (query === "select") {
-            ret = {};
-            ret.local = server.db.prepare(select.alldata_local).all();
-            ret.spec = server.db.prepare(select.alldata_spec).all();
-            ret.poketmon = server.db.prepare(select.alldata_poketmon).all();
-            console.log(ret);
+            for (let v of Object.values(create)) {
+                server.db.prepare(v).run();
+            }
         } else if (query === "insert_init") {
-            const insert = require("/scripts/query/insert.js");
             const insertData = require("/temp/initData.js");
             ret = server.db.prepare("select count(*) cnt from local").get();
             if (ret?.cnt === 0) {
-                const insertLocal = server.db.prepare(insert.insert_local);
-                const insertLocalTran = server.db.transaction((lists) => {
-                    for (let list of lists) insertLocal.run(list);
-                });
-                insertLocalTran(insertData.local);
+                const insertLocal = server.db.prepare(insert.insert.local);
+                server.sqlite.transaction(insertData.local, insertLocal);
             }
 
             ret = server.db.prepare("select count(*) cnt from spec").get();
             if (ret?.cnt === 0) {
-                const insertSpec = server.db.prepare(insert.insert_spec);
-                const insertSpecTran = server.db.transaction((lists) => {
-                    for (let list of lists) insertSpec.run(list);
-                });
-                insertSpecTran(insertData.spec);
+                const insertSpec = server.db.prepare(insert.insert.spec);
+                server.sqlite.transaction(insertData.spec, insertSpec);
             }
+        } else if (query === "select") {
+            ret = {};
+            // ret.local = server.db.prepare(select.alldata_local).all();
+            // ret.spec = server.db.prepare(select.alldata_spec).all();
+            ret.poketmon = server.db.prepare(select.alldata_poketmon).all();
+            ret.poketmon_local = server.db.prepare(select.alldata_poketmon_local).all();
+            ret.poketmon_spec = server.db.prepare(select.alldata_poketmon_spec).all();
+            ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
+            console.log(ret);
         }
     } catch (e) {
         console.log(e.message);

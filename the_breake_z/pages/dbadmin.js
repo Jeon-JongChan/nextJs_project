@@ -2,6 +2,7 @@ import InputButton from "/page_components/Grid/GridInputButton";
 
 export default function Home() {
     const callDrop = async () => await fetch("http://localhost:3000/api/dbadmin?query=drop");
+    const callTruncate = async () => await fetch("http://localhost:3000/api/dbadmin?query=truncate");
     const callCreate = async () => await fetch("http://localhost:3000/api/dbadmin?query=create");
     const callCInsertInit = async () => await fetch("http://localhost:3000/api/dbadmin?query=insert_init");
     const callSelect = async () => {
@@ -19,7 +20,7 @@ export default function Home() {
                         <InputButton label={"CREATE"} onclick={callCreate} type="button" buttonColor={"red"} colSpan={1}></InputButton>
                         <InputButton label={"SELECT"} onclick={callSelect} type="button" colSpan={1}></InputButton>
                         <InputButton label={"InsertInit"} onclick={callCInsertInit} type="button" buttonColor={"red"} colSpan={1}></InputButton>
-                        <InputButton label={"Delete"} type="button" colSpan={1}></InputButton>
+                        <InputButton label={"TRUNCATE"} onclick={callTruncate} type="button" colSpan={1}></InputButton>
                         <InputButton label={"Delete"} type="button" buttonColor={"red"} colSpan={1}></InputButton>
                     </div>
                 </div>

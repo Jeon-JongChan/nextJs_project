@@ -16,17 +16,13 @@ const readAndSaveFileFromFormdata = (req, saveLocally) => {
     if (saveLocally) {
         form.uploadDir = path.join(process.cwd(), "/public/temp/images");
         form.keepExtensions = true;
-        // form.on("file", function (field, file) {
-        //     console.log("form.on(file ", file.filepath, " next :", form.uploadDir + "\\" + file.originalFilename);
-        //     fs.rename(file.filepath, form.uploadDir + "/" + file.originalFilename, () => console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + file.name));
-        // });
     }
     return new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
             let fileName = files.image.originalFilename.split(".");
-            fs.rename(files.image.filepath, form.uploadDir + "/" + +fields.name + "." + fileName[fileName.length - 1], () =>
-                console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name)
-            );
+            let newFileName = fields.name + "." + fileName[fileName.length - 1];
+            fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () => console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name));
+            fields.image = "/temp/images/" + newFileName;
 
             if (err) reject(err);
             resolve(fields);
@@ -48,10 +44,29 @@ export default async function handler(req, res) {
 
     const insert = require("/scripts/query/insert.js");
     const insertPoketmonData = [{ name: resData.name, rare: resData.rare, level_max: resData.levelmax, level_min: resData.levelmin }];
-    const insertSpecData = [{ NAME: resData.spec1 }, { NAME: resData.spec2 }, { NAME: resData.spec3 }];
-
+    const insertPoketmonLocalData = [{ poketmon_name: resData.name, local_name: resData.local }];
+    const insertPoketmonSpecData = [
+        { poketmon_name: resData.name, spec_name: resData.spec1, priority: 1 },
+        { poketmon_name: resData.name, spec_name: resData.spec2, priority: 2 },
+        { poketmon_name: resData.name, spec_name: resData.spec3, priority: 3 },
+    ];
+    const insertImage = [{ path: resData.image }];
+    const insertPoketmonImage = [{ poketmon_name: resData.name, image_path: resData.image }];
+    // poketmon 데이터 INSERT
     let upsertPrepare = server.db.prepare(insert.upsert_poketmon);
     server.sqlite.transaction(insertPoketmonData, upsertPrepare);
+    // poketmon-local 데이터 INSERT
+    upsertPrepare = server.db.prepare(insert.ignore_poketmon_local);
+    server.sqlite.transaction(insertPoketmonLocalData, upsertPrepare);
+    // poketmon-spec 데이터 INSERT
+    upsertPrepare = server.db.prepare(insert.ignore_poketmon_spec);
+    server.sqlite.transaction(insertPoketmonSpecData, upsertPrepare);
+    // image 데이터 INSERT
+    upsertPrepare = server.db.prepare(insert.ignore_image);
+    server.sqlite.transaction(insertImage, upsertPrepare);
+    // image 데이터 INSERT
+    upsertPrepare = server.db.prepare(insert.ignore_image);
+    server.sqlite.transaction(insertImage, upsertPrepare);
 
     res.status(200).json({ name: "John Doe" });
 }

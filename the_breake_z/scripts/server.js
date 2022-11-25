@@ -114,8 +114,25 @@ const server = {
          * @param {*} lists 입력 데이터 형식
          * @param {*} prepare better-sqlite prepare 오브젝트
          */
-        transaction: (lists, prepare) => {
-            for (let list of lists) prepare.run(list);
+        transaction: (list, prepare) => {
+            // for (let item of list) prepare.run(item);
+            const transaction = server.db.transaction((list, prepare) => {
+                for (let item of list) prepare.run(item);
+            });
+            transaction(list, prepare);
+        },
+        /**
+         * @param {*} lists prepare에 입력할 데이터 배열 그룹
+         * @param {*} prepareGroup prepare 배열
+         */
+        transactionAll: (lists, prepareGroup) => {
+            const transaction = server.db.transaction((lists, prepareGroup) => {
+                prepareGroup.forEach((prepare, idx) => {
+                    let list = lists[idx];
+                    for (let item of list) prepare.run(item);
+                });
+            });
+            transaction(list, prepare);
         },
     },
 };

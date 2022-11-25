@@ -9,6 +9,7 @@ import Image from "next/image";
  * @param {String} header - 이미지 설명
  * @param {String} text - 이미지 상세 설명
  * @param {Object[]} layer - hover 상태에서 출력할 layertext(name, content) 객체의 배열
+ * @param {Function} onclick - 이미지 클릭시 작동할 함수
  */
 export default function Component(props) {
     let imageSrc = props?.imageSrc || "/temp/blank.png";
@@ -16,13 +17,14 @@ export default function Component(props) {
     let header = props?.header || "";
     let text = props?.text || "";
     let layer = props?.layer || null;
+    let onclick = props?.onclick || null;
 
     return (
         <>
             <div className="aspect-square w-full rounded-lg bg-gray-200 relative">
                 {/* <img src={imageSrc} alt={imageAlt} className="h-full w-full object-cover object-center group-hover:opacity-75" /> */}
                 {/* <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover"></Image> */}
-                <div className="apply-image-layer-text">
+                <div className={layer ? "apply-image-layer-text" : ""}>
                     {layer
                         ? layer.map((object, idx) => {
                               console.log("layer inner", imageSrc, object, idx);
@@ -36,7 +38,7 @@ export default function Component(props) {
                           })
                         : ""}
                 </div>
-                <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover" objectPosition="center"></Image>
+                <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
             </div>
             {header ? <h3 className="mt-4 text-sm text-gray-700">{header}</h3> : ""}
             {text ? <p className="mt-1 font-medium text-gray-900">{text}</p> : ""}

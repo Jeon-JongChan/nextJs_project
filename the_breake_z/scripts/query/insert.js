@@ -11,10 +11,10 @@ const query = {
         poketmon_spec: "INSERT INTO LOCAL (POKETMON_ID, SPEC_ID, HIDDEN_YN) VALUES (@poketmon_id, @spec_id, @priority)",
     },
     upsert_poketmon: `
-    INSERT INTO POKETMON (NAME, RARE, LEVEL_MAX, LEVEL_MIN) 
-    VALUES (@name, @rare, @level_max, @level_min)
+    INSERT INTO POKETMON (NAME, RARE, LEVEL_MAX, LEVEL_MIN, UPDATE_DT) 
+    VALUES (@name, @rare, @level_max, @level_min, datetime('now','localtime'))
     ON CONFLICT(NAME) DO UPDATE SET 
-    RARE=@rare, LEVEL_MAX=@level_max, LEVEL_MIN=@level_min
+    RARE=@rare, LEVEL_MAX=@level_max, LEVEL_MIN=@level_min, UPDATE_DT=datetime('now','localtime')
     `,
     ignore_spec: `INSERT OR IGNORE INTO SPEC (NAME) VALUES (@name)`,
     ignore_image: `INSERT OR IGNORE INTO IMAGE (PATH) VALUES (@path)`,
@@ -31,6 +31,23 @@ const query = {
     `,
     ignore_poketmon_image: `
     INSERT OR IGNORE INTO POKETMON_IMAGE (POKETMON_ID, IMAGE_ID)
+    SELECT ( SELECT ID FROM POKETMON WHERE NAME=@poketmon_name ) POKETMON_ID
+    , (SELECT ID FROM IMAGE WHERE PATH=@image_path) IMAGE_ID
+    `,
+    replace_image: `INSERT OR REPLACE INTO IMAGE (PATH) VALUES (@path)`,
+    replace_poketmon_local: `
+    INSERT OR REPLACE INTO POKETMON_LOCAL (POKETMON_ID, LOCAL_ID)
+    SELECT ( SELECT ID FROM POKETMON WHERE NAME=@poketmon_name ) POKETMON_ID
+    , (SELECT ID FROM LOCAL WHERE NAME=@local_name) LOCAL_ID 
+    `,
+    replace_poketmon_spec: `
+    INSERT OR REPLACE INTO POKETMON_SPEC (POKETMON_ID, SPEC_ID, PRIORITY)
+    SELECT ( SELECT ID FROM POKETMON WHERE NAME=@poketmon_name ) POKETMON_ID
+    , (SELECT ID FROM SPEC WHERE NAME=@spec_name) SPEC_ID
+    , @priority PRIORITY
+    `,
+    replace_poketmon_image: `
+    INSERT OR REPLACE INTO POKETMON_IMAGE (POKETMON_ID, IMAGE_ID)
     SELECT ( SELECT ID FROM POKETMON WHERE NAME=@poketmon_name ) POKETMON_ID
     , (SELECT ID FROM IMAGE WHERE PATH=@image_path) IMAGE_ID
     `,

@@ -29,7 +29,8 @@ const query = {
         NAME    NVARCHAR(20) UNIQUE,
         RARE        FLOAT,
         LEVEL_MAX   INTEGER,
-        LEVEL_MIN   INTEGER
+        LEVEL_MIN   INTEGER,
+        UPDATE_DT   TEXT DEFAULT (datetime('now','localtime'))
     )
     `,
     create_table_poketmon_spec: `
@@ -38,7 +39,7 @@ const query = {
         SPEC_ID     INTEGER,
         PRIORITY    INTEGER,
         FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
-        UNIQUE(POKETMON_ID, SPEC_ID, PRIORITY)
+        UNIQUE(POKETMON_ID, PRIORITY)
     )
     `,
     create_table_poketmon_image: `

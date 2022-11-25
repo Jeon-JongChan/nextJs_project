@@ -35,7 +35,7 @@ export default function Component(props) {
             <div className="space-y-6 bg-white px-2 py-3">
                 <label className="block text-sm font-medium text-gray-700">
                     {label}&nbsp;&nbsp;
-                    <span className="text-xs text-gray-400">파일 경로 :&nbsp;</span>
+                    <span className="text-xs text-gray-400">파일 정보 :&nbsp;</span>
                     <span className="gridinputphoto-name text-xs text-gray-400"></span>
                 </label>
                 <div className="gridinputphoto-frame mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">

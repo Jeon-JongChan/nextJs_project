@@ -2,7 +2,8 @@ import server from "/scripts/server.js";
 import formidable from "formidable";
 import fs from "fs/promises";
 import path from "path";
-// import insert from "/scripts/query/insert.js";
+import insert from "/scripts/query/insert";
+import update from "/scripts/query/update";
 
 export const config = {
     api: {
@@ -19,11 +20,17 @@ const readAndSaveFileFromFormdata = (req, saveLocally) => {
     }
     return new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
-            let fileName = files.image.originalFilename.split(".");
-            let newFileName = fields.name + "." + fileName[fileName.length - 1];
-            fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () => console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name));
-            fields.image = "/temp/images/" + newFileName;
-
+            // console.log(fields, files, Object.keys(files).length);
+            if (Object.keys(files).length) {
+                let fileName = files.image.originalFilename.split(".");
+                let newFileName = fields.name + "." + fileName[fileName.length - 1];
+                fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () =>
+                    console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name)
+                );
+                fields.image = "/temp/images/" + newFileName;
+            } else {
+                fields.image = null;
+            }
             if (err) reject(err);
             resolve(fields);
         });
@@ -31,8 +38,6 @@ const readAndSaveFileFromFormdata = (req, saveLocally) => {
 };
 
 export default async function handler(req, res) {
-    console.log(req.body);
-    // server.file.save()
     try {
         await fs.readdir(path.join(process.cwd() + "/public", "/temp/images"));
     } catch (error) {
@@ -40,9 +45,8 @@ export default async function handler(req, res) {
     }
 
     let resData = await readAndSaveFileFromFormdata(req, true);
-    console.log(resData);
 
-    const insert = require("/scripts/query/insert.js");
+    // const insert = require("/scripts/query/insert.js");
     const insertPoketmonData = [{ name: resData.name, rare: resData.rare, level_max: resData.levelmax, level_min: resData.levelmin }];
     const insertPoketmonLocalData = [{ poketmon_name: resData.name, local_name: resData.local }];
     const insertPoketmonSpecData = [
@@ -53,20 +57,24 @@ export default async function handler(req, res) {
     const insertImage = [{ path: resData.image }];
     const insertPoketmonImage = [{ poketmon_name: resData.name, image_path: resData.image }];
     // poketmon 데이터 INSERT
-    let upsertPrepare = server.db.prepare(insert.upsert_poketmon);
-    server.sqlite.transaction(insertPoketmonData, upsertPrepare);
+    let insertPrepare = server.db.prepare(insert.upsert_poketmon);
+    server.sqlite.transaction(insertPoketmonData, insertPrepare);
     // poketmon-local 데이터 INSERT
-    upsertPrepare = server.db.prepare(insert.ignore_poketmon_local);
-    server.sqlite.transaction(insertPoketmonLocalData, upsertPrepare);
+    insertPrepare = server.db.prepare(insert.replace_poketmon_local);
+    server.sqlite.transaction(insertPoketmonLocalData, insertPrepare);
     // poketmon-spec 데이터 INSERT
-    upsertPrepare = server.db.prepare(insert.ignore_poketmon_spec);
-    server.sqlite.transaction(insertPoketmonSpecData, upsertPrepare);
-    // image 데이터 INSERT
-    upsertPrepare = server.db.prepare(insert.ignore_image);
-    server.sqlite.transaction(insertImage, upsertPrepare);
-    // // poketmon-image 데이터 INSERT
-    upsertPrepare = server.db.prepare(insert.ignore_poketmon_image);
-    server.sqlite.transaction(insertPoketmonImage, upsertPrepare);
-
-    res.status(200).json({ name: "John Doe" });
+    insertPrepare = server.db.prepare(insert.replace_poketmon_spec);
+    server.sqlite.transaction(insertPoketmonSpecData, insertPrepare);
+    if (resData.image) {
+        // image 데이터 INSERT
+        insertPrepare = server.db.prepare(insert.ignore_image);
+        server.sqlite.transaction(insertImage, insertPrepare);
+        // // poketmon-image 데이터 INSERT
+        insertPrepare = server.db.prepare(insert.replace_poketmon_image);
+        server.sqlite.transaction(insertPoketmonImage, insertPrepare);
+    }
+    // 정보가 갱신 되면 UPDATE_DT 갱신 (아무것도 변하지 않더라도 복잡도 문제로 그냥 갱신)
+    let updatePrepare = server.db.prepare(update.update_poketmon_dt);
+    server.sqlite.transaction([{ name: resData.name }], updatePrepare);
+    res.status(200).json({ name: "complete" });
 }

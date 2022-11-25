@@ -5,6 +5,13 @@ import Script from "next/script";
 export default function Nav() {
     return (
         <>
+            <Script src="/scripts/public.js" />
+            <Script
+                src="/scripts/project_global.js"
+                onLoad={() => {
+                    console.log("project_global load");
+                }}
+            />
             <nav className="bg-gray-800">
                 <div className="mx-auto max-w-7xl px-2">
                     <div className="relative flex h-16 items-center justify-between">

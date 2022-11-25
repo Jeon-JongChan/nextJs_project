@@ -1,10 +1,10 @@
 const query = {
-    count_local: "SELECT COUNT(*) CNT FROM LOCAL",
-    count_spec: "SELECT COUNT(*) CNT FROM SPEC",
-    count_poketmon: "SELECT COUNT(*) CNT FROM POKETMON",
-    status_local: "SELECT COUNT(*) CNT, MAX(ID) LASTID FROM LOCAL",
-    status_spec: "SELECT COUNT(*) CNT, MAX(ID) LASTID FROM SPEC",
-    status_poketmon: "SELECT COUNT(*) CNT, MAX(ID) LASTID FROM POKETMON",
+    count_local: "SELECT COUNT(*) cnt FROM LOCAL",
+    count_spec: "SELECT COUNT(*) cnt FROM SPEC",
+    count_poketmon: "SELECT COUNT(*) cnt FROM POKETMON",
+    status_local: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM LOCAL",
+    status_spec: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM SPEC",
+    status_poketmon: "SELECT COUNT(*) cnt, MAX(ID) lastid, MAX(UPDATE_DT) update_dt FROM POKETMON",
     localdata_local: "SELECT NAME FROM LOCAL",
     localdata_spec: "SELECT NAME FROM SPEC",
     localdata_poketmon: `

@@ -1,8 +1,8 @@
 //import Head from 'next/head'
 //import Image from 'next/image'
 
-import Layout from "../page_components/Layout";
+import Admin from "../page_components/admin/Admin";
 
 export default function Home() {
-    return <Layout></Layout>;
+    return <Admin></Admin>;
 }

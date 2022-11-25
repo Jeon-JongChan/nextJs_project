@@ -5,14 +5,7 @@
  * @param {*} target
  */
 async function autoComplete(inputNode, target) {
-    /**
-     * initAutoComplete 에서 무조건 전역 localData를 선언했어야 함으로 따로 체크 x
-     */
-    /**
-     * 동기화가 필요한지 체크 및 필요하면 동기화
-     */
-    localData = await syncLocalData(target, localData);
-    //console.log("autoComplete - target : ", target, " ", inputNode);
+    localData[target] = await syncData(target, localData[target] || {}, "autoComplete");
     let autoRoot = inputNode.parentNode;
     let autoFrame = autoRoot.querySelector(".autocomplete");
     let inputText = inputNode.value;
@@ -20,12 +13,10 @@ async function autoComplete(inputNode, target) {
      * 자동완성에 필요한 데이터 추리기
      */
     let addData = localData[target].data.filter((data) => {
-        //console.log("addData : ", data.NAME, inputText);
         return data.NAME.indexOf(inputText) > -1;
     });
 
     appendAutoCompleteNode(autoRoot, addData);
-    // console.log("autoComplete : ", addData);
 }
 /**
  * 입력칸에 데이터를 입력할 경우 자동완성 드롭다운 창이 보이게 하는 함수
@@ -35,8 +26,8 @@ async function autoComplete(inputNode, target) {
  */
 async function initAutoComplete(id, target, localData = {}) {
     try {
+        localData[target] = await syncData(target, localData[target] || {}, "initAutoComplete");
         console.log("initAutoComplete :", localData);
-        localData = await syncLocalData(target, localData);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.

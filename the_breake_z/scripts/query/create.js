@@ -2,31 +2,31 @@ const query = {
     create_table_local: `
     CREATE TABLE LOCAL (
         ID      INTEGER PRIMARY KEY,
-        NAME    NVARCHAR(50) UNIQUE
+        NAME    NVARCHAR(50) UNIQUE NOT NULL
     )
     `,
     create_table_spec: `
     CREATE TABLE SPEC (
         ID      INTEGER PRIMARY KEY,
-        NAME    NVARCHAR(20) UNIQUE
+        NAME    NVARCHAR(20) UNIQUE NOT NULL
     )
     `,
     create_table_image: `
     CREATE TABLE IMAGE (
         ID      INTEGER PRIMARY KEY,
-        PATH    VARCHAR(100) UNIQUE
+        PATH    VARCHAR(100) UNIQUE NOT NULL
     )
     `,
     create_table_type: `
     CREATE TABLE TYPE (
         ID      INTEGER PRIMARY KEY,
-        NAME    NVARCHAR(10) UNIQUE
+        NAME    NVARCHAR(10) UNIQUE NOT NULL
     )
     `,
     create_table_poketmon: `
     CREATE TABLE POKETMON (
         ID      INTEGER PRIMARY KEY,
-        NAME    NVARCHAR(20) UNIQUE,
+        NAME    NVARCHAR(20) UNIQUE NOT NULL,
         RARE        FLOAT,
         LEVEL_MAX   INTEGER,
         LEVEL_MIN   INTEGER,

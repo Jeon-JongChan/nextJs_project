@@ -9,12 +9,18 @@ async function autoComplete(inputNode, target) {
     let autoRoot = inputNode.parentNode;
     let autoFrame = autoRoot.querySelector(".autocomplete");
     let inputText = inputNode.value;
+    console.log("autoComplete - ", localData[target], " inputText : ", inputText ? "O" : "X");
     /**
      * 자동완성에 필요한 데이터 추리기
      */
-    let addData = localData[target].data.filter((data) => {
-        return data.NAME.indexOf(inputText) > -1;
-    });
+    let addData = [];
+    if (inputText) {
+        addData = localData[target].data.filter((data) => {
+            return data.NAME.indexOf(inputText) > -1;
+        });
+    } else {
+        addData = localData[target].data;
+    }
 
     appendAutoCompleteNode(autoRoot, addData);
 }
@@ -24,7 +30,7 @@ async function autoComplete(inputNode, target) {
  * @param {string} target 자동완성에 사용될 데이터 명
  * @param {object} localData 자동완성에 사용될 데이터 변수
  */
-async function initAutoComplete(id, target, localData = {}) {
+async function initAutoComplete(id, target, localData) {
     try {
         localData[target] = await syncData(target, localData[target] || {}, "initAutoComplete");
         console.log("initAutoComplete :", localData);
@@ -52,8 +58,9 @@ async function initAutoComplete(id, target, localData = {}) {
                 toggleAutoCompleteNode(nodeDropFrame, true);
             }, 500)
         );
-        inputNode.addEventListener("focus", (e) => {
+        inputNode.addEventListener("focus", async (e) => {
             let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
+            await autoComplete(e.target, e.target.dataset.target);
             toggleAutoCompleteNode(nodeDropFrame, true);
         });
         /**

@@ -5,11 +5,12 @@ import Script from "next/script";
 export default function Nav() {
     return (
         <>
-            <Script src="/scripts/public.js" />
+            <Script src="/scripts/jsScript.js" />
+            <Script src="/scripts/local/global.js" />
             <Script
-                src="/scripts/project_global.js"
+                src="/scripts/dataSync.js"
                 onLoad={() => {
-                    console.log("project_global load");
+                    console.log("dataSync load");
                 }}
             />
             <nav className="bg-gray-800">

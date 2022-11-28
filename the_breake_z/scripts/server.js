@@ -1,5 +1,8 @@
 // 서버에서만 사용되는 js 파일
 const fs = require("fs");
+const formidable = require("formidable");
+const path = require("path");
+
 if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
 
 const db = require("better-sqlite3")("temp/macro.db", { verbose: console.log });
@@ -134,6 +137,31 @@ const server = {
             });
             transaction(list, prepare);
         },
+    },
+    readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/") => {
+        // form.uploadDir = "./public/temp/images/";
+        const form = new formidable.IncomingForm();
+        if (saveLocally) {
+            form.uploadDir = path.join(process.cwd(), "/public" + savePath);
+            form.keepExtensions = true;
+        }
+        return new Promise((resolve, reject) => {
+            form.parse(req, (err, fields, files) => {
+                // console.log(fields, files, Object.keys(files).length);
+                if (Object.keys(files).length) {
+                    let fileName = files.image.originalFilename.split(".");
+                    let newFileName = fields.name + "." + fileName[fileName.length - 1];
+                    fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () =>
+                        console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name)
+                    );
+                    fields.image = savePath + newFileName;
+                } else {
+                    fields.image = null;
+                }
+                if (err) reject(err);
+                resolve(fields);
+            });
+        });
     },
 };
 

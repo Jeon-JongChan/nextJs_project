@@ -5,7 +5,12 @@ const query = {
     status_local: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM LOCAL",
     status_spec: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM SPEC",
     status_poketmon: "SELECT COUNT(*) cnt, MAX(ID) lastid, MAX(UPDATE_DT) update_dt FROM POKETMON",
-    localdata_local: "SELECT NAME FROM LOCAL",
+    localdata_local: `
+    SELECT NAME, COUNT(LOCAL_ID) POKETMON_CNT
+    FROM LOCAL L
+    LEFT JOIN POKETMON_LOCAL PL ON PL.LOCAL_ID=L.ID
+    GROUP BY ID, NAME 
+    `,
     localdata_spec: "SELECT NAME FROM SPEC",
     localdata_poketmon: `
     SELECT NAME, RARE, LEVEL_MAX, LEVEL_MIN

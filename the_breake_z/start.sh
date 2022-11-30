@@ -5,9 +5,9 @@ export NODEJS=$(pwd)/node
 export PATH=$NODEJS;$PATH
 
 if [ ! -d $(pwd)/node_modules ] ; then
-    ECHO "*********************************************>> NODE_MODULES EXIST. START SUCCESS" 
+    echo "*********************************************>> NODE_MODULES EXIST. START SUCCESS" 
 else 
-    ECHO "*********************************************>> NODE_MODULES NOT EXIST. INSTALL PROCESS. ENTER key please"
-    %cd%/node/npm i
+    echo "*********************************************>> NODE_MODULES NOT EXIST. INSTALL PROCESS. ENTER key please"
+    $(pwd)/node/npm i
 fi
-%cd%/node/npm run dev
+$(pwd)/node/npm run dev

@@ -44,13 +44,13 @@ async function checkSyncData(tableName, data, isUpdate = true) {
             if (isUpdate) {
                 data.status.cnt = resJson.cnt;
                 data.status.lastid = resJson.lastid;
-                if (resJson.update_dt) data.status.update_dt = resJson.update_dt;
+                if (resJson?.update_dt) data.status.update_dt = resJson.update_dt;
             }
             isSync = true;
         }
     } else {
         if (isUpdate) {
-            if (resJson.update_dt) data.status = { cnt: resJson.cnt, lastid: resJson.lastid, update_dt: resJson.update_dt };
+            if (resJson?.update_dt) data.status = { cnt: resJson.cnt, lastid: resJson.lastid, update_dt: resJson.update_dt };
             else data.status = { cnt: resJson.cnt, lastid: resJson.lastid };
         }
         isSync = true;

@@ -29,6 +29,22 @@ export default function Component() {
         let resData = await res.json();
         // console.log(resData);
     }
+    async function deletePersonality() {
+        let target = "personality";
+        let input = document.querySelector("." + target + "input-frame #i4-name");
+
+        let baseurl = "http://localhost:3000/api/delete/" + target;
+        let res = await fetch(baseurl, {
+            method: "POST",
+            body: JSON.stringify({
+                name: input.value,
+            }),
+        });
+        // 리스트 삭제시 화면에도 삭제
+
+        let resData = await res.json();
+        // console.log(resData);
+    }
     return (
         <>
             <div className="flex flex-col w-full">
@@ -39,7 +55,7 @@ export default function Component() {
                         <div className="bg-white px-4 py-3">
                             <div className="personalityinput-frame grid grid-cols-6 gap-6">
                                 <GridInputText id={"i4-name"} label={"성격"} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
-                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4}></GridInputButton>
+                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4} type="button" onclick={deletePersonality}></GridInputButton>
                                 <GridInputButton type="button" colSpan={2} onclick={submitLocalData}></GridInputButton>
                             </div>
                         </div>

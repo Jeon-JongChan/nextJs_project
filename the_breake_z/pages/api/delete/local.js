@@ -6,11 +6,10 @@ export default async function handler(req, res) {
     let deleteName = body.name;
 
     // const insert = require("/scripts/query/insert.js");
-    const deletePoketmon = [{ name: deleteName }];
+    const deleteData = [{ name: deleteName }];
     // poketmon 데이터 INSERT
-    let deletePrepare = server.db.prepare(deleteDML.delete.poketmon);
-    server.sqlite.transaction(deletePoketmon, deletePrepare);
+    let deletePrepare = server.db.prepare(deleteDML.delete.local);
+    server.sqlite.transaction(deleteData, deletePrepare);
 
     res.status(200).json({ name: "complete" });
 }
-// jamx2ee123!

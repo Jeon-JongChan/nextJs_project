@@ -10,7 +10,7 @@ export default function Component(props) {
     let count = props?.count || "file-input";
     return (
         <>
-            <div data-name={label} className="shadow rounded-md col-span-1 max-h-10 p-2 text-center">
+            <div data-name={label} className="shadow rounded-md col-span-1 max-h-10 p-2 text-center md:text-sm sm:text-xs">
                 <span>
                     {label} {count > 0 ? <span className="text-sm font-bold">({count})</span> : ""}
                 </span>

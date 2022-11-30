@@ -37,22 +37,15 @@ export default function Component() {
         // console.log(resData);
     }
     async function deletePoketmon() {
-        let inputNameList = ["name"];
-        let inputs = document.querySelectorAll(".poketmoninput-frame input");
-        let sendData = new FormData();
+        let target = "poketmon";
+        let input = document.querySelector("." + target + "input-frame #i-name");
 
-        for (let input of inputs) {
-            for (let inputName of inputNameList) {
-                if (input.id === "i-" + inputName) {
-                    sendData.append(inputName, input.value);
-                }
-            }
-        }
-
-        let baseurl = "http://localhost:3000/api/delete/poketmon";
+        let baseurl = "http://localhost:3000/api/delete/" + target;
         let res = await fetch(baseurl, {
             method: "POST",
-            body: sendData,
+            body: JSON.stringify({
+                name: input.value,
+            }),
         });
         // 리스트 삭제시 화면에도 삭제
 
@@ -86,7 +79,7 @@ export default function Component() {
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="grid grid-cols-6 gap-6">
-                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4}></GridInputButton>
+                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4} type="button" onclick={deletePoketmon}></GridInputButton>
                                 <GridInputButton type="button" colSpan={2} onclick={submitPoketmonData}></GridInputButton>
                             </div>
                         </div>

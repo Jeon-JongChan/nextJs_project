@@ -15,15 +15,20 @@ const query = {
         local: "DELETE FROM LOCAL",
         spec: "DELETE FROM SPEC",
         image: "DELETE FROM IMAGE",
+        personality: "DELETE FROM PERSONALITY",
         type: "DELETE FROM TYPE",
         poketmon: "DELETE FROM POKETMON",
         poketmon_spec: "DELETE FROM POKETMON_SPEC",
         poketmon_image: "DELETE FROM POKETMON_IMAGE",
         poketmon_local: "DELETE FROM POKETMON_LOCAL",
-        personality: "DELETE FROM PERSONALITY",
         poketmon_personality: "DELETE FROM POKETMON_PERSONALITY",
     },
-    delete_poketmon: "DELETE FROM POKETMON WHERE NAME='피카츄'",
+    delete: {
+        poketmon: "DELETE FROM POKETMON WHERE NAME=@name",
+        local: "DELETE FROM LOCAL WHERE NAME=@name",
+        spec: "DELETE FROM SPEC WHERE NAME=@name",
+        personality: "DELETE FROM PERSONALITY WHERE NAME=@name",
+    },
 };
 
 module.exports = query;

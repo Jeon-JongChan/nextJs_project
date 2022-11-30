@@ -94,6 +94,18 @@ export default function Layout() {
 
         let syncDataStatus = localData[target].status;
 
+        // 삭제된 정보가 있을경우 리스트에서 삭제해준다.
+        syncDataList[target] = syncDataList[target].filter((v1, idx) => {
+            let deleteCheck = false;
+            localData[target].data.forEach((v2, idx) => {
+                if (v1.NAME === v2.NAME) {
+                    // if (target === "poketmon") console.log("status : ", v1.NAME === v2.NAME, "v1.NAME : ", v1.NAME, "v2.NAME", v2.NAME);
+                    deleteCheck = true;
+                }
+            });
+            return deleteCheck;
+        });
+
         if (updateCheck(syncDataStatus, checkData, "syncList : " + target)) {
             let listItems = frameNode.querySelectorAll(targetTag);
             let addData = localData[target].data.filter((data, idx) => {
@@ -118,7 +130,7 @@ export default function Layout() {
                     return data;
                 }
             });
-            // console.log("syncList : ", target, " add data : ", ...addData, " end : ", syncDataList, images, locals);
+            // if (target === "poketmon") console.log("syncList : ", target, " add data : ", ...addData, " syncDataList : ", syncDataList, " images : ", images);
             if (addData) {
                 // 아무래도 js 밖에서 돌리다 보니 제대로된 저장이 안되는 느낌
                 syncDataList[target] = [...syncDataList[target], ...addData];
@@ -188,7 +200,7 @@ export default function Layout() {
                             <div className="mx-auto py-4 px-4">
                                 <h2 className="sr-only">Products</h2>
 
-                                <div className="poketmon-list grid grid-cols-5 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
+                                <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
                                     {images.length > 0
                                         ? images.map((data, idx, array) => {
                                               //   console.log("poketmonImages data : ", data, array);
@@ -210,10 +222,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="personality-list grid grid-cols-3 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {personailies.length > 0
-                                        ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                    {personailies.length > 0 ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -229,10 +239,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="local-list grid grid-cols-3 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {locals.length > 0
-                                        ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                    {locals.length > 0 ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -248,10 +256,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="spec-list grid grid-cols-3 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {specs.length > 0
-                                        ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                    {specs.length > 0 ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>

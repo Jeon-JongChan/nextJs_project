@@ -9,7 +9,7 @@ async function autoComplete(inputNode, target) {
     let autoRoot = inputNode.parentNode;
     let autoFrame = autoRoot.querySelector(".autocomplete");
     let inputText = inputNode.value;
-    console.log("autoComplete - ", localData[target], " inputText : ", inputText ? "O" : "X");
+    // console.log("autoComplete - ", localData[target], " inputText : ", inputText ? "O" : "X");
     /**
      * 자동완성에 필요한 데이터 추리기
      */

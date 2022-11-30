@@ -9,7 +9,7 @@ import GridBorderBox from "/page_components/Grid/GridBorderBox";
 export default function Component() {
     // autoComplete("i-local");
     async function submitPoketmonData() {
-        let inputNameList = ["name", "local", "rare", "spec1", "spec2", "spec3", "levelmin", "levelmax"];
+        let inputNameList = ["name", "personality", "local", "rare", "spec1", "spec2", "spec3", "levelmin", "levelmax"];
         let inputs = document.querySelectorAll(".poketmoninput-frame input");
         let iimage = document.querySelector("#i-image");
         let sendData = new FormData();
@@ -29,6 +29,32 @@ export default function Component() {
             method: "POST",
             body: sendData,
         });
+        iimage.file = null;
+        iimage.value = null;
+        iimage.dispatchEvent(new Event("change"));
+        console.log("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
+        let resData = await res.json();
+        // console.log(resData);
+    }
+    async function deletePoketmon() {
+        let inputNameList = ["name"];
+        let inputs = document.querySelectorAll(".poketmoninput-frame input");
+        let sendData = new FormData();
+
+        for (let input of inputs) {
+            for (let inputName of inputNameList) {
+                if (input.id === "i-" + inputName) {
+                    sendData.append(inputName, input.value);
+                }
+            }
+        }
+
+        let baseurl = "http://localhost:3000/api/delete/poketmon";
+        let res = await fetch(baseurl, {
+            method: "POST",
+            body: sendData,
+        });
+        // 리스트 삭제시 화면에도 삭제
 
         let resData = await res.json();
         // console.log(resData);
@@ -42,7 +68,8 @@ export default function Component() {
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="poketmoninput-frame grid grid-cols-6 gap-6">
-                                <GridInputText id={"i-name"} label={"포켓폰 이름"} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
+                                <GridInputText id={"i-name"} label={"포켓폰 이름"} colSpan={3} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
+                                <GridInputText id={"i-personality"} label={"성격"} colSpan={3}></GridInputText>
                                 <GridInputText id={"i-local"} label={"출몰지"} colSpan={3}></GridInputText>
                                 <GridInputText id={"i-rare"} label={"출현율"} colSpan={3}></GridInputText>
                                 <GridInputText id={"i-spec1"} label={"특성 1"} colSpan={2}></GridInputText>

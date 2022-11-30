@@ -11,6 +11,12 @@ const query = {
         NAME    NVARCHAR(20) UNIQUE NOT NULL
     )
     `,
+    create_table_personality: `
+    CREATE TABLE PERSONALITY (
+        ID      INTEGER PRIMARY KEY,
+        NAME    NVARCHAR(20) UNIQUE NOT NULL
+    )
+    `,
     create_table_image: `
     CREATE TABLE IMAGE (
         ID      INTEGER PRIMARY KEY,
@@ -56,6 +62,14 @@ const query = {
         LOCAL_ID    INTEGER,
         FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
         UNIQUE(POKETMON_ID, LOCAL_ID)
+    )
+    `,
+    create_table_poketmon_personality: `
+    CREATE TABLE POKETMON_PERSONALITY (
+        POKETMON_ID INTEGER,
+        PERSONALITY_ID    INTEGER,
+        FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
+        UNIQUE(POKETMON_ID, PERSONALITY_ID)
     )
     `,
 };

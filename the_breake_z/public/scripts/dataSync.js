@@ -14,7 +14,7 @@ async function syncData(tableName, data, caller = "no info") {
     let isUpdate = await checkSyncData(tableName, data);
 
     if (isUpdate) {
-        console.log("syncData : " + tableName + " data update - caller : " + caller);
+        // console.log("syncData : " + tableName + " data update - caller : " + caller);
         let res = await fetch(baseurl, {
             method: "POST",
             body: JSON.stringify({ tableName: tableName, query: "localdata" }),
@@ -38,6 +38,7 @@ async function checkSyncData(tableName, data, isUpdate = true) {
     if (!tableName) return data;
 
     let resJson = (await (await fetch(baseurl + "?query=status&tableName=" + tableName)).json())[0];
+    // console.log("checkSyncData [" + tableName + "] check data : ", resJson);
     if (data?.status) {
         if (updateCheck(data.status, resJson)) {
             if (isUpdate) {

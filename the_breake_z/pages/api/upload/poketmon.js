@@ -21,10 +21,12 @@ export default async function handler(req, res) {
     try {
         if (!resData.name) {
             res.status(200).json({ status: false, message: "poketmon name is null" });
+            return null;
         }
         // const insert = require("/scripts/query/insert.js");
         const insertPoketmonData = [{ name: resData.name, rare: resData.rare, level_max: resData.levelmax, level_min: resData.levelmin }];
         const insertPoketmonLocalData = [{ poketmon_name: resData.name, local_name: resData.local }];
+        const insertPoketmonPesonalityData = [{ poketmon_name: resData.name, personality_name: resData?.personality }];
         const insertPoketmonSpecData = [
             { poketmon_name: resData.name, spec_name: resData.spec1, priority: 1 },
             { poketmon_name: resData.name, spec_name: resData.spec2, priority: 2 },
@@ -41,6 +43,9 @@ export default async function handler(req, res) {
         // poketmon-spec 데이터 INSERT
         insertPrepare = server.db.prepare(insert.replace_poketmon_spec);
         server.sqlite.transaction(insertPoketmonSpecData, insertPrepare);
+        // poketmon-personality 데이터 INSERT
+        insertPrepare = server.db.prepare(insert.replace_poketmon_personality);
+        server.sqlite.transaction(insertPoketmonPesonalityData, insertPrepare);
         if (resData.image) {
             // image 데이터 INSERT
             insertPrepare = server.db.prepare(insert.ignore_image);
@@ -54,6 +59,7 @@ export default async function handler(req, res) {
         server.sqlite.transaction([{ name: resData.name }], updatePrepare);
     } catch (e) {
         res.status(500).json({ status: false, message: e.message });
+        return null;
     }
     res.status(200).json({ status: true });
 }

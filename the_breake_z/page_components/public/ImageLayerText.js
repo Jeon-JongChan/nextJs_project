@@ -21,7 +21,7 @@ export default function Component(props) {
 
     return (
         <>
-            <div className="aspect-square w-full rounded-lg bg-gray-200 relative">
+            <div className="aspect-square w-full rounded-lg bg-gray-200 relative" data-name={imageAlt}>
                 {/* <img src={imageSrc} alt={imageAlt} className="h-full w-full object-cover object-center group-hover:opacity-75" /> */}
                 {/* <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover"></Image> */}
                 <div className={layer ? "apply-image-layer-text" : ""}>
@@ -38,7 +38,7 @@ export default function Component(props) {
                           })
                         : ""}
                 </div>
-                <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
+                <Image src={imageSrc} alt={imageAlt} data-name={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
             </div>
             {header ? <h3 className="mt-4 text-sm text-gray-700">{header}</h3> : ""}
             {text ? <p className="mt-1 font-medium text-gray-900">{text}</p> : ""}

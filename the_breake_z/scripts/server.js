@@ -103,10 +103,10 @@ const server = {
                 server.sqlite.transaction(insertData.local, insertLocal);
             }
 
-            ret = server.db.prepare("select count(*) cnt from spec").get();
+            ret = server.db.prepare("select count(*) cnt from personality").get();
             if (ret?.cnt === 0) {
-                const insertSpec = server.db.prepare(insert.insert.spec);
-                server.sqlite.transaction(insertData.spec, insertSpec);
+                const insertPersonality = server.db.prepare(insert.insert.personality);
+                server.sqlite.transaction(insertData.spec, insertPersonality);
             }
         } catch (e) {
             console.log("init insert 에러.", e);

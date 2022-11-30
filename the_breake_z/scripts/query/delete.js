@@ -8,6 +8,8 @@ const query = {
         poketmon_spec: "DROP TABLE POKETMON_SPEC",
         poketmon_image: "DROP TABLE POKETMON_IMAGE",
         poketmon_local: "DROP TABLE POKETMON_LOCAL",
+        personality: "DROP TABLE PERSONALITY",
+        poketmon_personality: "DROP TABLE POKETMON_PERSONALITY",
     },
     truncate: {
         local: "DELETE FROM LOCAL",
@@ -18,6 +20,8 @@ const query = {
         poketmon_spec: "DELETE FROM POKETMON_SPEC",
         poketmon_image: "DELETE FROM POKETMON_IMAGE",
         poketmon_local: "DELETE FROM POKETMON_LOCAL",
+        personality: "DELETE FROM PERSONALITY",
+        poketmon_personality: "DELETE FROM POKETMON_PERSONALITY",
     },
     delete_poketmon: "DELETE FROM POKETMON WHERE NAME='피카츄'",
 };

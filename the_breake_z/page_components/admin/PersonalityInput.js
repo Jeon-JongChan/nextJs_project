@@ -6,7 +6,7 @@ import GridInputButton from "/page_components/Grid/GridInputButton";
 // * react
 export default function Component() {
     // autoComplete("i-local");
-    const target = "local";
+    const target = "personality";
     async function submitLocalData() {
         let inputNameList = ["name"];
         let inputs = document.querySelectorAll("." + target + "input-frame input");
@@ -14,7 +14,7 @@ export default function Component() {
 
         for (let input of inputs) {
             for (let inputName of inputNameList) {
-                if (input.id === "i2-" + inputName) {
+                if (input.id === "i4-" + inputName) {
                     sendData.append(inputName, input.value);
                 }
             }
@@ -37,8 +37,8 @@ export default function Component() {
                         <div className="mt-5 md:col-span-8 md:mt-0"> */}
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
-                            <div className="localinput-frame grid grid-cols-6 gap-6">
-                                <GridInputText id={"i2-name"} label={"출몰지"} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
+                            <div className="personalityinput-frame grid grid-cols-6 gap-6">
+                                <GridInputText id={"i4-name"} label={"성격"} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
                                 <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4}></GridInputButton>
                                 <GridInputButton type="button" colSpan={2} onclick={submitLocalData}></GridInputButton>
                             </div>

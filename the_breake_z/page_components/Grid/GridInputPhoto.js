@@ -15,7 +15,7 @@ export default function Component(props) {
     // let colSpenValue = props?.colSpan || 6;
     // let colSmSpenValue = props?.colSmSpan || 4;
     function updateUploadFileName(e) {
-        console.log(e.target.value, e.target.files);
+        console.log("updateUploadFileName : ", e.target.value, e.target.files);
         let file = e.target.files[0];
         let nodeInput = e.target;
         // input - label - div - div - div - div
@@ -24,9 +24,14 @@ export default function Component(props) {
         let nodeChangeDiv = nodeRoot.querySelector(".gridinputphoto-frame");
 
         // setUploadImage(URL.createObjectURL(file));
-        let imageUrl = URL.createObjectURL(file);
-        nodeChangeDiv.style.backgroundImage = "url('" + imageUrl + "')";
-        nodeChangeLabel.innerText = file.name;
+        if (file) {
+            let imageUrl = URL.createObjectURL(file);
+            nodeChangeDiv.style.backgroundImage = "url('" + imageUrl + "')";
+            nodeChangeLabel.innerText = file.name;
+        } else {
+            nodeChangeDiv.style.backgroundImage = e.target.value;
+            nodeChangeLabel.innerText = e.target.value;
+        }
     }
 
     return (

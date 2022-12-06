@@ -4,8 +4,9 @@
  * @param {string} tableName POST에 보내줄 추출할 데이터명
  * @param {object} data 데이터를 저장할 오브젝트. 오브젝트 형태
  */
+let host_url = "http://localhost:3000";
 async function syncData(tableName, data, caller = "no info") {
-    let baseurl = "http://localhost:3000/api/data";
+    let baseurl = host_url + "/api/data";
     if (!tableName) {
         console.log("syncLocalData tablename is undefined");
         return data;
@@ -34,7 +35,7 @@ async function syncData(tableName, data, caller = "no info") {
  */
 async function checkSyncData(tableName, data, isUpdate = true) {
     let isSync = false;
-    let baseurl = "http://localhost:3000/api/data";
+    let baseurl = host_url + "/api/data";
     if (!tableName) return data;
 
     let resJson = (await (await fetch(baseurl + "?query=status&tableName=" + tableName)).json())[0];

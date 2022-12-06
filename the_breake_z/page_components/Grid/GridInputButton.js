@@ -50,8 +50,10 @@ const colSpanClass = {
 const buttonColorClass = {
     blue: "bg-indigo-600",
     red: "bg-red-600",
+    zinc: "bg-zinc-400",
 };
 const hoverColorClass = {
     blue: "hover:bg-indigo-700",
     red: "hover:bg-red-700",
+    zinc: "bg-zinc-700",
 };

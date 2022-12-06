@@ -94,22 +94,55 @@ function changeTab(query) {
  * @param {*} fn 함수
  * @param {*} ms 반복 시간
  */
-function asyncInterval(fn, ms) {
-    let state = true;
-    async function stop() {
-        state = false;
+function asyncIntervalBak(fn, ms) {
+    let state = 1;
+    function stop() {
+        state = 0;
+        console.log("asyncInterval stop state : ", state);
     }
     async function start() {
-        while (state) {
+        console.log("asyncInterval start");
+        while (state === 1) {
             await sleep(ms);
-            fn();
+            await fn();
+            console.log("asyncInterval state : ", state);
         }
+        console.log("asyncInterval exit");
     }
-    return { start: start, stop: stop };
+    return { start, stop };
+}
+class asyncInterval {
+    constructor(fn, sec) {
+        this.startCount = 0;
+        this.state = true;
+        this.fn = fn;
+        this.sec = sec * 1000;
+    }
+    stop() {
+        this.state = false;
+        console.log("asyncInterval stop");
+    }
+    async start(...args) {
+        if (this.startCount > 0) {
+            console.log("asyncInterval have many jobs - ", this.startCount);
+            return;
+        }
+        console.log("asyncInterval start");
+        this.state = true;
+        this.startCount += 1;
+        while (this.state) {
+            this.fn(...args);
+            await sleep(this.sec);
+        }
+        this.startCount = 0;
+        console.log("asyncInterval exit");
+    }
 }
 function sleep(ms) {
+    let timer;
     return new Promise((resolve) => {
-        setTimeout(resolve, ms);
+        clearTimeout(timer);
+        timer = setTimeout(resolve, ms);
     });
 }
 function getDomIndex(dom, elem = null) {
@@ -171,4 +204,4 @@ function copyToClipBoard(query) {
         });
 }
 
-export { changeTab, copyToClipBoard, getRandomInt, syncData };
+export { changeTab, copyToClipBoard, getRandomInt, syncData, asyncInterval };

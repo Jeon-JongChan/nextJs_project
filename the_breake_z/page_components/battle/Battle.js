@@ -1,5 +1,5 @@
 /* next Module */
-import { changeTab, copyToClipBoard, syncData, getRandomInt } from "/scripts/client/client";
+import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval } from "/scripts/client/client";
 import { autoComplete, initAutoComplete } from "/scripts/client/autoComplete";
 import Nav from "/page_components/Nav";
 import GridInputPhoto from "/page_components/Grid/GridInputPhoto";
@@ -11,10 +11,15 @@ import { useState } from "react";
 export default function Layout() {
     const [researchImage, setResearchImage] = useState("");
     const [rand, setRand] = useState(0);
+    // let rand;
     const [randTen, setRandTen] = useState(0);
-    const [randIntervalTime, setRandIntervalTime] = useState(3000);
-    const [randTenIntervalTime, setRandTenIntervalTime] = useState(3000);
+    // const [randIntervalTime, setRandIntervalTime] = useState(3000);
+    // const [randTenIntervalTime, setRandTenIntervalTime] = useState(3000);
     const localData = {};
+    let randIntervalTime = 3000;
+    let randTenIntervalTime = 3000;
+    let randFunc;
+    let randTenFunc;
 
     function syncDataInterval() {
         let syncList = ["poketmon", "local"];
@@ -29,37 +34,31 @@ export default function Layout() {
         }
     }
 
-    async function initBattle() {
+    function initBattle() {
         try {
-            // intervalRand()();
+            intervalRand()();
+            randFunc = asyncInterval(() => {
+                setRand(getRandomInt(1, 100 + 1));
+            }, randIntervalTime);
+            randTenFunc = asyncInterval(() => {
+                setRandTen(getRandomInt(1, 100 + 1));
+            }, randTenIntervalTime);
+            randFunc.start();
+            randTenFunc.start();
             // syncDataInterval();
             // setInterval(syncDataInterval, 100000);
-            await initAutoComplete("i-research-local", "local", localData);
-            await initAutoComplete("i-research-poketmon", "poketmon", localData);
+            initAutoComplete("i-research-local", "local", localData);
+            initAutoComplete("i-research-poketmon", "poketmon", localData);
         } catch (e) {
             console.log("Battle setInterval error. localData :", localData, e.message);
         }
     }
-    initBattle();
+    // initBattle();
+    randFunc = new asyncInterval((node) => {
+        node.innerText = getRandomInt(1, 100 + 1);
+    }, 3);
+
     // 리서치 부분 함수들
-    function intervalRand() {
-        let randInterval;
-        let randTenInterval;
-        return () => {
-            clearInterval(randInterval);
-            clearInterval(randTenInterval);
-
-            randInterval = setInterval(() => {
-                let random = getRandomInt(1, 100 + 1);
-                setRand(random);
-            }, randIntervalTime);
-
-            randTenInterval = setInterval(() => {
-                let random = getRandomInt(10, 200 + 1);
-                setRandTen(random);
-            }, randTenIntervalTime);
-        };
-    }
     function createTextResearch() {
         let targetList = ["trainer", "poketmon", "spec", "level", "personality", "music"];
         let inputs = document.querySelectorAll(".research-frame input");
@@ -144,13 +143,7 @@ export default function Layout() {
                                         <div className="shadow rounded-md">
                                             <div className="bg-white px-4 py-3">
                                                 <div className="grid grid-cols-6 gap-6">
-                                                    <GridInputButton
-                                                        label={"Copy"}
-                                                        buttonColor={"zinc"}
-                                                        onclick={() => copyToClipBoard(".pre-research")}
-                                                        colSpan={3}
-                                                        type="button"
-                                                    ></GridInputButton>
+                                                    <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-research")} colSpan={3} type="button"></GridInputButton>
                                                     <GridInputButton label={"생성"} type="button" onclick={createTextResearch} colSpan={3}></GridInputButton>
                                                 </div>
                                             </div>
@@ -183,7 +176,23 @@ export default function Layout() {
                                     <div className="my-2">
                                         <div className="shadow rounded-md p-2 text-sm font-medium text-gray-700">난수 생성 ( 1 ~ 100 )</div>
                                         <div className="shadow rounded-md">
-                                            <span>{rand}</span>
+                                            <span id="rand">{rand}</span>
+                                        </div>
+                                    </div>
+                                    <div className="my-2">
+                                        <div className="shadow rounded-md">
+                                            <div className="bg-white px-4 py-3">
+                                                <div className="grid grid-cols-6 gap-6">
+                                                    <GridInputButton
+                                                        label={"START"}
+                                                        buttonColor={"zinc"}
+                                                        onclick={() => randFunc.start(document.querySelector("#rand"))}
+                                                        colSpan={3}
+                                                        type="button"
+                                                    ></GridInputButton>
+                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randFunc.stop()} colSpan={3}></GridInputButton>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

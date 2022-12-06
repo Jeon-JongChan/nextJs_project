@@ -23,6 +23,7 @@ export default function Component(props) {
     let dirmode = props?.dirmode || "col";
     let rowWidth = props?.rowWidth || "w-2/5";
     let defaultValue = props?.default || null;
+    let dataName = props?.dataName || null;
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
@@ -36,6 +37,7 @@ export default function Component(props) {
                     name={inputId}
                     id={inputId}
                     autoComplete={autoComplete}
+                    data-name={dataName}
                     className="mt-1 block w-full focus:outline-none rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                     defaultValue={defaultValue || ""}
                 />

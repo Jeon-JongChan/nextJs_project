@@ -147,6 +147,14 @@ export default function Layout() {
 
     return (
         <>
+            <Script src="/scripts/jsScript.js" />
+            <Script src="/scripts/local/global.js" />
+            <Script
+                src="/scripts/dataSync.js"
+                onLoad={() => {
+                    console.log("dataSync load");
+                }}
+            />
             <Script
                 src="/scripts/autoComplete.js"
                 strategy="lazyOnload"
@@ -223,7 +231,9 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {personailies.length > 0 ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                    {personailies.length > 0
+                                        ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                        : ""}
                                 </div>
                             </div>
                         </div>
@@ -240,7 +250,9 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {locals.length > 0 ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                    {locals.length > 0
+                                        ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                        : ""}
                                 </div>
                             </div>
                         </div>
@@ -257,7 +269,9 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {specs.length > 0 ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                    {specs.length > 0
+                                        ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                        : ""}
                                 </div>
                             </div>
                         </div>

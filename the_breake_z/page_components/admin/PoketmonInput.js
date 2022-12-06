@@ -79,8 +79,8 @@ export default function Component() {
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="grid grid-cols-6 gap-6">
-                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4} type="button" onclick={deletePoketmon}></GridInputButton>
-                                <GridInputButton type="button" colSpan={2} onclick={submitPoketmonData}></GridInputButton>
+                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={3} type="button" onclick={deletePoketmon}></GridInputButton>
+                                <GridInputButton type="button" colSpan={3} onclick={submitPoketmonData}></GridInputButton>
                             </div>
                         </div>
                     </div>

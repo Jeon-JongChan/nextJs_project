@@ -18,11 +18,11 @@ export default function Component(props) {
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
-            <div className={["px-4 py-3 text-right sm:px-6", colSpanClass[colSpan]].join(" ")}>
+            <div className={["px-2 py-1 text-right sm:px-6", colSpanClass[colSpan]].join(" ")}>
                 <button
                     type={type}
                     className={[
-                        "inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                        "w-full inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
                         buttonColorClass[buttonColor],
                         hoverColorClass[buttonColor],
                     ].join(" ")}

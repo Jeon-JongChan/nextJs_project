@@ -5,14 +5,6 @@ import Script from "next/script";
 export default function Nav() {
     return (
         <>
-            <Script src="/scripts/jsScript.js" />
-            <Script src="/scripts/local/global.js" />
-            <Script
-                src="/scripts/dataSync.js"
-                onLoad={() => {
-                    console.log("dataSync load");
-                }}
-            />
             <nav className="bg-gray-800">
                 <div className="mx-auto max-w-7xl px-2">
                     <div className="relative flex h-16 items-center justify-between">

@@ -17,7 +17,7 @@ export default function Component(props) {
     return (
         <>
             <div className="aspect-square w-full rounded-lg bg-gray-200 relative">
-                <Image src={imageSrc} alt={imageAlt} layout="fill" objectFit="cover" objectPosition="center"></Image>
+                <Image src={imageSrc} alt={imageAlt} unoptimized={true} layout="fill" objectFit="cover" objectPosition="center"></Image>
             </div>
             {header ? <h3 className="mt-4 text-sm text-gray-700">{header}</h3> : ""}
             {text ? <p className="mt-1 font-medium text-gray-900">{text}</p> : ""}

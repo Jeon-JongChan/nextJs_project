@@ -46,7 +46,7 @@ export default function Layout() {
             syncListInterval.start();
         }
         if (!syncDataInterval) {
-            syncDataInterval = new asyncInterval(syncDataAdmin, 60);
+            syncDataInterval = new asyncInterval(syncDataAdmin, 10);
             syncDataInterval.start();
         }
         /**

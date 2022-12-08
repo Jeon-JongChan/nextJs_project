@@ -74,7 +74,10 @@ const server = {
         },
     },
     db: db,
-    dbinit: () => {
+    init: async () => {
+        // 필요 폴더 생성
+        if (!fs.existsSync(defaultJsonPath)) await fs.mkdir(path.join(process.cwd() + "/public", "/temp/images"));
+
         // table 존재여부 확인 및 존재 시 init 함수 종료
         let ret = server.db.prepare("select count(*) cnt from sqlite_master").get();
 
@@ -139,12 +142,12 @@ const server = {
         },
     },
     readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/") => {
-        // form.uploadDir = "./public/temp/images/";
         const form = new formidable.IncomingForm();
         if (saveLocally) {
             form.uploadDir = path.join(process.cwd(), "/public" + savePath);
             form.keepExtensions = true;
         }
+
         return new Promise((resolve, reject) => {
             form.parse(req, (err, fields, files) => {
                 // console.log(fields, files, Object.keys(files).length);
@@ -165,7 +168,7 @@ const server = {
     },
 };
 
-server.dbinit();
+server.init();
 // function initDB() {
 //     server.db.exec("CREATE TABLE IF NOT EXISTS users('ID' varchar(20), PASSWORD VARCHAR(64))");
 //     console.log('init db process');

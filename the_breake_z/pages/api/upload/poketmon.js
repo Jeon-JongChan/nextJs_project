@@ -16,8 +16,8 @@ export default async function handler(req, res) {
     } catch (error) {
         await fs.mkdir(path.join(process.cwd() + "/public", "/temp/images"));
     }
-
     let resData = await server.readAndSaveFileFromFormdata(req, true);
+
     try {
         if (!resData.name) {
             res.status(200).json({ status: false, message: "poketmon name is null" });

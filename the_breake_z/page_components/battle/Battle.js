@@ -1,33 +1,30 @@
 /* next Module */
-import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval } from "/scripts/client/client";
+import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
 import { autoComplete, initAutoComplete } from "/scripts/client/autoComplete";
 import Nav from "/page_components/Nav";
-import GridInputPhoto from "/page_components/Grid/GridInputPhoto";
+import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
 import GridBorderBox from "/page_components/Grid/GridBorderBox";
-import { useState } from "react";
+import BattleResearch from "./BattleResearch";
+import { LocalDataContext } from "/page_components/MyContext";
+import { useEffect, useState } from "react";
+import { useContext } from "react";
 // * react
 export default function Layout() {
-    const [researchImage, setResearchImage] = useState("");
-    const [rand, setRand] = useState(0);
-    // let rand;
-    const [randTen, setRandTen] = useState(0);
-    // const [randIntervalTime, setRandIntervalTime] = useState(3000);
-    // const [randTenIntervalTime, setRandTenIntervalTime] = useState(3000);
-    const localData = {};
-    let randIntervalTime = 3000;
-    let randTenIntervalTime = 3000;
-    let randFunc;
-    let randTenFunc;
+    let localData = {};
+    let syncDataInterval;
 
-    function syncDataInterval() {
+    useEffect(() => {
+        setTimeout(initBattle, 1000);
+    }, []);
+
+    function syncDataBattle() {
         let syncList = ["poketmon", "local"];
-        console.log("Battle syncDataInterval", localData);
+        // console.log("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {
                 localData[element] = await syncData(element, localData?.[element] || {}, "Battle syncDataInterval");
-                // console.log("syncDataInterval : ", element, localData[element]);
             });
         } catch (e) {
             console.log("Battle syncDataInterval error. localData :", localData, e.message);
@@ -35,172 +32,60 @@ export default function Layout() {
     }
 
     function initBattle() {
-        try {
-            intervalRand()();
-            randFunc = asyncInterval(() => {
-                setRand(getRandomInt(1, 100 + 1));
-            }, randIntervalTime);
-            randTenFunc = asyncInterval(() => {
-                setRandTen(getRandomInt(1, 100 + 1));
-            }, randTenIntervalTime);
-            randFunc.start();
-            randTenFunc.start();
-            // syncDataInterval();
-            // setInterval(syncDataInterval, 100000);
-            initAutoComplete("i-research-local", "local", localData);
-            initAutoComplete("i-research-poketmon", "poketmon", localData);
-        } catch (e) {
-            console.log("Battle setInterval error. localData :", localData, e.message);
-        }
+        syncDataInterval = new asyncInterval(syncDataBattle, 60);
+        syncDataInterval.start();
     }
-    // initBattle();
-    randFunc = new asyncInterval((node) => {
-        node.innerText = getRandomInt(1, 100 + 1);
-    }, 3);
+    setTimeout(initBattle, 1000);
 
-    // 리서치 부분 함수들
-    function createTextResearch() {
-        let targetList = ["trainer", "poketmon", "spec", "level", "personality", "music"];
-        let inputs = document.querySelectorAll(".research-frame input");
-        let inputValues = {};
-        inputs.forEach((input) => {
-            inputValues[input.dataset.name] = input.value || "";
-        });
-        let detailData = findLocalDataByName(inputValues.poketmon, localData.poketmon?.data);
-        let randomSpecIdx = getRandomInt(1, 4);
-        inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];
-        inputValues["level"] = detailData ? getRandomInt(detailData.LEVEL_MIN, detailData.LEVEL_MAX + 1) : "oo";
-        inputValues["personality"] = detailData?.["personality"] || "";
-        console.log(inputs, inputValues, detailData, localData);
-        targetList.forEach((element) => {
-            let targetNodes = document.querySelectorAll(".pre-research spen[data-name='" + element + "']");
-            targetNodes.forEach((node) => {
-                // console.log("createTextResearch targetNodes " + element, " inputValues ", inputValues, inputValues[element]);
-                node.innerText = inputValues[element];
-            });
-        });
-
-        setResearchImage(detailData?.PATH || "");
-    }
-    // 공용 함수
-    function findLocalDataByName(name, data) {
-        let ret = {};
-        for (let i = 0; i < data.length; i++) {
-            console.log("findLocalDataByName ", data[i].NAME, name, data[i].NAME === name);
-            if (data[i].NAME === name) {
-                ret = data[i];
-                return ret;
-            }
-        }
-        return;
-    }
     return (
         <>
-            <Nav></Nav>
-            <div className="mt-2">
-                <ul className="flex items-center justify-center space-x-4">
-                    <button onClick={() => changeTab("#adminpage-addPoketmon")}>
-                        <li className="apply-tab-item">포켓몬</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addPersonality")}>
-                        <li className="apply-tab-item">리서치</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addLocal")}>
-                        <li className="apply-tab-item">야생배틀</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addSpec")}>
-                        <li className="apply-tab-item">로드배틀</li>
-                    </button>
-                </ul>
-            </div>
-            <div id="battlepage-research" className="activate-tab">
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-1/3">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-2">
-                                <div className="flex flex-col w-full">
-                                    <div className="my-2">
-                                        {/* <div className="md:grid md:grid-cols-8 md:gap-6">
-                        <div className="mt-5 md:col-span-8 md:mt-0"> */}
-                                        <div className="shadow rounded-md">
-                                            <div className="bg-white px-4 py-3">
-                                                <div className="research-frame grid grid-cols-6 gap-6">
-                                                    <GridInputText id={"i-research-trainer"} dataName={"trainer"} colSpan={3} label={"트레이너"}></GridInputText>
-                                                    <GridInputText id={"i-research-local"} dataName={"local"} colSpan={3} label={"조사지역"}></GridInputText>
-                                                    <GridInputText id={"i-research-poketmon"} dataName={"poketmon"} colSpan={3} label={"선택 포켓몬"}></GridInputText>
-                                                    <GridInputText
-                                                        id={"i-research-music"}
-                                                        dataName={"music"}
-                                                        colSpan={3}
-                                                        label={"유투브 음악주소"}
-                                                        default={"https://youtu.be/D7bYpd7Wiis"}
-                                                    ></GridInputText>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md">
-                                            <div className="bg-white px-4 py-3">
-                                                <div className="grid grid-cols-6 gap-6">
-                                                    <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-research")} colSpan={3} type="button"></GridInputButton>
-                                                    <GridInputButton label={"생성"} type="button" onclick={createTextResearch} colSpan={3}></GridInputButton>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md px-4 py-3">
-                                            <pre className="pre-research">
-                                                🎵<spen data-name={"music"}>(https://youtu.be/D7bYpd7Wiis)</spen> <br />
-                                                앗, 야생의<spen data-name={"personality"}>(성격)</spen> <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
-                                                <br />
-                                                <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> <spen data-name={"spec"}>(특성)</spen> <br />
-                                                <br />
-                                                ..무엇을 할까 <spen data-name={"trainer"}>(트레이너)</spen>? <br />
-                                                ▷ 배틀한다 <br />
-                                                ▷ 포획한다 <br />
-                                                ▷ 도망간다 <br />
-                                            </pre>
-                                            <img id="research-img" src={researchImage}></img>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col w-1/3">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-2">
-                                <div className="flex flex-col w-full">
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md p-2 text-sm font-medium text-gray-700">난수 생성 ( 1 ~ 100 )</div>
-                                        <div className="shadow rounded-md">
-                                            <span id="rand">{rand}</span>
-                                        </div>
-                                    </div>
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md">
-                                            <div className="bg-white px-4 py-3">
-                                                <div className="grid grid-cols-6 gap-6">
-                                                    <GridInputButton
-                                                        label={"START"}
-                                                        buttonColor={"zinc"}
-                                                        onclick={() => randFunc.start(document.querySelector("#rand"))}
-                                                        colSpan={3}
-                                                        type="button"
-                                                    ></GridInputButton>
-                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randFunc.stop()} colSpan={3}></GridInputButton>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <LocalDataContext.Provider value={localData}>
+                <Nav></Nav>
+                <div className="mt-2">
+                    {/* battlepage-research, */}
+                    <ul className="flex items-center justify-center space-x-4">
+                        <button onClick={() => changeTab("#battlepage-research")}>
+                            <li className="apply-tab-item">리서치</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addLocal")}>
+                            <li className="apply-tab-item">야생배틀</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addSpec")}>
+                            <li className="apply-tab-item">로드배틀</li>
+                        </button>
+                    </ul>
                 </div>
-            </div>
+                <BattleResearch></BattleResearch>
+            </LocalDataContext.Provider>
         </>
     );
 }
+
+let bolierPlate = {
+    research: [
+        `
+🗺️ [헬벳지방 타운맵] - n호 내비 로토무
+- 탐색할 필드를 선택해 탐색 또는 배틀을 진행할 수 있습니다. 로토!
+한 번 고른 활동은 중간에 변경할 수 없습니다. 로토!
+
+진행 시간을 참고하여 참여해주시기 바랍니다. 로토! 
+▷ 포켓몬 탐색
+▷ 로드 트레이너 배틀
+▷ 흔적 수색
+▷ 난동 개체 탐색
+        `,
+        `앞으로 번 더 리서치 할 수 있어 로토! 계속할까 로토?`,
+        `은(는) 도망치는 길에 운 좋게도 바닥에 떨어진 n원을 주웠다!`,
+        `은(는) 을 사용했다!
+
+…
+….
+…..✨
+
+축하해 로토! 야생의 을(를) 잡았어!
+배우고 있는 기술 : ｜｜｜｜
+
+잡은 야생 포켓몬의 정보는 오늘의 모든 리서치가 종료되면 포켓몬 박스에 기입해줘, 로토!
+        `,
+    ],
+};

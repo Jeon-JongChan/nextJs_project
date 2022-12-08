@@ -120,18 +120,20 @@ class asyncInterval {
     }
     stop() {
         this.state = false;
-        console.log("asyncInterval stop");
+        console.log("asyncInterval stop ", this.state);
     }
     async start(...args) {
         if (this.startCount > 0) {
             console.log("asyncInterval have many jobs - ", this.startCount);
             return;
         }
-        console.log("asyncInterval start");
+        console.log("asyncInterval start ", this.state, " count : ", this.startCount);
         this.state = true;
         this.startCount += 1;
         while (this.state) {
-            this.fn(...args);
+            // console.log("asyncInterval progress... ", this.state);
+            if (this.startCount <= 1) await this.fn(...args);
+            else console.log("asyncInterval have many jobs in while - ", this.startCount);
             await sleep(this.sec);
         }
         this.startCount = 0;
@@ -203,5 +205,15 @@ function copyToClipBoard(query) {
             console.log("Something went wrong", err);
         });
 }
-
-export { changeTab, copyToClipBoard, getRandomInt, syncData, asyncInterval };
+function findLocalDataByName(name, data) {
+    let ret = {};
+    for (let i = 0; i < data.length; i++) {
+        console.log("findLocalDataByName ", data[i].NAME, name, data[i].NAME === name);
+        if (data[i].NAME === name) {
+            ret = data[i];
+            return ret;
+        }
+    }
+    return;
+}
+export { changeTab, copyToClipBoard, getRandomInt, syncData, asyncInterval, sleep, findLocalDataByName, getDataIdx, getNameIdx, getRandomValue, getDomIndex, updateCheck };

@@ -2,11 +2,19 @@
 import Script from "next/script";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-
+import { useContext, useEffect } from "react";
+import { LocalDataContext } from "/page_components/MyContext";
+import { initAutoComplete } from "/scripts/client/autoComplete";
+import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
 // * react
 export default function Component() {
-    // autoComplete("i-local");
+    let localData = useContext(LocalDataContext);
     const target = "spec";
+
+    useEffect(() => {
+        setTimeout(init, 1000);
+    }, []);
+
     async function submitLocalData() {
         let inputNameList = ["name"];
         let inputs = document.querySelectorAll("." + target + "input-frame input");
@@ -45,6 +53,11 @@ export default function Component() {
         let resData = await res.json();
         // console.log(resData);
     }
+    async function init() {
+        localData = await initAutoComplete("i3-name", "spec", localData);
+    }
+
+    setTimeout(init, 1000);
     return (
         <>
             <div className="flex flex-col w-full">

@@ -35,7 +35,7 @@ async function autoComplete(inputNode, target, localData) {
 async function initAutoComplete(id, target, localData) {
     try {
         localData[target] = await syncData(target, localData[target] || {}, "initAutoComplete");
-        console.log("initAutoComplete :", localData);
+        console.log("initAutoComplete : " + id, localData);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.

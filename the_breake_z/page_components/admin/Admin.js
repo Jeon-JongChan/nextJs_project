@@ -8,7 +8,9 @@ import PersonalityInput from "/page_components/admin/PersonalityInput";
 import PoketmonListItem from "/page_components/admin/PoketmonListItem";
 import LocalInput from "/page_components/admin/LocalInput";
 import SpecInput from "/page_components/admin/SpecInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { LocalDataContext } from "/page_components/MyContext";
+import { changeTab, syncData, asyncInterval, sleep, updateCheck } from "/scripts/client/client";
 // * react
 export default function Layout() {
     let [images, setImages] = useState([]);
@@ -21,18 +23,37 @@ export default function Layout() {
         spec: [],
         personality: [],
     };
+    let localData = {};
+    let syncDataInterval, syncListInterval;
 
-    function changeTab(query) {
-        let oldTab = document.querySelector(".activate-tab");
-        let newTab = document.querySelector(query);
-        if (oldTab) {
-            oldTab.classList.add("hidden");
-            oldTab.classList.remove("activate-tab");
+    useEffect(() => {
+        setTimeout(initAdmin, 1000);
+    }, []);
+
+    function syncDataAdmin() {
+        let syncList = ["poketmon", "local", "personality", "spec"];
+        // console.log("Battle syncDataBattle", localData);
+        try {
+            syncList.forEach(async (element) => {
+                localData[element] = await syncData(element, localData?.[element] || {}, "Admin syncDataInterval");
+            });
+        } catch (e) {
+            console.log("Admin syncDataInterval error. localData :", localData, e.message);
         }
-        if (newTab) {
-            newTab.classList.remove("hidden");
-            newTab.classList.add("block");
-            newTab.classList.add("activate-tab");
+    }
+    function initAdmin() {
+        if (!syncListInterval) {
+            syncListInterval = new asyncInterval(() => {
+                syncList("poketmon");
+                syncList("local");
+                syncList("spec");
+                syncList("personality");
+            }, 60);
+            syncListInterval.start();
+        }
+        if (!syncDataInterval) {
+            syncDataInterval = new asyncInterval(syncDataAdmin, 60);
+            syncDataInterval.start();
         }
     }
     /**
@@ -73,7 +94,7 @@ export default function Layout() {
      * 데이터를 계속 갱신해서 보여준다.
      */
     async function syncList(target = "poketmon") {
-        let frameNode = document.querySelector("." + target + "-list");
+        let frameNode = document?.querySelector("." + target + "-list");
         let targetTag = "";
         // console.log("syncList target : ", target, localData);
         if (target === "poketmon") targetTag = "img";
@@ -147,140 +168,105 @@ export default function Layout() {
 
     return (
         <>
-            <Script src="/scripts/jsScript.js" />
-            <Script src="/scripts/local/global.js" />
-            <Script
-                src="/scripts/dataSync.js"
-                onLoad={() => {
-                    console.log("dataSync load");
-                }}
-            />
-            <Script
-                src="/scripts/autoComplete.js"
-                strategy="lazyOnload"
-                onLoad={async () => {
-                    console.log("Layout lazyOnload");
-                    if (typeof localData === undefined) {
-                        console.log("localData undefined!. 1초간 대기합니다.");
-                        await sleep(2000);
-                    }
-                    syncList("poketmon");
-                    syncList("local");
-                    syncList("spec");
-                    syncList("personality");
-                    setInterval(() => syncList("poketmon"), 10000);
-                    setInterval(() => syncList("local"), 10000);
-                    setInterval(() => syncList("spec"), 10000);
-                    setInterval(() => syncList("personality"), 10000);
+            <LocalDataContext.Provider value={localData}>
+                <Nav></Nav>
+                <div className="mt-2">
+                    <ul className="flex items-center justify-center space-x-4">
+                        <button onClick={() => changeTab("#adminpage-addPoketmon")}>
+                            <li className="apply-tab-item">포켓몬 추가</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addPersonality")}>
+                            <li className="apply-tab-item">포켓몬 성격</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addLocal")}>
+                            <li className="apply-tab-item">포켓몬 지역</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addSpec")}>
+                            <li className="apply-tab-item">포켓몬 특성</li>
+                        </button>
+                    </ul>
+                </div>
+                <div id="adminpage-addPoketmon" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-2/4">
+                            <div className="bg-white">
+                                <div className="mx-auto py-4 px-4">
+                                    <h2 className="sr-only">Products</h2>
 
-                    localData = await initAutoComplete("i-name", "poketmon", localData);
-                    localData = await initAutoComplete("i-personality", "personality", localData);
-                    localData = await initAutoComplete("i-local", "local", localData);
-                    localData = await initAutoComplete("i-spec1", "spec", localData);
-                    localData = await initAutoComplete("i-spec2", "spec", localData);
-                    localData = await initAutoComplete("i-spec3", "spec", localData);
-                    localData = await initAutoComplete("i2-name", "local", localData);
-                    localData = await initAutoComplete("i3-name", "spec", localData);
-                    localData = await initAutoComplete("i4-name", "personality", localData);
-                }}
-            />
-            <Nav></Nav>
-            <div className="mt-2">
-                <ul className="flex items-center justify-center space-x-4">
-                    <button onClick={() => changeTab("#adminpage-addPoketmon")}>
-                        <li className="apply-tab-item">포켓몬 추가</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addPersonality")}>
-                        <li className="apply-tab-item">포켓몬 성격</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addLocal")}>
-                        <li className="apply-tab-item">포켓몬 지역</li>
-                    </button>
-                    <button onClick={() => changeTab("#adminpage-addSpec")}>
-                        <li className="apply-tab-item">포켓몬 특성</li>
-                    </button>
-                </ul>
-            </div>
-            <div id="adminpage-addPoketmon" className="hidden">
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-2/4">
-                        <div className="bg-white">
-                            <div className="mx-auto py-4 px-4">
-                                <h2 className="sr-only">Products</h2>
-
-                                <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
-                                    {images.length > 0
-                                        ? images.map((data, idx, array) => {
-                                              //   console.log("poketmonImages data : ", data, array);
-                                              return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
-                                          })
-                                        : ""}
+                                    <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
+                                        {images.length > 0
+                                            ? images.map((data, idx, array) => {
+                                                  //   console.log("poketmonImages data : ", data, array);
+                                                  return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
+                                              })
+                                            : ""}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <form className="flex flex-row w-2/4">
+                            <PoketmonInput></PoketmonInput>
+                        </form>
                     </div>
-                    <form className="flex flex-row w-2/4">
-                        <PoketmonInput></PoketmonInput>
-                    </form>
                 </div>
-            </div>
-            <div id="adminpage-addPersonality" className="hidden">
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-3/5">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-4">
-                                <h2 className="sr-only">Products</h2>
-                                <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {personailies.length > 0
-                                        ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                <div id="adminpage-addPersonality" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {personailies.length > 0
+                                            ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <PersonalityInput></PersonalityInput>
+                        </form>
                     </div>
-                    <form className="flex flex-row w-2/5">
-                        <PersonalityInput></PersonalityInput>
-                    </form>
                 </div>
-            </div>
-            <div id="adminpage-addLocal" className="activate-tab">
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-3/5">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-4">
-                                <h2 className="sr-only">Products</h2>
-                                <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {locals.length > 0
-                                        ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                <div id="adminpage-addLocal" className="activate-tab">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {locals.length > 0
+                                            ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <LocalInput></LocalInput>
+                        </form>
                     </div>
-                    <form className="flex flex-row w-2/5">
-                        <LocalInput></LocalInput>
-                    </form>
                 </div>
-            </div>
-            <div id="adminpage-addSpec" className="hidden">
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-3/5">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-4">
-                                <h2 className="sr-only">Products</h2>
-                                <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {specs.length > 0
-                                        ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                <div id="adminpage-addSpec" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {specs.length > 0
+                                            ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <SpecInput></SpecInput>
+                        </form>
                     </div>
-                    <form className="flex flex-row w-2/5">
-                        <SpecInput></SpecInput>
-                    </form>
                 </div>
-            </div>
+            </LocalDataContext.Provider>
         </>
     );
 }

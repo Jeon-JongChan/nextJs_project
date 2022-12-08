@@ -1,6 +1,7 @@
 /* next Module */
 import Script from "next/script";
 import Image from "next/image";
+import { checkHangulEncode } from "/scripts/client/client";
 // * react
 /**
  * hover시 이미지에 대한 상세 정보를 출력가능한 이미지박스.
@@ -38,7 +39,7 @@ export default function Component(props) {
                           })
                         : ""}
                 </div>
-                <Image src={imageSrc} alt={imageAlt} data-name={imageAlt} unoptimized={true} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
+                <Image src={imageSrc} alt={imageAlt} data-name={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
             </div>
             {header ? <h3 className="mt-4 text-sm text-gray-700">{header}</h3> : ""}
             {text ? <p className="mt-1 font-medium text-gray-900">{text}</p> : ""}

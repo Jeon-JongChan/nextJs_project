@@ -212,7 +212,7 @@ export default function Layout() {
                                         <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
                                             {images.length > 0
                                                 ? images.map((data, idx, array) => {
-                                                      //   console.log("poketmonImages data : ", data, array);
+                                                      console.log("poketmonImages data : ", data, array);
                                                       return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
                                                   })
                                                 : ""}

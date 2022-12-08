@@ -127,7 +127,7 @@ class asyncInterval {
             console.log("asyncInterval have many jobs - ", this.startCount);
             return;
         }
-        console.log("asyncInterval start ", this.state, " count : ", this.startCount);
+        // console.log("asyncInterval start ", this.state, " count : ", this.startCount);
         this.state = true;
         this.startCount += 1;
         while (this.state) {
@@ -216,4 +216,28 @@ function findLocalDataByName(name, data) {
     }
     return;
 }
-export { changeTab, copyToClipBoard, getRandomInt, syncData, asyncInterval, sleep, findLocalDataByName, getDataIdx, getNameIdx, getRandomValue, getDomIndex, updateCheck };
+const checkHangulEncode = (keyword) => {
+    const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+
+    if (keyword.match(check_kor)) {
+        const encodeKeyword = encodeURI(keyword); // 한글 인코딩
+        return encodeKeyword;
+    } else {
+        return keyword;
+    }
+};
+export {
+    changeTab,
+    copyToClipBoard,
+    getRandomInt,
+    syncData,
+    asyncInterval,
+    sleep,
+    findLocalDataByName,
+    getDataIdx,
+    getNameIdx,
+    getRandomValue,
+    getDomIndex,
+    updateCheck,
+    checkHangulEncode,
+};

@@ -10,7 +10,7 @@ import Image from "next/image";
  * @param {String} text - 이미지 상세 설명
  */
 export default function Component(props) {
-    let imageSrc = props?.imageSrc || "/temp/blank.png";
+    let imageSrc = props?.imageSrc || "/blank.png";
     let imageAlt = props?.imageAlt || "";
     let header = props?.header || "";
     let text = props?.text || "";

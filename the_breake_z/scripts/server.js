@@ -160,7 +160,7 @@ const server = {
 
                     let name = "";
                     const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
-                    if (fields.name.match(check_kor)) name = encodeURI(fields.name);
+                    if (fields.name.match(check_kor)) name = btoa(encodeURI(fields.name));
                     else name = fields.name;
 
                     let newFileName = name + "." + fileName[fileName.length - 1];

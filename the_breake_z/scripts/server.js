@@ -77,7 +77,7 @@ const server = {
     init: () => {
         try {
             // 필요 폴더 생성
-            console.log(path.join(process.cwd() + "/public/temp/images"));
+            if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
             if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
         } catch (e) {
             console.log("폴더 생성 에러", e);

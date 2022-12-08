@@ -13,6 +13,7 @@ import { LocalDataContext, HostContext } from "/page_components/MyContext";
 import { changeTab, syncData, asyncInterval, sleep, updateCheck } from "/scripts/client/client";
 // * react
 export default function Layout() {
+    let host = process.env.NEXT_PUBLIC_HOST || "";
     let [images, setImages] = useState([]);
     let [locals, setLocals] = useState([]);
     let [specs, setSpecs] = useState([]);
@@ -183,7 +184,7 @@ export default function Layout() {
     return (
         <>
             <LocalDataContext.Provider value={localData}>
-                <HostContext.Provider>
+                <HostContext.Provider value={host}>
                     <Nav></Nav>
                     <div className="mt-2">
                         <ul className="flex items-center justify-center space-x-4">

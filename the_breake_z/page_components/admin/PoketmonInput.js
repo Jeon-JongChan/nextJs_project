@@ -31,7 +31,6 @@ export default function Component() {
         }
 
         sendData.append("image", iimage.files[0]);
-
         let baseurl = host + "/api/upload/poketmon";
         let res = await fetch(baseurl, {
             method: "POST",

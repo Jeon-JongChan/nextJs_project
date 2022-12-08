@@ -74,10 +74,13 @@ const server = {
         },
     },
     db: db,
-    init: async () => {
-        // 필요 폴더 생성
-        if (!fs.existsSync(process.cwd() + "/public/temp/images")) await fs.mkdir(path.join(process.cwd() + "/public", "/temp/images"));
-
+    init: () => {
+        try {
+            // 필요 폴더 생성
+            if (!fs.existsSync("./public/temp/images")) fs.mkdirSync("./public/temp/images");
+        } catch (e) {
+            console.log("폴더 생성 에러", e);
+        }
         // table 존재여부 확인 및 존재 시 init 함수 종료
         let ret = server.db.prepare("select count(*) cnt from sqlite_master").get();
 

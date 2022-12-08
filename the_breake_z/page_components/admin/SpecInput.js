@@ -3,12 +3,13 @@ import Script from "next/script";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
 import { useContext, useEffect } from "react";
-import { LocalDataContext } from "/page_components/MyContext";
+import { LocalDataContext, HostContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
+    let host = useContext(HostContext);
     const target = "spec";
 
     useEffect(() => {
@@ -28,7 +29,7 @@ export default function Component() {
             }
         }
 
-        let baseurl = "http://localhost:3000/api/upload/" + target;
+        let baseurl = host + "/api/upload/" + target;
         let res = await fetch(baseurl, {
             method: "POST",
             body: sendData,
@@ -41,7 +42,7 @@ export default function Component() {
         let target = "spec";
         let input = document.querySelector("." + target + "input-frame #i3-name");
 
-        let baseurl = "http://localhost:3000/api/delete/" + target;
+        let baseurl = host + "/api/delete/" + target;
         let res = await fetch(baseurl, {
             method: "POST",
             body: JSON.stringify({

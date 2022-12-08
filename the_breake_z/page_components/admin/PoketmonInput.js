@@ -5,12 +5,13 @@ import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
 import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import { useContext, useEffect } from "react";
-import { LocalDataContext } from "/page_components/MyContext";
+import { LocalDataContext, HostContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
+    let host = useContext(HostContext);
     useEffect(() => {
         setTimeout(init, 1000);
     }, []);
@@ -31,7 +32,7 @@ export default function Component() {
 
         sendData.append("image", iimage.files[0]);
 
-        let baseurl = "http://localhost:3000/api/upload/poketmon";
+        let baseurl = host + "/api/upload/poketmon";
         let res = await fetch(baseurl, {
             method: "POST",
             body: sendData,
@@ -47,7 +48,7 @@ export default function Component() {
         let target = "poketmon";
         let input = document.querySelector("." + target + "input-frame #i-name");
 
-        let baseurl = "http://localhost:3000/api/delete/" + target;
+        let baseurl = host + "/api/delete/" + target;
         let res = await fetch(baseurl, {
             method: "POST",
             body: JSON.stringify({

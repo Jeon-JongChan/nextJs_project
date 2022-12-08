@@ -10,10 +10,10 @@ export default function Nav() {
                     <div className="relative flex h-16 items-center justify-between">
                         <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
                             <div className="flex space-x-4">
-                                <a href="#" className="apply-nav-item" aria-current="page">
+                                <a href="/admin" className="apply-nav-item" aria-current="page">
                                     관리자
                                 </a>
-                                <a href="#" className="apply-nav-item">
+                                <a href="/" className="apply-nav-item">
                                     배틀
                                 </a>
                                 <a href="#" className="apply-nav-item">

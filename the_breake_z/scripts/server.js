@@ -164,9 +164,7 @@ const server = {
                     else name = fields.name;
 
                     let newFileName = name + "." + fileName[fileName.length - 1];
-                    fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () =>
-                        console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name)
-                    );
+                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name));
                     fields.image = savePath + newFileName;
                 } else {
                     fields.image = null;

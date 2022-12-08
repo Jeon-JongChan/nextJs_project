@@ -1,13 +1,14 @@
 import InputButton from "/page_components/Grid/GridInputButton";
 
 export default function Home() {
-    const callDrop = async () => await fetch("http://localhost:3000/api/dbadmin?query=drop");
-    const callTruncate = async () => await fetch("http://localhost:3000/api/dbadmin?query=truncate");
-    const callCreate = async () => await fetch("http://localhost:3000/api/dbadmin?query=create");
-    const callInsertInit = async () => await fetch("http://localhost:3000/api/dbadmin?query=insert_init");
-    const callDelete = async () => await fetch("http://localhost:3000/api/dbadmin?query=delete");
+    const host = process.env.NEXT_PUBLIC_HOST;
+    const callDrop = async () => await fetch(host + "/api/dbadmin?query=drop");
+    const callTruncate = async () => await fetch(host + "/api/dbadmin?query=truncate");
+    const callCreate = async () => await fetch(host + "/api/dbadmin?query=create");
+    const callInsertInit = async () => await fetch(host + "/api/dbadmin?query=insert_init");
+    const callDelete = async () => await fetch(host + "/api/dbadmin?query=delete");
     const callSelect = async () => {
-        let res = await fetch("http://localhost:3000/api/dbadmin?query=select");
+        let res = await fetch(host + "/api/dbadmin?query=select");
         let data = await res.json();
         console.log("callSelect : ", data);
     };

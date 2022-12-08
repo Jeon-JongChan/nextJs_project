@@ -94,26 +94,40 @@ export default function Layout() {
      * 데이터를 계속 갱신해서 보여준다.
      */
     async function syncList(target = "poketmon") {
-        let frameNode = document?.querySelector("." + target + "-list");
-        let targetTag = "";
-        // console.log("syncList target : ", target, localData);
-        if (target === "poketmon") targetTag = "img";
-        else if (target === "local") targetTag = "div";
-        else if (target === "spec") targetTag = "div";
-        else if (target === "personality") targetTag = "div";
-
-        if (!frameNode) {
-            console.log("syncList frameNode : " + target + "-list is not found");
-            return null;
+        //document 가 없는 경우는 서버사이드 렌더링이므로 무시
+        if (typeof document === "undefined") {
+            console.log("syncList - document is undefined.");
+            return;
         }
-        localData[target] = await syncData(target, localData[target] || {}, "syncList : " + target);
+        let frameNode;
+        let targetTag;
+        let checkData;
+        let syncDataStatus;
 
-        let checkData = {};
-        checkData.cnt = Number(frameNode.getAttribute("data-cnt"));
-        checkData.lastid = Number(frameNode.getAttribute("data-lastid"));
-        checkData.update_dt = frameNode.getAttribute("data-updatedt");
+        try {
+            frameNode = document.querySelector("." + target + "-list");
+            targetTag = "";
+            // console.log("syncList target : ", target, localData);
+            if (target === "poketmon") targetTag = "img";
+            else if (target === "local") targetTag = "div";
+            else if (target === "spec") targetTag = "div";
+            else if (target === "personality") targetTag = "div";
 
-        let syncDataStatus = localData[target].status;
+            if (!frameNode) {
+                console.log("syncList frameNode : " + target + "-list is not found");
+                return null;
+            }
+            localData[target] = await syncData(target, localData[target] || {}, "syncList : " + target);
+
+            checkData = {};
+            checkData.cnt = Number(frameNode.getAttribute("data-cnt"));
+            checkData.lastid = Number(frameNode.getAttribute("data-lastid"));
+            checkData.update_dt = frameNode.getAttribute("data-updatedt");
+
+            syncDataStatus = localData[target].status;
+        } catch (e) {
+            console.log("syncList error : ", e.message, " document typeof : ", typeof document);
+        }
 
         // 삭제된 정보가 있을경우 리스트에서 삭제해준다.
         syncDataList[target] = syncDataList[target].filter((v1, idx) => {

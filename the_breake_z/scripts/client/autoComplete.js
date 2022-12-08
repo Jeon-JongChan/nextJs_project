@@ -32,14 +32,20 @@ async function autoComplete(inputNode, target, localData) {
  * @param {string} target 자동완성에 사용될 데이터 명
  * @param {object} localData 자동완성에 사용될 데이터 변수
  */
-async function initAutoComplete(id, target, localData) {
+async function initAutoComplete(id, target, localData, caller = "noinfo") {
     try {
         localData[target] = await syncData(target, localData[target] || {}, "initAutoComplete");
-        console.log("initAutoComplete : " + id, localData);
+        console.log("initAutoComplete : " + id);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
          */
+        //document 가 없는 경우는 서버사이드 렌더링이므로 무시
+        if (typeof document === "undefined") {
+            console.log("initAutoComplete - document is undefined. caller : " + caller);
+            return;
+        }
+
         let inputNode = document.querySelector("#" + id);
         let parent = inputNode.parentNode;
         parent = appendAutoCompleteNode(parent, localData[target].data);
@@ -79,7 +85,7 @@ async function initAutoComplete(id, target, localData) {
 
         return localData;
     } catch (err) {
-        console.log("autoComplete error : ", err);
+        console.log("autoComplete error : ", id, target, err);
     }
 }
 

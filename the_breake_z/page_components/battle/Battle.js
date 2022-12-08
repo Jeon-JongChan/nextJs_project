@@ -35,7 +35,6 @@ export default function Layout() {
         syncDataInterval = new asyncInterval(syncDataBattle, 60);
         syncDataInterval.start();
     }
-    setTimeout(initBattle, 1000);
 
     return (
         <>

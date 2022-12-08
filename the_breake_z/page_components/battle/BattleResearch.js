@@ -4,7 +4,7 @@ import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
 // * react
@@ -17,9 +17,20 @@ export default function Layout() {
     const [wildCaptureFirst, setWildCaptureFirst] = useState(0);
     const [wildCaptureSecond, setWildCaptureSecond] = useState(0);
     const [wildCaptureBattle, setWildCaptureBattle] = useState(0);
+    const [traceRate, setTraceRate] = useState(0);
+    const [traceFailText, setTraceFailText] = useState(`
+    
+    
+    
+    
+    `);
 
     let randFunc, randTenFunc;
     let initState = true;
+
+    useEffect(() => {
+        initResearch();
+    }, []);
 
     function initResearch() {
         if (initState) {
@@ -44,7 +55,6 @@ export default function Layout() {
             initState = false;
         }
     }
-    setTimeout(initResearch, 1000);
 
     function createTextResearch() {
         let targetList = ["trainer", "poketmon", "spec", "level", "personality", "music"];
@@ -87,6 +97,14 @@ export default function Layout() {
         setWildCaptureSecond(25 * selectedBallStat);
         setWildCaptureBattle((100 - inputNodes[1]) * selectedBallStat);
     }
+    function startTrace() {
+        let target = document.querySelector("#i-research-tracecount");
+        let targetValue = parseInt(target.value);
+        setTraceRate(1 + (4 * targetValue - 4));
+        console.log(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
+        setTraceFailText(failText[getRandomInt(0, failText.length)]);
+    }
+
     return (
         <>
             <div id="battlepage-research" className="activate-tab">
@@ -252,6 +270,39 @@ export default function Layout() {
                                     </pre>
                                 </div>
                             </div>
+                            <div className="mx-auto py-2 px-2">
+                                <div className="flex flex-col w-full">
+                                    <div className="shadow rounded-md">
+                                        <div className="bg-white px-2 py-2">
+                                            <div className="research-trace-frame grid grid-cols-6 gap-6">
+                                                <GridInputText id={"i-research-tracecount"} dataName={"name"} colSpan={6} label={"흔적수색 회차"}></GridInputText>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="shadow rounded-md">
+                                        <div className="bg-white p-1">
+                                            <div className="grid grid-cols-6 gap-6">
+                                                <GridInputButton label={"흔적 수색"} type="button" onclick={() => startTrace()} colSpan={6}></GridInputButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <pre id="research-trace-rate" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center">
+                                        조우 확률 <br />
+                                        <span id="randTen" className="text-5xl text-center block">
+                                            {traceRate}
+                                        </span>
+                                    </pre>
+                                    <pre
+                                        id="research-trace-failtext"
+                                        className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center overflow-x-auto scrollbar-remove"
+                                    >
+                                        조우 실패 랜덤 문구 <br />
+                                        <span id="randTen" className="text-base text-center block">
+                                            {traceFailText}
+                                        </span>
+                                    </pre>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,3 +339,67 @@ let bolierPlate = {
         `,
     ],
 };
+
+const failText = [
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+여기는 아무것도 보이지 않는 것 같아 로토! 다른 곳에 가볼까?
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+조금 전 까지 여기 있었던 것 같은데 로토… 조금 더 찾아보자 로토!
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+이건 다른 포켓몬의 발자국이야 로토! 다른 곳에 가볼까 로토?
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+로토? …케테-! 무슨 소린가 했는데 내 꼬르륵 소리였어 로토!
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+흔적이 보이지 않아 로토! 저기 있는 포켓몬들한테 물어보면 알까 로토?
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+저 쪽에서 방금 무슨 소리 들리지 않았어 로토? 한 번 가보자 로토!
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+…썰렁할 정도로 조용해 로토-!!
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+앗! 이건! …. 대타출동 인형이야 로토! 누가 이런걸 두고 간 거지 로토?
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+(포켓몬의 울음소리가 들린다!)
+로토? 아, 이건 내가 그 포켓몬 울음소리 샘플을 재생해본거야 로토!
+
+▷수색을 이어간다.
+`,
+    `
+- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
+어어?…찾았다! …..내 보조 배터리 말이야, 로토~
+
+▷수색을 이어간다.
+`,
+];

@@ -27,6 +27,7 @@ export default function Layout() {
         personality: [],
     };
     let syncDataInterval, syncListInterval, syncCheckInterval;
+    let syncTime = 10;
 
     // 입력과 삭제에 대해 바로 동기화 시키기 위한 변수
     const [syncTarget, setSyncTarget] = useState({ name: "" });
@@ -42,11 +43,11 @@ export default function Layout() {
                 syncList("local");
                 syncList("spec");
                 syncList("personality");
-            }, 60);
+            }, syncTime);
             syncListInterval.start();
         }
         if (!syncDataInterval) {
-            syncDataInterval = new asyncInterval(syncDataAdmin, 10);
+            syncDataInterval = new asyncInterval(syncDataAdmin, syncTime);
             syncDataInterval.start();
         }
         /**

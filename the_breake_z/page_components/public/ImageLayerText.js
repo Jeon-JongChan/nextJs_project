@@ -12,7 +12,7 @@ import Image from "next/image";
  * @param {Function} onclick - 이미지 클릭시 작동할 함수
  */
 export default function Component(props) {
-    let imageSrc = props?.imageSrc || "/temp/blank.png";
+    let imageSrc = props?.imageSrc || "/blank.png";
     let imageAlt = props?.imageAlt || "";
     let header = props?.header || "";
     let text = props?.text || "";

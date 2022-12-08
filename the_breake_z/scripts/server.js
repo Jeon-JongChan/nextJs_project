@@ -7,8 +7,8 @@ if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
 
 const db = require("better-sqlite3")("temp/macro.db", { verbose: console.log });
 
-const defaultJsonPath = "./temp/data.json";
-const defaultFilePath = "./temp/file";
+const defaultJsonPath = path.join(process.cwd() + "/temp/data.json");
+const defaultFilePath = path.join(process.cwd() + "/temp/file");
 //const db = new sqlite("temp/macro.db", { verbose: console.log });
 
 const server = {
@@ -77,7 +77,8 @@ const server = {
     init: () => {
         try {
             // 필요 폴더 생성
-            if (!fs.existsSync("./public/temp/images")) fs.mkdirSync("./public/temp/images");
+            console.log(path.join(process.cwd() + "/public/temp/images"));
+            if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
         } catch (e) {
             console.log("폴더 생성 에러", e);
         }

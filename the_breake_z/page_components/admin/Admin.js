@@ -8,12 +8,14 @@ import PersonalityInput from "/page_components/admin/PersonalityInput";
 import PoketmonListItem from "/page_components/admin/PoketmonListItem";
 import LocalInput from "/page_components/admin/LocalInput";
 import SpecInput from "/page_components/admin/SpecInput";
-import { useEffect, useState } from "react";
-import { LocalDataContext, HostContext } from "/page_components/MyContext";
+import { useEffect, useState, useContext } from "react";
+import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { changeTab, syncData, asyncInterval, sleep, updateCheck } from "/scripts/client/client";
 // * react
 export default function Layout() {
-    let host = process.env.NEXT_PUBLIC_HOST || "";
+    let localData = useContext(LocalDataContext);
+    let host = useContext(HostContext);
+
     let [images, setImages] = useState([]);
     let [locals, setLocals] = useState([]);
     let [specs, setSpecs] = useState([]);
@@ -24,24 +26,15 @@ export default function Layout() {
         spec: [],
         personality: [],
     };
-    let localData = {};
-    let syncDataInterval, syncListInterval;
+    let syncDataInterval, syncListInterval, syncCheckInterval;
+
+    // 입력과 삭제에 대해 바로 동기화 시키기 위한 변수
+    const [syncTarget, setSyncTarget] = useState({ name: "" });
 
     useEffect(() => {
         setTimeout(initAdmin, 1000);
     }, []);
 
-    function syncDataAdmin() {
-        let syncList = ["poketmon", "local", "personality", "spec"];
-        // console.log("Battle syncDataBattle", localData);
-        try {
-            syncList.forEach(async (element) => {
-                localData[element] = await syncData(element, localData?.[element] || {}, "Admin syncDataInterval");
-            });
-        } catch (e) {
-            console.log("Admin syncDataInterval error. localData :", localData, e.message);
-        }
-    }
     function initAdmin() {
         if (!syncListInterval) {
             syncListInterval = new asyncInterval(() => {
@@ -55,6 +48,31 @@ export default function Layout() {
         if (!syncDataInterval) {
             syncDataInterval = new asyncInterval(syncDataAdmin, 60);
             syncDataInterval.start();
+        }
+        /**
+         * 5초마다 새로운 입력 및 삭제가 있는 경우 해당 데이터를 동기화하고 화면에 보여준다
+         */
+        // if (!syncCheckInterval) {
+        //     syncCheckInterval = new asyncInterval(() => {
+        //         console.log("syncCheckInterval : ", syncTarget);
+        //         if (syncTarget.name != "") {
+        //             console.log("syncCheckInterval Change: ", syncTarget);
+        //             syncList(syncTarget.name);
+        //             setSyncTarget({ name: "" });
+        //         }
+        //     }, 1);
+        //     syncCheckInterval.start();
+        // }
+    }
+    function syncDataAdmin() {
+        let syncList = ["poketmon", "local", "personality", "spec"];
+        // console.log("Battle syncDataBattle", localData);
+        try {
+            syncList.forEach(async (element) => {
+                localData[element] = await syncData(element, localData?.[element] || {}, "Admin syncDataInterval");
+            });
+        } catch (e) {
+            console.log("Admin syncDataInterval error. localData :", localData, e.message);
         }
     }
     /**
@@ -183,109 +201,109 @@ export default function Layout() {
 
     return (
         <>
-            <LocalDataContext.Provider value={localData}>
-                <HostContext.Provider value={host}>
-                    <Nav></Nav>
-                    <div className="mt-2">
-                        <ul className="flex items-center justify-center space-x-4">
-                            <button onClick={() => changeTab("#adminpage-addPoketmon")}>
-                                <li className="apply-tab-item">포켓몬 추가</li>
-                            </button>
-                            <button onClick={() => changeTab("#adminpage-addPersonality")}>
-                                <li className="apply-tab-item">포켓몬 성격</li>
-                            </button>
-                            <button onClick={() => changeTab("#adminpage-addLocal")}>
-                                <li className="apply-tab-item">포켓몬 지역</li>
-                            </button>
-                            <button onClick={() => changeTab("#adminpage-addSpec")}>
-                                <li className="apply-tab-item">포켓몬 특성</li>
-                            </button>
-                        </ul>
-                    </div>
-                    <div id="adminpage-addPoketmon" className="hidden">
-                        <div className="flex mt-4">
-                            <div className="flex flex-col w-2/4">
-                                <div className="bg-white">
-                                    <div className="mx-auto py-4 px-4">
-                                        <h2 className="sr-only">Products</h2>
+            <AdminSyncContext.Provider
+                value={(target) => {
+                    setSyncTarget({ name: target });
+                }}
+            >
+                <Nav></Nav>
+                <div className="mt-2">
+                    <ul className="flex items-center justify-center space-x-4">
+                        <button onClick={() => changeTab("#adminpage-addPoketmon")}>
+                            <li className="apply-tab-item">포켓몬 추가</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addPersonality")}>
+                            <li className="apply-tab-item">포켓몬 성격</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addLocal")}>
+                            <li className="apply-tab-item">포켓몬 지역</li>
+                        </button>
+                        <button onClick={() => changeTab("#adminpage-addSpec")}>
+                            <li className="apply-tab-item">포켓몬 특성</li>
+                        </button>
+                    </ul>
+                </div>
+                <div id="adminpage-addPoketmon" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-2/4">
+                            <div className="bg-white">
+                                <div className="mx-auto py-4 px-4">
+                                    <h2 className="sr-only">Products</h2>
 
-                                        <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
-                                            {images.length > 0
-                                                ? images.map((data, idx, array) => {
-                                                      console.log("poketmonImages data : ", data, array);
-                                                      return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
-                                                  })
-                                                : ""}
-                                        </div>
+                                    <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
+                                        {images.length > 0
+                                            ? images.map((data, idx, array) => {
+                                                  console.log("poketmonImages data : ", data, array);
+                                                  return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
+                                              })
+                                            : ""}
                                     </div>
                                 </div>
                             </div>
-                            <form className="flex flex-row w-2/4">
-                                <PoketmonInput></PoketmonInput>
-                            </form>
                         </div>
+                        <form className="flex flex-row w-2/4">
+                            <PoketmonInput></PoketmonInput>
+                        </form>
                     </div>
-                    <div id="adminpage-addPersonality" className="hidden">
-                        <div className="flex mt-4">
-                            <div className="flex flex-col w-3/5">
-                                <div className="bg-white">
-                                    <div className="mx-auto py-2 px-4">
-                                        <h2 className="sr-only">Products</h2>
-                                        <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                            {personailies.length > 0
-                                                ? personailies.map((data, idx, array) => (
-                                                      <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>
-                                                  ))
-                                                : ""}
-                                        </div>
+                </div>
+                <div id="adminpage-addPersonality" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {personailies.length > 0
+                                            ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
                                     </div>
                                 </div>
                             </div>
-                            <form className="flex flex-row w-2/5">
-                                <PersonalityInput></PersonalityInput>
-                            </form>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <PersonalityInput></PersonalityInput>
+                        </form>
                     </div>
-                    <div id="adminpage-addLocal" className="activate-tab">
-                        <div className="flex mt-4">
-                            <div className="flex flex-col w-3/5">
-                                <div className="bg-white">
-                                    <div className="mx-auto py-2 px-4">
-                                        <h2 className="sr-only">Products</h2>
-                                        <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                            {locals.length > 0
-                                                ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                                : ""}
-                                        </div>
+                </div>
+                <div id="adminpage-addLocal" className="activate-tab">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {locals.length > 0
+                                            ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
                                     </div>
                                 </div>
                             </div>
-                            <form className="flex flex-row w-2/5">
-                                <LocalInput></LocalInput>
-                            </form>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <LocalInput></LocalInput>
+                        </form>
                     </div>
-                    <div id="adminpage-addSpec" className="hidden">
-                        <div className="flex mt-4">
-                            <div className="flex flex-col w-3/5">
-                                <div className="bg-white">
-                                    <div className="mx-auto py-2 px-4">
-                                        <h2 className="sr-only">Products</h2>
-                                        <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                            {specs.length > 0
-                                                ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                                : ""}
-                                        </div>
+                </div>
+                <div id="adminpage-addSpec" className="hidden">
+                    <div className="flex mt-4">
+                        <div className="flex flex-col w-3/5">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-4">
+                                    <h2 className="sr-only">Products</h2>
+                                    <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
+                                        {specs.length > 0
+                                            ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
+                                            : ""}
                                     </div>
                                 </div>
                             </div>
-                            <form className="flex flex-row w-2/5">
-                                <SpecInput></SpecInput>
-                            </form>
                         </div>
+                        <form className="flex flex-row w-2/5">
+                            <SpecInput></SpecInput>
+                        </form>
                     </div>
-                </HostContext.Provider>
-            </LocalDataContext.Provider>
+                </div>
+            </AdminSyncContext.Provider>
         </>
     );
 }

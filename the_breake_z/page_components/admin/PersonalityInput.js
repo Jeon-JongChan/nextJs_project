@@ -2,13 +2,14 @@
 import Script from "next/script";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { LocalDataContext, HostContext } from "/page_components/MyContext";
+import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { useContext, useEffect } from "react";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
-    let host = useContext(HostContext);
+    const host = useContext(HostContext);
+    let adminSync = useContext(AdminSyncContext);
     const target = "personality";
 
     useEffect(() => {

@@ -11,11 +11,6 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-    try {
-        await fs.readdir(path.join(process.cwd() + "/public", "/temp/images"));
-    } catch (error) {
-        await fs.mkdir(path.join(process.cwd() + "/public", "/temp/images"));
-    }
     let resData = await server.readAndSaveFileFromFormdata(req, true);
 
     try {

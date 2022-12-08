@@ -1,15 +1,14 @@
 /* next Module */
-import Script from "next/script";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
 import { useContext, useEffect } from "react";
-import { LocalDataContext, HostContext } from "/page_components/MyContext";
+import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
-import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
-    let host = useContext(HostContext);
+    const host = useContext(HostContext);
+    let adminSync = useContext(AdminSyncContext);
     const target = "local";
 
     useEffect(() => {
@@ -36,7 +35,6 @@ export default function Component() {
         });
 
         let resData = await res.json();
-        // console.log(resData);
     }
     async function deleteLocal() {
         let target = "local";
@@ -50,9 +48,7 @@ export default function Component() {
             }),
         });
         // 리스트 삭제시 화면에도 삭제
-
         let resData = await res.json();
-        // console.log(resData);
     }
     async function init() {
         localData = await initAutoComplete("i2-name", "local", localData);

@@ -157,7 +157,13 @@ const server = {
                 // console.log(fields, files, Object.keys(files).length);
                 if (Object.keys(files).length) {
                     let fileName = files.image.originalFilename.split(".");
-                    let newFileName = fields.name + "." + fileName[fileName.length - 1];
+
+                    let name = "";
+                    const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+                    if (fields.name.match(check_kor)) name = encodeURI(fields.name);
+                    else name = fields.name;
+
+                    let newFileName = name + "." + fileName[fileName.length - 1];
                     fs.rename(files.image.filepath, form.uploadDir + "\\" + newFileName, () =>
                         console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name)
                     );

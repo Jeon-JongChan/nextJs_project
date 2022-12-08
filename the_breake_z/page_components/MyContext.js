@@ -2,5 +2,6 @@ import { createContext } from "react";
 
 const LocalDataContext = createContext({});
 const HostContext = createContext(process.env.NEXT_PUBLIC_HOST);
+const AdminSyncContext = createContext(() => {});
 
-export { LocalDataContext, HostContext };
+export { LocalDataContext, HostContext, AdminSyncContext };

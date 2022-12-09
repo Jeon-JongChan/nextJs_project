@@ -1,15 +1,17 @@
 import server from "/scripts/server.js";
 import insert from "/scripts/query/insert";
 import update from "/scripts/query/update";
+import { devLog } from "/scripts/common";
 
 export const config = {
     api: {
-        bodyParser: false,
+        bodyParser: true,
     },
 };
 
 export default async function handler(req, res) {
     let resData = await server.readAndSaveFileFromFormdata(req, true);
+    devLog("spec api resData: ", resData);
     try {
         if (!resData.name) {
             res.status(200).json({ status: false, message: "name is null" });

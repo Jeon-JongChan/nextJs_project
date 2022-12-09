@@ -1,5 +1,4 @@
 /* next Module */
-import Script from "next/script";
 import GridInputPhoto from "/page_components/Grid/GridInputPhoto";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
@@ -7,12 +6,16 @@ import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import { useContext, useEffect } from "react";
 import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
+import { devLog } from "/scripts/common";
+import { submitAdminDelete } from "/scripts/client/client";
+
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
     const host = useContext(HostContext);
     let adminSync = useContext(AdminSyncContext);
     const target = "poketmon";
+    const idUniqueTag = "i-";
 
     useEffect(() => {
         setTimeout(init, 1000);
@@ -41,25 +44,12 @@ export default function Component() {
         iimage.file = null;
         iimage.value = null;
         iimage.dispatchEvent(new Event("change"));
-        console.log("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
-        let resData = await res.json();
-        // console.log(resData);
+        devLog("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
+
+        adminSync.current = target;
     }
-    async function deletePoketmon() {
-        let target = "poketmon";
-        let input = document.querySelector("." + target + "input-frame #i-name");
-
-        let baseurl = host + "/api/delete/" + target;
-        let res = await fetch(baseurl, {
-            method: "POST",
-            body: JSON.stringify({
-                name: input.value,
-            }),
-        });
-        // 리스트 삭제시 화면에도 삭제
-
-        let resData = await res.json();
-        // console.log(resData);
+    function clickDelete() {
+        submitAdminDelete(target, idUniqueTag, adminSync);
     }
     async function init() {
         localData = await initAutoComplete("i-name", "poketmon", localData);
@@ -97,7 +87,7 @@ export default function Component() {
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="grid grid-cols-6 gap-6">
-                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={3} type="button" onclick={deletePoketmon}></GridInputButton>
+                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={3} type="button" onclick={clickDelete}></GridInputButton>
                                 <GridInputButton type="button" colSpan={3} onclick={submitPoketmonData}></GridInputButton>
                             </div>
                         </div>

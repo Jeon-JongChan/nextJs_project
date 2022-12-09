@@ -33,9 +33,10 @@ async function autoComplete(inputNode, target, localData) {
  * @param {object} localData 자동완성에 사용될 데이터 변수
  */
 async function initAutoComplete(id, target, localData, caller = "noinfo") {
+    let status = null; // 렉시컬을 사용하여 자동완성 함수가 진행중인지 아닌지를 구분
+    let focus = false; // 해당 node가 focus되어 있는지 아닌지를 구분
     try {
         localData[target] = await syncData(target, localData[target] || {}, "initAutoComplete");
-        // console.log("initAutoComplete : " + id);
         /**
          * Node이 없는경우 드롭다운 Node을 만들어준다.
          * 있는 경우 아래 리스트를 삭제하고 새로만든다.
@@ -59,17 +60,27 @@ async function initAutoComplete(id, target, localData, caller = "noinfo") {
         inputNode.addEventListener(
             "keyup",
             delayCallFunction(async (e) => {
+                if (status === "keyup") return;
+                status = "keyup";
+
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteNode(nodeDropFrame);
-                // console.log("delayCallFunction", e.target.value);
                 await autoComplete(e.target, e.target.dataset.target, localData);
-                toggleAutoCompleteNode(nodeDropFrame, true);
+                if (focus) toggleAutoCompleteNode(nodeDropFrame, true);
+
+                status = null;
             }, 500)
         );
         inputNode.addEventListener("focus", async (e) => {
+            focus = true;
+            if (status === "focus") return;
+            status = "focus";
+
             let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
             await autoComplete(e.target, e.target.dataset.target, localData);
             toggleAutoCompleteNode(nodeDropFrame, true);
+
+            status = null;
         });
         /**
          * delay를 적용안할 경우 자동완성 키워드를 클릭해도 이미 hidden상태여서 실행 x
@@ -77,10 +88,16 @@ async function initAutoComplete(id, target, localData, caller = "noinfo") {
         inputNode.addEventListener(
             "blur",
             delayCallFunction((e) => {
+                focus = false;
+                if (status === "blur") return;
+                status = "blur";
+
                 // console.log("addEventListener blur : ", e.target);
                 let nodeDropFrame = e.target.parentNode.querySelector(".autocomplete");
                 toggleAutoCompleteNode(nodeDropFrame);
-            }, 200)
+
+                status = null;
+            }, 300)
         );
 
         return localData;

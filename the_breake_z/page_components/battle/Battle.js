@@ -1,6 +1,6 @@
 /* next Module */
-import { changeTab, copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
-import { autoComplete, initAutoComplete } from "/scripts/client/autoComplete";
+import { changeTab, syncData } from "/scripts/client/client";
+import { asyncInterval, devLog } from "/scripts/common";
 import Nav from "/page_components/Nav";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
@@ -21,13 +21,13 @@ export default function Layout() {
 
     function syncDataBattle() {
         let syncList = ["poketmon", "local"];
-        // console.log("Battle syncDataBattle", localData);
+        // devLog("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {
                 localData[element] = await syncData(element, localData?.[element] || {}, "Battle syncDataInterval");
             });
         } catch (e) {
-            console.log("Battle syncDataInterval error. localData :", localData, e.message);
+            devLog("Battle syncDataInterval error. localData :", localData, e.message);
         }
     }
 

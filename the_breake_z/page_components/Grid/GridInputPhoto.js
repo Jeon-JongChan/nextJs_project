@@ -1,5 +1,6 @@
 /* next Module */
 import Script from "next/script";
+import { devLog } from "/scripts/common";
 // import { useState } from "react";
 // * react
 /**
@@ -15,7 +16,7 @@ export default function Component(props) {
     // let colSpenValue = props?.colSpan || 6;
     // let colSmSpenValue = props?.colSmSpan || 4;
     function updateUploadFileName(e) {
-        console.log("updateUploadFileName : ", e.target.value, e.target.files);
+        devLog("updateUploadFileName : ", e.target.value, e.target.files);
         let file = e.target.files[0];
         let nodeInput = e.target;
         // input - label - div - div - div - div

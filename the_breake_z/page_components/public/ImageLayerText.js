@@ -1,7 +1,7 @@
 /* next Module */
 import Script from "next/script";
 import Image from "next/image";
-import { checkHangulEncode } from "/scripts/client/client";
+import { devLog } from "/scripts/common";
 // * react
 /**
  * hover시 이미지에 대한 상세 정보를 출력가능한 이미지박스.
@@ -28,7 +28,7 @@ export default function Component(props) {
                 <div className={layer ? "apply-image-layer-text" : ""}>
                     {layer
                         ? layer.map((object, idx) => {
-                              console.log("layer inner", imageSrc, object, idx);
+                              devLog("layer inner", imageSrc, object, idx);
                               return (
                                   <div key={idx} className="text-white">
                                       <span className="font-black">

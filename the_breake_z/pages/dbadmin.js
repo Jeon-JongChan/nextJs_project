@@ -1,4 +1,5 @@
 import InputButton from "/page_components/Grid/GridInputButton";
+import { devLog } from "/scripts/common";
 
 export default function Home() {
     const host = process.env.NEXT_PUBLIC_HOST;
@@ -10,7 +11,7 @@ export default function Home() {
     const callSelect = async () => {
         let res = await fetch(host + "/api/dbadmin?query=select");
         let data = await res.json();
-        console.log("callSelect : ", data);
+        devLog("callSelect : ", data);
     };
 
     return (

@@ -4,6 +4,7 @@ import select from "/scripts/query/select";
 import create from "/scripts/query/create";
 import insert from "/scripts/query/insert";
 import deleteDDL from "/scripts/query/delete";
+import { devLog } from "/scripts/common";
 
 export default function handler(req, res) {
     let ret = null;
@@ -56,10 +57,10 @@ export default function handler(req, res) {
             ret.poketmon_personality = server.db.prepare(select.alldata_poketmon_personality).all();
             // ret.image = server.db.prepare(select.alldata_image).all();
             // ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
-            console.log(ret);
+            devLog(ret);
         }
     } catch (e) {
-        console.log(e.message);
+        devLog(e.message);
         res.status(500).json({ error: e.message });
         return null;
     }

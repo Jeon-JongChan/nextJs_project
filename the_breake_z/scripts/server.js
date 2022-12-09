@@ -183,3 +183,4 @@ server.init();
 // }
 //initDB();
 export default server;
+// 공용함수 파일 이름은 common.js로 통일

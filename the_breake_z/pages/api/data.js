@@ -2,7 +2,7 @@ import server from "../../scripts/server";
 import select from "../../scripts/query/select";
 
 export default function handler(req, res) {
-    // console.log("call api : ", req.method, req.body);
+    // devLog("call api : ", req.method, req.body);
     let ret = null;
     let method = req.method;
 
@@ -27,7 +27,7 @@ export default function handler(req, res) {
 
         res.status(200).json(ret);
     } catch (e) {
-        console.log(e.message);
+        devLog(e.message);
         res.status(500).json({ error: e.message });
     }
 }

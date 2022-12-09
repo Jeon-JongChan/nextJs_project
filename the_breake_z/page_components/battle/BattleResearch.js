@@ -1,5 +1,6 @@
 /* next Module */
-import { copyToClipBoard, syncData, getRandomInt, asyncInterval, sleep, findLocalDataByName } from "/scripts/client/client";
+import { copyToClipBoard, findLocalDataByName } from "/scripts/client/client";
+import { getRandomInt, asyncInterval, devLog } from "/scripts/common";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
@@ -7,6 +8,7 @@ import GridInputButton from "/page_components/Grid/GridInputButton";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
+
 // * react
 export default function Layout() {
     const localData = useContext(LocalDataContext);
@@ -50,7 +52,7 @@ export default function Layout() {
                 initAutoComplete("i-research-poketmon", "poketmon", localData);
                 initAutoComplete("i-research-wildname", "poketmon", localData);
             } catch (e) {
-                console.log("BattleResearch initResearch error. localData :", localData, e.message);
+                devLog("BattleResearch initResearch error. localData :", localData, e.message);
             }
             initState = false;
         }
@@ -68,11 +70,11 @@ export default function Layout() {
         inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];
         inputValues["level"] = detailData ? getRandomInt(detailData.LEVEL_MIN, detailData.LEVEL_MAX + 1) : "oo";
         inputValues["personality"] = detailData?.["personality"] || "";
-        console.log(inputs, inputValues, detailData, localData);
+        devLog(inputs, inputValues, detailData, localData);
         targetList.forEach((element) => {
             let targetNodes = document.querySelectorAll(".pre-research spen[data-name='" + element + "']");
             targetNodes.forEach((node) => {
-                // console.log("createTextResearch targetNodes " + element, " inputValues ", inputValues, inputValues[element]);
+                // devLog("createTextResearch targetNodes " + element, " inputValues ", inputValues, inputValues[element]);
                 node.innerText = inputValues[element];
             });
         });
@@ -101,7 +103,7 @@ export default function Layout() {
         let target = document.querySelector("#i-research-tracecount");
         let targetValue = parseInt(target.value);
         setTraceRate(1 + (4 * targetValue - 4));
-        console.log(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
+        devLog(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
         setTraceFailText(failText[getRandomInt(0, failText.length)]);
     }
 

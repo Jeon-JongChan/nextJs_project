@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import Script from "next/script";
+import { devLog } from "/scripts/common";
 
 export default function Component() {
     let classNameBtn = "border-2 p-2 border-black m-1 inline-block";
@@ -10,7 +11,7 @@ export default function Component() {
         let url = "/api/migration?method=" + method;
         let response = await fetch(url);
         let json = await response.json();
-        console.log(response, json);
+        devLog(response, json);
     }
     return (
         <>

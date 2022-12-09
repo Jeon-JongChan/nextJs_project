@@ -1,6 +1,7 @@
 import server from "/scripts/server.js";
 import insert from "/scripts/query/insert";
 import update from "/scripts/query/update";
+import { devLog } from "/scripts/common";
 
 export const config = {
     api: {
@@ -10,7 +11,7 @@ export const config = {
 
 export default async function handler(req, res) {
     let resData = await server.readAndSaveFileFromFormdata(req, true);
-    console.log("personality api : ", resData);
+    devLog("personality api : ", resData);
     try {
         if (!resData.name) {
             res.status(200).json({ status: false, message: "name is null" });

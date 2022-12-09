@@ -4,60 +4,31 @@ import GridInputButton from "/page_components/Grid/GridInputButton";
 import { useContext, useEffect } from "react";
 import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
+import { submitAdminData, submitAdminDelete } from "/scripts/client/client";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);
     const host = useContext(HostContext);
     let adminSync = useContext(AdminSyncContext);
     const target = "spec";
+    const idUniqueTag = "i3-";
 
     useEffect(() => {
         setTimeout(init, 1000);
     }, []);
 
-    async function submitLocalData() {
+    function clickSubmit() {
         let inputNameList = ["name"];
-        let inputs = document.querySelectorAll("." + target + "input-frame input");
-        let sendData = new FormData();
-
-        for (let input of inputs) {
-            for (let inputName of inputNameList) {
-                if (input.id === "i3-" + inputName) {
-                    sendData.append(inputName, input.value);
-                }
-            }
-        }
-
-        let baseurl = host + "/api/upload/" + target;
-        let res = await fetch(baseurl, {
-            method: "POST",
-            body: sendData,
-        });
-
-        let resData = await res.json();
-        // console.log(resData);
+        submitAdminData(target, inputNameList, idUniqueTag, adminSync);
     }
-    async function deleteSpec() {
-        let target = "spec";
-        let input = document.querySelector("." + target + "input-frame #i3-name");
-
-        let baseurl = host + "/api/delete/" + target;
-        let res = await fetch(baseurl, {
-            method: "POST",
-            body: JSON.stringify({
-                name: input.value,
-            }),
-        });
-        // 리스트 삭제시 화면에도 삭제
-
-        let resData = await res.json();
-        // console.log(resData);
+    function clickDelete() {
+        submitAdminDelete(target, idUniqueTag, adminSync);
     }
+
     async function init() {
         localData = await initAutoComplete("i3-name", "spec", localData);
     }
 
-    setTimeout(init, 1000);
     return (
         <>
             <div className="flex flex-col w-full">
@@ -66,10 +37,10 @@ export default function Component() {
                         <div className="mt-5 md:col-span-8 md:mt-0"> */}
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
-                            <div className="localinput-frame grid grid-cols-6 gap-6">
+                            <div className="specinput-frame grid grid-cols-6 gap-6">
                                 <GridInputText id={"i3-name"} label={"특성"} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
-                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4} type="button" onclick={deleteSpec}></GridInputButton>
-                                <GridInputButton type="button" colSpan={2} onclick={submitLocalData}></GridInputButton>
+                                <GridInputButton label={"Delete"} buttonColor={"red"} colSpan={4} type="button" onclick={clickDelete}></GridInputButton>
+                                <GridInputButton type="button" colSpan={2} onclick={clickSubmit}></GridInputButton>
                             </div>
                         </div>
                     </div>

@@ -7,9 +7,9 @@ export default function handler(req, res) {
     let method = req.method;
 
     // nextjs CORS allow for http://localhost:3000
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    // res.setHeader("Access-Control-Allow-Origin", "*");
+    // res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    // res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     //ret = server.db.prepare("select count(*) cnt from spec").get();
     try {

@@ -41,6 +41,19 @@ export default function Layout(props) {
         target.innerText = attack;
     }
 
+    function changeAttack(e) {
+        let matchTag = {
+            "i-roadbattle-first-attack": "#i-roadbattle-first-compatibility",
+            "i-roadbattle-second-attack": "#i-roadbattle-second-compatibility",
+        };
+        let targetId = e.target.id;
+        let targetValue = e.target.value;
+
+        let targetNode = document.querySelector(matchTag[targetId]);
+        devLog("changeAttack", targetId, targetValue, targetNode);
+        if (targetValue === "💥일반 공격 (PP -1)") if (targetNode) targetNode.value = "- (일반 공격, 방어)";
+    }
+
     function changeBehavior(e) {
         let matchTag = {
             "i-roadbattle-first-behavior": "#i-roadbattle-first-attack",
@@ -59,7 +72,7 @@ export default function Layout(props) {
         let spanList = ["poketmon", "behaviorText", "attackText", "health", "sp"];
         let compatibilityDamage = {
             "효과 좋음(- 1d10)": 10,
-            "효과 부족(- 1d5)": 5,
+            "효과 부족(- 1d5)": -5,
             "효과 없음(- 1d0)": 0,
         };
         // wildbattle-frame i-wildbattle-first
@@ -78,21 +91,13 @@ export default function Layout(props) {
                 let attackDamage = 0;
                 let usingSp = 0;
 
-                if (compatibility === "효과 좋음(- 1d10)") {
-                    inputValue["attackText"] = "효과가 굉장했다! -";
-                } else if (compatibility === "효과 부족(- 1d5)") {
-                    inputValue["attackText"] = "효과가 부족한 것 같았다… -";
-                } else if (compatibility === "효과 없음(- 1d0)") {
-                    inputValue["attackText"] = "효과가 없는 것 같았다… -";
-                }
-
                 if (attack === "💥일반 공격 (PP -1)") {
-                    inputValue["behaviorText"] = "💥" + inputValue["poketmon"] + "의 일반 공격! -(1d5)";
-                    attackDamage = getRandomInt(1, 5 + 1);
+                    inputValue["behaviorText"] = "💥" + inputValue["poketmon"] + "의 일반 공격!";
+                    attackDamage = getRandomInt(2, 5 + 1);
                     usingSp = 1;
                 } else if (attack === "⭐️타입 공격 (PP -3)") {
                     inputValue["behaviorText"] = "⭐️" + inputValue["poketmon"] + "의 " + inputValue["type"] + " 타입 공격!";
-                    attackDamage = getRandomInt(2, 10 + 1);
+                    attackDamage = getRandomInt(4, 10 + 1) + getRandomInt(4, 10 + 1);
                     usingSp = 3;
                 } else if (attack === "💢맡긴다 (PP가 0일 때)") {
                     inputValue["behaviorText"] = "💢" + inputValue["poketmon"] + " 는 자신의 판단하에 상대를 공격했다!";
@@ -108,12 +113,23 @@ export default function Layout(props) {
                     inputValue["behaviorText"] = "🛡️" + inputValue["poketmon"] + "의 방어!";
                     inputValue["attackText"] = "🛡️" + inputValue["poketmon"] + " 은(는) 방어 태세를 갖추고 다음 공격에 대비하고 있다! +" + inputValue["defense"].toString();
                 }
-                inputValue["damage"] = attackDamage + (compatibility ? getRandomInt(1, compatibilityDamage[compatibility]) : 0);
+
+                if (compatibility === "효과 좋음(- 1d10)") {
+                    inputValue["attackText"] = "효과가 굉장했다! -";
+                } else if (compatibility === "효과 부족(- 1d5)") {
+                    inputValue["attackText"] = "효과가 부족한 것 같았다… -";
+                } else if (compatibility === "효과 없음(- 1d0)") {
+                    inputValue["attackText"] = "효과가 없는 것 같았다… -";
+                    attackDamage = 0;
+                }
+                inputValue["damage"] = attackDamage + (compatibility === "- (일반 공격, 방어)" ? 0 : getRandomInt(1, compatibilityDamage[compatibility]));
+                inputValue["damage"] = inputValue["damage"] <= 0 ? 0 : inputValue["damage"];
 
                 inputValue["sp"] -= usingSp;
                 if (attack !== "🛡️방어 (PP -2)") {
                     inputValue["defense"] = 0;
-                    inputValue["attackText"] = inputValue["attackText"] + inputValue["damage"].toString();
+                    if (compatibility === "- (일반 공격, 방어)") inputValue["attackText"] = "";
+                    else inputValue["attackText"] = inputValue["attackText"] + inputValue["damage"].toString();
                 }
             } else if (inputValue["behavior"] === "방어") {
                 inputValue["damage"] = 0;
@@ -159,6 +175,7 @@ export default function Layout(props) {
                                                 <GridInputSelectBox
                                                     id={"i-roadbattle-first-attack"}
                                                     dataName={"attack"}
+                                                    onchange={changeAttack}
                                                     colSpan={2}
                                                     label={"행동 선택"}
                                                     options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
@@ -171,7 +188,7 @@ export default function Layout(props) {
                                                     dataName={"compatibility"}
                                                     colSpan={2}
                                                     label={"데미지상성"}
-                                                    options={["효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
+                                                    options={["- (일반 공격, 방어)", "효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
                                                 ></GridInputSelectBox>
 
                                                 <GridInputText id={"i-roadbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
@@ -186,6 +203,7 @@ export default function Layout(props) {
                                                 <GridInputSelectBox
                                                     id={"i-roadbattle-second-attack"}
                                                     dataName={"attack"}
+                                                    onchange={changeAttack}
                                                     colSpan={2}
                                                     label={"행동 선택"}
                                                     options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
@@ -198,7 +216,7 @@ export default function Layout(props) {
                                                     dataName={"compatibility"}
                                                     colSpan={2}
                                                     label={"데미지상성"}
-                                                    options={["효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
+                                                    options={["- (일반 공격, 방어)", "효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
                                                 ></GridInputSelectBox>
                                             </div>
                                         </div>

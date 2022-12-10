@@ -35,7 +35,7 @@ export default function Layout(props) {
         }
     }
 
-    function createTextWildBattle(preClassName) {
+    function createTextWildBattle(preClassName, isStrange = false) {
         devLog("createTextWildBattle : ", localData);
         let inputOrder = ["first", "second"];
         let inputList = ["poketmon", "health", "attack", "compatibility"];
@@ -45,6 +45,16 @@ export default function Layout(props) {
             패: 2,
             무: 3,
         };
+        let strangeFirstDamage = {
+            승: 5,
+            패: 2,
+            무: 0,
+        };
+        let strangeSecondDamage = {
+            승: 6,
+            패: 3,
+            무: 2,
+        };
         // wildbattle-frame i-wildbattle-first
         let inputValues = {};
         inputOrder.forEach((order) => {
@@ -53,9 +63,13 @@ export default function Layout(props) {
                 inputValues[order][input] = document.querySelector(".wildbattle-frame #i-wildbattle-" + order + "-" + input).value || undefined;
             });
         });
-
-        inputValues["first"]["damage"] = compatibilityDamage[inputValues["first"]["compatibility"]];
-        inputValues["second"]["damage"] = compatibilityDamage[inputValues["second"]["compatibility"]];
+        if (isStrange) {
+            inputValues["first"]["damage"] = strangeFirstDamage[inputValues["first"]["compatibility"]];
+            inputValues["second"]["damage"] = strangeSecondDamage[inputValues["second"]["compatibility"]];
+        } else {
+            inputValues["first"]["damage"] = compatibilityDamage[inputValues["first"]["compatibility"]];
+            inputValues["second"]["damage"] = compatibilityDamage[inputValues["second"]["compatibility"]];
+        }
         inputValues["first"]["health"] = inputValues["first"]["health"] - inputValues["second"]["damage"];
         inputValues["second"]["health"] = inputValues["second"]["health"] - inputValues["first"]["damage"];
 
@@ -87,7 +101,7 @@ export default function Layout(props) {
                                                         dataName={"attack"}
                                                         colSpan={2}
                                                         label={"공격"}
-                                                        options={["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"]}
+                                                        options={["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"]}
                                                     ></GridInputSelectBox>
                                                     <GridInputText id={"i-wildbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
                                                     <GridInputSelectBox
@@ -109,7 +123,7 @@ export default function Layout(props) {
                                                                 name="i-wildbattle-second-attack"
                                                                 className="mt-1 block w-3/4 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             >
-                                                                {["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"].map((option, idx) => {
+                                                                {["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"].map((option, idx) => {
                                                                     return (
                                                                         <option key={idx} value={option}>
                                                                             {option}
@@ -128,9 +142,7 @@ export default function Layout(props) {
                                                                     ].join(" ")}
                                                                     onClick={() => {
                                                                         let randomAttack = Math.floor(Math.random() * 4);
-                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"][
-                                                                            randomAttack
-                                                                        ];
+                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"][randomAttack];
                                                                     }}
                                                                 >
                                                                     랜덤
@@ -192,7 +204,7 @@ export default function Layout(props) {
                                         <div className="bg-white px-4 py-3">
                                             <div className="grid grid-cols-6">
                                                 <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-strangebattle")} colSpan={3} type="button"></GridInputButton>
-                                                <GridInputButton label={"생성"} type="button" onclick={() => createTextWildBattle(".pre-strangebattle")} colSpan={3}></GridInputButton>
+                                                <GridInputButton label={"생성"} type="button" onclick={() => createTextWildBattle(".pre-strangebattle", true)} colSpan={3}></GridInputButton>
                                             </div>
                                         </div>
                                         {/* prettier-ignore */}

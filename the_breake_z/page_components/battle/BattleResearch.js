@@ -245,7 +245,7 @@ export default function Layout(props) {
                                     <div className="shadow rounded-md">
                                         <div className="bg-white p-1">
                                             <div className="grid grid-cols-6 gap-6">
-                                                <GridInputButton label={"문장생성"} type="button" onclick={() => calCaptureRate()} colSpan={6}></GridInputButton>
+                                                <GridInputButton label={"포획 확률 생성"} type="button" onclick={() => calCaptureRate()} colSpan={6}></GridInputButton>
                                             </div>
                                         </div>
                                     </div>

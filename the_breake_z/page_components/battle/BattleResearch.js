@@ -215,10 +215,15 @@ export default function Layout(props) {
                                         </div>
                                     </div>
                                     <div className="my-2">
-                                        <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{bolierPlate.research[0]}</pre>
-                                        <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{bolierPlate.research[1]}</pre>
-                                        <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{bolierPlate.research[2]}</pre>
-                                        <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{bolierPlate.research[3]}</pre>
+                                        {bolierPlate
+                                            ? bolierPlate["research"].map((text, index) => {
+                                                  return (
+                                                      <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
+                                                          <pre className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{text}</pre>
+                                                      </div>
+                                                  );
+                                              })
+                                            : null}
                                     </div>
                                 </div>
                             </div>

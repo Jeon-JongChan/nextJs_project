@@ -1,6 +1,4 @@
 /* next Module */
-import Script from "next/script";
-import Head from "next/head";
 import Nav from "/page_components/Nav";
 import ImageLayerText from "/page_components/public/ImageLayerText";
 import PoketmonInput from "/page_components/admin/PoketmonInput";
@@ -8,9 +6,9 @@ import PersonalityInput from "/page_components/admin/PersonalityInput";
 import PoketmonListItem from "/page_components/admin/PoketmonListItem";
 import LocalInput from "/page_components/admin/LocalInput";
 import SpecInput from "/page_components/admin/SpecInput";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { LocalDataContext, HostContext, AdminSyncContext, AdminSyncDataContext } from "/page_components/MyContext";
-import { changeTab, syncData, updateCheck } from "/scripts/client/client";
+import { changeTab, syncData, syncDataNoCheck, updateCheck } from "/scripts/client/client";
 import { devLog, asyncInterval } from "/scripts/common";
 // * react
 export default function Layout() {
@@ -30,26 +28,54 @@ export default function Layout() {
     //     spec: [],
     //     personality: [],
     // };
-    let syncDataInterval, syncListInterval, syncCheckInterval;
-    let syncTime = 30;
+    let syncInterval = useRef();
+    let syncNoCheckInterval = useRef();
+    let syncCheckInterval;
+    let syncTime = 60;
+    let syncNoCheckTime = 600;
 
     useEffect(() => {
         setTimeout(initAdmin, 1000);
     }, []);
 
+    async function initState() {
+        let syncList = ["local", "personality", "spec"];
+        // devLog("Battle syncDataBattle", localData);
+        try {
+            syncList.forEach(async (element) => {
+                let frameNode = document.querySelector("." + element + "-list");
+                frameNode.setAttribute("data-cnt", 0);
+                frameNode.setAttribute("data-lastid", 0);
+                frameNode.setAttribute("data-updatedt", "");
+                syncDataList[element] = [];
+            });
+
+            setLocals([]);
+            setSpecs([]);
+            setPersonailies([]);
+        } catch (e) {
+            devLog("initState error", e.message);
+        }
+    }
+
     function initAdmin() {
-        if (!syncListInterval) {
-            syncListInterval = new asyncInterval(() => {
+        if (syncInterval.current !== {}) {
+            syncInterval.current = new asyncInterval(() => {
                 syncList("poketmon");
                 syncList("local");
                 syncList("spec");
                 syncList("personality");
+                syncDataAdmin();
             }, syncTime);
-            syncListInterval.start();
+            syncInterval.current.start();
         }
-        if (!syncDataInterval) {
-            syncDataInterval = new asyncInterval(syncDataAdmin, syncTime);
-            syncDataInterval.start();
+        if (syncNoCheckInterval.current !== {}) {
+            syncNoCheckInterval.current = new asyncInterval(async () => {
+                devLog("syncNoCheckInterval. syncNoCheckTime : ", syncNoCheckTime);
+                await initState();
+                await syncDataAdmin(false);
+            }, syncNoCheckTime);
+            syncNoCheckInterval.current.start();
         }
         /**
          * 2초마다 새로운 입력 및 삭제가 있는 경우 해당 데이터를 동기화하고 화면에 보여준다
@@ -68,12 +94,13 @@ export default function Layout() {
             syncCheckInterval.start();
         }
     }
-    function syncDataAdmin() {
+    function syncDataAdmin(isCheck = true) {
         let syncList = ["poketmon", "local", "personality", "spec"];
         // devLog("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {
-                localData[element] = await syncData(element, localData?.[element] || {}, "Admin syncDataInterval");
+                if (isCheck) localData[element] = await syncData(element, localData?.[element] || {}, "Admin syncDataInterval");
+                else localData[element] = await syncDataNoCheck(element, localData?.[element] || {}, "Admin syncDataInterval");
             });
         } catch (e) {
             devLog("Admin syncDataInterval error. localData :", localData, e.message);
@@ -104,7 +131,7 @@ export default function Layout() {
             levelmax: "LEVEL_MAX",
         };
         let inputs = document.querySelectorAll(".poketmoninput-frame input");
-
+        devLog("clickPoketmonList", inputData);
         for (let input of inputs) {
             for (let inputName of inputNameList) {
                 if (input.id === "i-" + inputName) {
@@ -252,9 +279,7 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {personailies.length > 0
-                                        ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                    {personailies.length > 0 ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -271,9 +296,7 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {locals.length > 0
-                                        ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                    {locals.length > 0 ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -290,9 +313,7 @@ export default function Layout() {
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
                                 <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {specs.length > 0
-                                        ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>)
-                                        : ""}
+                                    {specs.length > 0 ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
                                 </div>
                             </div>
                         </div>

@@ -74,7 +74,7 @@ export default function Layout(props) {
         inputValues["poketmon"] = detailData?.NAME;
         inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];
         inputValues["level"] = detailData ? getRandomInt(detailData.LEVEL_MIN, detailData.LEVEL_MAX + 1) : "oo";
-        inputValues["personality"] = detailData?.["personality"] || "";
+        inputValues["personality"] = detailData?.["PERSONALITY"] || "";
         targetList.forEach((element) => {
             let targetNodes = document.querySelectorAll(".pre-research spen[data-name='" + element + "']");
             targetNodes.forEach((node) => {
@@ -151,7 +151,7 @@ export default function Layout(props) {
                                         <div className="shadow rounded-md p-3 bg-white overflow-x-auto scrollbar-remove">
                                             <pre className="pre-research">
                                                 🎵<spen data-name={"music"}>(https://youtu.be/D7bYpd7Wiis)</spen> <br />
-                                                앗, 야생의<spen data-name={"personality"}>(성격)</spen> <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
+                                                앗, 야생의 <spen data-name={"personality"}>(성격)</spen> <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
                                                 <br />
                                                 <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> <spen data-name={"spec"}>(특성)</spen> <br />
                                                 <br />

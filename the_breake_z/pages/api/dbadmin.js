@@ -52,9 +52,10 @@ export default function handler(req, res) {
             // ret.spec = server.db.prepare(select.alldata_spec).all();
             // ret.status_spec = server.db.prepare(select.status_spec).all();
             ret.poketmon = server.db.prepare(select.alldata_poketmon).all();
-            // ret.poketmon_local = server.db.prepare(select.alldata_poketmon_local).all();
-            // ret.poketmon_spec = server.db.prepare(select.alldata_poketmon_spec).all();
+            ret.poketmon_local = server.db.prepare(select.alldata_poketmon_local).all();
+            ret.poketmon_spec = server.db.prepare(select.alldata_poketmon_spec).all();
             ret.poketmon_personality = server.db.prepare(select.alldata_poketmon_personality).all();
+            ret.poketmon_localdata = server.db.prepare(select.localdata_poketmon).all();
             // ret.image = server.db.prepare(select.alldata_image).all();
             // ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
             devLog(ret);

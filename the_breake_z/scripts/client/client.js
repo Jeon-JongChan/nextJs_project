@@ -5,6 +5,7 @@ export {
     changeTab,
     updateCheck,
     syncData,
+    syncDataNoCheck,
     getDomIndex,
     checkHangulEncode,
     copyToClipBoard,
@@ -66,6 +67,31 @@ async function submitAdminDelete(target, idUniqueTag, adminSync = null) {
     if (adminSync) {
         adminSync.current = target;
     }
+}
+/**
+ * 클라이언트에서 저장할 data를 업데이트 해주는 함수.(무조건 갱신함)
+ * @param {string} url 데이터를 가져올 url
+ * @param {string} tableName POST에 보내줄 추출할 데이터명
+ * @param {object} data 데이터를 저장할 오브젝트. 오브젝트 형태
+ */
+async function syncDataNoCheck(tableName, data, caller = "no info") {
+    let baseurl = host + "/api/data";
+    if (!tableName) {
+        devLog("syncLocalData tablename is undefined");
+        return data;
+    }
+
+    if (true) {
+        // devLog("syncData : " + tableName + " data update - caller : " + caller);
+        let res = await fetch(baseurl, {
+            method: "POST",
+            body: JSON.stringify({ tableName: tableName, query: "localdata" }),
+        });
+        let json = await res.json();
+
+        data.data = json;
+    }
+    return data;
 }
 /**
  * 클라이언트에서 저장할 data를 업데이트 해주는 함수.

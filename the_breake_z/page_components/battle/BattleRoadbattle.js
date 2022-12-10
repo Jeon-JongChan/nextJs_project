@@ -128,7 +128,7 @@ export default function Layout(props) {
                 inputValue["sp"] -= usingSp;
                 if (attack !== "🛡️방어 (PP -2)") {
                     inputValue["defense"] = 0;
-                    if (compatibility === "- (일반 공격, 방어)") inputValue["attackText"] = "";
+                    if (compatibility === "- (일반 공격, 방어)") inputValue["attackText"] = "" + inputValue["damage"].toString();
                     else inputValue["attackText"] = inputValue["attackText"] + inputValue["damage"].toString();
                 }
             } else if (inputValue["behavior"] === "방어") {
@@ -181,7 +181,7 @@ export default function Layout(props) {
                                                     options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
                                                 ></GridInputSelectBox>
                                                 <GridInputText id={"i-roadbattle-first-type"} dataName={"type"} colSpan={1} label={"공격타입"} default={"물"}></GridInputText>
-                                                <GridInputText id={"i-roadbattle-first-sp"} dataName={"sp"} colSpan={1} label={"현재 SP"} default={10} type={"number"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-first-sp"} dataName={"sp"} colSpan={1} label={"현재 PP"} default={10} type={"number"}></GridInputText>
                                                 <GridInputText id={"i-roadbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={50} type={"number"}></GridInputText>
                                                 <GridInputSelectBox
                                                     id={"i-roadbattle-first-compatibility"}
@@ -209,7 +209,7 @@ export default function Layout(props) {
                                                     options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
                                                 ></GridInputSelectBox>
                                                 <GridInputText id={"i-roadbattle-second-type"} dataName={"type"} colSpan={1} label={"공격타입"} default={"물"}></GridInputText>
-                                                <GridInputText id={"i-roadbattle-second-sp"} dataName={"sp"} colSpan={1} label={"현재 SP"} default={10} type={"number"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-second-sp"} dataName={"sp"} colSpan={1} label={"현재 PP"} default={10} type={"number"}></GridInputText>
                                                 <GridInputText id={"i-roadbattle-second-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={50} type={"number"}></GridInputText>
                                                 <GridInputSelectBox
                                                     id={"i-roadbattle-second-compatibility"}

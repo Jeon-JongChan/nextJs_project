@@ -36,6 +36,7 @@ async function submitAdminData(target, inputNameList, idUniqueTag, adminSync = n
     }
 
     let baseurl = host + "/api/upload/" + target;
+    devLog("submitAdminData", baseurl);
     let res = await fetch(baseurl, {
         method: "POST",
         body: sendData,

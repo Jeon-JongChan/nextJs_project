@@ -4,7 +4,7 @@ import GridInputButton from "/page_components/Grid/GridInputButton";
 import { useContext, useEffect } from "react";
 import { LocalDataContext, HostContext, AdminSyncContext } from "/page_components/MyContext";
 import { initAutoComplete } from "/scripts/client/autoComplete";
-import { submitAdminData, submitAdminDelete } from "/scripts/client/client";
+import { submitAdminDelete, submitAdminData } from "/scripts/client/client";
 // * react
 export default function Component() {
     let localData = useContext(LocalDataContext);

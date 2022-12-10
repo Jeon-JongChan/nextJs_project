@@ -217,15 +217,32 @@ function clickCopyToClipBoard(e) {
     var node = e.target;
     var content = node?.innerText;
 
-    navigator.clipboard
-        .writeText(content)
-        .then(() => {
-            alertModal("텍스트만 복사되었습니다.");
-            devLog("Text copied to clipboard...");
-        })
-        .catch((err) => {
-            devLog("Something went wrong", err);
-        });
+    try {
+        if (window.isSecureContext && navigator.clipboard) {
+            navigator.clipboard.writeText(content).then(() => {
+                alertModal("텍스트만 복사되었습니다.");
+                devLog("Text copied to clipboard...");
+            });
+        } else {
+            unsecuredCopyToClipboard(content);
+        }
+    } catch (e) {
+        devLog("clickCopyToClipBoard error : ", e.message);
+    }
+}
+function unsecuredCopyToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand("copy");
+        alertModal("텍스트만 복사되었습니다.");
+    } catch (err) {
+        console.error("Unable to copy to clipboard", err);
+    }
+    document.body.removeChild(textArea);
 }
 function alertModal(msg) {
     if (!msg) return;

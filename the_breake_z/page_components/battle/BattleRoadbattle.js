@@ -70,7 +70,7 @@ export default function Layout(props) {
         let inputOrder = ["first", "second"];
         let inputList = ["poketmon", "health", "behavior", "attack", "type", "sp", "compatibility"];
         let spanList = ["poketmon", "behaviorText", "attackText", "health", "sp"];
-        let compatibilityDamage = {
+        let compatibilityDamageList = {
             "효과 좋음(- 1d10)": 10,
             "효과 부족(- 1d5)": -5,
             "효과 없음(- 1d0)": 0,
@@ -88,31 +88,9 @@ export default function Layout(props) {
             if (inputValue["behavior"] === "공격") {
                 let attack = inputValue["attack"];
                 let compatibility = inputValue["compatibility"];
+                let compatibilityDamage = compatibilityDamageList?.[compatibility] || 0;
                 let attackDamage = 0;
                 let usingSp = 0;
-
-                if (attack === "💥일반 공격 (PP -1)") {
-                    inputValue["behaviorText"] = "💥" + inputValue["poketmon"] + "의 일반 공격!";
-                    attackDamage = getRandomInt(2, 5 + 1);
-                    usingSp = 1;
-                } else if (attack === "⭐️타입 공격 (PP -3)") {
-                    inputValue["behaviorText"] = "⭐️" + inputValue["poketmon"] + "의 " + inputValue["type"] + " 타입 공격!";
-                    attackDamage = getRandomInt(4, 10 + 1) + getRandomInt(4, 10 + 1);
-                    usingSp = 3;
-                } else if (attack === "💢맡긴다 (PP가 0일 때)") {
-                    inputValue["behaviorText"] = "💢" + inputValue["poketmon"] + " 는 자신의 판단하에 상대를 공격했다!";
-                    attackDamage = getRandomInt(1, 3 + 1);
-                    compatibility = undefined;
-                    usingSp = 0;
-                    inputValue["attackText"] = "💢" + inputValue["poketmon"] + "의 공격! -";
-                } else if (attack === "🛡️방어 (PP -2)") {
-                    attackDamage = 0;
-                    compatibility = undefined;
-                    inputValue["defense"] = getRandomInt(1, 15 + 1);
-                    usingSp = 2;
-                    inputValue["behaviorText"] = "🛡️" + inputValue["poketmon"] + "의 방어!";
-                    inputValue["attackText"] = "🛡️" + inputValue["poketmon"] + " 은(는) 방어 태세를 갖추고 다음 공격에 대비하고 있다! +" + inputValue["defense"].toString();
-                }
 
                 if (compatibility === "효과 좋음(- 1d10)") {
                     inputValue["attackText"] = "효과가 굉장했다! -";
@@ -121,8 +99,35 @@ export default function Layout(props) {
                 } else if (compatibility === "효과 없음(- 1d0)") {
                     inputValue["attackText"] = "효과가 없는 것 같았다… -";
                     attackDamage = 0;
+                } else if (compatibility === "- (일반 공격, 방어)") {
+                    compatibilityDamage = 0;
                 }
-                inputValue["damage"] = attackDamage + (compatibility === "- (일반 공격, 방어)" ? 0 : getRandomInt(1, compatibilityDamage[compatibility]));
+
+                if (attack === "💥일반 공격 (PP -1)") {
+                    inputValue["behaviorText"] = "💥" + inputValue["poketmon"] + "의 일반 공격!";
+                    attackDamage = getRandomInt(2, 5 + 1);
+                    compatibilityDamage = 0;
+                    usingSp = 1;
+                } else if (attack === "⭐️타입 공격 (PP -3)") {
+                    inputValue["behaviorText"] = "⭐️" + inputValue["poketmon"] + "의 " + inputValue["type"] + " 타입 공격!";
+                    attackDamage = getRandomInt(4, 10 + 1) + getRandomInt(4, 10 + 1);
+                    usingSp = 3;
+                } else if (attack === "💢맡긴다 (PP가 0일 때)") {
+                    inputValue["behaviorText"] = "💢" + inputValue["poketmon"] + " 는 자신의 판단하에 상대를 공격했다!";
+                    attackDamage = getRandomInt(1, 3 + 1);
+                    compatibilityDamage = 0;
+                    usingSp = 0;
+                    inputValue["attackText"] = "💢" + inputValue["poketmon"] + "의 공격! -";
+                } else if (attack === "🛡️방어 (PP -2)") {
+                    attackDamage = 0;
+                    compatibilityDamage = 0;
+                    inputValue["defense"] = getRandomInt(1, 15 + 1);
+                    usingSp = 2;
+                    inputValue["behaviorText"] = "🛡️" + inputValue["poketmon"] + "의 방어!";
+                    inputValue["attackText"] = "🛡️" + inputValue["poketmon"] + " 은(는) 방어 태세를 갖추고 다음 공격에 대비하고 있다! +" + inputValue["defense"].toString();
+                }
+
+                inputValue["damage"] = attackDamage + compatibilityDamage;
                 inputValue["damage"] = inputValue["damage"] <= 0 ? 0 : inputValue["damage"];
 
                 inputValue["sp"] -= usingSp;

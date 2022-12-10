@@ -201,7 +201,7 @@ export default function Layout(props) {
                                                     options={compatibilityOption}
                                                 ></GridInputSelectBox>
 
-                                                <GridInputText id={"i-roadbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"후공포켓몬"}></GridInputText>
                                                 <GridInputSelectBox
                                                     id={"i-roadbattle-second-behavior"}
                                                     dataName={"behavior"}

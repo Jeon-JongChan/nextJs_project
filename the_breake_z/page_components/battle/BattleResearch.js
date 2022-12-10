@@ -106,7 +106,8 @@ export default function Layout(props) {
     function startTrace() {
         let target = document.querySelector("#i-research-tracecount");
         let targetValue = parseInt(target.value);
-        setTraceRate(1 + (4 * targetValue - 4));
+        let rate = targetValue < 15 ? 1 + (4 * targetValue - 4) : 100;
+        setTraceRate(rate);
         devLog(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
         setTraceFailText(failText[getRandomInt(0, failText.length)]);
     }
@@ -173,7 +174,7 @@ export default function Layout(props) {
                                     <div className="my-2">
                                         <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
                                             난수 생성 ( 1 ~ 100 ) <br />
-                                            <span id="rand" className="text-5xl text-center block">
+                                            <span onClick={clickCopyToClipBoard} id="rand" className="text-5xl text-center block">
                                                 0
                                             </span>
                                         </pre>
@@ -195,7 +196,7 @@ export default function Layout(props) {
                                     <div className="my-2">
                                         <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
                                             난수 생성 x10 ( 10 ~ 200 ) <br />
-                                            <span id="randTen" className="text-5xl text-center block">
+                                            <span onClick={clickCopyToClipBoard} id="randTen" className="text-5xl text-center block">
                                                 0
                                             </span>
                                         </pre>
@@ -253,19 +254,19 @@ export default function Layout(props) {
                                     </div>
                                     <pre id="research-wild-capture-first" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center">
                                         첫번째 시도 포획 확률 <br />
-                                        <span id="randTen" className="text-5xl text-center block">
+                                        <span onClick={clickCopyToClipBoard} id="randTen" className="text-5xl text-center block">
                                             {wildCaptureFirst}
                                         </span>
                                     </pre>
                                     <pre id="research-wild-capture-second" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center">
                                         두번째 시도 포획 확률 <br />
-                                        <span id="randTen" className="text-5xl text-center block">
+                                        <span onClick={clickCopyToClipBoard} id="randTen" className="text-5xl text-center block">
                                             {wildCaptureSecond}
                                         </span>
                                     </pre>
                                     <pre id="research-wild-capture-battle" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center">
                                         배틀 도중 포획 확률 <br />
-                                        <span id="randTen" className="text-5xl text-center block">
+                                        <span onClick={clickCopyToClipBoard} id="randTen" className="text-5xl text-center block">
                                             {wildCaptureBattle}
                                         </span>
                                     </pre>
@@ -289,15 +290,15 @@ export default function Layout(props) {
                                     </div>
                                     <pre id="research-trace-rate" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center">
                                         조우 확률 <br />
-                                        <span id="randTen" className="text-5xl text-center block">
+                                        <span onClick={clickCopyToClipBoard} id="randTen" className="text-5xl text-center block">
                                             {traceRate}
                                         </span>
                                     </pre>
                                     <pre id="research-trace-failtext" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center overflow-x-auto scrollbar-remove">
                                         조우 실패 랜덤 문구 <br />
-                                        <span id="randTen" className="text-base text-center block">
+                                        <pre onClick={clickCopyToClipBoard} id="randTen" className="text-base text-center block">
                                             {traceFailText}
-                                        </span>
+                                        </pre>
                                     </pre>
                                 </div>
                             </div>

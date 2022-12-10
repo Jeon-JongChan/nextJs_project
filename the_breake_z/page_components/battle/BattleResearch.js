@@ -48,7 +48,7 @@ export default function Layout(props) {
                 randTenFunc = new asyncInterval((node, query) => {
                     node = node || document.querySelector(query);
                     if (!node) return;
-                    node.innerText = getRandomInt(10, 200 + 1);
+                    node.innerText = getRandomInt(1, 20 + 1) * 10;
                 }, 3);
 
                 initAutoComplete("i-research-local", "local", localData);
@@ -194,7 +194,7 @@ export default function Layout(props) {
                                     </div>
                                     <div className="my-2">
                                         <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
-                                            난수 생성 x10 ( 1 ~ 100 ) <br />
+                                            난수 생성 x10 ( 10 ~ 200 ) <br />
                                             <span id="randTen" className="text-5xl text-center block">
                                                 0
                                             </span>

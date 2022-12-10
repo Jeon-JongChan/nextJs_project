@@ -188,7 +188,7 @@ export default function Layout(props) {
                                                         colSpan={3}
                                                         type="button"
                                                     ></GridInputButton>
-                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randFunc.stop()} colSpan={3}></GridInputButton>
+                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randFunc.current.stop()} colSpan={3}></GridInputButton>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,7 +210,7 @@ export default function Layout(props) {
                                                         colSpan={3}
                                                         type="button"
                                                     ></GridInputButton>
-                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randTenFunc.stop()} colSpan={3}></GridInputButton>
+                                                    <GridInputButton label={"STOP"} type="button" onclick={() => randTenFunc.current.stop()} colSpan={3}></GridInputButton>
                                                 </div>
                                             </div>
                                         </div>

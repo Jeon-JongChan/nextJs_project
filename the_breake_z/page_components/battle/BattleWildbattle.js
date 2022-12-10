@@ -98,13 +98,46 @@ export default function Layout(props) {
                                                     ></GridInputSelectBox>
 
                                                     <GridInputText id={"i-wildbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"후공포켓몬"}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-second-attack"}
-                                                        dataName={"attack"}
-                                                        colSpan={2}
-                                                        label={"공격"}
-                                                        options={["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"]}
-                                                    ></GridInputSelectBox>
+                                                    <div className="col-span-2">
+                                                        <label htmlFor="i-wildbattle-second-attack" className="block text-sm font-medium text-gray-700">
+                                                            공격
+                                                        </label>
+                                                        <div className="flex flex-row">
+                                                            <select
+                                                                id="i-wildbattle-second-attack"
+                                                                name="i-wildbattle-second-attack"
+                                                                className="mt-1 block w-3/4 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                            >
+                                                                {["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"].map((option, idx) => {
+                                                                    return (
+                                                                        <option key={idx} value={option}>
+                                                                            {option}
+                                                                        </option>
+                                                                    );
+                                                                })}
+                                                            </select>
+                                                            <div className="text-right mt-1 ml-2">
+                                                                <button
+                                                                    type="button"
+                                                                    className={[
+                                                                        "w-full py-2 px-4 text-sm font-medium text-white",
+                                                                        "inline-flex justify-center rounded-md border border-transparent  shadow-sm  ",
+                                                                        "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                                                                        "bg-indigo-600 hover:bg-indigo-700",
+                                                                    ].join(" ")}
+                                                                    onClick={() => {
+                                                                        let randomAttack = Math.floor(Math.random() * 4);
+                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"][
+                                                                            randomAttack
+                                                                        ];
+                                                                    }}
+                                                                >
+                                                                    랜덤
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <GridInputText id={"i-wildbattle-second-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
                                                     <GridInputSelectBox
                                                         id={"i-wildbattle-second-compatibility"}

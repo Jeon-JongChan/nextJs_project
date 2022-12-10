@@ -55,5 +55,5 @@ const buttonColorClass = {
 const hoverColorClass = {
     blue: "hover:bg-indigo-700",
     red: "hover:bg-red-700",
-    zinc: "bg-zinc-700",
+    zinc: "hover:bg-zinc-700",
 };

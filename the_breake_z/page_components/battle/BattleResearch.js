@@ -52,7 +52,6 @@ export default function Layout(props) {
                 }, 3);
 
                 initAutoComplete("i-research-local", "local", localData);
-                initAutoComplete("i-research-poketmon", "poketmon", localData);
                 initAutoComplete("i-research-wildname", "poketmon", localData);
             } catch (e) {
                 devLog("BattleResearch initResearch error. localData :", localData, e.message);

@@ -1,5 +1,18 @@
 import { devLog } from "/scripts/common";
-export { submitAdminDelete, submitAdminData, changeTab, updateCheck, syncData, copyToClipBoard, getDomIndex, checkHangulEncode, findLocalDataByName, findLocalDataByLocal };
+export {
+    submitAdminDelete,
+    submitAdminData,
+    changeTab,
+    updateCheck,
+    syncData,
+    getDomIndex,
+    checkHangulEncode,
+    copyToClipBoard,
+    clickCopyToClipBoard,
+    alertModal,
+    findLocalDataByName,
+    findLocalDataByLocal,
+};
 
 let host = process.env.NEXT_PUBLIC_HOST;
 
@@ -155,20 +168,7 @@ function getDomIndex(dom, elem = null) {
     }
     return idx;
 }
-function copyToClipBoard(query) {
-    var node = document.querySelector(query);
-    var content = node?.innerText;
 
-    navigator.clipboard
-        .writeText(content)
-        .then(() => {
-            alert("텍스트만 복사되었습니다.");
-            devLog("Text copied to clipboard...");
-        })
-        .catch((err) => {
-            devLog("Something went wrong", err);
-        });
-}
 function findLocalDataByName(name, data) {
     let ret = {};
     for (let i = 0; i < data.length; i++) {
@@ -199,3 +199,59 @@ const checkHangulEncode = (keyword) => {
         return keyword;
     }
 };
+function copyToClipBoard(query) {
+    var node = document.querySelector(query);
+    var content = node?.innerText;
+
+    navigator.clipboard
+        .writeText(content)
+        .then(() => {
+            alertModal("텍스트만 복사되었습니다.");
+            devLog("Text copied to clipboard...");
+        })
+        .catch((err) => {
+            devLog("Something went wrong", err);
+        });
+}
+function clickCopyToClipBoard(e) {
+    var node = e.target;
+    var content = node?.innerText;
+
+    navigator.clipboard
+        .writeText(content)
+        .then(() => {
+            alertModal("텍스트만 복사되었습니다.");
+            devLog("Text copied to clipboard...");
+        })
+        .catch((err) => {
+            devLog("Something went wrong", err);
+        });
+}
+function alertModal(msg) {
+    if (!msg) return;
+    let modal = document.querySelector("#alert-modal");
+    devLog("alertModal modal : ", modal);
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "alert-modal";
+        modal.style.cssText = `
+            position: absolute;
+            background-color: wheat;
+            padding: 1rem;
+            top: 1rem;
+            border-radius: 0.75rem;
+            opacity: 0.9;
+            font-weight: 700;
+            display: none;
+        `;
+        document.querySelector("body").appendChild(modal);
+        modal.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    }
+    modal.innerText = msg;
+    modal.style.display = "block";
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 1000);
+}

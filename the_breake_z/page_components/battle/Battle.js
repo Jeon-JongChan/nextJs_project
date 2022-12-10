@@ -16,9 +16,14 @@ export default function Layout() {
         setTimeout(initBattle, 1000);
     }, []);
 
+    function initBattle() {
+        syncDataInterval = new asyncInterval(syncDataBattle, 60);
+        syncDataInterval.start();
+    }
+
     function syncDataBattle() {
         let syncList = ["poketmon", "local"];
-        devLog("Battle syncDataBattle", localData);
+        // devLog("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {
                 localData[element] = await syncData(element, localData?.[element] || {}, "Battle syncDataInterval");
@@ -26,11 +31,6 @@ export default function Layout() {
         } catch (e) {
             devLog("Battle syncDataInterval error. localData :", localData, e.message);
         }
-    }
-
-    function initBattle() {
-        syncDataInterval = new asyncInterval(syncDataBattle, 60);
-        syncDataInterval.start();
     }
 
     return (

@@ -56,6 +56,31 @@ function getDataIdx(objArr, value, key = "name") {
     return -1;
 }
 
+class asyncInterval {
+    constructor(fn, sec) {
+        this.startCount = 0;
+        this.fn = fn;
+        this.sec = sec * 1000;
+    }
+    stop() {
+        this.startCount = 0;
+        devLog("asyncInterval stop, current count", this.startCount);
+    }
+    async start(...args) {
+        if (this.startCount > 0) {
+            devLog("asyncInterval have many jobs - ", this.startCount);
+            return;
+        }
+        this.startCount += 1;
+        // devLog("asyncInterval start current count : ", this.startCount);
+        while (this.startCount > 0 && this.startCount <= 1) {
+            await this.fn(...args);
+            await sleep(this.sec);
+        }
+        devLog("asyncInterval exit current count : ", this.startCount);
+        this.startCount -= 1;
+    }
+}
 /*
 // 함수형 asyncInterval
 function asyncInterval(fn, sec) {
@@ -84,29 +109,3 @@ function asyncInterval(fn, sec) {
     return { start, stop };
 }
 */
-
-class asyncInterval {
-    constructor(fn, sec) {
-        this.startCount = 0;
-        this.fn = fn;
-        this.sec = sec * 1000;
-    }
-    stop() {
-        this.startCount = 0;
-        devLog("asyncInterval stop, current count", this.startCount);
-    }
-    async start(...args) {
-        if (this.startCount > 0) {
-            devLog("asyncInterval have many jobs - ", this.startCount);
-            return;
-        }
-        this.startCount += 1;
-        // devLog("asyncInterval start current count : ", this.startCount);
-        while (this.startCount > 0 && this.startCount <= 1) {
-            await this.fn(...args);
-            await sleep(this.sec);
-        }
-        devLog("asyncInterval exit current count : ", this.startCount);
-        this.startCount -= 1;
-    }
-}

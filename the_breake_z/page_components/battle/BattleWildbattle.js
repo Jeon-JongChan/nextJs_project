@@ -1,5 +1,5 @@
 /* next Module */
-import { copyToClipBoard, findLocalDataByName } from "/scripts/client/client";
+import { copyToClipBoard, clickCopyToClipBoard, findLocalDataByName } from "/scripts/client/client";
 import { getRandomInt, asyncInterval, devLog } from "/scripts/common";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
@@ -239,7 +239,9 @@ export default function Layout(props) {
                                         ? bolierPlate["wildbattle"].map((text, index) => {
                                               return (
                                                   <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
-                                                      <pre className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{text}</pre>
+                                                      <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">
+                                                          {text}
+                                                      </pre>
                                                   </div>
                                               );
                                           })

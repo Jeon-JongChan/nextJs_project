@@ -234,11 +234,11 @@ function unsecuredCopyToClipboard(text) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
     document.body.appendChild(textArea);
-    textArea.focus();
+    // textArea.focus();
     textArea.select();
     try {
         document.execCommand("copy");
-        alertModal("텍스트만 복사되었습니다.");
+        alertModal("텍스트 복사되었습니다.");
     } catch (err) {
         console.error("Unable to copy to clipboard", err);
     }
@@ -252,7 +252,7 @@ function alertModal(msg) {
         modal = document.createElement("div");
         modal.id = "alert-modal";
         modal.style.cssText = `
-            position: absolute;
+            position: fixed;
             background-color: wheat;
             padding: 1rem;
             top: 1rem;

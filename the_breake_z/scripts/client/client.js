@@ -247,7 +247,7 @@ function unsecuredCopyToClipboard(text) {
 function alertModal(msg) {
     if (!msg) return;
     let modal = document.querySelector("#alert-modal");
-    devLog("alertModal modal : ", modal);
+    // devLog("alertModal modal : ", modal);
     if (!modal) {
         modal = document.createElement("div");
         modal.id = "alert-modal";

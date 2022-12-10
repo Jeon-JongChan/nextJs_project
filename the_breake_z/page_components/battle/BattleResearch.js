@@ -5,7 +5,7 @@ import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
 
@@ -30,7 +30,8 @@ export default function Layout(props) {
     
     `);
 
-    let randFunc, randTenFunc;
+    let randFunc = useRef();
+    let randTenFunc = useRef();
     let initState = true;
 
     useEffect(() => {
@@ -40,17 +41,16 @@ export default function Layout(props) {
     function initResearch() {
         if (initState) {
             try {
-                randFunc = new asyncInterval((node, query) => {
+                randFunc.current = new asyncInterval((node, query) => {
                     node = node || document.querySelector(query);
                     if (!node) return;
                     node.innerText = getRandomInt(1, 100 + 1);
                 }, 3);
-                randTenFunc = new asyncInterval((node, query) => {
+                randTenFunc.current = new asyncInterval((node, query) => {
                     node = node || document.querySelector(query);
                     if (!node) return;
                     node.innerText = getRandomInt(1, 20 + 1) * 10;
                 }, 3);
-
                 initAutoComplete("i-research-local", "local", localData);
                 initAutoComplete("i-research-wildname", "poketmon", localData);
             } catch (e) {
@@ -184,7 +184,7 @@ export default function Layout(props) {
                                                     <GridInputButton
                                                         label={"START"}
                                                         buttonColor={"zinc"}
-                                                        onclick={() => randFunc.start(document.querySelector("#rand"))}
+                                                        onclick={() => randFunc.current.start(document.querySelector("#rand"))}
                                                         colSpan={3}
                                                         type="button"
                                                     ></GridInputButton>
@@ -206,7 +206,7 @@ export default function Layout(props) {
                                                     <GridInputButton
                                                         label={"START"}
                                                         buttonColor={"zinc"}
-                                                        onclick={() => randTenFunc.start(document.querySelector("#randTen"))}
+                                                        onclick={() => randTenFunc.current.start(document.querySelector("#randTen"))}
                                                         colSpan={3}
                                                         type="button"
                                                     ></GridInputButton>

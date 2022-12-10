@@ -53,6 +53,7 @@ async function initAutoComplete(id, target, localData, caller = "noinfo") {
         inputNode.setAttribute("data-target", target); // 자동완성 때 어느 데이터를 참조할지 input마다 표기
         /**
          * 입력창에 사용자 반응에 따른 이벤트를 만들어준다.
+         * 렉시컬 범위를 이용해 이벤트 중복을 방지한다 ******!!!!
          * keyup 후 0.5초 이후에 종료
          * focus를 잃는경우 바로 종료
          * focus될 경우 자동완성 보여주기

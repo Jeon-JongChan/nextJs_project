@@ -14,7 +14,7 @@ export default function Home() {
         spec: [],
         personality: [],
     };
-    let localData = {};
+    let localData = useRef({});
     let host = process.env.NEXT_PUBLIC_HOST || "";
     return (
         <LocalDataContext.Provider value={localData}>

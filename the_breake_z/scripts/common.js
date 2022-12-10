@@ -88,29 +88,25 @@ function asyncInterval(fn, sec) {
 class asyncInterval {
     constructor(fn, sec) {
         this.startCount = 0;
-        this.state = true;
         this.fn = fn;
         this.sec = sec * 1000;
     }
     stop() {
-        this.state = false;
-        devLog("asyncInterval stop ", this.state);
+        this.startCount = 0;
+        devLog("asyncInterval stop, current count", this.startCount);
     }
     async start(...args) {
         if (this.startCount > 0) {
             devLog("asyncInterval have many jobs - ", this.startCount);
             return;
         }
-        // devLog("asyncInterval start ", this.state, " count : ", this.startCount);
-        this.state = true;
         this.startCount += 1;
-        while (this.state) {
-            // devLog("asyncInterval progress... ", ...args);
-            if (this.startCount <= 1) await this.fn(...args);
-            else devLog("asyncInterval have many jobs in while - ", this.startCount);
+        // devLog("asyncInterval start current count : ", this.startCount);
+        while (this.startCount > 0 && this.startCount <= 1) {
+            await this.fn(...args);
             await sleep(this.sec);
         }
-        this.startCount = 0;
-        devLog("asyncInterval exit");
+        devLog("asyncInterval exit current count : ", this.startCount);
+        this.startCount -= 1;
     }
 }

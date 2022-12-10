@@ -18,7 +18,7 @@ export default function Component(props) {
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
-            <div className={["px-2 py-1 text-right sm:px-6", colSpanClass[colSpan]].join(" ")}>
+            <div className={["px-1 py-1 text-right", colSpanClass[colSpan]].join(" ")}>
                 <button
                     type={type}
                     className={[

@@ -9,13 +9,16 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
 
-// * react
-export default function Layout() {
+/**
+ *
+ * @param {*} isActive 해당 컴포넌트의 활성화 여부
+ * @returns
+ */
+export default function Layout(props) {
+    let isActive = props?.isActive || "activate-tab"; //"hidden";
     const localData = useContext(LocalDataContext);
 
     const [researchImage, setResearchImage] = useState("");
-    const [rand, setRand] = useState(0);
-    const [randTen, setRandTen] = useState(0);
     const [wildCaptureFirst, setWildCaptureFirst] = useState(0);
     const [wildCaptureSecond, setWildCaptureSecond] = useState(0);
     const [wildCaptureBattle, setWildCaptureBattle] = useState(0);
@@ -109,7 +112,7 @@ export default function Layout() {
 
     return (
         <>
-            <div id="battlepage-research" className="activate-tab">
+            <div id="battlepage-research" className={isActive}>
                 <div className="flex mt-4">
                     <div className="flex flex-col w-1/3">
                         <div className="bg-white">
@@ -137,20 +140,14 @@ export default function Layout() {
                                         <div className="shadow rounded-md">
                                             <div className="bg-white px-4 py-3">
                                                 <div className="grid grid-cols-6 gap-6">
-                                                    <GridInputButton
-                                                        label={"Copy"}
-                                                        buttonColor={"zinc"}
-                                                        onclick={() => copyToClipBoard(".pre-research")}
-                                                        colSpan={3}
-                                                        type="button"
-                                                    ></GridInputButton>
+                                                    <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-research")} colSpan={3} type="button"></GridInputButton>
                                                     <GridInputButton label={"생성"} type="button" onclick={createTextResearch} colSpan={3}></GridInputButton>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md px-4 py-3">
+                                    <div className="p-1">
+                                        <div className="shadow rounded-md p-3 bg-white overflow-x-auto scrollbar-remove">
                                             <pre className="pre-research">
                                                 🎵<spen data-name={"music"}>(https://youtu.be/D7bYpd7Wiis)</spen> <br />
                                                 앗, 야생의<spen data-name={"personality"}>(성격)</spen> <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
@@ -177,7 +174,7 @@ export default function Layout() {
                                         <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
                                             난수 생성 ( 1 ~ 100 ) <br />
                                             <span id="rand" className="text-5xl text-center block">
-                                                {rand}
+                                                0
                                             </span>
                                         </pre>
                                         <div className="shadow rounded-md">
@@ -199,7 +196,7 @@ export default function Layout() {
                                         <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
                                             난수 생성 x10 ( 1 ~ 100 ) <br />
                                             <span id="randTen" className="text-5xl text-center block">
-                                                {randTen}
+                                                0
                                             </span>
                                         </pre>
                                         <div className="shadow rounded-md">
@@ -236,12 +233,7 @@ export default function Layout() {
                                             <div className="research-wild-frame grid grid-cols-6 gap-6">
                                                 <GridInputText id={"i-research-wildname"} dataName={"name"} colSpan={3} label={"야생포켓몬 이름"}></GridInputText>
                                                 <GridInputText id={"i-research-wildhealth"} dataName={"health"} colSpan={3} label={"야생포켓몬 체력"}></GridInputText>
-                                                <GridInputSelectBox
-                                                    id={"i-research-wildball"}
-                                                    colSpan={3}
-                                                    label={"포켓몬 볼"}
-                                                    options={["몬스터볼", "수퍼볼", "하이퍼볼"]}
-                                                ></GridInputSelectBox>
+                                                <GridInputSelectBox id={"i-research-wildball"} colSpan={3} label={"포켓몬 볼"} options={["몬스터볼", "수퍼볼", "하이퍼볼"]}></GridInputSelectBox>
                                             </div>
                                         </div>
                                     </div>
@@ -294,10 +286,7 @@ export default function Layout() {
                                             {traceRate}
                                         </span>
                                     </pre>
-                                    <pre
-                                        id="research-trace-failtext"
-                                        className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center overflow-x-auto scrollbar-remove"
-                                    >
+                                    <pre id="research-trace-failtext" className="shadow rounded-md p-2 text-sm font-medium text-gray-700 text-center overflow-x-auto scrollbar-remove">
                                         조우 실패 랜덤 문구 <br />
                                         <span id="randTen" className="text-base text-center block">
                                             {traceFailText}

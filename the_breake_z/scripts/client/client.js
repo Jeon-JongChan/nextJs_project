@@ -1,5 +1,5 @@
 import { devLog } from "/scripts/common";
-export { submitAdminDelete, submitAdminData, changeTab, updateCheck, findLocalDataByName, syncData, copyToClipBoard, getDomIndex, checkHangulEncode };
+export { submitAdminDelete, submitAdminData, changeTab, updateCheck, syncData, copyToClipBoard, getDomIndex, checkHangulEncode, findLocalDataByName, findLocalDataByLocal };
 
 let host = process.env.NEXT_PUBLIC_HOST;
 
@@ -179,6 +179,15 @@ function findLocalDataByName(name, data) {
         }
     }
     return;
+}
+function findLocalDataByLocal(local, data) {
+    let ret = [];
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].LOCAL === local) {
+            ret.push(data[i]);
+        }
+    }
+    return ret.length < 1 ? undefined : ret;
 }
 const checkHangulEncode = (keyword) => {
     const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식

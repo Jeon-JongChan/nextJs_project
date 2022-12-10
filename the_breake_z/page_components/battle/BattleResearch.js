@@ -1,5 +1,5 @@
 /* next Module */
-import { copyToClipBoard, findLocalDataByName } from "/scripts/client/client";
+import { copyToClipBoard, findLocalDataByName, findLocalDataByLocal } from "/scripts/client/client";
 import { getRandomInt, asyncInterval, devLog } from "/scripts/common";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
@@ -68,12 +68,14 @@ export default function Layout(props) {
         inputs.forEach((input) => {
             inputValues[input.dataset.name] = input.value || "";
         });
-        let detailData = findLocalDataByName(inputValues.poketmon, localData.poketmon?.data);
+
+        let poketmonInLocal = findLocalDataByLocal(inputValues.local, localData.poketmon?.data);
+        let detailData = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
         let randomSpecIdx = getRandomInt(1, 4);
+        inputValues["poketmon"] = detailData?.NAME;
         inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];
         inputValues["level"] = detailData ? getRandomInt(detailData.LEVEL_MIN, detailData.LEVEL_MAX + 1) : "oo";
         inputValues["personality"] = detailData?.["personality"] || "";
-        devLog(inputs, inputValues, detailData, localData);
         targetList.forEach((element) => {
             let targetNodes = document.querySelectorAll(".pre-research spen[data-name='" + element + "']");
             targetNodes.forEach((node) => {
@@ -124,11 +126,10 @@ export default function Layout(props) {
                                                 <div className="research-frame grid grid-cols-6 gap-6">
                                                     <GridInputText id={"i-research-trainer"} dataName={"trainer"} colSpan={3} label={"트레이너"}></GridInputText>
                                                     <GridInputText id={"i-research-local"} dataName={"local"} colSpan={3} label={"조사지역"}></GridInputText>
-                                                    <GridInputText id={"i-research-poketmon"} dataName={"poketmon"} colSpan={3} label={"선택 포켓몬"}></GridInputText>
                                                     <GridInputText
                                                         id={"i-research-music"}
                                                         dataName={"music"}
-                                                        colSpan={3}
+                                                        colSpan={6}
                                                         label={"유투브 음악주소"}
                                                         default={"https://youtu.be/D7bYpd7Wiis"}
                                                     ></GridInputText>

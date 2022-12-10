@@ -6,6 +6,7 @@ const query = {
     status_spec: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM SPEC",
     status_personality: "SELECT COUNT(*) cnt, MAX(ID) lastid FROM PERSONALITY",
     status_poketmon: "SELECT COUNT(*) cnt, MAX(ID) lastid, MAX(UPDATE_DT) update_dt FROM POKETMON",
+    status_localpoketmon: "SELECT COUNT(*) cnt, MAX(ID) lastid, MAX(UPDATE_DT) update_dt FROM POKETMON",
     localdata_local: `
     SELECT NAME, COUNT(LOCAL_ID) POKETMON_CNT
     FROM LOCAL L

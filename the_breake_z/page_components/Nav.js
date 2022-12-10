@@ -16,12 +16,6 @@ export default function Nav() {
                                 <a href="/" className="apply-nav-item">
                                     배틀
                                 </a>
-                                <a href="#" className="apply-nav-item">
-                                    Projects
-                                </a>
-                                <a href="#" className="apply-nav-item">
-                                    Calendar
-                                </a>
                             </div>
                         </div>
                         <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

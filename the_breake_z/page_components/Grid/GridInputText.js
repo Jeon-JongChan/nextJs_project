@@ -8,6 +8,7 @@ import Script from "next/script";
  * @param {string} [id=input-text] - input tag에 들어갈 ID (name 속성에도 들어감)
  * @param {string} [autoComplete=on] - input 자동완성 옵션
  * @param {int} [colSpan=6] - input 넓이(Grid Column 기준)
+ * @param {string} [type] - input type
  * @param {string} [default=""] - Input default 값
  * @param {string} [dirmode="col"] - 입력 라벨을 왼쪽으로 두고 싶을 경우 row
  * @param {string} [rowWidth="w-2/5"] - 입력 라벨을 왼쪽일경우 넓이 지정 (class명)
@@ -24,6 +25,7 @@ export default function Component(props) {
     let rowWidth = props?.rowWidth || "w-2/5";
     let defaultValue = props?.default || null;
     let dataName = props?.dataName || null;
+    let type = props?.type || "text";
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
@@ -33,7 +35,7 @@ export default function Component(props) {
                     {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
                 </label>
                 <input
-                    type="text"
+                    type={type}
                     name={inputId}
                     id={inputId}
                     autoComplete={autoComplete}

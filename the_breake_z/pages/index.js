@@ -1,9 +1,15 @@
 //import Head from 'next/head'
 //import Image from 'next/image'
 
-import Admin from "/page_components/admin/Admin";
 import Battle from "/page_components/battle/Battle";
+import { LocalDataContext, HostContext, AdminSyncContext, AdminSyncDataContext } from "/page_components/MyContext";
+import { useRef, useState } from "react";
 
 export default function Home() {
-    return <Battle></Battle>;
+    let localData = useRef({});
+    return (
+        <LocalDataContext.Provider value={localData.current}>
+            <Battle></Battle>
+        </LocalDataContext.Provider>
+    );
 }

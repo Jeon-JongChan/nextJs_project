@@ -26,41 +26,109 @@ export default function Layout(props) {
     function init() {
         if (initState) {
             try {
-                initAutoComplete("i-wildbattle-first-poketmon", "poketmon", localData);
-                initAutoComplete("i-wildbattle-second-poketmon", "poketmon", localData);
+                initAutoComplete("i-roadbattle-first-poketmon", "poketmon", localData);
+                initAutoComplete("i-roadbattle-second-poketmon", "poketmon", localData);
             } catch (e) {
-                devLog("BattleWildbattle init error. localData :", localData, e.message);
+                devLog("BattleRoadbattle init error. localData :", localData, e.message);
             }
             initState = false;
         }
     }
+    function clickRandomAttack(e) {
+        let attackList = ["선공", "후공"];
+        let attack = attackList[getRandomInt(0, attackList.length)];
+        let target = document.querySelector("#rand-attack");
+        target.innerText = attack;
+    }
 
-    function createTextWildBattle(preClassName) {
+    function changeBehavior(e) {
+        let matchTag = {
+            "i-roadbattle-first-behavior": "#i-roadbattle-first-attack",
+            "i-roadbattle-second-behavior": "#i-roadbattle-second-attack",
+        };
+        let targetId = e.target.id;
+        let targetValue = e.target.value;
+
+        let targetNode = document.querySelector(matchTag[targetId]);
+        if (targetValue === "방어") if (targetNode) targetNode.value = "🛡️방어 (PP -2)";
+    }
+
+    function createTextRoadBattle(preClassName) {
         let inputOrder = ["first", "second"];
-        let inputList = ["poketmon", "health", "attack", "compatibility"];
-        let spanList = ["poketmon", "health", "attack", "damage"];
+        let inputList = ["poketmon", "health", "behavior", "attack", "type", "sp", "compatibility"];
+        let spanList = ["poketmon", "behaviorText", "attackText", "health", "sp"];
         let compatibilityDamage = {
-            승: 5,
-            패: 2,
-            무: 3,
+            "효과 좋음(- 1d10)": 10,
+            "효과 부족(- 1d5)": 5,
+            "효과 없음(- 1d0)": 0,
         };
         // wildbattle-frame i-wildbattle-first
         let inputValues = {};
         inputOrder.forEach((order) => {
             inputValues[order] = {};
             inputList.forEach((input) => {
-                inputValues[order][input] = document.querySelector(".wildbattle-frame #i-wildbattle-" + order + "-" + input).value || undefined;
+                inputValues[order][input] = document.querySelector(".roadbattle-frame #i-roadbattle-" + order + "-" + input).value;
             });
         });
+        inputOrder.forEach((order) => {
+            let inputValue = inputValues[order];
+            if (inputValue["behavior"] === "공격") {
+                let attack = inputValue["attack"];
+                let compatibility = inputValue["compatibility"];
+                let attackDamage = 0;
+                let usingSp = 0;
 
-        inputValues["first"]["damage"] = compatibilityDamage[inputValues["first"]["compatibility"]];
-        inputValues["second"]["damage"] = compatibilityDamage[inputValues["second"]["compatibility"]];
-        inputValues["first"]["health"] = inputValues["first"]["health"] - inputValues["second"]["damage"];
-        inputValues["second"]["health"] = inputValues["second"]["health"] - inputValues["first"]["damage"];
+                if (compatibility === "효과 좋음(- 1d10)") {
+                    inputValue["attackText"] = "효과가 굉장했다! -";
+                } else if (compatibility === "효과 부족(- 1d5)") {
+                    inputValue["attackText"] = "효과가 부족한 것 같았다… -";
+                } else if (compatibility === "효과 없음(- 1d0)") {
+                    inputValue["attackText"] = "효과가 없는 것 같았다… -";
+                }
 
+                if (attack === "💥일반 공격 (PP -1)") {
+                    inputValue["behaviorText"] = "💥" + inputValue["poketmon"] + "의 일반 공격! -(1d5)";
+                    attackDamage = getRandomInt(1, 5 + 1);
+                    usingSp = 1;
+                } else if (attack === "⭐️타입 공격 (PP -3)") {
+                    inputValue["behaviorText"] = "⭐️" + inputValue["poketmon"] + "의 " + inputValue["type"] + " 타입 공격!";
+                    attackDamage = getRandomInt(2, 10 + 1);
+                    usingSp = 3;
+                } else if (attack === "💢맡긴다 (PP가 0일 때)") {
+                    inputValue["behaviorText"] = "💢" + inputValue["poketmon"] + " 는 자신의 판단하에 상대를 공격했다!";
+                    attackDamage = getRandomInt(1, 3 + 1);
+                    compatibility = undefined;
+                    usingSp = 0;
+                    inputValue["attackText"] = "💢" + inputValue["poketmon"] + "의 공격! -";
+                } else if (attack === "🛡️방어 (PP -2)") {
+                    attackDamage = 0;
+                    compatibility = undefined;
+                    inputValue["defense"] = getRandomInt(1, 15 + 1);
+                    usingSp = 2;
+                    inputValue["behaviorText"] = "🛡️" + inputValue["poketmon"] + "의 방어!";
+                    inputValue["attackText"] = "🛡️" + inputValue["poketmon"] + " 은(는) 방어 태세를 갖추고 다음 공격에 대비하고 있다! +" + inputValue["defense"].toString();
+                }
+                inputValue["damage"] = attackDamage + (compatibility ? getRandomInt(1, compatibilityDamage[compatibility]) : 0);
+
+                inputValue["sp"] -= usingSp;
+                if (attack !== "🛡️방어 (PP -2)") {
+                    inputValue["defense"] = 0;
+                    inputValue["attackText"] = inputValue["attackText"] + inputValue["damage"].toString();
+                }
+            } else if (inputValue["behavior"] === "방어") {
+                inputValue["damage"] = 0;
+                inputValue["defense"] = getRandomInt(1, 15 + 1);
+                inputValue["sp"] -= 2;
+                inputValue["behaviorText"] = "🛡️" + inputValue["poketmon"] + "의 방어!";
+                inputValue["attackText"] = "🛡️" + inputValue["poketmon"] + " 은(는) 방어 태세를 갖추고 다음 공격에 대비하고 있다! +" + inputValue["defense"].toString();
+            }
+        });
+
+        inputValues["first"]["health"] = parseInt(inputValues["first"]["health"]) + (inputValues["first"]["defense"] - inputValues["second"]["damage"]);
+        inputValues["second"]["health"] = parseInt(inputValues["second"]["health"]) + inputValues["second"]["defense"] - inputValues["first"]["damage"];
         inputOrder.forEach((order) => {
             spanList.forEach((span) => {
-                let targetNode = document.querySelectorAll(preClassName + " .wb-" + order + "[data-name='" + span + "']");
+                let targetNode = document.querySelectorAll(preClassName + " .rb-" + order + "[data-name='" + span + "']");
                 targetNode.forEach((node) => {
                     node.innerText = inputValues[order][span];
                 });
@@ -70,134 +138,139 @@ export default function Layout(props) {
 
     return (
         <>
-            <div id="battlepage-wildbattle" className={isActive}>
-                <div className="flex mt-4">
-                    <div className="flex flex-col w-2/3">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-2">
-                                <div className="flex flex-col w-full">
-                                    <div className="my-2">
-                                        <div className="shadow rounded-md">
-                                            <div className="bg-white px-4 py-3">
-                                                <div className="wildbattle-frame grid grid-cols-6 gap-6">
-                                                    <GridInputText id={"i-wildbattle-first-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-first-attack"}
-                                                        dataName={"attack"}
-                                                        colSpan={2}
-                                                        label={"공격"}
-                                                        options={["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"]}
-                                                    ></GridInputSelectBox>
-                                                    <GridInputText id={"i-wildbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-first-compatibility"}
-                                                        dataName={"compatibility"}
-                                                        colSpan={1}
-                                                        label={"상성 결과"}
-                                                        options={["승", "패", "무"]}
-                                                    ></GridInputSelectBox>
+            <div id="battlepage-roadbattle" className={isActive}>
+                <div className="flex flex-col mt-4">
+                    <div className="block bg-white">
+                        <div className="mx-auto py-2 px-2">
+                            <div className="flex flex-col w-full">
+                                <div className="my-2">
+                                    <div className="shadow rounded-md">
+                                        <div className="bg-white px-4 py-3">
+                                            <div className="roadbattle-frame grid grid-cols-10 gap-2">
+                                                <GridInputText id={"i-roadbattle-first-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-first-behavior"}
+                                                    dataName={"behavior"}
+                                                    onchange={changeBehavior}
+                                                    colSpan={1}
+                                                    label={"행동 분류"}
+                                                    options={["공격", "방어"]}
+                                                ></GridInputSelectBox>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-first-attack"}
+                                                    dataName={"attack"}
+                                                    colSpan={2}
+                                                    label={"행동 선택"}
+                                                    options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
+                                                ></GridInputSelectBox>
+                                                <GridInputText id={"i-roadbattle-first-type"} dataName={"type"} colSpan={1} label={"공격타입"} default={"물"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-first-sp"} dataName={"sp"} colSpan={1} label={"현재 SP"} default={10} type={"number"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={50} type={"number"}></GridInputText>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-first-compatibility"}
+                                                    dataName={"compatibility"}
+                                                    colSpan={2}
+                                                    label={"데미지상성"}
+                                                    options={["효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
+                                                ></GridInputSelectBox>
 
-                                                    <GridInputText id={"i-wildbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"후공포켓몬"}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-second-attack"}
-                                                        dataName={"attack"}
-                                                        colSpan={2}
-                                                        label={"공격"}
-                                                        options={["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"]}
-                                                    ></GridInputSelectBox>
-                                                    <GridInputText id={"i-wildbattle-second-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-second-compatibility"}
-                                                        dataName={"compatibility"}
-                                                        colSpan={1}
-                                                        label={"상성 결과"}
-                                                        options={["승", "패", "무"]}
-                                                    ></GridInputSelectBox>
-                                                </div>
+                                                <GridInputText id={"i-roadbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-second-behavior"}
+                                                    dataName={"behavior"}
+                                                    onchange={changeBehavior}
+                                                    colSpan={1}
+                                                    label={"행동 분류"}
+                                                    options={["공격", "방어"]}
+                                                ></GridInputSelectBox>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-second-attack"}
+                                                    dataName={"attack"}
+                                                    colSpan={2}
+                                                    label={"행동 선택"}
+                                                    options={["💥일반 공격 (PP -1)", "⭐️타입 공격 (PP -3)", "🛡️방어 (PP -2)", "💢맡긴다 (PP가 0일 때)"]}
+                                                ></GridInputSelectBox>
+                                                <GridInputText id={"i-roadbattle-second-type"} dataName={"type"} colSpan={1} label={"공격타입"} default={"물"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-second-sp"} dataName={"sp"} colSpan={1} label={"현재 SP"} default={10} type={"number"}></GridInputText>
+                                                <GridInputText id={"i-roadbattle-second-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={50} type={"number"}></GridInputText>
+                                                <GridInputSelectBox
+                                                    id={"i-roadbattle-second-compatibility"}
+                                                    dataName={"compatibility"}
+                                                    colSpan={2}
+                                                    label={"데미지상성"}
+                                                    options={["효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"]}
+                                                ></GridInputSelectBox>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex mt-4">
-                            <div className="flex w-1/2">
-                                <div className="m-1 mr-1 bg-white overflow-x-auto scrollbar-remove">
-                                    <div className="shadow rounded-md">
-                                        <div className="bg-white px-4 py-3">
-                                            <div className="grid grid-cols-6">
-                                                <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-wildbattle")} colSpan={3} type="button"></GridInputButton>
-                                                <GridInputButton label={"생성"} type="button" onclick={() => createTextWildBattle(".pre-wildbattle")} colSpan={3}></GridInputButton>
-                                            </div>
-                                        </div>
-                                        {/* prettier-ignore */}
-                                        <pre className="pre-wildbattle px-4 py-3">
-                                            <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen>의 <spen className={'wb-first'} data-name={"attack"}>(선공 포켓몬의 선택 공격)!</spen> <br />
-                                            <br />
-                                            야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen>의 <spen className={'wb-second'} data-name={"attack"}>(후공 포켓몬의 선택 랜덤 공격)!</spen><br />
-                                            <br />
-                                            💥야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen> 은(는) -<spen className={'wb-first'} data-name={"damage"}>0</spen>의 데미지를 입었다!<br />
-                                            💥<spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen> 은(는) -<spen className={'wb-second'} data-name={"damage"}>0</spen>의 데미지를 입었다!<br />
-                                            <br />
-                                            <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen> : <spen className={'wb-first'} data-name={"health"}>(선공 포켓몬의 체력 - 데미지)</spen><br />
-                                            <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen> : <spen className={'wb-second'} data-name={"health"}>(후공 포켓몬의 체력 - 데미지)</spen><br />
-                                            <br />
-                                            ..무엇을 할까 로토?<br />
-                                            <br />
-                                            ▷✌️재빠른 공격<br />
-                                            ▷✊묵직한 공격<br />
-                                            ▷🖐️유연한 공격<br />
-                                            ▷ 포획한다.<br />
-                                        </pre>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex w-1/2">
-                                <div className="m-1 ml-0 bg-white overflow-x-auto scrollbar-remove">
-                                    <div className="shadow rounded-md">
-                                        <div className="bg-white px-4 py-3">
-                                            <div className="grid grid-cols-6">
-                                                <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-strangebattle")} colSpan={3} type="button"></GridInputButton>
-                                                <GridInputButton label={"생성"} type="button" onclick={() => createTextWildBattle(".pre-strangebattle")} colSpan={3}></GridInputButton>
-                                            </div>
-                                        </div>
-                                        {/* prettier-ignore */}
-                                        <pre className="pre-strangebattle px-4 py-3">
-                                            <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen>의 <spen className={'wb-first'} data-name={"attack"}>(선공 포켓몬의 선택 공격)!</spen> <br />
-                                            <br />
-                                            야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen>의 <spen className={'wb-second'} data-name={"attack"}>(후공 포켓몬의 선택 랜덤 공격)!</spen><br />
-                                            <br />
-                                            💥야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen>은(는) -<spen className={'wb-first'} data-name={"damage"}>0</spen>의 데미지를 입었다!<br />
-                                            💥<spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen>은(는) -<spen className={'wb-second'} data-name={"damage"}>0</spen>의 데미지를 입었다!<br />
-                                            <br />
-                                            <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen> : <spen className={'wb-first'} data-name={"health"}>(선공 포켓몬의 체력 - 데미지)</spen><br />
-                                            <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen> : <spen className={'wb-second'} data-name={"health"}>(후공 포켓몬의 체력 - 데미지)</spen><br />
-                                            <br />
-                                            ..무엇을 할까 로토?<br />
-                                            <br />
-                                            ▷✌️재빠른 공격(이상 개체)<br />
-                                            ▷✊묵직한 공격(이상 개체)<br />
-                                            ▷🖐️유연한 공격(이상 개체)<br />
-                                            ▷ 포획한다.<br />
-                                        </pre>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col w-1/3">
-                        <div className="bg-white">
-                            <div className="mx-auto py-2 px-2">
-                                <div className="flex flex-col w-full">
-                                    {bolierPlate
-                                        ? bolierPlate["wildbattle"].map((text, index) => {
-                                              return (
-                                                  <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
-                                                      <pre className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{text}</pre>
-                                                  </div>
-                                              );
-                                          })
-                                        : null}
+                    <div className="flex flex-row w-full">
+                        <div className="flex flex-col w-1/3">
+                            <div className="m-1 mr-1 bg-white">
+                                <div className="shadow rounded-md">
+                                    <div className="bg-white px-4 py-3">
+                                        <div className="grid grid-cols-6">
+                                            <GridInputButton label={"Copy"} buttonColor={"zinc"} onclick={() => copyToClipBoard(".pre-roadbattle")} colSpan={3} type="button"></GridInputButton>
+                                            <GridInputButton label={"생성"} type="button" onclick={() => createTextRoadBattle(".pre-roadbattle")} colSpan={3}></GridInputButton>
+                                        </div>
+                                    </div>
+                                    {/* prettier-ignore */}
+                                    <pre className="pre-roadbattle mx-4 py-3 overflow-x-auto scrollbar-remove">
+                                        <spen className={'rb-first'} data-name={"behaviorText"}>(행동 분류 관련 텍스트)</spen><br/>
+                                        <spen className={'rb-first'} data-name={"attackText"}>(행동 선택에 따른 관련 텍스트)</spen><br/>
+                                        <br/>
+                                        <spen className={'rb-second'} data-name={"behaviorText"}>(행동 분류 관련 텍스트)</spen><br/>
+                                        <spen className={'rb-second'} data-name={"attackText"}>(행동 선택에 따른 관련 텍스트)</spen><br/>
+                                        <br/>
+                                        <spen className={'rb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen> : <span className={'rb-first'} data-name={"health"}> 0 </span><br/>
+                                        <spen className={'rb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen> : <span className={'rb-second'} data-name={"health"}> 0 </span><br/>
+                                        <br/>
+                                        <br/>
+                                        어떤 행동을 지시할까? (PP : <span className={'rb-first'} data-name={"sp"}> 10 </span>/10)<br/>
+                                        <br/>
+                                        ▷ 💥일반 공격 (PP -1)<br/>
+                                        ▷ ⭐️타입 공격 (PP -3)<br/>
+                                        ▷ 🛡️방어 (PP -2)<br/>
+                                        ▷💢맡긴다 (PP가 0일 때)<br/>
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col w-1/3">
+                            <div className="flex flex-col w-full">
+                                <pre className="shadow rounded-md p-2 text-sm font-medium text-gray-700">
+                                    선공/후공 랜덤 산출 <br />
+                                    <span id="rand-attack" className="text-5xl text-center block">
+                                        선공
+                                    </span>
+                                </pre>
+                                <div className="shadow rounded-md">
+                                    <div className="bg-white p-1">
+                                        <div className="grid grid-cols-5 gap-6">
+                                            <div className="col-span-1"></div>
+                                            <GridInputButton label={"랜덤생성"} type="button" onclick={clickRandomAttack} colSpan={3}></GridInputButton>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col w-1/3">
+                            <div className="bg-white">
+                                <div className="mx-auto py-2 px-2">
+                                    <div className="flex flex-col w-full">
+                                        {bolierPlate
+                                            ? bolierPlate?.["roadbattle"].map((text, index) => {
+                                                  return (
+                                                      <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
+                                                          <pre className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">{text}</pre>
+                                                      </div>
+                                                  );
+                                              })
+                                            : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -209,101 +282,45 @@ export default function Layout(props) {
 }
 
 let bolierPlate = {
-    wildbattle: [
+    roadbattle: [
         `
-야생의 -은(는) 공격을 하기 위해 자세를 바로 잡고 있다..
+❗️ 눈이 마주치면 포켓몬 승부!
+…-의 선공!
+
+도전할 로드 트레이너의 정보와
 내보낼 포켓몬의 정보(이름, 레벨)를 기입해주시기 바랍니다.
 `,
         `
+🎵https://youtu.be/o0LZKtKV3lI
+-이(가) 승부를 걸어왔다!
+상대 -은(는) -을(를) 내보냈다!
+
 -은(는) -을(를) 내보냈다!
 
-- : 10
-- : 10, 15
+- : 50
+- : 50
 
-..무엇을 할까 로토?
+어떤 행동을 지시할까? (PP : -/10)
 
-▷✌️재빠른 공격
-▷✊묵직한 공격
-▷🖐️유연한 공격
-▷ 포획한다.
+▷ 💥일반 공격 (PP -1)
+▷ ⭐️타입 공격 (PP -3)
+▷ 🛡️방어 (PP -2)
+▷ 💢맡긴다 (PP가 0일 때)
 `,
         `
-
-야생의 은(는) 쓰러졌다!
-은(는) 0.5의 경험치를 획득했다!
-
 은(는) 쓰러졌다!
-…어떻게 할까 로토?
+-와의 승부에서 이기지 못했다!
 
-▷다음 포켓몬을 내보낸다.
-▷도망간다.
+-의 눈 앞이 캄캄해졌다…
+`,
+        `
+상대 은(는) 쓰러졌다!
+
+-와의 승부에서 승리했다!
+은(는) 1,500원과 트레이닝 레코드 3개를 획득했다!
 `,
         `
 ✔️배틀 종료! 수고했어 로토~!
-`,
+       `,
     ],
 };
-
-const failText = [
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-여기는 아무것도 보이지 않는 것 같아 로토! 다른 곳에 가볼까?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-조금 전 까지 여기 있었던 것 같은데 로토… 조금 더 찾아보자 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-이건 다른 포켓몬의 발자국이야 로토! 다른 곳에 가볼까 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-로토? …케테-! 무슨 소린가 했는데 내 꼬르륵 소리였어 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-흔적이 보이지 않아 로토! 저기 있는 포켓몬들한테 물어보면 알까 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-저 쪽에서 방금 무슨 소리 들리지 않았어 로토? 한 번 가보자 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-…썰렁할 정도로 조용해 로토-!!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-앗! 이건! …. 대타출동 인형이야 로토! 누가 이런걸 두고 간 거지 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-(포켓몬의 울음소리가 들린다!)
-로토? 아, 이건 내가 그 포켓몬 울음소리 샘플을 재생해본거야 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-어어?…찾았다! …..내 보조 배터리 말이야, 로토~
-
-▷수색을 이어간다.
-`,
-];

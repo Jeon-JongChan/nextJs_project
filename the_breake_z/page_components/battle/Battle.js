@@ -2,18 +2,14 @@
 import { changeTab, syncData } from "/scripts/client/client";
 import { asyncInterval, devLog } from "/scripts/common";
 import Nav from "/page_components/Nav";
-import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
-import GridInputText from "/page_components/Grid/GridInputText";
-import GridInputButton from "/page_components/Grid/GridInputButton";
-import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import BattleResearch from "./BattleResearch";
 import BattleWildbattle from "./BattleWildbattle";
+import BattleRoadbattle from "./BattleRoadbattle";
 import { LocalDataContext } from "/page_components/MyContext";
-import { useEffect, useRef, useState } from "react";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 // * react
 export default function Layout() {
-    let localData = useRef({});
+    let localData = useContext(LocalDataContext);
     let syncDataInterval;
 
     useEffect(() => {
@@ -22,7 +18,7 @@ export default function Layout() {
 
     function syncDataBattle() {
         let syncList = ["poketmon", "local"];
-        // devLog("Battle syncDataBattle", localData);
+        devLog("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {
                 localData[element] = await syncData(element, localData?.[element] || {}, "Battle syncDataInterval");
@@ -39,25 +35,24 @@ export default function Layout() {
 
     return (
         <>
-            <LocalDataContext.Provider value={localData}>
-                <Nav></Nav>
-                <div className="mt-2">
-                    {/* battlepage-research, */}
-                    <ul className="flex items-center justify-center space-x-4">
-                        <button onClick={() => changeTab("#battlepage-research")}>
-                            <li className="apply-tab-item">리서치</li>
-                        </button>
-                        <button onClick={() => changeTab("#battlepage-wildbattle")}>
-                            <li className="apply-tab-item">야생배틀</li>
-                        </button>
-                        <button onClick={() => changeTab("#adminpage-addSpec")}>
-                            <li className="apply-tab-item">로드배틀</li>
-                        </button>
-                    </ul>
-                </div>
-                <BattleResearch isActive={"hidden"}></BattleResearch>
-                <BattleWildbattle></BattleWildbattle>
-            </LocalDataContext.Provider>
+            <Nav></Nav>
+            <div className="mt-2">
+                {/* battlepage-research, */}
+                <ul className="flex items-center justify-center space-x-4">
+                    <button onClick={() => changeTab("#battlepage-research")}>
+                        <li className="apply-tab-item">리서치</li>
+                    </button>
+                    <button onClick={() => changeTab("#battlepage-wildbattle")}>
+                        <li className="apply-tab-item">야생배틀</li>
+                    </button>
+                    <button onClick={() => changeTab("#battlepage-roadbattle")}>
+                        <li className="apply-tab-item">로드배틀</li>
+                    </button>
+                </ul>
+            </div>
+            <BattleResearch isActive={"hidden"}></BattleResearch>
+            <BattleWildbattle isActive={"hidden"}></BattleWildbattle>
+            <BattleRoadbattle></BattleRoadbattle>
         </>
     );
 }

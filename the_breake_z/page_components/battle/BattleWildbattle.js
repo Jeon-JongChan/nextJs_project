@@ -36,6 +36,7 @@ export default function Layout(props) {
     }
 
     function createTextWildBattle(preClassName) {
+        devLog("createTextWildBattle : ", localData);
         let inputOrder = ["first", "second"];
         let inputList = ["poketmon", "health", "attack", "compatibility"];
         let spanList = ["poketmon", "health", "attack", "damage"];
@@ -86,7 +87,7 @@ export default function Layout(props) {
                                                         dataName={"attack"}
                                                         colSpan={2}
                                                         label={"공격"}
-                                                        options={["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"]}
+                                                        options={["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"]}
                                                     ></GridInputSelectBox>
                                                     <GridInputText id={"i-wildbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
                                                     <GridInputSelectBox
@@ -108,7 +109,7 @@ export default function Layout(props) {
                                                                 name="i-wildbattle-second-attack"
                                                                 className="mt-1 block w-3/4 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             >
-                                                                {["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"].map((option, idx) => {
+                                                                {["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"].map((option, idx) => {
                                                                     return (
                                                                         <option key={idx} value={option}>
                                                                             {option}
@@ -127,7 +128,7 @@ export default function Layout(props) {
                                                                     ].join(" ")}
                                                                     onClick={() => {
                                                                         let randomAttack = Math.floor(Math.random() * 4);
-                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["재빠른 공격", "묵직한 공격", "유연한 공격", "포획한다"][
+                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격", "포획한다"][
                                                                             randomAttack
                                                                         ];
                                                                     }}
@@ -155,7 +156,7 @@ export default function Layout(props) {
                         </div>
                         <div className="flex mt-4">
                             <div className="flex w-1/2">
-                                <div className="m-1 mr-1 bg-white overflow-x-auto scrollbar-remove">
+                                <div className="w-full m-1 mr-1 bg-white">
                                     <div className="shadow rounded-md">
                                         <div className="bg-white px-4 py-3">
                                             <div className="grid grid-cols-6">
@@ -164,7 +165,7 @@ export default function Layout(props) {
                                             </div>
                                         </div>
                                         {/* prettier-ignore */}
-                                        <pre className="pre-wildbattle px-4 py-3">
+                                        <pre className="pre-wildbattle mx-4 py-3 overflow-x-auto scrollbar-remove">
                                             <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen>의 <spen className={'wb-first'} data-name={"attack"}>(선공 포켓몬의 선택 공격)!</spen> <br />
                                             <br />
                                             야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen>의 <spen className={'wb-second'} data-name={"attack"}>(후공 포켓몬의 선택 랜덤 공격)!</spen><br />
@@ -186,7 +187,7 @@ export default function Layout(props) {
                                 </div>
                             </div>
                             <div className="flex w-1/2">
-                                <div className="m-1 ml-0 bg-white overflow-x-auto scrollbar-remove">
+                                <div className="w-full m-1 ml-0 bg-white">
                                     <div className="shadow rounded-md">
                                         <div className="bg-white px-4 py-3">
                                             <div className="grid grid-cols-6">
@@ -195,7 +196,7 @@ export default function Layout(props) {
                                             </div>
                                         </div>
                                         {/* prettier-ignore */}
-                                        <pre className="pre-strangebattle px-4 py-3">
+                                        <pre className="pre-strangebattle mx-4 py-3 overflow-x-auto scrollbar-remove">
                                             <spen className={'wb-first'} data-name={"poketmon"}>(선공 포켓몬)</spen>의 <spen className={'wb-first'} data-name={"attack"}>(선공 포켓몬의 선택 공격)!</spen> <br />
                                             <br />
                                             야생의 <spen className={'wb-second'} data-name={"poketmon"}>(후공 포켓몬)</spen>의 <spen className={'wb-second'} data-name={"attack"}>(후공 포켓몬의 선택 랜덤 공격)!</spen><br />

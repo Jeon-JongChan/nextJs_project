@@ -25,6 +25,7 @@ export default function Component() {
         let inputNameList = ["name", "personality", "local", "rare", "spec1", "spec2", "spec3", "levelmin", "levelmax"];
         let inputs = document.querySelectorAll(".poketmoninput-frame input");
         let iimage = document.querySelector("#i-image");
+        let imageFrame = document.querySelector(".gridinputphoto-frame");
         let sendData = new FormData();
 
         for (let input of inputs) {
@@ -43,6 +44,7 @@ export default function Component() {
         });
         iimage.file = null;
         iimage.value = null;
+        imageFrame.style.backgroundImage = "url()";
         iimage.dispatchEvent(new Event("change"));
         devLog("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
 

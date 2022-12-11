@@ -36,7 +36,7 @@ async function submitAdminData(target, inputNameList, idUniqueTag, adminSync = n
     }
 
     let baseurl = host + "/api/upload/" + target;
-    devLog("submitAdminData", baseurl);
+    // devLog("submitAdminData", baseurl);
     let res = await fetch(baseurl, {
         method: "POST",
         body: sendData,
@@ -230,15 +230,19 @@ function copyToClipBoard(query) {
     var node = document.querySelector(query);
     var content = node?.innerText;
 
-    navigator.clipboard
-        .writeText(content)
-        .then(() => {
-            alertModal("텍스트만 복사되었습니다.");
-            devLog("Text copied to clipboard...");
-        })
-        .catch((err) => {
-            devLog("Something went wrong", err);
-        });
+    if (window.isSecureContext && navigator.clipboard) {
+        navigator.clipboard
+            .writeText(content)
+            .then(() => {
+                alertModal("텍스트만 복사되었습니다.");
+                devLog("Text copied to clipboard...");
+            })
+            .catch((err) => {
+                devLog("Something went wrong", err);
+            });
+    } else {
+        unsecuredCopyToClipboard(content);
+    }
 }
 function clickCopyToClipBoard(e) {
     var node = e.target;

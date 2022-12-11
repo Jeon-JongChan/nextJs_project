@@ -5,13 +5,13 @@ import { devLog } from "/scripts/common";
 
 export const config = {
     api: {
-        bodyParser: true,
+        bodyParser: false,
     },
 };
 
 export default async function handler(req, res) {
     let resData = await server.readAndSaveFileFromFormdata(req, true);
-    devLog("spec api resData: ", resData);
+    // devLog("spec api resData: ", req);
     try {
         if (!resData.name) {
             res.status(200).json({ status: false, message: "name is null" });

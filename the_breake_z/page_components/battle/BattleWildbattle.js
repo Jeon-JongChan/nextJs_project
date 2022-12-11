@@ -19,6 +19,8 @@ export default function Layout(props) {
     const localData = useContext(LocalDataContext);
     let initState = true;
 
+    const attackOption = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"];
+
     useEffect(() => {
         init();
     }, []);
@@ -96,20 +98,14 @@ export default function Layout(props) {
                                             <div className="bg-white px-4 py-3">
                                                 <div className="wildbattle-frame grid grid-cols-6 gap-6">
                                                     <GridInputText id={"i-wildbattle-first-poketmon"} dataName={"poketmon"} colSpan={2} label={"선공포켓몬"}></GridInputText>
-                                                    <GridInputSelectBox
-                                                        id={"i-wildbattle-first-attack"}
-                                                        dataName={"attack"}
-                                                        colSpan={2}
-                                                        label={"공격"}
-                                                        options={["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"]}
-                                                    ></GridInputSelectBox>
+                                                    <GridInputSelectBox id={"i-wildbattle-first-attack"} dataName={"attack"} colSpan={2} label={"공격"} options={attackOption}></GridInputSelectBox>
                                                     <GridInputText id={"i-wildbattle-first-health"} dataName={"health"} colSpan={1} label={"현재 체력"} default={10}></GridInputText>
                                                     <GridInputSelectBox
                                                         id={"i-wildbattle-first-compatibility"}
                                                         dataName={"compatibility"}
                                                         colSpan={1}
                                                         label={"상성 결과"}
-                                                        options={["승", "패", "무"]}
+                                                        options={attackOption}
                                                     ></GridInputSelectBox>
 
                                                     <GridInputText id={"i-wildbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"후공포켓몬"}></GridInputText>
@@ -123,7 +119,7 @@ export default function Layout(props) {
                                                                 name="i-wildbattle-second-attack"
                                                                 className="mt-1 block w-3/4 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             >
-                                                                {["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"].map((option, idx) => {
+                                                                {attackOption.map((option, idx) => {
                                                                     return (
                                                                         <option key={idx} value={option}>
                                                                             {option}
@@ -141,8 +137,8 @@ export default function Layout(props) {
                                                                         "bg-indigo-600 hover:bg-indigo-700",
                                                                     ].join(" ")}
                                                                     onClick={() => {
-                                                                        let randomAttack = Math.floor(Math.random() * 4);
-                                                                        document.querySelector("#i-wildbattle-second-attack").value = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"][randomAttack];
+                                                                        let randomAttack = Math.floor(Math.random() * attackOption.length);
+                                                                        document.querySelector("#i-wildbattle-second-attack").value = attackOption[randomAttack];
                                                                     }}
                                                                 >
                                                                     랜덤

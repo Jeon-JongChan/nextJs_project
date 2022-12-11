@@ -105,7 +105,7 @@ export default function Layout(props) {
                                                         dataName={"compatibility"}
                                                         colSpan={1}
                                                         label={"상성 결과"}
-                                                        options={attackOption}
+                                                        options={["승", "패", "무"]}
                                                     ></GridInputSelectBox>
 
                                                     <GridInputText id={"i-wildbattle-second-poketmon"} dataName={"poketmon"} colSpan={2} label={"후공포켓몬"}></GridInputText>

@@ -19,7 +19,7 @@ export default async function handler(req, res) {
             return null;
         }
         const insertLocalData = [{ name: resData.name }];
-        let insertPrepare = server.db.prepare(insert.ignore_local);
+        let insertPrepare = server.db.prepare(insert.ignore.local);
         server.sqlite.transaction(insertLocalData, insertPrepare);
     } catch (e) {
         res.status(500).json({ status: false, message: e.message });

@@ -61,6 +61,7 @@ export default function Layout(props) {
     }
 
     function createTextResearch() {
+        devLog("createTextResearch", localData);
         let targetList = ["trainer", "poketmon", "spec", "level", "personality", "music"];
         let inputs = document.querySelectorAll(".research-frame input");
         let inputValues = {};
@@ -74,7 +75,12 @@ export default function Layout(props) {
         inputValues["poketmon"] = detailData?.NAME;
         inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];
         inputValues["level"] = detailData ? getRandomInt(detailData.LEVEL_MIN, detailData.LEVEL_MAX + 1) : "oo";
-        inputValues["personality"] = detailData?.["PERSONALITY"] || "";
+
+        let personalityList = localData?.personality?.data;
+        if (personalityList.length > 0) {
+            inputValues["personality"] = personalityList[getRandomInt(0, personalityList.length)].NAME;
+        } else inputValues["personality"] = "";
+
         targetList.forEach((element) => {
             let targetNodes = document.querySelectorAll(".pre-research spen[data-name='" + element + "']");
             targetNodes.forEach((node) => {

@@ -22,7 +22,7 @@ export default function Layout() {
     }
 
     function syncDataBattle() {
-        let syncList = ["poketmon", "local"];
+        let syncList = ["poketmon", "local", "personality"];
         // devLog("Battle syncDataBattle", localData);
         try {
             syncList.forEach(async (element) => {

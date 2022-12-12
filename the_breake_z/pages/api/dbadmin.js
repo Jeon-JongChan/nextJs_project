@@ -3,6 +3,8 @@ import server from "/scripts/server";
 import select from "/scripts/query/select";
 import create from "/scripts/query/create";
 import insert from "/scripts/query/insert";
+import tempInitdata from "/temp/initData";
+import initdata from "/scripts/query/initdata";
 import deleteDDL from "/scripts/query/delete";
 import { devLog } from "/scripts/common";
 
@@ -20,9 +22,8 @@ export default function handler(req, res) {
         if (query === "boilerplatecreate") {
             server.db.prepare(create.create_table_boilerplate).run();
         } else if (query === "boilerplateinsert") {
-            let initData = require("/scripts/query/initdata.js");
-            devLog("insertData", initData.initdata);
-            if (initData.boilerplate) {
+            devLog(initdata);
+            if (initdata.boilerplate) {
                 ret = server.db.prepare("select count(*) cnt from boilerplate").get();
                 if (ret?.cnt === 0) {
                     const insertBoilerplate = server.db.prepare(insert.insert.boilerplate);
@@ -34,6 +35,14 @@ export default function handler(req, res) {
         } else if (query === "boilerplateselect") {
             ret = server.db.prepare(select.alldata.boilerplate).all();
             devLog(ret);
+        } else if (query === "backupdata") {
+            // select.alldata entries 사용
+            ret = {};
+            for (let [key, value] of Object.entries(select.alldata)) {
+                ret[key] = server.db.prepare(value).all();
+            }
+            devLog("dbadmin backupdata : ", ret);
+            server.file.create(JSON.stringify(ret), "/temp/backupdata.json");
         }
     } catch (e) {
         console.log("특수명령 에러", e);
@@ -56,11 +65,10 @@ export default function handler(req, res) {
                 server.db.prepare(v).run();
             }
         } else if (query === "insert_init") {
-            const insertData = require("/temp/initData.js");
             ret = server.db.prepare("select count(*) cnt from local").get();
             if (ret?.cnt === 0) {
                 const insertLocal = server.db.prepare(insert.insert.local);
-                server.sqlite.transaction(insertData.local, insertLocal);
+                server.sqlite.transaction(tempInitdata.local, insertLocal);
             }
 
             ret = server.db.prepare("select count(*) cnt from personality").get();

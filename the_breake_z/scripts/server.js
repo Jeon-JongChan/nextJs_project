@@ -13,9 +13,14 @@ const defaultFilePath = path.join(process.cwd() + "/temp/file");
 
 const server = {
     file: {
-        save: (data, filePath = defaultFilePath) => {
+        append: (data, filePath = defaultFilePath) => {
             server.init();
-            fs.appendFileSync(filePath, data, (err) => {
+            fs.appendFileSync("." + filePath, data, (err) => {
+                if (err) console.log("err : ", err);
+            });
+        },
+        create: (data, filePath = defaultFilePath) => {
+            fs.writeFile("." + filePath, data, (err) => {
                 if (err) console.log("err : ", err);
             });
         },
@@ -97,25 +102,25 @@ const server = {
                 console.log("create query가 존재하지 않습니다.", e);
             }
         }
-
+        console.log("서버시작시 필수요소를 생성했습니다");
         // insert init data
-        try {
-            const insert = require("/scripts/query/insert.js");
-            const insertData = require("/temp/initData.js");
-            ret = server.db.prepare("select count(*) cnt from local").get();
-            if (ret?.cnt === 0) {
-                const insertLocal = server.db.prepare(insert.insert.local);
-                server.sqlite.transaction(insertData.local, insertLocal);
-            }
+        // try {
+        //     const insert = require("/scripts/query/insert.js");
+        //     const insertData = require("/temp/initData.js");
+        //     ret = server.db.prepare("select count(*) cnt from local").get();
+        //     if (ret?.cnt === 0) {
+        //         const insertLocal = server.db.prepare(insert.insert.local);
+        //         server.sqlite.transaction(insertData.local, insertLocal);
+        //     }
 
-            ret = server.db.prepare("select count(*) cnt from personality").get();
-            if (ret?.cnt === 0) {
-                const insertPersonality = server.db.prepare(insert.insert.personality);
-                server.sqlite.transaction(insertData.spec, insertPersonality);
-            }
-        } catch (e) {
-            console.log("init insert 에러.", e.message);
-        }
+        //     ret = server.db.prepare("select count(*) cnt from personality").get();
+        //     if (ret?.cnt === 0) {
+        //         const insertPersonality = server.db.prepare(insert.insert.personality);
+        //         server.sqlite.transaction(insertData.spec, insertPersonality);
+        //     }
+        // } catch (e) {
+        //     console.log("init insert 에러.", e.message);
+        // }
     },
     sqlite: {
         /**

@@ -72,6 +72,16 @@ const query = {
         UNIQUE(POKETMON_ID)
     )
     `,
+    create_table_boilerplate: `
+    CREATE TABLE BOILERPLATE (
+        ID      INTEGER PRIMARY KEY,
+        NAME    NVARCHAR(20) UNIQUE NOT NULL,
+        PAGE    NVARCHAR(20) NOT NULL,
+        TYPE    NVARCHAR(20) NOT NULL,
+        TEXT    NVARCHAR(1000) NOT NULL,
+        UPDATE_DT   TEXT DEFAULT (datetime('now','localtime'))
+    )
+    `,
 };
 
 module.exports = query;

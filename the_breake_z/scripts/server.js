@@ -75,6 +75,7 @@ const server = {
     },
     db: db,
     init: () => {
+        console.log("서버시작시 필수요소를 생성합니다");
         try {
             // 필요 폴더 생성
             if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
@@ -89,12 +90,9 @@ const server = {
             // create table
             try {
                 const create = require("/scripts/query/create.js");
-                server.db.prepare(create.create_table_local).run();
-                server.db.prepare(create.create_table_spec).run();
-                server.db.prepare(create.create_table_image).run();
-                server.db.prepare(create.create_table_type).run();
-                server.db.prepare(create.create_table_poketmon).run();
-                server.db.prepare(create.create_table_poketmon_spec).run();
+                for (let v of Object.values(create)) {
+                    server.db.prepare(v).run();
+                }
             } catch (e) {
                 console.log("create query가 존재하지 않습니다.", e);
             }
@@ -116,7 +114,7 @@ const server = {
                 server.sqlite.transaction(insertData.spec, insertPersonality);
             }
         } catch (e) {
-            console.log("init insert 에러.", e);
+            console.log("init insert 에러.", e.message);
         }
     },
     sqlite: {
@@ -176,11 +174,12 @@ const server = {
     },
 };
 
-server.init();
+// server.init();
 // function initDB() {
 //     server.db.exec("CREATE TABLE IF NOT EXISTS users('ID' varchar(20), PASSWORD VARCHAR(64))");
 //     console.log('init db process');
 // }
 //initDB();
-export default server;
+// export default server;
+module.exports = server;
 // 공용함수 파일 이름은 common.js로 통일

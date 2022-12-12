@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
-const external_host = process.env.NEXT_PUBLIC_EXTERNAL_HOST;
-const host = process.env.NEXT_PUBLIC_HOST;
+// const external_host = process.env.NEXT_PUBLIC_EXTERNAL_HOST;
+// const host = process.env.NEXT_PUBLIC_HOST;
 const nextConfig = {
     reactStrictMode: true,
     // async redirects() {

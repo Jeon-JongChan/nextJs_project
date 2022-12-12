@@ -10,6 +10,7 @@ const query = {
         `,
         personality: "INSERT INTO PERSONALITY (NAME) VALUES (@name)",
         poketmon_spec: "INSERT INTO LOCAL (POKETMON_ID, SPEC_ID, HIDDEN_YN) VALUES (@poketmon_id, @spec_id, @priority)",
+        boilerplate: "INSERT INTO BOILERPLATE (NAME, PAGE, TYPE, TEXT) VALUES (@name, @page, @type, @text)",
     },
     ignore: {
         spec: "INSERT OR IGNORE INTO SPEC (NAME) VALUES (@name)",
@@ -98,6 +99,12 @@ const query = {
         VALUES (@name, @rare, @level_max, @level_min, datetime('now','localtime'))
         ON CONFLICT(NAME) DO UPDATE SET
         RARE=@rare, LEVEL_MAX=@level_max, LEVEL_MIN=@level_min, UPDATE_DT=datetime('now','localtime')
+        `,
+        boilerplate: `
+        INSERT INTO BOILERPLATE (NAME, PAGE, TYPE, TEXT, UPDATE_DT)
+        VALUES (@name, @page, @type, @text, datetime('now','localtime'))
+        ON CONFLICT(NAME) DO UPDATE SET
+        PAGE=@page, TYPE=@type, TEXT=@text, UPDATE_DT=datetime('now','localtime')
         `,
         poketmon_local: `
         INSERT INTO POKETMON_LOCAL (POKETMON_ID, LOCAL_ID)

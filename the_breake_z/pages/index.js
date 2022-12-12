@@ -6,7 +6,8 @@ import { LocalDataContext, HostContext, AdminSyncContext, AdminSyncDataContext }
 import { useRef, useState } from "react";
 
 export default function Home() {
-    let localData = useRef({});
+    const localData = useRef();
+    localData.current = {};
     return (
         <LocalDataContext.Provider value={localData.current}>
             <Battle></Battle>

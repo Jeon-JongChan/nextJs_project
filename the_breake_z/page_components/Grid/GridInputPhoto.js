@@ -7,14 +7,15 @@ import { devLog } from "/scripts/common";
  *
  * @param {label} [label] - 상단 라벨에 들어갈 텍스트
  * @param {label} [id] - input에 들어갈 id
+ * @param {string} [css] - input에 들어갈 tailwind css
  * @returns
  */
 export default function Component(props) {
     // const [uploadImage, setUploadImage] = useState("");
     let label = props?.label || "Cover photo";
     let inputId = props?.id || "file-input";
-    // let colSpenValue = props?.colSpan || 6;
-    // let colSmSpenValue = props?.colSmSpan || 4;
+    let css = props?.css || "";
+
     function updateUploadFileName(e) {
         devLog("updateUploadFileName : ", e.target.value, e.target.files);
         let file = e.target.files[0];
@@ -56,7 +57,7 @@ export default function Component(props) {
                                 className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                             >
                                 <span>Upload a file</span>
-                                <input id={inputId} name={inputId} onChange={(e) => updateUploadFileName(e)} type="file" className="sr-only" />
+                                <input id={inputId} className={css} name={inputId} onChange={(e) => updateUploadFileName(e)} type="file" className="sr-only" />
                             </label>
                             <p className="pl-1">or drag and drop</p>
                         </div>

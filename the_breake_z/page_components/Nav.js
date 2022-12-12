@@ -11,7 +11,10 @@ export default function Nav() {
                         <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
                             <div className="flex space-x-4">
                                 <a href="/admin" className="apply-nav-item" aria-current="page">
-                                    관리자
+                                    포켓몬 관리자
+                                </a>
+                                <a href="/admin/boilerplate" className="apply-nav-item" aria-current="page">
+                                    상용구 관리자
                                 </a>
                                 <a href="/" className="apply-nav-item">
                                     배틀

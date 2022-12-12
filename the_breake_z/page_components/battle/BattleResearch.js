@@ -16,7 +16,10 @@ import { LocalDataContext } from "/page_components/MyContext";
  */
 export default function Layout(props) {
     let isActive = props?.isActive || "activate-tab"; //"hidden";
-    const localData = useContext(LocalDataContext);
+    let localData = useContext(LocalDataContext);
+    let pageName = "research";
+    const boilerplateSync = useRef();
+    const [boilerplate, setBoilerplate] = useState({});
 
     const [researchImage, setResearchImage] = useState("");
     const [wildCaptureFirst, setWildCaptureFirst] = useState(0);
@@ -35,7 +38,8 @@ export default function Layout(props) {
     let initState = true;
 
     useEffect(() => {
-        initResearch();
+        devLog("BattleResearch useEffect", props);
+        setTimeout(initResearch, 1000);
     }, []);
 
     function initResearch() {
@@ -53,9 +57,23 @@ export default function Layout(props) {
                 }, 3);
                 initAutoComplete("i-research-local", "local", localData);
                 initAutoComplete("i-research-wildname", "poketmon", localData);
+
+                if (!boilerplateSync.current) {
+                    boilerplateSync.current = new asyncInterval(() => {
+                        devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.", localData?.boilerplate, localData?.boilerplate?.[pageName], boilerplateSync.current);
+                        if (localData?.boilerplate?.[pageName]) {
+                            devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다");
+                            boilerplateSync.current.stop();
+                            setBoilerplate(localData?.boilerplate?.[pageName]);
+                            return null;
+                        }
+                    }, 3);
+                    boilerplateSync.current.start();
+                }
             } catch (e) {
                 devLog("BattleResearch initResearch error. localData :", localData, e.message);
             }
+
             initState = false;
         }
     }
@@ -110,12 +128,14 @@ export default function Layout(props) {
         setWildCaptureBattle((100 - inputNodes[1]) * selectedBallStat);
     }
     function startTrace() {
+        let failtext = localData.boilerplate?.failtext;
         let target = document.querySelector("#i-research-tracecount");
         let targetValue = parseInt(target.value);
         let rate = targetValue < 15 ? 1 + (4 * targetValue - 4) : 100;
         setTraceRate(rate);
-        devLog(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
-        setTraceFailText(failText[getRandomInt(0, failText.length)]);
+        // devLog(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
+        if (failtext?.length < 1) return;
+        setTraceFailText(failtext[getRandomInt(0, failtext.length)].TEXT);
     }
 
     return (
@@ -222,12 +242,12 @@ export default function Layout(props) {
                                         </div>
                                     </div>
                                     <div className="my-2">
-                                        {bolierPlate
-                                            ? bolierPlate["research"].map((text, index) => {
+                                        {boilerplate.length > 0
+                                            ? boilerplate.map((element, index) => {
                                                   return (
                                                       <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
                                                           <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">
-                                                              {text}
+                                                              {element.TEXT}
                                                           </pre>
                                                       </div>
                                                   );
@@ -315,96 +335,3 @@ export default function Layout(props) {
         </>
     );
 }
-
-let bolierPlate = {
-    research: [
-        `
-🗺️ [헬벳지방 타운맵] - n호 내비 로토무
-- 탐색할 필드를 선택해 탐색 또는 배틀을 진행할 수 있습니다. 로토!
-한 번 고른 활동은 중간에 변경할 수 없습니다. 로토!
-
-진행 시간을 참고하여 참여해주시기 바랍니다. 로토! 
-▷ 포켓몬 탐색
-▷ 로드 트레이너 배틀
-▷ 흔적 수색
-▷ 난동 개체 탐색
-        `,
-        `앞으로 번 더 리서치 할 수 있어 로토! 계속할까 로토?`,
-        `은(는) 도망치는 길에 운 좋게도 바닥에 떨어진 n원을 주웠다!`,
-        `은(는) 을 사용했다!
-
-…
-….
-…..✨
-
-축하해 로토! 야생의 을(를) 잡았어!
-배우고 있는 기술 : ｜｜｜｜
-
-잡은 야생 포켓몬의 정보는 오늘의 모든 리서치가 종료되면 포켓몬 박스에 기입해줘, 로토!
-        `,
-    ],
-};
-
-const failText = [
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-여기는 아무것도 보이지 않는 것 같아 로토! 다른 곳에 가볼까?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-조금 전 까지 여기 있었던 것 같은데 로토… 조금 더 찾아보자 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-이건 다른 포켓몬의 발자국이야 로토! 다른 곳에 가볼까 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-로토? …케테-! 무슨 소린가 했는데 내 꼬르륵 소리였어 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-흔적이 보이지 않아 로토! 저기 있는 포켓몬들한테 물어보면 알까 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-저 쪽에서 방금 무슨 소리 들리지 않았어 로토? 한 번 가보자 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-…썰렁할 정도로 조용해 로토-!!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-앗! 이건! …. 대타출동 인형이야 로토! 누가 이런걸 두고 간 거지 로토?
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-(포켓몬의 울음소리가 들린다!)
-로토? 아, 이건 내가 그 포켓몬 울음소리 샘플을 재생해본거야 로토!
-
-▷수색을 이어간다.
-`,
-    `
-- ⚡️야생 포켓몬 ~의 흔적 수색 중 로토…
-어어?…찾았다! …..내 보조 배터리 말이야, 로토~
-
-▷수색을 이어간다.
-`,
-];

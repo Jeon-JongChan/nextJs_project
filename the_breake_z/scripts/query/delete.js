@@ -10,6 +10,7 @@ const query = {
         poketmon_local: "DROP TABLE POKETMON_LOCAL",
         personality: "DROP TABLE PERSONALITY",
         poketmon_personality: "DROP TABLE POKETMON_PERSONALITY",
+        boilerplate: "DROP TABLE BOILERPLATE",
     },
     truncate: {
         local: "DELETE FROM LOCAL",
@@ -22,12 +23,16 @@ const query = {
         poketmon_image: "DELETE FROM POKETMON_IMAGE",
         poketmon_local: "DELETE FROM POKETMON_LOCAL",
         poketmon_personality: "DELETE FROM POKETMON_PERSONALITY",
+        boilerplate: "DELETE FROM BOILERPLATE",
     },
     delete: {
         poketmon: "DELETE FROM POKETMON WHERE NAME=@name",
         local: "DELETE FROM LOCAL WHERE NAME=@name",
         spec: "DELETE FROM SPEC WHERE NAME=@name",
         personality: "DELETE FROM PERSONALITY WHERE NAME=@name",
+        image: "DELETE FROM IMAGE WHERE NAME=@name",
+        type: "DELETE FROM TYPE WHERE NAME=@name",
+        boilerplate: "DELETE FROM BOILERPLATE WHERE NAME=@name",
     },
 };
 

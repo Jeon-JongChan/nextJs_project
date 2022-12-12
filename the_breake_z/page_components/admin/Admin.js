@@ -3,7 +3,7 @@ import Nav from "/page_components/Nav";
 import ImageLayerText from "/page_components/public/ImageLayerText";
 import PoketmonInput from "/page_components/admin/PoketmonInput";
 import PersonalityInput from "/page_components/admin/PersonalityInput";
-import PoketmonListItem from "/page_components/admin/PoketmonListItem";
+import ListItem from "/page_components/public/ListItem";
 import LocalInput from "/page_components/admin/LocalInput";
 import SpecInput from "/page_components/admin/SpecInput";
 import { useEffect, useState, useContext, useRef } from "react";
@@ -278,8 +278,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="personality-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {personailies.length > 0 ? personailies.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                <div className="personality-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-cnt={0} data-lastid={0}>
+                                    {personailies.length > 0 ? personailies.map((data, idx, array) => <ListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></ListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -295,8 +295,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="local-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {locals.length > 0 ? locals.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                <div className="local-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-cnt={0} data-lastid={0}>
+                                    {locals.length > 0 ? locals.map((data, idx, array) => <ListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></ListItem>) : ""}
                                 </div>
                             </div>
                         </div>
@@ -312,8 +312,8 @@ export default function Layout() {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-4">
                                 <h2 className="sr-only">Products</h2>
-                                <div className="spec-list grid grid-cols-1 gap-y-1 gap-x-6 max-h-screen min-w-full" data-cnt={0} data-lastid={0}>
-                                    {specs.length > 0 ? specs.map((data, idx, array) => <PoketmonListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></PoketmonListItem>) : ""}
+                                <div className="spec-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-cnt={0} data-lastid={0}>
+                                    {specs.length > 0 ? specs.map((data, idx, array) => <ListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></ListItem>) : ""}
                                 </div>
                             </div>
                         </div>

@@ -1,8 +1,14 @@
 const query = {
-    update_poketmon_dt: `
-    UPDATE POKETMON SET UPDATE_DT=datetime('now','localtime')
-    WHERE ID IN (SELECT ID FROM POKETMON WHERE NAME=@name LIMIT 1)
-    `,
+    update: {
+        poketmon_dt: `
+        UPDATE POKETMON SET UPDATE_DT=datetime('now','localtime')
+        WHERE NAME=@name
+        `,
+        boilerplate_dt: `
+        UPDATE BOILERPLATE SET UPDATE_DT=datetime('now','localtime')
+        WHERE NAME=@name
+        `,
+    },
 };
 
 module.exports = query;

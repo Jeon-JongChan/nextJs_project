@@ -62,7 +62,7 @@ export default async function handler(req, res) {
             server.sqlite.transaction(insertPoketmonImage, insertPrepare);
         }
         // 정보가 갱신 되면 UPDATE_DT 갱신 (아무것도 변하지 않더라도 복잡도 문제로 그냥 갱신)
-        let updatePrepare = server.db.prepare(update.update_poketmon_dt);
+        let updatePrepare = server.db.prepare(update.update.poketmon_dt);
         server.sqlite.transaction([{ name: resData.name }], updatePrepare);
     } catch (e) {
         res.status(500).json({ status: false, message: e.message });

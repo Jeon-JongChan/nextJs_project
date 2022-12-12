@@ -64,13 +64,14 @@ class asyncInterval {
     }
     stop() {
         this.startCount = 0;
-        devLog("asyncInterval stop, current count", this.startCount);
+        // devLog("asyncInterval stop, current count", this.startCount);
     }
     async start(...args) {
         if (this.startCount > 0) {
             devLog("asyncInterval have many jobs - ", this.startCount);
             return;
         }
+        this.stop();
         this.startCount += 1;
         // devLog("asyncInterval start current count : ", this.startCount);
         while (this.startCount > 0 && this.startCount <= 1) {

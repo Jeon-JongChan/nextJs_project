@@ -2,16 +2,15 @@ import { LocalDataContext, HostContext, AdminSyncContext, AdminSyncDataContext }
 import { useRef, useState } from "react";
 import AdminBoilerplate from "/page_components/admin_boilerplate/AdminBoilerplate";
 export default function Home() {
-    // const [adminSync, setAdminSync] = useState("");
-    const adminSync = useRef("");
-    const adminSyncData = useRef("");
-    adminSyncData.current = {
-        poketmon: [],
-        local: [],
-        spec: [],
-        personality: [],
-    };
-    let localData = useRef({});
-    let host = process.env.NEXT_PUBLIC_HOST || "";
-    return <AdminBoilerplate></AdminBoilerplate>;
+    const localData = useRef({});
+    const adminSync = useRef({});
+    // const adminSyncData = useRef("");
+    return (
+        <LocalDataContext.Provider value={localData.current}>
+            <AdminSyncContext.Provider value={adminSync.current}>
+                {/* <AdminSyncDataContext.Provider value={adminSyncData.current}> */}
+                <AdminBoilerplate></AdminBoilerplate>
+            </AdminSyncContext.Provider>
+        </LocalDataContext.Provider>
+    );
 }

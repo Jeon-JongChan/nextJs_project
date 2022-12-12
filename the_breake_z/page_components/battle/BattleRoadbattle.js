@@ -5,8 +5,7 @@ import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { useEffect, useState } from "react";
-import { useContext } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
 
 /**
@@ -15,8 +14,13 @@ import { LocalDataContext } from "/page_components/MyContext";
  * @returns
  */
 export default function Layout(props) {
-    let isActive = props?.isActive || "activate-tab"; //"hidden";
     const localData = useContext(LocalDataContext);
+    let isActive = props?.isActive || "activate-tab"; //"hidden";
+
+    let pageName = "roadbattle";
+    const boilerplateSync = useRef();
+    const [boilerplate, setBoilerplate] = useState({});
+
     let initState = true;
 
     let compatibilityOption = ["-", "효과 좋음(- 1d10)", "효과 부족(- 1d5)", "효과 없음(- 1d0)"];
@@ -30,6 +34,19 @@ export default function Layout(props) {
             try {
                 initAutoComplete("i-roadbattle-first-poketmon", "poketmon", localData);
                 initAutoComplete("i-roadbattle-second-poketmon", "poketmon", localData);
+
+                if (!boilerplateSync.current) {
+                    boilerplateSync.current = new asyncInterval(() => {
+                        devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.", localData?.boilerplate, localData?.boilerplate?.[pageName], boilerplateSync.current);
+                        if (localData?.boilerplate?.[pageName]) {
+                            devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다");
+                            boilerplateSync.current.stop();
+                            setBoilerplate(localData?.boilerplate?.[pageName]);
+                            return null;
+                        }
+                    }, 3);
+                    boilerplateSync.current.start();
+                }
             } catch (e) {
                 devLog("BattleRoadbattle init error. localData :", localData, e.message);
             }
@@ -289,12 +306,12 @@ export default function Layout(props) {
                             <div className="bg-white">
                                 <div className="mx-auto py-2 px-2">
                                     <div className="flex flex-col w-full">
-                                        {bolierPlate
-                                            ? bolierPlate?.["roadbattle"].map((text, index) => {
+                                        {boilerplate.length > 0
+                                            ? boilerplate.map((element, index) => {
                                                   return (
                                                       <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
                                                           <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">
-                                                              {text}
+                                                              {element.TEXT}
                                                           </pre>
                                                       </div>
                                                   );

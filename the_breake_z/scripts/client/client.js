@@ -1,7 +1,8 @@
 import { devLog } from "/scripts/common";
 export {
-    submitAdminDelete,
     submitAdminData,
+    submitAdminMutipleData,
+    submitAdminDelete,
     changeTab,
     updateCheck,
     syncData,
@@ -16,7 +17,39 @@ export {
 };
 
 let host = process.env.NEXT_PUBLIC_HOST;
+/**
+ * 관리자 페이지에서 여러 형태 데이터를 서버로 보내주는 함수
+ * @param {string} target
+ * @param {string[]} inputTypeList
+ * @param {string[]} inputNameList
+ * @param {string} idUniqueTag
+ */
+async function submitAdminMutipleData(target, inputTypeList, inputNameList, idUniqueTag, adminSync = null) {
+    let inputs = [];
+    for (let inputType of inputTypeList) {
+        inputs = inputs.concat(Array.from(document.querySelectorAll("." + target + "input-frame " + inputType)));
+    }
+    let sendData = new FormData();
 
+    for (let input of inputs) {
+        for (let inputName of inputNameList) {
+            if (input.id === idUniqueTag + inputName) {
+                sendData.append(inputName, input.value);
+            }
+        }
+    }
+
+    let baseurl = host + "/api/upload/" + target;
+    // devLog("submitAdminData", baseurl);
+    let res = await fetch(baseurl, {
+        method: "POST",
+        body: sendData,
+    });
+
+    if (adminSync) {
+        adminSync.current = target;
+    }
+}
 /**
  * 관리자 페이지에서 데이터를 서버로 보내주는 함수
  * @param {string} target
@@ -160,7 +193,9 @@ async function checkSyncData(tableName, data, isUpdate = true) {
 
 function updateCheck(data, res, caller = "no info") {
     let isUpdate = false;
-    if (data.update_dt) {
+    if (!data || !res) return true;
+
+    if (data?.update_dt) {
         // devLog("data is update : ", data, res, data.cnt !== res.cnt, data.lastid !== res.lastid, data.update_dt !== res.update_dt);
         if (data.cnt !== res.cnt || data.lastid !== res.lastid || data.update_dt !== res.update_dt) isUpdate = true;
     } else {
@@ -195,7 +230,11 @@ function getDomIndex(dom, elem = null) {
     }
     return idx;
 }
-
+/**
+ * @param {*} name
+ * @param {*} data
+ * @returns
+ */
 function findLocalDataByName(name, data) {
     let ret = {};
     for (let i = 0; i < data.length; i++) {

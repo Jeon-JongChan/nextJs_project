@@ -1,10 +1,11 @@
 /**
  *
- * @param {string} label
- * @param {string} id select에 들어갈 id
- * @param {string} name select에 들어갈 name
- * @param {Array} options select에 하위에 들어갈 문자열 배열
- * @param {Function} onchange select에 들어갈 onchange
+ * @param {string} [label]
+ * @param {string} [id] select에 들어갈 id
+ * @param {string} [css] select에 들어갈 tailwind css
+ * @param {string} [name] select에 들어갈 name
+ * @param {Array} [options] select에 하위에 들어갈 문자열 배열
+ * @param {Function} [onchange] select에 들어갈 onchange
  * @returns
  */
 export default function Component(props) {
@@ -14,6 +15,7 @@ export default function Component(props) {
     let onchange = props?.onchange || null;
     let colSpan = props?.colSpan || 1;
     let options = props?.options || ["United States", "Canada", "Mexico"];
+    let css = props?.css || "";
     return (
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
@@ -25,7 +27,12 @@ export default function Component(props) {
                     id={id}
                     name={name}
                     onChange={onchange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className={[
+                        css,
+                        "mt-1 block w-full py-2 px-3 shadow-sm sm:text-sm",
+                        "rounded-md border border-gray-300 bg-white, shadow-sm",
+                        "focus:border-indigo-500 focus:outline-none focus:ring-indigo-500",
+                    ].join(" ")}
                 >
                     {options.map((option, idx) => {
                         return (

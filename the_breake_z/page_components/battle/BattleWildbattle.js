@@ -5,7 +5,7 @@ import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useContext } from "react";
 import { LocalDataContext } from "/page_components/MyContext";
 
@@ -17,8 +17,12 @@ import { LocalDataContext } from "/page_components/MyContext";
 export default function Layout(props) {
     let isActive = props?.isActive || "activate-tab"; //"hidden";
     const localData = useContext(LocalDataContext);
-    let initState = true;
 
+    let pageName = "wildbattle";
+    const boilerplateSync = useRef();
+    const [boilerplate, setBoilerplate] = useState({});
+
+    let initState = true;
     const attackOption = ["✌️재빠른 공격", "✊묵직한 공격", "🖐️유연한 공격"];
 
     useEffect(() => {
@@ -34,6 +38,18 @@ export default function Layout(props) {
                 devLog("BattleWildbattle init error. localData :", localData, e.message);
             }
             initState = false;
+            if (!boilerplateSync.current) {
+                boilerplateSync.current = new asyncInterval(() => {
+                    devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.", localData?.boilerplate, localData?.boilerplate?.[pageName], boilerplateSync.current);
+                    if (localData?.boilerplate?.[pageName]) {
+                        devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다");
+                        boilerplateSync.current.stop();
+                        setBoilerplate(localData?.boilerplate?.[pageName]);
+                        return null;
+                    }
+                }, 3);
+                boilerplateSync.current.start();
+            }
         }
     }
 
@@ -231,12 +247,12 @@ export default function Layout(props) {
                         <div className="bg-white">
                             <div className="mx-auto py-2 px-2">
                                 <div className="flex flex-col w-full">
-                                    {bolierPlate
-                                        ? bolierPlate["wildbattle"].map((text, index) => {
+                                    {boilerplate.length > 0
+                                        ? boilerplate.map((element, index) => {
                                               return (
                                                   <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
                                                       <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">
-                                                          {text}
+                                                          {element.TEXT}
                                                       </pre>
                                                   </div>
                                               );

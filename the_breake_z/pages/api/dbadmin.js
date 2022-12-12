@@ -9,15 +9,40 @@ import { devLog } from "/scripts/common";
 export default function handler(req, res) {
     let ret = null;
     let method = req.method;
+    let query = req.query.query;
 
     if (method !== "GET") {
         res.status(200).json({ status: "Please Call GET Method" });
         return null;
     }
-
-    //ret = server.db.prepare("select count(*) cnt from spec").get();
     try {
-        let query = req.query.query;
+        // 특수명령 :
+        if (query === "boilerplatecreate") {
+            server.db.prepare(create.create_table_boilerplate).run();
+        } else if (query === "boilerplateinsert") {
+            let initData = require("/scripts/query/initdata.js");
+            devLog("insertData", initData.initdata);
+            if (initData.boilerplate) {
+                ret = server.db.prepare("select count(*) cnt from boilerplate").get();
+                if (ret?.cnt === 0) {
+                    const insertBoilerplate = server.db.prepare(insert.insert.boilerplate);
+                    server.sqlite.transaction(initData.boilerplate, insertBoilerplate);
+                }
+            }
+        } else if (query === "boilerplatedrop") {
+            server.db.prepare(deleteDDL.drop.boilerplate).run();
+        } else if (query === "boilerplateselect") {
+            ret = server.db.prepare(select.alldata.boilerplate).all();
+            devLog(ret);
+        }
+    } catch (e) {
+        console.log("특수명령 에러", e);
+        res.status(500).json({ error: e.message });
+        return null;
+    }
+
+    // db 전체관리 구문
+    try {
         if (query === "drop") {
             for (let v of Object.values(deleteDDL.drop)) {
                 server.db.prepare(v).run();

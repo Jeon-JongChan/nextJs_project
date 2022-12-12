@@ -1,12 +1,13 @@
 /* next Module */
-import { copyToClipBoard, findLocalDataByName, clickCopyToClipBoard } from "/scripts/client/client";
-import { getRandomInt, asyncInterval, devLog } from "/scripts/common";
 import { initAutoComplete } from "/scripts/client/autoComplete";
 import GridInputSelectBox from "/page_components/Grid/GridInputSelectBox";
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import { useEffect, useState, useRef, useContext } from "react";
+import SelectDropdownText from "/page_components/public/SelectDropdownText";
 import { LocalDataContext } from "/page_components/MyContext";
+import { useEffect, useState, useRef, useContext } from "react";
+import { getRandomInt, asyncInterval, devLog } from "/scripts/common";
+import { copyToClipBoard, findLocalDataByName, clickCopyToClipBoard } from "/scripts/client/client";
 
 /**
  *
@@ -20,6 +21,7 @@ export default function Layout(props) {
     let pageName = "roadbattle";
     const boilerplateSync = useRef();
     const [boilerplate, setBoilerplate] = useState({});
+    const [boilerplateViewType, setBoilerplateViewType] = useState("dropdown");
 
     let initState = true;
 
@@ -37,7 +39,7 @@ export default function Layout(props) {
 
                 if (!boilerplateSync.current) {
                     boilerplateSync.current = new asyncInterval(() => {
-                        devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.", localData?.boilerplate, localData?.boilerplate?.[pageName], boilerplateSync.current);
+                        devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.");
                         if (localData?.boilerplate?.[pageName]) {
                             devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다");
                             boilerplateSync.current.stop();
@@ -306,7 +308,12 @@ export default function Layout(props) {
                             <div className="bg-white">
                                 <div className="mx-auto py-2 px-2">
                                     <div className="flex flex-col w-full">
-                                        {boilerplate.length > 0
+                                        <div className="grid grid-cols-6 gap-6 my-4">
+                                            <GridInputButton label={"드롭다운"} buttonColor={"zinc"} onclick={() => setBoilerplateViewType("dropdown")} colSpan={3} type="button"></GridInputButton>
+                                            <GridInputButton label={"리스트"} type="button" onclick={() => setBoilerplateViewType("list")} colSpan={3}></GridInputButton>
+                                        </div>
+                                        {boilerplateViewType === "dropdown" && boilerplate.length > 0 ? <SelectDropdownText object={boilerplate} label={"상용구"}></SelectDropdownText> : null}
+                                        {boilerplateViewType === "list" && boilerplate.length > 0
                                             ? boilerplate.map((element, index) => {
                                                   return (
                                                       <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">

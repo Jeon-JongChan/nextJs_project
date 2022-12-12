@@ -235,10 +235,10 @@ function getDomIndex(dom, elem = null) {
  * @param {*} data
  * @returns
  */
-function findLocalDataByName(name, data) {
+function findLocalDataByName(name, data, log = false) {
     let ret = {};
     for (let i = 0; i < data.length; i++) {
-        devLog("findLocalDataByName ", data[i].NAME, name, data[i].NAME === name);
+        if (log) devLog("findLocalDataByName ", data[i].NAME, name, data[i].NAME === name);
         if (data[i].NAME === name) {
             ret = data[i];
             return ret;

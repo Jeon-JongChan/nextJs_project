@@ -3,7 +3,7 @@ import server from "/scripts/server";
 import select from "/scripts/query/select";
 import create from "/scripts/query/create";
 import insert from "/scripts/query/insert";
-import tempInitdata from "/temp/initData";
+// import tempInitdata from "/temp/initData";
 import initdata from "/scripts/query/initdata";
 import deleteDDL from "/scripts/query/delete";
 import { devLog } from "/scripts/common";
@@ -67,8 +67,13 @@ export default function handler(req, res) {
         } else if (query === "insert_init") {
             ret = server.db.prepare("select count(*) cnt from local").get();
             if (ret?.cnt === 0) {
-                const insertLocal = server.db.prepare(insert.insert.local);
-                server.sqlite.transaction(tempInitdata.local, insertLocal);
+                try {
+                    const tempInitdata = require("/temp/initData");
+                    const insertLocal = server.db.prepare(insert.insert.local);
+                    server.sqlite.transaction(tempInitdata.local, insertLocal);
+                } catch (e) {
+                    console.log("initdata 로드 실패");
+                }
             }
 
             ret = server.db.prepare("select count(*) cnt from personality").get();

@@ -1,5 +1,6 @@
 // 서버에서만 사용되는 js 파일
 const fs = require("fs");
+// const mv = require("mv");
 const formidable = require("formidable");
 const path = require("path");
 
@@ -9,6 +10,7 @@ const db = require("better-sqlite3")("temp/macro.db", { verbose: console.log });
 
 const defaultJsonPath = path.join(process.cwd() + "/temp/data.json");
 const defaultFilePath = path.join(process.cwd() + "/temp/file");
+const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
 //const db = new sqlite("temp/macro.db", { verbose: console.log });
 
 const server = {
@@ -83,6 +85,7 @@ const server = {
         console.log("서버시작시 필수요소를 생성합니다");
         try {
             // 필요 폴더 생성
+            if (!fs.existsSync(defaultbuildMediaPath)) fs.mkdirSync(defaultbuildMediaPath);
             if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
             if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
         } catch (e) {
@@ -148,7 +151,7 @@ const server = {
             transaction(list, prepare);
         },
     },
-    readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/") => {
+    readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
         const form = new formidable.IncomingForm();
         if (saveLocally) {
             form.uploadDir = path.join(process.cwd(), "/public" + savePath);
@@ -158,7 +161,7 @@ const server = {
         return new Promise((resolve, reject) => {
             form.parse(req, (err, fields, files) => {
                 // console.log(fields, files, Object.keys(files).length);
-                if (Object.keys(files).length) {
+                if (Object.keys(files).length && changeFileName) {
                     let fileName = files.image.originalFilename.split(".");
 
                     let name = "";
@@ -167,8 +170,49 @@ const server = {
                     else name = fields.name;
 
                     let newFileName = name + "." + fileName[fileName.length - 1];
-                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + form.uploadDir + "/" + files.image.name));
+                    // console.log("readAndSaveFileFromFormdata image filepath : ", files.image.filepath, files);
+                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
+                    // build+start 일경우 public에 있는 파일을 못읽어오기 때문에 build의 미디어폴더에 저장
+                    // fs.copyFile(form.uploadDir + newFileName, defaultbuildMediaPath + newFileName);
+                    // mv(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
                     fields.image = savePath + newFileName;
+                } else {
+                    fields.image = null;
+                }
+                if (err) reject(err);
+                resolve(fields);
+            });
+        });
+    },
+    readAndSaveFileFromFormdataTime: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
+        const options = {};
+        let imageName = "";
+        if (saveLocally) {
+            options.uploadDir = path.join(process.cwd(), "/public" + savePath);
+            options.keepExtensions = true;
+            options.filename = (name, ext, path, form) => {
+                // timedata로 이름변경
+                imageName = Date.now().toString() + "_" + path.originalFilename;
+
+                //고유값으로
+                /*
+                const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+                if (name.match(check_kor)) imageName = btoa(encodeURI(Date.now().toString() + name));
+                else imageName = name;
+
+                imageName = imageName + ext;
+                console.log("readAndSaveFileFromFormdata image filepath 1 : ", imageName);
+                */
+                return imageName;
+            };
+        }
+        const form = formidable(options);
+
+        return new Promise((resolve, reject) => {
+            form.parse(req, (err, fields, files) => {
+                // console.log(fields, files, Object.keys(files).length);
+                if (Object.keys(files).length && changeFileName) {
+                    fields.image = savePath + imageName;
                 } else {
                     fields.image = null;
                 }

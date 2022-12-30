@@ -89,6 +89,10 @@ export default function Layout(props) {
         });
 
         let poketmonInLocal = findLocalDataByLocal(inputValues.local, localData.poketmon?.data);
+        if (!poketmonInLocal) {
+            devLog("createTextResearch poketmonInLocal is null");
+            return;
+        }
         let detailData = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
         let randomSpecIdx = getRandomInt(1, 4);
         inputValues["poketmon"] = detailData?.NAME;
@@ -187,7 +191,13 @@ export default function Layout(props) {
                                                 ▷ 포획한다 <br />
                                                 ▷ 도망간다 <br />
                                             </pre>
-                                            <img id="research-img" src={researchImage}></img>
+                                            {researchImage != "" ? (
+                                                <div className="flex justify-center">
+                                                    <img id="research-img" src={"/api/image?src=" + researchImage}></img>
+                                                </div>
+                                            ) : (
+                                                ""
+                                            )}
                                         </div>
                                     </div>
                                 </div>

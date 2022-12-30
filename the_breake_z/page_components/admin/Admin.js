@@ -260,7 +260,7 @@ export default function Layout() {
                                     {images.length > 0
                                         ? images.map((data, idx, array) => {
                                               //   devLog("poketmonImages data : ", data, array);
-                                              return <ImageLayerText key={idx} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
+                                              return <ImageLayerText key={idx} optimize={false} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
                                           })
                                         : ""}
                                 </div>

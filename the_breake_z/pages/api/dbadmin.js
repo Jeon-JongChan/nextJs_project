@@ -12,7 +12,6 @@ export default function handler(req, res) {
     let ret = null;
     let method = req.method;
     let query = req.query.query;
-
     if (method !== "GET") {
         res.status(200).json({ status: "Please Call GET Method" });
         return null;
@@ -85,17 +84,17 @@ export default function handler(req, res) {
             server.db.prepare(deleteDDL.delete_poketmon).run();
         } else if (query === "select") {
             ret = {};
-            ret.local = server.db.prepare(select.alldata_local).all();
-            ret.personality = server.db.prepare(select.alldata_personality).all();
-            // ret.spec = server.db.prepare(select.alldata_spec).all();
+            ret.local = server.db.prepare(select.alldata.local).all();
+            ret.personality = server.db.prepare(select.alldata.personality).all();
+            // ret.spec = server.db.prepare(select.alldata.spec).all();
             // ret.status_spec = server.db.prepare(select.status_spec).all();
-            ret.poketmon = server.db.prepare(select.alldata_poketmon).all();
-            ret.poketmon_local = server.db.prepare(select.alldata_poketmon_local).all();
-            ret.poketmon_spec = server.db.prepare(select.alldata_poketmon_spec).all();
-            ret.poketmon_personality = server.db.prepare(select.alldata_poketmon_personality).all();
-            ret.poketmon_localdata = server.db.prepare(select.localdata_poketmon).all();
-            // ret.image = server.db.prepare(select.alldata_image).all();
-            // ret.poketmon_image = server.db.prepare(select.alldata_poketmon_image).all();
+            ret.poketmon = server.db.prepare(select.alldata.poketmon).all();
+            ret.poketmon_local = server.db.prepare(select.alldata.poketmon_local).all();
+            ret.poketmon_spec = server.db.prepare(select.alldata.poketmon_spec).all();
+            ret.poketmon_personality = server.db.prepare(select.alldata.poketmon_personality).all();
+            ret.poketmon_localdata = server.db.prepare(select.localdata.poketmon).all();
+            // ret.image = server.db.prepare(select.alldata.image).all();
+            // ret.poketmon_image = server.db.prepare(select.alldata.poketmon_image).all();
             devLog(ret);
         }
     } catch (e) {

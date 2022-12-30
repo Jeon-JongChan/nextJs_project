@@ -57,7 +57,7 @@ export default function Component(props) {
                                 className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                             >
                                 <span>Upload a file</span>
-                                <input id={inputId} className={css} name={inputId} onChange={(e) => updateUploadFileName(e)} type="file" className="sr-only" />
+                                <input id={inputId} className={"sr-only " + css} name={inputId} onChange={(e) => updateUploadFileName(e)} type="file" />
                             </label>
                             <p className="pl-1">or drag and drop</p>
                         </div>

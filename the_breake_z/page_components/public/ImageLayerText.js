@@ -7,6 +7,7 @@ import { devLog } from "/scripts/common";
  * hover시 이미지에 대한 상세 정보를 출력가능한 이미지박스.
  * @param {String} imageSrc - 이미지 주소
  * @param {String} imageAlt - 이미지 태그 alt
+ * @param {Bool} optimize - build 된 이미지로 할지 로컬 폴더에 있는 원본 이미지를 사용할지 결정
  * @param {String} header - 이미지 설명
  * @param {String} text - 이미지 상세 설명
  * @param {Object[]} layer - hover 상태에서 출력할 layertext(name, content) 객체의 배열
@@ -19,7 +20,9 @@ export default function Component(props) {
     let text = props?.text || "";
     let layer = props?.layer || null;
     let onclick = props?.onclick || null;
+    let optimize = props?.optimize ?? true;
 
+    imageSrc = optimize ? imageSrc : "/api/image?src=" + imageSrc;
     return (
         <>
             <div className="aspect-square w-full rounded-lg bg-gray-200 relative" data-name={imageAlt}>
@@ -39,7 +42,8 @@ export default function Component(props) {
                           })
                         : ""}
                 </div>
-                <Image src={imageSrc} alt={imageAlt} data-name={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
+                <Image unoptimized src={imageSrc} alt={imageAlt} data-name={imageAlt} layout="fill" objectFit="cover" objectPosition="center" onClick={onclick}></Image>
+                {/* <img className="next-image" src={imageSrc} alt={imageAlt} data-name={imageAlt} onClick={onclick}></img> */}
             </div>
             {header ? <h3 className="mt-4 text-sm text-gray-700">{header}</h3> : ""}
             {text ? <p className="mt-1 font-medium text-gray-900">{text}</p> : ""}

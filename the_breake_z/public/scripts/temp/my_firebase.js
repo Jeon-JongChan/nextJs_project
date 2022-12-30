@@ -1,5 +1,5 @@
 /* 파이어베이스 대체 함수 */
-
+/*
 function getJsonData() {
     var dbTestRef = firebase.database().ref("json/");
     dbTestRef.on("value", function (data) {
@@ -41,3 +41,4 @@ function firebaseSaveJson(json) {
         });
     //console.log("json data를 추가합니다", json, ret);
 }
+*/

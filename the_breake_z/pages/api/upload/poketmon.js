@@ -12,7 +12,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-    let resData = await server.readAndSaveFileFromFormdata(req, true);
+    let resData = await server.readAndSaveFileFromFormdata(req, true, "/temp/images/");
     console.log("poketmon.js resData: ", resData);
     let insertPrepare;
     try {

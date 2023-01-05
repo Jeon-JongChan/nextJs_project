@@ -256,7 +256,7 @@ export default function Layout() {
                             <div className="mx-auto py-4 px-4">
                                 <h2 className="sr-only">Products</h2>
 
-                                <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6" data-cnt={0} data-lastid={0} data-updatedt={""}>
+                                <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6 h-screen overflow-y-auto scrollbar-remove" data-cnt={0} data-lastid={0} data-updatedt={""}>
                                     {images.length > 0
                                         ? images.map((data, idx, array) => {
                                               //   devLog("poketmonImages data : ", data, array);

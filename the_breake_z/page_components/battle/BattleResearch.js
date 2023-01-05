@@ -93,7 +93,25 @@ export default function Layout(props) {
             devLog("createTextResearch poketmonInLocal is null");
             return;
         }
-        let detailData = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
+        // 출현율에 따른 포켓몬 선택 지점
+        let limit = 100; // 최대 100번 반복
+        let detailData = null;
+        while (limit > 0) {
+            limit--;
+            let tempPoketmon = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
+            let rare = tempPoketmon.RARE;
+            if (rare === "") rare = 50;
+            rare = rare * 0.01;
+            if (Math.random() < rare) {
+                devLog("createTextResearch detailData select : ", tempPoketmon.NAME, rare, tempPoketmon.RARE, "limit : ", limit);
+                detailData = tempPoketmon;
+                break;
+            }
+        }
+        if (detailData == null) {
+            devLog("createTextResearch detailData not select");
+            detailData = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
+        }
         let randomSpecIdx = getRandomInt(1, 4);
         inputValues["poketmon"] = detailData?.NAME;
         inputValues["spec"] = detailData?.["SPEC" + randomSpecIdx];

@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind 사용. 중복사용 많은 경우만 apply*/
+.apply-nav-item {
+    @apply text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
+}
+/* --------------------- common css ------------------- */
+/* autocomplete */
+.autocomplete {
+    @apply absolute z-20 max-h-80 overflow-y-scroll py-1 right-0  w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-90;
+}
+.autocomplete-btn {
+    @apply z-30 text-gray-700 block w-full px-4 py-2 text-left text-sm;
+}
+
+/* Component : ImageLayerText */
+.apply-image-layer-text {
+    @apply absolute w-full h-full overflow-hidden text-sm px-1 z-10 break-words bg-black opacity-0 hover:opacity-80;
+}
+
+/* Component : GridInputText */
+.apply-gridinputtext-smalllabel {
+    @apply text-xs text-red-100;
+}
+
+/* Component : GridInputPhoto */
+.gridinputphoto-frame {
+    @apply bg-no-repeat bg-left bg-cover;
+}
+
+.scrollbar-remove {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+.scrollbar-remove::-webkit-scrollbar {
+    /* Chrome, Safari, Opera*/
+    display: none;
+}
+
+.next-image {
+    position: absolute;
+    inset: 0px;
+    box-sizing: border-box;
+    padding: 0px;
+    border: none;
+    margin: auto;
+    display: block;
+    width: 0px;
+    height: 0px;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+/* --------------------- project css ------------------- */

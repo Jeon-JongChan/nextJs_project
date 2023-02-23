@@ -2,19 +2,19 @@
 // 서버에서만 사용하는 함수는 server.js에 작성할 것
 // 클라이언트에서만 사용하는 함수는 client.js에 작성할 것
 
-export { devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx };
-/**
- * sleep 함수 필요. 렉시컬 응용.
- * @param {*} fn 함수
- * @param {*} ms 반복 시간
- */
+export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx};
+
 let dev = process.env.NEXT_PUBLIC_DEV || undefined;
 let devLog = (...msg) => {
     if (dev) {
         console.log(...msg);
     }
 };
-
+/**
+ * sleep 함수 필요. 렉시컬 응용.
+ * @param {*} fn 함수
+ * @param {*} ms 반복 시간
+ */
 function sleep(ms) {
     let timer;
     return new Promise((resolve) => {

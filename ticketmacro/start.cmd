@@ -3,6 +3,7 @@ ECHO "*********************************************>> THE BREAK Z START BAT"
 
 @REM powershell version
 @REM $env:PATH += ";" + (Join-Path (Get-Location) "node") 
+@REM $env:NODEJS = ";" + (Join-Path (Get-Location) "node") 
 SET NODEJS=%cd%/node
 SET PATH=%NODEJS%;%PATH%
 

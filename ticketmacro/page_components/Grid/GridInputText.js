@@ -36,7 +36,7 @@ export default function Component(props) {
         <>
             {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
             {/* sm:col-span-${colSmSpenValue} 일단 제외 */}
-            <div className={["relative", colSpanClass[colSpan], dirmode === "row" ? "flex" : ""].join(" ")}>
+            <div className={["relative bg-white px-2 py-1", colSpanClass[colSpan], dirmode === "row" ? "flex" : ""].join(" ")}>
                 <label htmlFor={inputId} className={["block text-sm font-medium text-gray-700", dirmode === "row" ? `${rowWidth}` : ""].join(" ")}>
                     {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
                 </label>
@@ -47,7 +47,12 @@ export default function Component(props) {
                     autoComplete={autoComplete}
                     data-name={dataName}
                     readOnly={readonly}
-                    className={[css, "mt-1 block w-full focus:outline-none rounded-md", "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500", readonlyClass].join(" ")}
+                    className={[
+                        css,
+                        "mt-1 block w-full focus:outline-none rounded-md",
+                        "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500",
+                        readonlyClass,
+                    ].join(" ")}
                     defaultValue={defaultValue || ""}
                 />
             </div>

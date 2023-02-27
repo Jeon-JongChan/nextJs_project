@@ -10,10 +10,11 @@ const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
 
 if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
 let target_db = process.env.NEXT_PUBLIC_DB || "lowdb";
+console.log(target_db);
 let db;
 if (target_db == "lowdb") {
     const low = require("lowdb");
-    const FileSync = require("lowdb/adapters/JSONFile");
+    const FileSync = require("lowdb/adapters/FileSync");
     const adapter = new FileSync(defaultJsonPath);
     db = low(adapter);
 } else db = require("better-sqlite3")("temp/macro.db", {verbose: console.log});
@@ -134,7 +135,9 @@ const server = {
 
                     let newFileName = name + "." + fileName[fileName.length - 1];
                     // console.log("readAndSaveFileFromFormdata image filepath : ", files.image.filepath, files);
-                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
+                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () =>
+                        console.log("readFile - Succesfully rename to " + files.image.filepath)
+                    );
                     // build+start 일경우 public에 있는 파일을 못읽어오기 때문에 build의 미디어폴더에 저장
                     // fs.copyFile(form.uploadDir + newFileName, defaultbuildMediaPath + newFileName);
                     // mv(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));

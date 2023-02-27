@@ -2,7 +2,7 @@ import server from "/scripts/server";
 // import crawer from "/scripts/server/crawler";
 
 export default async function handler(req, res) {
-    console.log(req.query.method, req.body);
+    console.log("macro", req.query.method, req.body);
     // let method = req.query.method;
     // if (method === "dbinit") {
     //     await crawer.dbinit();

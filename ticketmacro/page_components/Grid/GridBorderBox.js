@@ -14,10 +14,10 @@ import Script from "next/script";
 export default function Component(props) {
     return (
         <>
-            <div className="md:grid md:grid-cols-8 md:gap-6">
+            <div className="grid grid-cols-6 gap-6">
                 {props?.noteHeader ? (
-                    <div className="md:col-span-3">
-                        <div className="px-4 sm:px-0">
+                    <div className="col-span-6">
+                        <div className="px-1">
                             <h3 className="text-lg font-medium leading-6 text-gray-900">{props.noteHeader}</h3>
                             <p className="mt-1 text-sm text-gray-600">{props.noteContent}</p>
                         </div>
@@ -26,23 +26,18 @@ export default function Component(props) {
                     ""
                 )}
 
-                <div className="mt-5 md:col-span-8 md:mt-0">
-                    <div className="shadow sm:overflow-hidden sm:rounded-md">
+                <div className="mt-5 col-span-6">
+                    <div className="grid grid-cols-6 gap-2 shadow sm:overflow-hidden sm:rounded-md">
                         {/* 여러개의 컴포넌트를 받았을 때 실행되는 부분 */}
                         {props.propComponents
                             ? props.propComponents.map((CallComponent, index) => {
                                   //   전달할 props 있는 경우 같이 전달. index도 같이 전달해 child list key error 해결
                                   if (props.propComponentsProperty?.[index]) {
-                                      return (
-                                          <div className="bg-white px-4 py-3">
-                                              <CallComponent key={index} {...props.propComponentsProperty[index]}></CallComponent>
-                                          </div>
-                                      );
+                                      return <CallComponent key={index} {...props.propComponentsProperty[index]}></CallComponent>;
                                   }
                                   return (
-                                      <div className="bg-white px-4 py-3">
-                                          <CallComponent></CallComponent>
-                                      </div>
+                                      //   <div key={index} className="bg-white px-4 py-3">
+                                      <CallComponent key={index}></CallComponent>
                                   );
                               })
                             : ""}

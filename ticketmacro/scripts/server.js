@@ -9,19 +9,116 @@ const defaultFilePath = path.join(process.cwd() + "/temp/file");
 const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
 
 if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
+// db 생성 부분 (lowdb, better-sqlite3, sqlite-memdb
 let target_db = process.env.NEXT_PUBLIC_DB || "lowdb";
-console.log(target_db);
-let db;
-if (target_db == "lowdb") {
-    const low = require("lowdb");
-    const FileSync = require("lowdb/adapters/FileSync");
-    const adapter = new FileSync(defaultJsonPath);
-    db = low(adapter);
-} else db = require("better-sqlite3")("temp/macro.db", {verbose: console.log});
+let target_memdb = process.env.NEXT_PUBLIC_MEMDB || "lowdb";
 
+const db = connectDB("file", target_db);
+const memdb = connectDB("memory", target_memdb);
 //const db = new sqlite("temp/macro.db", { verbose: console.log });
 
 const server = {
+    db: db,
+    memdb: memdb,
+    db_status: () => {
+        return 0;
+    },
+    sqlite: {
+        /**
+         * @param {*} lists 입력 데이터 형식
+         * @param {*} prepare better-sqlite prepare 오브젝트
+         */
+        transaction: (list, prepare, db = server.db) => {
+            // for (let item of list) prepare.run(item);
+            const transaction = db.transaction((list, prepare) => {
+                for (let item of list) prepare.run(item);
+            });
+            transaction(list, prepare);
+        },
+        /**
+         * @param {*} lists prepare에 입력할 데이터 배열 그룹
+         * @param {*} prepareGroup prepare 배열
+         */
+        transactionAll: (lists, prepareGroup, db = server.db) => {
+            const transaction = db.transaction((lists, prepareGroup) => {
+                prepareGroup.forEach((prepare, idx) => {
+                    let list = lists[idx];
+                    for (let item of list) prepare.run(item);
+                });
+            });
+            transaction(list, prepare);
+        },
+    },
+    readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
+        const form = new formidable.IncomingForm();
+        if (saveLocally) {
+            form.uploadDir = path.join(process.cwd(), "/public" + savePath);
+            form.keepExtensions = true;
+        }
+
+        return new Promise((resolve, reject) => {
+            form.parse(req, (err, fields, files) => {
+                // console.log(fields, files, Object.keys(files).length);
+                if (Object.keys(files).length && changeFileName) {
+                    let fileName = files.image.originalFilename.split(".");
+
+                    let name = "";
+                    const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+                    if (fields.name.match(check_kor)) name = btoa(encodeURI(fields.name));
+                    else name = fields.name;
+
+                    let newFileName = name + "." + fileName[fileName.length - 1];
+                    // console.log("readAndSaveFileFromFormdata image filepath : ", files.image.filepath, files);
+                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
+                    // build+start 일경우 public에 있는 파일을 못읽어오기 때문에 build의 미디어폴더에 저장
+                    // fs.copyFile(form.uploadDir + newFileName, defaultbuildMediaPath + newFileName);
+                    // mv(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
+                    fields.image = savePath + newFileName;
+                } else {
+                    fields.image = null;
+                }
+                if (err) reject(err);
+                resolve(fields);
+            });
+        });
+    },
+    readAndSaveFileFromFormdataTime: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
+        const options = {};
+        let imageName = "";
+        if (saveLocally) {
+            options.uploadDir = path.join(process.cwd(), "/public" + savePath);
+            options.keepExtensions = true;
+            options.filename = (name, ext, path, form) => {
+                // timedata로 이름변경
+                imageName = Date.now().toString() + "_" + path.originalFilename;
+
+                //고유값으로
+                /*
+                const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+                if (name.match(check_kor)) imageName = btoa(encodeURI(Date.now().toString() + name));
+                else imageName = name;
+
+                imageName = imageName + ext;
+                console.log("readAndSaveFileFromFormdata image filepath 1 : ", imageName);
+                */
+                return imageName;
+            };
+        }
+        const form = formidable(options);
+
+        return new Promise((resolve, reject) => {
+            form.parse(req, (err, fields, files) => {
+                // console.log(fields, files, Object.keys(files).length);
+                if (Object.keys(files).length && changeFileName) {
+                    fields.image = savePath + imageName;
+                } else {
+                    fields.image = null;
+                }
+                if (err) reject(err);
+                resolve(fields);
+            });
+        });
+    },
     file: {
         append: (data, filePath = defaultFilePath) => {
             server.init();
@@ -88,108 +185,9 @@ const server = {
             fs.writeFileSync(defaultJsonPath, JSON.stringify(data));
         },
     },
-    db: db,
-    sqlite: {
-        /**
-         * @param {*} lists 입력 데이터 형식
-         * @param {*} prepare better-sqlite prepare 오브젝트
-         */
-        transaction: (list, prepare) => {
-            // for (let item of list) prepare.run(item);
-            const transaction = server.db.transaction((list, prepare) => {
-                for (let item of list) prepare.run(item);
-            });
-            transaction(list, prepare);
-        },
-        /**
-         * @param {*} lists prepare에 입력할 데이터 배열 그룹
-         * @param {*} prepareGroup prepare 배열
-         */
-        transactionAll: (lists, prepareGroup) => {
-            const transaction = server.db.transaction((lists, prepareGroup) => {
-                prepareGroup.forEach((prepare, idx) => {
-                    let list = lists[idx];
-                    for (let item of list) prepare.run(item);
-                });
-            });
-            transaction(list, prepare);
-        },
-    },
-    readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
-        const form = new formidable.IncomingForm();
-        if (saveLocally) {
-            form.uploadDir = path.join(process.cwd(), "/public" + savePath);
-            form.keepExtensions = true;
-        }
-
-        return new Promise((resolve, reject) => {
-            form.parse(req, (err, fields, files) => {
-                // console.log(fields, files, Object.keys(files).length);
-                if (Object.keys(files).length && changeFileName) {
-                    let fileName = files.image.originalFilename.split(".");
-
-                    let name = "";
-                    const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
-                    if (fields.name.match(check_kor)) name = btoa(encodeURI(fields.name));
-                    else name = fields.name;
-
-                    let newFileName = name + "." + fileName[fileName.length - 1];
-                    // console.log("readAndSaveFileFromFormdata image filepath : ", files.image.filepath, files);
-                    fs.rename(files.image.filepath, form.uploadDir + newFileName, () =>
-                        console.log("readFile - Succesfully rename to " + files.image.filepath)
-                    );
-                    // build+start 일경우 public에 있는 파일을 못읽어오기 때문에 build의 미디어폴더에 저장
-                    // fs.copyFile(form.uploadDir + newFileName, defaultbuildMediaPath + newFileName);
-                    // mv(files.image.filepath, form.uploadDir + newFileName, () => console.log("readFile - Succesfully rename to " + files.image.filepath));
-                    fields.image = savePath + newFileName;
-                } else {
-                    fields.image = null;
-                }
-                if (err) reject(err);
-                resolve(fields);
-            });
-        });
-    },
-    readAndSaveFileFromFormdataTime: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
-        const options = {};
-        let imageName = "";
-        if (saveLocally) {
-            options.uploadDir = path.join(process.cwd(), "/public" + savePath);
-            options.keepExtensions = true;
-            options.filename = (name, ext, path, form) => {
-                // timedata로 이름변경
-                imageName = Date.now().toString() + "_" + path.originalFilename;
-
-                //고유값으로
-                /*
-                const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
-                if (name.match(check_kor)) imageName = btoa(encodeURI(Date.now().toString() + name));
-                else imageName = name;
-
-                imageName = imageName + ext;
-                console.log("readAndSaveFileFromFormdata image filepath 1 : ", imageName);
-                */
-                return imageName;
-            };
-        }
-        const form = formidable(options);
-
-        return new Promise((resolve, reject) => {
-            form.parse(req, (err, fields, files) => {
-                // console.log(fields, files, Object.keys(files).length);
-                if (Object.keys(files).length && changeFileName) {
-                    fields.image = savePath + imageName;
-                } else {
-                    fields.image = null;
-                }
-                if (err) reject(err);
-                resolve(fields);
-            });
-        });
-    },
 };
 
-const init = () => {
+function init() {
     console.log("서버시작시 필수요소를 생성합니다");
     try {
         // 필요 폴더 생성
@@ -214,16 +212,31 @@ const init = () => {
         }
     }
     console.log("서버시작시 필수요소를 생성했습니다");
-};
-// server.init();
-// function initDB() {
-//     server.db.exec("CREATE TABLE IF NOT EXISTS users('ID' varchar(20), PASSWORD VARCHAR(64))");
-//     console.log('init db process');
-// }
-//initDB();
-// export default server;
-module.exports = {
-    default: server,
-    init,
-};
+}
+
+function connectDB(type = "file", target = "lowdb") {
+    let db;
+    if (type === "file") {
+        console.log("file db connect : ", target);
+        if (target == "lowdb") {
+            const low = require("lowdb");
+            const FileSync = require("lowdb/adapters/FileSync");
+            const adapter = new FileSync(defaultJsonPath);
+            db = low(adapter);
+        } else db = require("better-sqlite3")("temp/macro.db", {verbose: console.log});
+    } else if (type === "memory") {
+        console.log("memory db connect : ", target);
+        if (target == "lowdb") {
+            const low = require("lowdb");
+            const Memory = require("lowdb/adapters/Memory");
+            const adapter = new Memory();
+            db = low(adapter);
+            db.defaults({sse: [{id: "test", message: "text"}]}).write();
+        } else db = require("better-sqlite3")(":memory:", {verbose: console.log});
+    }
+    return db;
+}
+
+export default server;
+export {init};
 // 공용함수 파일 이름은 common.js로 통일

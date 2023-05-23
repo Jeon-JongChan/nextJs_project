@@ -1,9 +1,17 @@
 import server from "/scripts/server";
-// import crawer from "/scripts/server/crawler";
+import {devLog} from "/scripts/common";
+import {sseInsertMessage} from "/scripts/server/sseServer";
 
 export default async function handler(req, res) {
-    // console.log("start", req.query, req.body);
-    let macroData = req.body;
+    // 클라이언트로 보낼 메시지
+    const message = "SSE 테스트";
+    const sseId = req.query.id;
 
-    res.status(200).json({msg: "매크로테스트"});
+    devLog(" start api : ", req.query, req.body, sseId);
+
+    // SSE 메세지 insert
+    sseInsertMessage(sseId, message);
+
+    // API 응답
+    res.status(200).json({message: "매크로테스트 시작"});
 }

@@ -1,13 +1,28 @@
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import GridInputButton from "/page_components/Grid/GridInputButton";
-import {createElement} from "react";
+import {createElement, useEffect} from "react";
+import {devLog} from "/scripts/common";
+import {sseConnect} from "/scripts/client/sseClient";
 
 export default function Home() {
+    let source;
+    useEffect(() => {
+        source = sseConnect("test");
+        source.addEventListener("message", (event) => {
+            devLog(`Progress: ${event.data}`);
+            logMacro(event.data);
+        });
+    }, []);
+
     // prettier-ignore
     let defaultDate = new Intl.DateTimeFormat("ko-KR", {year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date()).replace(/\./g, "").replace(/ /g, "-");
     // prettier-ignore
     let defaultTime = new Intl.DateTimeFormat("en", {hour: "numeric", minute: "numeric", second: "numeric", hour12: false}).format(new Date().getTime()-5*60000);
+
+    function handleSSE(event) {
+        console.log("SSE", event.data);
+    }
 
     function submitMacroData() {
         let inputList = ["address", "seat", "date", "time"];
@@ -22,22 +37,24 @@ export default function Home() {
             alert("매크로를 원하는 사이트 URL은 필수입니다!");
             return;
         }
-        console.log("inputValues : ", inputValues);
 
         // prettier-ignore
-        fetch("/api/macro/start", {
+        fetch("/api/macro/start?id=test", {
             method: "POST",
             headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
-                address: inputValues.address,
-                seat: inputValues.seat,
-                date: inputValues.date,
-                time: inputValues.time,
+            address: inputValues.address,
+            seat: inputValues.seat,
+            date: inputValues.date,
+            time: inputValues.time,
             }),
-        }).then(async (res) => {
-            let data = await res.json();
-            logMacro(data.msg); 
         })
+        .then(async (res) => {
+          let data = await res.json();
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
     }
     function logMacro(logMsg) {
         const logFrame = document.querySelector("#macro-log");
@@ -48,7 +65,7 @@ export default function Home() {
         logFrame.appendChild(log);
         logFrame.scrollTop = logFrame.scrollHeight;
 
-        console.log(logMsg);
+        devLog(logMsg, source);
     }
     return (
         <>

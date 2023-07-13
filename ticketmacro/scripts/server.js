@@ -9,13 +9,36 @@ const defaultFilePath = path.join(process.cwd() + "/temp/file");
 const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
 
 if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
-// db 생성 부분 (lowdb, better-sqlite3, sqlite-memdb
+// db 생성 부분 (lowdb, better-sqlite3)
 let target_db = process.env.NEXT_PUBLIC_DB || "lowdb";
 let target_memdb = process.env.NEXT_PUBLIC_MEMDB || "lowdb";
 
 const db = connectDB("file", target_db);
 const memdb = connectDB("memory", target_memdb);
 //const db = new sqlite("temp/macro.db", { verbose: console.log });
+
+function connectDB(type = "file", target = "lowdb") {
+    let db;
+    if (type === "file") {
+        console.log("file db connect : ", target);
+        if (target == "lowdb") {
+            const low = require("lowdb");
+            const FileSync = require("lowdb/adapters/FileSync");
+            const adapter = new FileSync(defaultJsonPath);
+            db = low(adapter);
+        } else db = require("better-sqlite3")("temp/macro.db", {verbose: console.log});
+    } else if (type === "memory") {
+        console.log("memory db connect : ", target);
+        if (target == "lowdb") {
+            const low = require("lowdb");
+            const Memory = require("lowdb/adapters/Memory");
+            const adapter = new Memory();
+            db = low(adapter);
+            db.defaults({sse: [{id: "test", message: "text"}]}).write();
+        } else db = require("better-sqlite3")(":memory:", {verbose: console.log});
+    }
+    return db;
+}
 
 const server = {
     db: db,
@@ -47,6 +70,58 @@ const server = {
                 });
             });
             transaction(list, prepare);
+        },
+    },
+    memapi: {
+        get: (query, condition = null) => {
+            if (target_memdb === "lowdb") {
+                if (!condition) return server.memdb.get(query).value();
+                else if (condition) return server.memdb.get(query).find(condition).value();
+            } else if (target_memdb === "better-sqlite3") {
+                return server.memdb.prepare(query).all();
+            }
+        },
+        insert: (query, insertData) => {
+            if (target_memdb === "lowdb") {
+                server.memdb.get(query).push(insertData).write();
+            } else if (target_memdb === "better-sqlite3") {
+                let prepare = server.memdb.prepare(query);
+                server.sqlite.transaction(insertData, prepare, server.memdb);
+            }
+        },
+        delete: (query, condition) => {
+            if (target_memdb === "lowdb") {
+                // server.memdb.get('sse').find({id: id}).head().unset("[0]").write();
+                server.memdb.get(query).remove(condition).write();
+            } else if (target_memdb === "better-sqlite3") {
+                let prepare = server.memdb.prepare(query);
+                server.sqlite.transaction(condition, prepare, server.memdb);
+            }
+        },
+        first: (query) => {
+            if (target_memdb === "lowdb") {
+                console.log(`first server.memdb.get(${query}).head()`, server.memdb.get(query).head().value());
+                return server.memdb.get(query).head().value();
+            } else if (target_memdb === "better-sqlite3") {
+                return server.memdb.prepare(query).get();
+            }
+        },
+        last: (query) => {
+            if (target_memdb === "lowdb") {
+                return server.memdb.get(query).last().value();
+            } else if (target_memdb === "better-sqlite3") {
+                return server.memdb.prepare(query).all().pop();
+            }
+        },
+        firstDelete: (query) => {
+            if (target_memdb === "lowdb") {
+                server.memdb.get(query).shift();
+            }
+        },
+        lastDelete: (query) => {
+            if (target_memdb === "lowdb") {
+                server.memdb.get(query).last().remove().write();
+            }
         },
     },
     readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
@@ -198,45 +273,26 @@ function init() {
         console.log("폴더 생성 에러", e);
     }
     // table 존재여부 확인 및 존재 시 init 함수 종료
-    let ret = server.db.prepare("select count(*) cnt from sqlite_master").get();
+    let targetdb = server.memdb;
 
-    if (ret?.cnt === 0) {
-        // create table
-        try {
-            const create = require("/scripts/query/create.js");
-            for (let v of Object.values(create)) {
-                server.db.prepare(v).run();
+    if (target_db === "better_sqlite3" || target_memdb === "better_sqlite3") {
+        let ret = targetdb.prepare("select count(*) cnt from sqlite_master").get();
+
+        if (ret?.cnt === 0) {
+            // create table
+            try {
+                const create = require("./query/create.js");
+                for (let v of Object.values(create)) {
+                    targetdb.prepare(v).run();
+                }
+            } catch (e) {
+                console.log("create query가 존재하지 않습니다.", e);
             }
-        } catch (e) {
-            console.log("create query가 존재하지 않습니다.", e);
         }
     }
     console.log("서버시작시 필수요소를 생성했습니다");
 }
-
-function connectDB(type = "file", target = "lowdb") {
-    let db;
-    if (type === "file") {
-        console.log("file db connect : ", target);
-        if (target == "lowdb") {
-            const low = require("lowdb");
-            const FileSync = require("lowdb/adapters/FileSync");
-            const adapter = new FileSync(defaultJsonPath);
-            db = low(adapter);
-        } else db = require("better-sqlite3")("temp/macro.db", {verbose: console.log});
-    } else if (type === "memory") {
-        console.log("memory db connect : ", target);
-        if (target == "lowdb") {
-            const low = require("lowdb");
-            const Memory = require("lowdb/adapters/Memory");
-            const adapter = new Memory();
-            db = low(adapter);
-            db.defaults({sse: [{id: "test", message: "text"}]}).write();
-        } else db = require("better-sqlite3")(":memory:", {verbose: console.log});
-    }
-    return db;
-}
-
+init();
 export default server;
 export {init};
 // 공용함수 파일 이름은 common.js로 통일

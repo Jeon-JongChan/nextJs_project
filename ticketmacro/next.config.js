@@ -4,5 +4,4 @@ const nextConfig = {
     swcMinify: true,
     // compress: false,
 };
-
 module.exports = nextConfig;

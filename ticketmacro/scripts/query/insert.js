@@ -1,16 +1,6 @@
 const query = {
     insert: {
-        local: "INSERT INTO LOCAL (NAME) VALUES (@name)",
-        spec: "INSERT INTO SPEC (NAME) VALUES (@name)",
-        image: "INSERT INTO IMAGE (PATH) VALUES (@path)",
-        type: "INSERT INTO TYPE (NAME) VALUES (@name)",
-        poketmon: `
-        INSERT INTO POKETMON (NAME, LOCAL_ID, IMAGE_ID, TYPE_ID, RARE) 
-        VALUES (@name, @local_id, @image_id, @type_id, @rare)
-        `,
-        personality: "INSERT INTO PERSONALITY (NAME) VALUES (@name)",
-        poketmon_spec: "INSERT INTO LOCAL (POKETMON_ID, SPEC_ID, HIDDEN_YN) VALUES (@poketmon_id, @spec_id, @priority)",
-        boilerplate: "INSERT INTO BOILERPLATE (NAME, PAGE, TYPE, TEXT) VALUES (@name, @page, @type, @text)",
+        sse: "INSERT INTO SSE (NAME, MSG) VALUSE @name, @message",
     },
     ignore: {
         spec: "INSERT OR IGNORE INTO SPEC (NAME) VALUES (@name)",

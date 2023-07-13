@@ -1,4 +1,5 @@
 import server from "/scripts/server";
+import insertQuery from "/scripts/query/insert";
 import {devLog} from "/scripts/common";
 
 export {sseInit, sseProgress, sseInsertMessage};
@@ -26,11 +27,11 @@ function sseProgress(req, res, id, intervalSecond = 10, event = null) {
     let sseConnectLimit = 0;
     const interval = setInterval(async () => {
         let resWrite;
-        let sse = server.memdb.get("sse");
-        let data = sse.find({id: id}).value();
+        let data = server.memapi.first(id);
         devLog("id", id, "sseProgress", data, "event", event, "remove data");
+        if (!data) return;
         // 보낼 데이터가 없다 하더라도 활성화 여부를 체크하는 heartbeat를 보내야함. res 종료 이벤트를 사용시 비활성화 가능
-        /*
+        /* heartbeat
         if (!data) {
             resWrite = res.write(":ping\n\n");
             // devLog("id", id, "no DATA ", "resWrite", resWrite, "connect", sseConnectLimit);
@@ -38,12 +39,10 @@ function sseProgress(req, res, id, intervalSecond = 10, event = null) {
             return;
         }
         */
-        // res.write(`event: progress\ndata: ${progress}\n\n`);
         if (!event) resWrite = res.write(`data:${data.message}` + "\n\n");
         else resWrite = res.write(`event: ${event}\ndata: ${data.message}` + "\n\n");
 
-        // sse.remove({id: id}).write();
-        sse.find({id: id}).head().unset("[0]").write();
+        server.memapi.firstDelete(id);
         sseConnectLimit = sseClose(sseConnectLimit, resWrite, res, interval);
     }, intervalSecond * 1000);
     // nextjs에서 req의 end, close는 작동하지 않음
@@ -73,7 +72,5 @@ async function sseInsertMessage(id, message) {
         devLog("memdb가 연결되지 않았습니다.");
         return;
     }
-    let sse = server.memdb.get("sse");
-    sse.push({id: id, message: message}).write();
-    devLog(sse.value());
+    server.memapi.insert("sse", {id: id, message: message});
 }

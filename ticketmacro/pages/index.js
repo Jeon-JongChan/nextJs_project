@@ -65,7 +65,7 @@ export default function Home() {
         logFrame.appendChild(log);
         logFrame.scrollTop = logFrame.scrollHeight;
 
-        devLog(logMsg, source);
+        devLog("Function : logMacro - ", logMsg, source);
     }
     return (
         <>

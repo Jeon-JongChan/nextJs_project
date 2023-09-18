@@ -10,14 +10,14 @@ const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
 
 if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
 // db 생성 부분 (lowdb, better-sqlite3)
-let target_db = process.env.NEXT_PUBLIC_DB || "lowdb";
-let target_memdb = process.env.NEXT_PUBLIC_MEMDB || "lowdb";
+let target_db = process.env.NEXT_PUBLIC_DB || "better-sqlite3";
+let target_memdb = process.env.NEXT_PUBLIC_MEMDB || "better-sqlite3";
 
 const db = connectDB("file", target_db);
 const memdb = connectDB("memory", target_memdb);
 //const db = new sqlite("temp/macro.db", { verbose: console.log });
 
-function connectDB(type = "file", target = "lowdb") {
+function connectDB(type = "file", target = "better-sqlite3") {
     let db;
     if (type === "file") {
         console.log("file db connect : ", target);
@@ -34,7 +34,7 @@ function connectDB(type = "file", target = "lowdb") {
             const Memory = require("lowdb/adapters/Memory");
             const adapter = new Memory();
             db = low(adapter);
-            db.defaults({sse: [{id: "test", message: "text"}]}).write();
+            //db.defaults({sse: [{id: "test", message: "text"}]}).write();
         } else db = require("better-sqlite3")(":memory:", {verbose: console.log});
     }
     return db;
@@ -50,6 +50,8 @@ const server = {
         /**
          * @param {*} lists 입력 데이터 형식
          * @param {*} prepare better-sqlite prepare 오브젝트
+         * prepare = db.prepare('select * from table where id = @id and var = @id') 형태로 작성
+         * list = [{id:id, name:name}, {id:id, name:name}] 형태로 작성
          */
         transaction: (list, prepare, db = server.db) => {
             // for (let item of list) prepare.run(item);
@@ -70,58 +72,6 @@ const server = {
                 });
             });
             transaction(list, prepare);
-        },
-    },
-    memapi: {
-        get: (query, condition = null) => {
-            if (target_memdb === "lowdb") {
-                if (!condition) return server.memdb.get(query).value();
-                else if (condition) return server.memdb.get(query).find(condition).value();
-            } else if (target_memdb === "better-sqlite3") {
-                return server.memdb.prepare(query).all();
-            }
-        },
-        insert: (query, insertData) => {
-            if (target_memdb === "lowdb") {
-                server.memdb.get(query).push(insertData).write();
-            } else if (target_memdb === "better-sqlite3") {
-                let prepare = server.memdb.prepare(query);
-                server.sqlite.transaction(insertData, prepare, server.memdb);
-            }
-        },
-        delete: (query, condition) => {
-            if (target_memdb === "lowdb") {
-                // server.memdb.get('sse').find({id: id}).head().unset("[0]").write();
-                server.memdb.get(query).remove(condition).write();
-            } else if (target_memdb === "better-sqlite3") {
-                let prepare = server.memdb.prepare(query);
-                server.sqlite.transaction(condition, prepare, server.memdb);
-            }
-        },
-        first: (query) => {
-            if (target_memdb === "lowdb") {
-                console.log(`first server.memdb.get(${query}).head()`, server.memdb.get(query).head().value());
-                return server.memdb.get(query).head().value();
-            } else if (target_memdb === "better-sqlite3") {
-                return server.memdb.prepare(query).get();
-            }
-        },
-        last: (query) => {
-            if (target_memdb === "lowdb") {
-                return server.memdb.get(query).last().value();
-            } else if (target_memdb === "better-sqlite3") {
-                return server.memdb.prepare(query).all().pop();
-            }
-        },
-        firstDelete: (query) => {
-            if (target_memdb === "lowdb") {
-                server.memdb.get(query).shift();
-            }
-        },
-        lastDelete: (query) => {
-            if (target_memdb === "lowdb") {
-                server.memdb.get(query).last().remove().write();
-            }
         },
     },
     readAndSaveFileFromFormdata: (req, saveLocally, savePath = "/temp/images/", changeFileName = true) => {
@@ -166,16 +116,6 @@ const server = {
             options.filename = (name, ext, path, form) => {
                 // timedata로 이름변경
                 imageName = Date.now().toString() + "_" + path.originalFilename;
-
-                //고유값으로
-                /*
-                const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
-                if (name.match(check_kor)) imageName = btoa(encodeURI(Date.now().toString() + name));
-                else imageName = name;
-
-                imageName = imageName + ext;
-                console.log("readAndSaveFileFromFormdata image filepath 1 : ", imageName);
-                */
                 return imageName;
             };
         }
@@ -273,17 +213,30 @@ function init() {
         console.log("폴더 생성 에러", e);
     }
     // table 존재여부 확인 및 존재 시 init 함수 종료
-    let targetdb = server.memdb;
-
-    if (target_db === "better_sqlite3" || target_memdb === "better_sqlite3") {
-        let ret = targetdb.prepare("select count(*) cnt from sqlite_master").get();
-
+    if (target_db === "better-sqlite3") {
+        let ret = server.db.prepare("select count(*) cnt from sqlite_master").get();
+        console.log("better db : ", ret);
         if (ret?.cnt === 0) {
             // create table
             try {
                 const create = require("./query/create.js");
                 for (let v of Object.values(create)) {
-                    targetdb.prepare(v).run();
+                    server.db.prepare(v).run();
+                }
+            } catch (e) {
+                console.log("create query가 존재하지 않습니다.", e);
+            }
+        }
+    }
+    if (target_memdb === "better-sqlite3") {
+        let ret = server.memdb.prepare("select count(*) cnt from sqlite_master").get();
+        console.log("better memdb : ", ret);
+        if (ret?.cnt === 0) {
+            // create table
+            try {
+                const create = require("./query/create.js");
+                for (let v of Object.values(create)) {
+                    server.memdb.prepare(v).run();
                 }
             } catch (e) {
                 console.log("create query가 존재하지 않습니다.", e);

@@ -9,6 +9,7 @@ export default function Home() {
     const callCreate = async () => await fetch(host + "/api/dbadmin?query=create");
     const callInsertInit = async () => await fetch(host + "/api/dbadmin?query=insert_init");
     const callDelete = async () => await fetch(host + "/api/dbadmin?query=delete");
+    const callTables = async () => await fetch(host + "/api/dbadmin?query=tables");
     return (
         <>
             <div className="my-2">
@@ -20,6 +21,7 @@ export default function Home() {
                             <GridInputButton label={"InsertInit"} onclick={callInsertInit} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
                             <GridInputButton label={"TRUNCATE"} onclick={callTruncate} type="button" colSpan={1}></GridInputButton>
                             <GridInputButton label={"Delete"} onclick={callDelete} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
+                            <GridInputButton label={"TABLES"} onclick={callTables} type="button" colSpan={1}></GridInputButton>
                         </div>
                     </div>
                 </div>

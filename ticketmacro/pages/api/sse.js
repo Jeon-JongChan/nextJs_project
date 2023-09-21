@@ -1,8 +1,8 @@
 import server from "/scripts/server";
-import {sseInsertMessage} from "/scripts/server/sseServer";
+import {sseInsertMessage, sseGetMessage, sseDeleteMessage} from "/scripts/server/sseServer";
 import selectQuery from "/scripts/query/select";
 import deleteQuery from "/scripts/query/delete";
-import {devLog} from "/scripts/common";
+import {devLog, sleep} from "/scripts/common";
 // import crawer from "/scripts/server/crawler";
 
 export default async function handler(req, res) {
@@ -10,6 +10,7 @@ export default async function handler(req, res) {
 
     sseInit(res, sseId);
     console.log("sseId", sseId, req.query);
+    await sleep(2000);
     [req, res] = sseProgress(req, res, sseId, 10);
 }
 
@@ -21,7 +22,7 @@ function sseInit(res, id = null) {
     res.setHeader("Connection", "keep-alive");
     res.write("event: connected\ndata: Connected to SSE server\n\n");
 
-    if (id) sseInsertMessage(id, "sse server connected");
+    //if (id) sseInsertMessage(id, "sse server connected");
 
     return res;
 }
@@ -35,14 +36,15 @@ function sseProgress(req, res, name, intervalSecond = 10, event = null) {
     if (!server.memdb) {
         devLog("memdb가 연결되지 않았습니다.");
         return;
+    } else {
+        devLog("memdb가 연결되었습니다.", sseGetMessage());
     }
     let sseConnectLimit = 0;
     const interval = setInterval(async () => {
         let resWrite;
-        let selectPrepare = server.memdb.prepare(selectQuery.sse.first);
-        let data = selectPrepare.get({name: name});
+        let data = sseGetMessage(name);
+        devLog("name", name, "interval : ", interval[Symbol.asyncId], "sseProgress : ", data, "data all", sseGetMessage());
         if (!data) return;
-        devLog("name", name, "sseProgress : ", data);
         // 보낼 데이터가 없다 하더라도 활성화 여부를 체크하는 heartbeat를 보내야함. res 종료 이벤트를 사용시 비활성화 가능
         /* heartbeat
         if (!data) {
@@ -54,8 +56,7 @@ function sseProgress(req, res, name, intervalSecond = 10, event = null) {
         */
         if (!event) resWrite = res.write(`data:${data.MESSAGE}` + "\n\n");
         else resWrite = res.write(`event: ${event}\ndata: ${data.MESSAGE}` + "\n\n");
-
-        server.memdb.prepare(deleteQuery.delete.sse).run({name: data.NAME, id: data.ID});
+        sseDeleteMessage(data.NAME, data.ID);
         sseConnectLimit = sseClose(sseConnectLimit, resWrite, res, interval);
     }, intervalSecond * 1000);
     // nextjs에서 req의 end, close는 작동하지 않음

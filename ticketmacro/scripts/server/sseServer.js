@@ -1,15 +1,37 @@
 import server from "/scripts/server";
 import {devLog} from "/scripts/common";
-import insertQuery from "/scripts/query/insert";
+import insertq from "/scripts/query/insert";
+import selectq from "/scripts/query/select";
+import deleteq from "/scripts/query/delete";
 
-export {sseInsertMessage};
+export {sseInsertMessage, sseGetMessage, sseDeleteMessage};
 
-async function sseInsertMessage(id, message) {
-    if (!server.memdb) {
+const usedb = server.memdb;
+
+function sseInsertMessage(id, message) {
+    if (!usedb) {
         devLog("memdb가 연결되지 않았습니다.");
         return;
     }
-    devLog("insert Message id - ", id, ", message - ", message);
-    let insertPrepare = server.memdb.prepare(insertQuery.insert.sse);
-    insertPrepare.run({name: id, message: message});
+    devLog("*** sseInsertMessage * insert Message id - ", id, ", message - ", message);
+    usedb.prepare(insertq.insert.sse).run({name: id, message: message});
+    devLog(sseGetMessage());
+}
+/**
+ * @param {string} name
+ * @returns {Array | Object}
+ */
+function sseGetMessage(name = null) {
+    let data = null;
+    if (name) data = usedb.prepare(selectq.sse.first).get({name: name});
+    else data = usedb.prepare(selectq.sse.all).all();
+    return data;
+}
+/**
+ *
+ * @param {string} name
+ * @param {int} id
+ */
+function sseDeleteMessage(name, id) {
+    usedb.prepare(deleteq.delete.sse).run({name: name, id: id});
 }

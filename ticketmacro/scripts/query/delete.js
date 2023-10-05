@@ -1,6 +1,7 @@
 const query = {
     drop: {
-        local: "DROP TABLE LOCAL",
+        sse: "DROP TABLE IF EXISTS SSE",
+        macro: "DROP TABLE IF EXISTS MACRO",
     },
     truncate: {
         local: "DELETE FROM LOCAL",

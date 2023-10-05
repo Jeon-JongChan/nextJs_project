@@ -4,10 +4,10 @@
 
 export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx};
 
-let dev = process.env.NEXT_PUBLIC_DEV || undefined;
+const dev = process.env.NEXT_PUBLIC_DEV || undefined;
 let devLog = (...msg) => {
     if (dev) {
-        console.log(`>>> devLog. >>> `, ...msg);
+        console.log(`>>> ${dev} devLog. >>> `, ...msg);
     }
 };
 /**

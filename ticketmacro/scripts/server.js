@@ -2,6 +2,10 @@ const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
 
+const defaultJsonPath = path.join(process.cwd() + "/temp/data.json");
+const defaultFilePath = path.join(process.cwd() + "/temp/file");
+const defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
+
 const target_db = process.env.NEXT_PUBLIC_DB || "better-sqlite3";
 const target_memdb = process.env.NEXT_PUBLIC_MEMDB || "better-sqlite3";
 
@@ -18,9 +22,9 @@ class Server {
         // 최초 선언시 모든 setInterval 종료
         clearInterval();
 
-        this.defaultJsonPath = path.join(process.cwd() + "/temp/data.json");
-        this.defaultFilePath = path.join(process.cwd() + "/temp/file");
-        this.defaultbuildMediaPath = path.join(process.cwd(), "/.next/static/media/");
+        this.defaultJsonPath = defaultJsonPath;
+        this.defaultFilePath = defaultFilePath;
+        this.defaultbuildMediaPath = defaultbuildMediaPath;
 
         if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
         // 인스턴스에서 전역 db 접근할 수 있게
@@ -131,6 +135,73 @@ class Server {
         });
     }
 
+    init() {
+        console.log("-- 서버시작시 필수요소를 생성합니다. : ");
+        console.log("-- 서버 설정 정보. NEXT_PUBLIC_DB : ", target_db, ", NEXT_PUBLIC_MEMDB : ", target_memdb);
+        try {
+            console.log("-- 서버시작 - 기본폴더를 생성합니다.");
+            if (!fs.existsSync(this.defaultbuildMediaPath)) fs.mkdirSync(this.defaultbuildMediaPath);
+            if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
+            if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
+        } catch (e) {
+            console.log("폴더 생성 에러", e);
+        }
+
+        if (target_db === "better-sqlite3") {
+            console.log("-- 서버시작 - sqlite db의 기본테이블 생성 프로세스");
+            let ret = this.db.prepare("select count(*) cnt from sqlite_master").get();
+            console.log("-- better db : ", ret);
+            if (ret?.cnt === 0) {
+                try {
+                    const create = require("./query/create.js");
+                    for (let v of Object.values(create)) {
+                        this.db.prepare(v).run();
+                    }
+                } catch (e) {
+                    console.log("create query가 존재하지 않습니다.", e);
+                }
+            }
+        }
+
+        if (target_memdb === "better-sqlite3") {
+            console.log("-- 서버시작 - sqlite memory db의 기본테이블 생성 프로세스");
+            let ret = this.memdb.prepare("select count(*) cnt from sqlite_master").get();
+            console.log("-- better memdb : ", ret);
+            if (ret?.cnt === 0) {
+                try {
+                    const create = require("./query/create.js");
+                    for (let v of Object.values(create)) {
+                        this.memdb.prepare(v).run();
+                    }
+                } catch (e) {
+                    console.log("create query가 존재하지 않습니다.", e);
+                }
+            }
+        }
+        console.log("-- 서버시작시 필수요소를 생성했습니다");
+    }
+}
+
+class ServerFileManager {
+    static instance = null; // 싱글톤 패턴
+
+    constructor() {
+        if (ServerFileManager.instance) {
+            console.log("-- ServerFileManager instance already exists");
+            return ServerFileManager.instance;
+        }
+
+        this.defaultJsonPath = defaultJsonPath;
+        this.defaultFilePath = defaultFilePath;
+        this.defaultbuildMediaPath = defaultbuildMediaPath;
+
+        if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
+        // 인스턴스에서 전역 db 접근할 수 있게
+
+        ServerFileManager.instance = this;
+        return this;
+    }
+
     fileAppend(data, filePath = this.defaultFilePath) {
         this.init();
         fs.appendFileSync("." + filePath, data, (err) => {
@@ -196,53 +267,7 @@ class Server {
         }
         fs.writeFileSync(this.defaultJsonPath, JSON.stringify(data));
     }
-
-    init() {
-        console.log("-- 서버시작시 필수요소를 생성합니다. : ");
-        console.log("-- 서버 설정 정보. NEXT_PUBLIC_DB : ", target_db, ", NEXT_PUBLIC_MEMDB : ", target_memdb);
-        try {
-            console.log("-- 서버시작 - 기본폴더를 생성합니다.");
-            if (!fs.existsSync(this.defaultbuildMediaPath)) fs.mkdirSync(this.defaultbuildMediaPath);
-            if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
-            if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
-        } catch (e) {
-            console.log("폴더 생성 에러", e);
-        }
-
-        if (target_db === "better-sqlite3") {
-            console.log("-- 서버시작 - sqlite db의 기본테이블 생성 프로세스");
-            let ret = this.db.prepare("select count(*) cnt from sqlite_master").get();
-            console.log("-- better db : ", ret);
-            if (ret?.cnt === 0) {
-                try {
-                    const create = require("./query/create.js");
-                    for (let v of Object.values(create)) {
-                        this.db.prepare(v).run();
-                    }
-                } catch (e) {
-                    console.log("create query가 존재하지 않습니다.", e);
-                }
-            }
-        }
-
-        if (target_memdb === "better-sqlite3") {
-            console.log("-- 서버시작 - sqlite memory db의 기본테이블 생성 프로세스");
-            let ret = this.memdb.prepare("select count(*) cnt from sqlite_master").get();
-            console.log("-- better memdb : ", ret);
-            if (ret?.cnt === 0) {
-                try {
-                    const create = require("./query/create.js");
-                    for (let v of Object.values(create)) {
-                        this.memdb.prepare(v).run();
-                    }
-                } catch (e) {
-                    console.log("create query가 존재하지 않습니다.", e);
-                }
-            }
-        }
-        console.log("-- 서버시작시 필수요소를 생성했습니다");
-    }
 }
-
 const server = new Server();
 export default server;
+export {ServerFileManager};

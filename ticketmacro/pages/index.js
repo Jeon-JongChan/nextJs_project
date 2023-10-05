@@ -1,14 +1,16 @@
 import GridInputText from "/page_components/Grid/GridInputText";
 import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import GridInputButton from "/page_components/Grid/GridInputButton";
+import ListItem from "/page_components/public/ListItem";
 import {createElement, useEffect} from "react";
 import {devLog} from "/scripts/common";
 import {sseConnect} from "/scripts/client/sseClient";
 
 export default function Home() {
     let source;
+    let userName = "test";
     useEffect(() => {
-        source = sseConnect("test");
+        source = sseConnect(userName);
         source.addEventListener("message", (event) => {
             devLog(`Progress: ${event.data}`);
             logMacro(event.data);
@@ -25,7 +27,7 @@ export default function Home() {
     }
 
     function submitMacroData() {
-        let inputList = ["address", "seat", "date", "time"];
+        let inputList = ["url", "seat", "date", "time"];
         let inputValues = {};
         // input에서 value를 가져온다.
         for (let i = 0; i < inputList.length; i++) {
@@ -39,14 +41,14 @@ export default function Home() {
         }
 
         // prettier-ignore
-        fetch("/api/macro/start?id=test", {
+        fetch(`/api/macro/start?id=${userName}`, {
             method: "POST",
             headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
-            address: inputValues.address,
+            site: "interpark",
+            url: inputValues.url,
             seat: inputValues.seat,
-            date: inputValues.date,
-            time: inputValues.time,
+            datetime: inputValues.date+' '+inputValues.time,
             }),
         })
         .then(async (res) => {
@@ -76,7 +78,7 @@ export default function Home() {
                         noteContent={"매크로를 원하는 사이트에 자동로그인은 필수입니다!"}
                         propComponents={[GridInputText, GridInputText, GridInputText, GridInputText, GridInputText, GridInputButton]}
                         propComponentsProperty={[
-                            {label: "티켓팅 URL", smallLabel: "필수데이터", id: "macro-address"},
+                            {id: "macro-url", label: "티켓팅 URL", smallLabel: "필수데이터"},
                             {colSpan: 2, id: "macro-seat", label: "좌석", smallLabel: "없으면 앞 순서 랜덤", type: "number", inputId: "macro-seat"},
                             {colSpan: 2, id: "macro-date", label: "매크로 시작일", type: "date", default: defaultDate},
                             {colSpan: 2, id: "macro-time", label: "매크로 시작시간", type: "time", default: defaultTime},
@@ -90,6 +92,35 @@ export default function Home() {
                         <h3 className="text-lg font-medium leading-6 text-gray-900">매크로 로그</h3>
                     </div>
                     <div id="macro-log" className="overflow-y-scroll scrollbar-remove" style={{height: "320px"}}></div>
+                </div>
+            </div>
+            <div className="flex h-1/2">
+                <div className="flex flex-col p-2 w-full lg:w-1/2 overflow-y-scroll scrollbar-remove">
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
+                    <ListItem></ListItem>
                 </div>
             </div>
         </>

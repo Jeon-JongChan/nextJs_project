@@ -6,11 +6,12 @@ import deleteq from "/scripts/query/delete";
 
 export {sseInsertMessage, sseGetMessage, sseDeleteMessage};
 
-const usedb = server.memdb;
+// 개발모드에선 memdb 초기화로 작동 x
+const usedb = process.env.NEXT_PUBLIC_DEV == "dev" ? server.db : server.memdb;
 
 function sseInsertMessage(id, message) {
     if (!usedb) {
-        devLog("memdb가 연결되지 않았습니다.");
+        devLog("db가 연결되지 않았습니다.");
         return;
     }
     devLog("*** sseInsertMessage * insert Message id - ", id, ", message - ", message);

@@ -13,6 +13,7 @@ import Script from "next/script";
  */
 export default function Component(props) {
     return (
+        //<div className="flex flex-col p-2 w-full lg:w-1/2">
         <>
             <div className="grid grid-cols-6 gap-6">
                 {props?.noteHeader ? (

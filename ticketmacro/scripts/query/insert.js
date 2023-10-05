@@ -1,6 +1,7 @@
 const query = {
     insert: {
         sse: "INSERT INTO SSE (NAME, MESSAGE) VALUES (@name, @message)",
+        macro: "INSERT INTO MACRO (SSE, SITE, START_DT, URL) VALUES (@sse, @site, @start_dt, @url)",
     },
     ignore: {
         poketmon_local: `

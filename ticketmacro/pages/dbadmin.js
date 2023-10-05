@@ -3,25 +3,21 @@ import GridInputText from "/page_components/Grid/GridInputText";
 
 export default function Home() {
     const host = process.env.NEXT_PUBLIC_HOST;
-    const callSelectAll = async (tablename) => await fetch(host + "/api/dbadmin?query=select&table=" + tablename);
-    const callDrop = async () => await fetch(host + "/api/dbadmin?query=drop");
-    const callTruncate = async () => await fetch(host + "/api/dbadmin?query=truncate");
-    const callCreate = async () => await fetch(host + "/api/dbadmin?query=create");
-    const callInsertInit = async () => await fetch(host + "/api/dbadmin?query=insert_init");
-    const callDelete = async () => await fetch(host + "/api/dbadmin?query=delete");
-    const callTables = async () => await fetch(host + "/api/dbadmin?query=tables");
+    const callApi = async (queryType, table = null) => {
+        if (table) await fetch(host + `/api/dbadmin?query=${queryType}&table=${table}`);
+        else await fetch(host + `/api/dbadmin?query=${queryType}`);
+    };
     return (
         <>
             <div className="my-2">
                 <div className="shadow rounded-md">
                     <div className="bg-white px-4 py-3">
-                        <div className="grid grid-cols-6 gap-6">
-                            <GridInputButton label={"DROP"} onclick={callDrop} type="button" colSpan={1}></GridInputButton>
-                            <GridInputButton label={"CREATE"} onclick={callCreate} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
-                            <GridInputButton label={"InsertInit"} onclick={callInsertInit} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
-                            <GridInputButton label={"TRUNCATE"} onclick={callTruncate} type="button" colSpan={1}></GridInputButton>
-                            <GridInputButton label={"Delete"} onclick={callDelete} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
-                            <GridInputButton label={"TABLES"} onclick={callTables} type="button" colSpan={1}></GridInputButton>
+                        <div className="grid grid-cols-8 gap-3">
+                            <p className="px-1 py-3 inline-block">전체 대상 : </p>
+                            <GridInputButton label={"DROP"} onclick={() => callApi("drop")} type="button" colSpan={1}></GridInputButton>
+                            <GridInputButton label={"CREATE"} onclick={() => callApi("create")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
+                            <GridInputButton label={"InsertInit"} onclick={() => callApi("insert_init")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
+                            <GridInputButton label={"TABLES"} onclick={() => callApi("tables")} type="button" colSpan={1}></GridInputButton>
                         </div>
                     </div>
                 </div>
@@ -35,10 +31,29 @@ export default function Home() {
                                 label={"SELECT ALL"}
                                 onclick={() => {
                                     let tablename = document.querySelector("#tablename").value;
-                                    callSelectAll(tablename);
+                                    callApi("select", tablename);
                                 }}
                                 type="button"
-                                colSpan={3}
+                                colSpan={1}
+                            ></GridInputButton>
+                            <GridInputButton
+                                label={"TRUNCATE"}
+                                onclick={() => {
+                                    let tablename = document.querySelector("#tablename").value;
+                                    callApi("truncate", tablename);
+                                }}
+                                type="button"
+                                colSpan={1}
+                            ></GridInputButton>
+                            <GridInputButton
+                                label={"Delete"}
+                                onclick={() => {
+                                    let tablename = document.querySelector("#tablename").value;
+                                    callApi("delete", tablename);
+                                }}
+                                type="button"
+                                buttonColor={"red"}
+                                colSpan={1}
                             ></GridInputButton>
                         </div>
                     </div>

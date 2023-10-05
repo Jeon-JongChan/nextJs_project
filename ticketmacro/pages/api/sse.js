@@ -1,7 +1,7 @@
 import server from "/scripts/server";
 import {sseInsertMessage, sseGetMessage, sseDeleteMessage} from "/scripts/server/sseServer";
-import selectQuery from "/scripts/query/select";
-import deleteQuery from "/scripts/query/delete";
+import selectq from "/scripts/query/select";
+import deleteq from "/scripts/query/delete";
 import {devLog, sleep} from "/scripts/common";
 // import crawer from "/scripts/server/crawler";
 
@@ -36,24 +36,14 @@ function sseProgress(req, res, name, intervalSecond = 10, event = null) {
     if (!server.memdb) {
         devLog("memdb가 연결되지 않았습니다.");
         return;
-    } else {
-        devLog("memdb가 연결되었습니다.", sseGetMessage());
     }
+
     let sseConnectLimit = 0;
     const interval = setInterval(async () => {
         let resWrite;
         let data = sseGetMessage(name);
-        devLog("name", name, "interval : ", interval[Symbol.asyncId], "sseProgress : ", data, "data all", sseGetMessage());
+        // devLog("sseProgress name :", name, " data : ", data);
         if (!data) return;
-        // 보낼 데이터가 없다 하더라도 활성화 여부를 체크하는 heartbeat를 보내야함. res 종료 이벤트를 사용시 비활성화 가능
-        /* heartbeat
-        if (!data) {
-            resWrite = res.write(":ping\n\n");
-            // devLog("id", name, "no DATA ", "resWrite", resWrite, "connect", sseConnectLimit);
-            sseConnectLimit = sseClose(sseConnectLimit, resWrite, res, interval);
-            return;
-        }
-        */
         if (!event) resWrite = res.write(`data:${data.MESSAGE}` + "\n\n");
         else resWrite = res.write(`event: ${event}\ndata: ${data.MESSAGE}` + "\n\n");
         sseDeleteMessage(data.NAME, data.ID);
@@ -80,3 +70,12 @@ function sseClose(sseConnectLimit, resWrite, res, interval) {
 
     return sseConnectLimit;
 }
+// 보낼 데이터가 없다 하더라도 활성화 여부를 체크하는 heartbeat를 보내야함. res 종료 이벤트를 사용시 비활성화 가능
+/* sse heartbeat 구문. 현재는 req가 아닌 res의 소켓 종료구문으로 처리중
+if (!data) {
+    resWrite = res.write(":ping\n\n");
+    // devLog("id", name, "no DATA ", "resWrite", resWrite, "connect", sseConnectLimit);
+    sseConnectLimit = sseClose(sseConnectLimit, resWrite, res, interval);
+    return;
+}
+*/

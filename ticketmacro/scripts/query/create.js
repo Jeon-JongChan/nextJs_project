@@ -1,9 +1,18 @@
 const query = {
     create_table_sse: `
-        CREATE TABLE SSE (
+        CREATE TABLE IF NOT EXISTS SSE (
             ID      INTEGER PRIMARY KEY AUTOINCREMENT,
             NAME    TEXT NOT NULL,
             MESSAGE     TEXT NOT NULL
+        )
+    `,
+    create_table_macro: `
+        CREATE TABLE IF NOT EXISTS MACRO (
+            ID          INTEGER PRIMARY KEY AUTOINCREMENT,
+            SSE         VARCHAR(20),
+            SITE        VARCHAR(20),
+            START_DT    DATETIME,
+            URL         TEXT NOT NULL
         )
     `,
 };

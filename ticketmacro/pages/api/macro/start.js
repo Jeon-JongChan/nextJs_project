@@ -6,17 +6,6 @@ import {sseInsertMessage, sseGetMessage} from "/scripts/server/sseServer";
 
 export default async function handler(req, res) {
     // 클라이언트로 보낼 메시지
-    const message = "SSE 테스트";
-    let sseId = req.query.id;
-
-    devLog(" start sse : ", req.query, req.body, sseId);
-
-    // SSE 메세지 insert
-    server.db.prepare(insertq.insert.macro).run({sse: sseId, site: req.body.site, start_dt: req.body.datetime, url: req.body.url});
-    sseInsertMessage(sseId, `매크로를 작업을 저장합니다. SITE : ${req.body.site} URL : ${req.body.url}`);
-
-    // API 응답
-    res.status(200).json({message: "매크로테스트 시작"});
 }
 
 async function interpark(sseId) {

@@ -2,19 +2,30 @@ import GridInputText from "/page_components/Grid/GridInputText";
 import GridBorderBox from "/page_components/Grid/GridBorderBox";
 import GridInputButton from "/page_components/Grid/GridInputButton";
 import ListItem from "/page_components/public/ListItem";
-import {createElement, useEffect} from "react";
+import {useEffect, useState, useRef} from "react";
 import {devLog} from "/scripts/common";
 import {sseConnect} from "/scripts/client/sseClient";
 
 export default function Home() {
+    const intervalRef = useRef([]);
+    const [macroList, setMacroList] = useState([]);
+
     let source;
     let userName = "test";
     useEffect(() => {
+        intervalRef.current.push(setInterval(listMacro, 10 * 1000));
         source = sseConnect(userName);
         source.addEventListener("message", (event) => {
             devLog(`Progress: ${event.data}`);
             logMacro(event.data);
         });
+
+        return () => {
+            devLog("useEffect Close");
+            intervalRef.current.map((interval) => clearInterval(interval));
+            intervalRef.current = [];
+            source.close();
+        };
     }, []);
 
     // prettier-ignore
@@ -41,7 +52,7 @@ export default function Home() {
         }
 
         // prettier-ignore
-        fetch(`/api/macro/start?id=${userName}`, {
+        fetch(`/api/macro/insert?id=${userName}`, {
             method: "POST",
             headers: {"Content-Type": "application/json",},
             body: JSON.stringify({
@@ -69,6 +80,12 @@ export default function Home() {
 
         devLog("Function : logMacro - ", logMsg, source);
     }
+    async function listMacro() {
+        let res = await fetch(`/api/data?id=macro_list_all`);
+        let data = await res.json();
+        setMacroList([...data]);
+        // console.log(intervalRef.current.length, " : listMacro", data);
+    }
     return (
         <>
             <div className="flex">
@@ -94,34 +111,16 @@ export default function Home() {
                     <div id="macro-log" className="overflow-y-scroll scrollbar-remove" style={{height: "320px"}}></div>
                 </div>
             </div>
-            <div className="flex h-1/2">
-                <div className="flex flex-col p-2 w-full lg:w-1/2 overflow-y-scroll scrollbar-remove">
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                    <ListItem></ListItem>
-                </div>
+            <div className="flex flex-col p-2 ">
+                {macroList.map((data, index) => {
+                    return (
+                        <div className="grid grid-cols-6 w-full max-h-64 overflow-y-scroll scrollbar-remove border rounded-md p-2" key={index}>
+                            <span className="col-span-1">대상사이트 : {data.SITE} &nbsp;</span>
+                            <span className="col-span-3">URL : {data.URL}</span>
+                            <span className="col-span-2">매크로시작시간 : {data.START_DT}</span>
+                        </div>
+                    );
+                })}
             </div>
         </>
     );

@@ -10,6 +10,7 @@ export default async function handler(req, res) {
 
     sseInit(res, sseId);
     console.log("sseId", sseId, req.query);
+    fetch(`http://localhost:3000/api/macro/start?id=${sseId}`);
     await sleep(2000);
     [req, res] = sseProgress(req, res, sseId, 10);
 }

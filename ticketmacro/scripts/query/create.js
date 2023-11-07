@@ -12,7 +12,7 @@ const query = {
             SSE         VARCHAR(20),
             SITE        VARCHAR(20),
             START_DT    DATETIME,
-            URL         TEXT NOT NULL
+            URL         TEXT NOT NULL UNIQUE
         )
     `,
 };

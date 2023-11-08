@@ -3,9 +3,12 @@ import GridInputText from "/page_components/Grid/GridInputText";
 
 export default function Home() {
     const host = process.env.NEXT_PUBLIC_HOST;
-    const callApi = async (queryType, table = null) => {
+    const callDBApi = async (queryType, table = null) => {
         if (table) await fetch(host + `/api/dbadmin?query=${queryType}&table=${table}`);
         else await fetch(host + `/api/dbadmin?query=${queryType}`);
+    };
+    const callApi = async (apiType) => {
+        await fetch(host + `/api/admin?apiType=${apiType}`);
     };
     return (
         <>
@@ -14,10 +17,10 @@ export default function Home() {
                     <div className="bg-white px-4 py-3">
                         <div className="grid grid-cols-8 gap-3">
                             <p className="px-1 py-3 inline-block">전체 대상 : </p>
-                            <GridInputButton label={"DROP"} onclick={() => callApi("drop")} type="button" colSpan={1}></GridInputButton>
-                            <GridInputButton label={"CREATE"} onclick={() => callApi("create")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
-                            <GridInputButton label={"InsertInit"} onclick={() => callApi("insert_init")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
-                            <GridInputButton label={"TABLES"} onclick={() => callApi("tables")} type="button" colSpan={1}></GridInputButton>
+                            <GridInputButton label={"DROP"} onclick={() => callDBApi("drop")} type="button" colSpan={1}></GridInputButton>
+                            <GridInputButton label={"CREATE"} onclick={() => callDBApi("create")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
+                            <GridInputButton label={"InsertInit"} onclick={() => callDBApi("insert_init")} type="button" buttonColor={"red"} colSpan={1}></GridInputButton>
+                            <GridInputButton label={"TABLES"} onclick={() => callDBApi("tables")} type="button" colSpan={1}></GridInputButton>
                         </div>
                     </div>
                 </div>
@@ -31,7 +34,7 @@ export default function Home() {
                                 label={"SELECT ALL"}
                                 onclick={() => {
                                     let tablename = document.querySelector("#tablename").value;
-                                    callApi("select", tablename);
+                                    callDBApi("select", tablename);
                                 }}
                                 type="button"
                                 colSpan={1}
@@ -40,7 +43,7 @@ export default function Home() {
                                 label={"TRUNCATE"}
                                 onclick={() => {
                                     let tablename = document.querySelector("#tablename").value;
-                                    callApi("truncate", tablename);
+                                    callDBApi("truncate", tablename);
                                 }}
                                 type="button"
                                 colSpan={1}
@@ -49,12 +52,22 @@ export default function Home() {
                                 label={"Delete"}
                                 onclick={() => {
                                     let tablename = document.querySelector("#tablename").value;
-                                    callApi("delete", tablename);
+                                    callDBApi("delete", tablename);
                                 }}
                                 type="button"
                                 buttonColor={"red"}
                                 colSpan={1}
                             ></GridInputButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="my-2">
+                <div className="shadow rounded-md">
+                    <div className="bg-white px-4 py-3">
+                        <div className="grid grid-cols-8 gap-3">
+                            <p className="px-1 py-3 inline-block">매크로 시작 : </p>
+                            <GridInputButton label={"START"} onclick={() => callApi("start")} type="button" colSpan={1}></GridInputButton>
                         </div>
                     </div>
                 </div>

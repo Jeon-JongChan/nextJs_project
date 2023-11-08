@@ -6,6 +6,10 @@ import {sseInsertMessage, sseGetMessage} from "/scripts/server/sseServer";
 
 export default async function handler(req, res) {
     // 클라이언트로 보낼 메시지
+    let query = req.query;
+
+    if (query.state == "test") {
+    }
 }
 
 async function interpark(sseId) {

@@ -9,7 +9,10 @@ export default function handler(req, res) {
     let query = req.query;
 
     if (query.state == "start") {
+        fetch("http://localhost:3000/api/macro/start?state=test").then((res) => {
+            devLog("==================================== res : ", res);
+        });
     }
 
-    res.status(200).text();
+    res.status(200).send(`admin page : ${query.state} complete`);
 }

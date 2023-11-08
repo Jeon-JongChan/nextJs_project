@@ -6,6 +6,9 @@ const query = {
     api_data: {
         macro_list_all: "select SITE, URL, START_DT from MACRO ORDER BY START_DT",
     },
+    macro: {
+        start: "select * from MACRO where SITE = @site and START_DT <= CURRENT_TIMESTAMP order by START_DT",
+    },
 };
 
 module.exports = query;

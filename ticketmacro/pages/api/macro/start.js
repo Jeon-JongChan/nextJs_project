@@ -1,18 +1,26 @@
 import server from "/scripts/server";
-import insertq from "/scripts/query/insert";
+import selectq from "/scripts/query/select";
 import {devLog} from "/scripts/common";
 import {sseInsertMessage, sseGetMessage} from "/scripts/server/sseServer";
-// import puppeteer from "puppeteer";
+import puppeteer from "puppeteer";
 
 export default async function handler(req, res) {
     // 클라이언트로 보낼 메시지
     let query = req.query;
 
     if (query.state == "test") {
+        let data = server.db.prepare(selectq.macro.start).all({site: "interpark"});
+        devLog("macro start : ", query.state, " data : ", data);
+
+        data.forEach((element) => {
+            interpark(element.URL);
+        });
+        // await interpark();
     }
 }
 
-async function interpark(sseId) {
+async function interpark(url) {
+    devLog("==================================== macro interpark : ", url);
     const LOGIN_URL = "https://www.interpark.com/malls/index.html";
     const TICKET_URL = "https://www.interpark.com/malls/index.html";
 
@@ -23,7 +31,7 @@ async function interpark(sseId) {
 
         // 인터파크 페이지 열기
         await page.goto(LOGIN_URL);
-
+        /*
         // 로그인 여부 확인
         const isLogged = await page.evaluate(() => {
             const loginButton = document.querySelector("#loginButton"); // 로그인 버튼의 선택자를 적절하게 변경해야 합니다.
@@ -45,10 +53,8 @@ async function interpark(sseId) {
 
         // 브라우저 종료
         await browser.close();
-
-        res.status(200).json({success: true});
+*/
     } catch (error) {
         console.error(error);
-        res.status(500).json({success: false, error: error.message});
     }
 }

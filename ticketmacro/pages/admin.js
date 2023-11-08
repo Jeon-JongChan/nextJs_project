@@ -8,7 +8,7 @@ export default function Home() {
         else await fetch(host + `/api/dbadmin?query=${queryType}`);
     };
     const callApi = async (apiType) => {
-        await fetch(host + `/api/admin?apiType=${apiType}`);
+        await fetch(host + `/api/admin?state=${apiType}`);
     };
     return (
         <>

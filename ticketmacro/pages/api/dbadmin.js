@@ -29,6 +29,9 @@ export default function handler(req, res) {
     } else if (info.query == "truncate") {
         let sql_query = `DELETE FROM ${info.table}`;
         db.prepare(sql_query).run();
+    } else if (info.query == "query") {
+        let sql_query = `${info.table}`;
+        db.prepare(sql_query).run();
     }
 
     devLog("==================================== dbadmin end : ", info);

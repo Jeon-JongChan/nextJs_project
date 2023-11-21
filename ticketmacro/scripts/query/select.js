@@ -7,7 +7,7 @@ const query = {
         macro_list_all: "select SITE, URL, START_DT from MACRO ORDER BY START_DT",
     },
     macro: {
-        start: "select * from MACRO where SITE = @site and START_DT <= CURRENT_TIMESTAMP order by START_DT",
+        start: "select * from MACRO where SITE = @site and START_DT <= DATETIME('now','localtime') order by START_DT",
     },
 };
 

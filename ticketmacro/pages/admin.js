@@ -14,7 +14,7 @@ export default function Home() {
         <>
             <div className="my-2">
                 <div className="shadow rounded-md">
-                    <div className="bg-white px-4 py-3">
+                    <div classWWWWName="bg-white px-4 py-3">
                         <div className="grid grid-cols-8 gap-3">
                             <p className="px-1 py-3 inline-block">전체 대상 : </p>
                             <GridInputButton label={"DROP"} onclick={() => callDBApi("drop")} type="button" colSpan={1}></GridInputButton>
@@ -28,8 +28,8 @@ export default function Home() {
             <div className="my-2">
                 <div className="shadow rounded-md">
                     <div className="bg-white px-4 py-3">
-                        <div className="grid grid-cols-6 gap-6">
-                            <GridInputText id={"tablename"} label={"TABLE NAME"} type="text" colSpan={3}></GridInputText>
+                        <div className="grid grid-cols-8 gap-1">
+                            <GridInputText id={"tablename"} label={"TABLE NAME"} type="text" colSpan={4}></GridInputText>
                             <GridInputButton
                                 label={"SELECT ALL"}
                                 onclick={() => {
@@ -56,6 +56,16 @@ export default function Home() {
                                 }}
                                 type="button"
                                 buttonColor={"red"}
+                                colSpan={1}
+                            ></GridInputButton>
+                            <GridInputButton
+                                label={"query"}
+                                onclick={() => {
+                                    let tablename = document.querySelector("#tablename").value;
+                                    callDBApi("query", tablename);
+                                }}
+                                type="button"
+                                buttonColor={"blue"}
                                 colSpan={1}
                             ></GridInputButton>
                         </div>

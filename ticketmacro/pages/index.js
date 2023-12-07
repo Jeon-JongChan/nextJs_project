@@ -38,7 +38,7 @@ export default function Home() {
     }
 
     function submitMacroData() {
-        let inputList = ["url", "seat", "date", "time"];
+        let inputList = ["url", "seat", "date", "time", "ticketdate"];
         let inputValues = {};
         // input에서 value를 가져온다.
         for (let i = 0; i < inputList.length; i++) {
@@ -60,6 +60,7 @@ export default function Home() {
             url: inputValues.url,
             seat: inputValues.seat,
             datetime: inputValues.date+' '+inputValues.time,
+            ticketdate: inputValues.ticketdate,
             }),
         })
         .then(async (res) => {
@@ -93,12 +94,13 @@ export default function Home() {
                     <GridBorderBox
                         noteHeader={"매크로 입력 데이터"}
                         noteContent={"매크로를 원하는 사이트에 자동로그인은 필수입니다!"}
-                        propComponents={[GridInputText, GridInputText, GridInputText, GridInputText, GridInputText, GridInputButton]}
+                        propComponents={[GridInputText, GridInputText, GridInputText, GridInputText, GridInputText, GridInputText, GridInputButton]}
                         propComponentsProperty={[
                             {id: "macro-url", label: "티켓팅 URL", smallLabel: "필수데이터"},
                             {colSpan: 2, id: "macro-seat", label: "좌석", smallLabel: "없으면 앞 순서 랜덤", type: "number", inputId: "macro-seat"},
                             {colSpan: 2, id: "macro-date", label: "매크로 시작일", type: "date", default: defaultDate},
                             {colSpan: 2, id: "macro-time", label: "매크로 시작시간", type: "time", default: defaultTime},
+                            {colSpan: 2, id: "macro-ticketdate", label: "티켓예매일", type: "date", default: defaultDate},
                             {id: "macro-text", label: "여유텍스트"},
                             {id: "button-macro-submit", label: "제출", onclick: submitMacroData},
                         ]}

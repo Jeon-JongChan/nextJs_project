@@ -10,7 +10,13 @@ export default async function handler(req, res) {
 
     devLog("macro insert data : ", req.query, req.body, sseId);
     // 매크로 데이터 저장
-    server.db.prepare(insertq.insert.macro).run({sse: sseId, site: req.body.site, start_dt: req.body.datetime, url: req.body.url});
+    server.db.prepare(insertq.insert.macro).run({
+        sse: sseId,
+        site: req.body.site,
+        ticketdate: req.body.ticketdate,
+        start_dt: req.body.datetime,
+        url: req.body.url,
+    });
     // SSE 메세지 insert
     sseInsertMessage(sseId, `매크로를 작업을 저장합니다. SITE : ${req.body.site} URL : ${req.body.url}`);
 

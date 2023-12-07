@@ -4,6 +4,7 @@ import {devLog} from "/scripts/common";
 import {sseInsertMessage, sseGetMessage} from "/scripts/server/sseServer";
 import puppeteer from "puppeteer";
 
+let browser = null;
 export default async function handler(req, res) {
     // 클라이언트로 보낼 메시지
     let query = req.query;
@@ -21,11 +22,11 @@ export default async function handler(req, res) {
 
 async function interpark(url) {
     const timeout = 10000;
-    devLog("==================================== macro interpark : ", url);
+    devLog("==================================== macro interpark : ", url, browser);
 
     try {
         // Puppeteer 브라우저 시작
-        const browser = await puppeteer.launch({headless: false}); // headless: true로 변경하여 화면 표시를 하지 않을 수 있습니다.
+        if (browser === null) browser = await puppeteer.launch({headless: false}); // headless: true로 변경하여 화면 표시를 하지 않을 수 있습니다.
         const page = await browser.newPage();
 
         // 인터파크 페이지 열기
@@ -46,30 +47,32 @@ async function interpark(url) {
         devLog("========= macro interpark : 팝업창 닫기 성공");
 
         // 로그인 여부 확인
-        const isLogged = await page.evaluate(() => {
-            const loginButton = document.querySelector(".gatewayLogout"); // 로그인 버튼의 선택자를 적절하게 변경해야 합니다.
-            return loginButton === null;
+        const isNotLogged = await page.evaluate(() => {
+            const logoutButton = document.querySelector(".gatewayLogout"); // 로그인 버튼의 선택자를 적절하게 변경해야 합니다.
+            return logoutButton === null;
         });
 
-        devLog("========= macro interpark : 로그인 여부 확인 : ", isLogged);
+        devLog("========= macro interpark : 로그인 버튼 여부 확인 : ", isNotLogged);
 
-        if (isLogged) {
+        // 로그인되어 있지 않으면 로그인 처리
+        if (isNotLogged) {
             await page.goto("https://ticket.interpark.com/Gate/TPLogin.asp");
             await page.waitForSelector("footer");
-            await page.evaluate(() => {
-                let contentDocument = document.querySelector("iframe").contentDocument;
-                contentDocument.querySelector("#userId").value = "loki3773";
-                querySelector.querySelector("#userPwd").value = "tpdlqj31";
+            const frame = (await page.frames())[1];
+
+            frame.evaluate(() => {
+                document.querySelector("#userId").value = "loki3773";
+                document.querySelector("#userPwd").value = "tpdlqj31";
+                document.querySelector("#saveSess").click();
+                document.querySelector("#btn_login").click();
             });
-            // 로그인되어 있지 않으면 로그인 처리
-            // await page.type("#userId", "loki3773"); // 사용자 이름 입력란 선택자와 실제 사용자 이름으로 변경해야 합니다.
-            // await page.type("#userPwd", "tpdlqj31"); // 비밀번호 입력란 선택자와 실제 비밀번호로 변경해야 합니다.
-            await page.click("#btn_login"); // 로그인 버튼 선택자로 변경
+
+            // 네비게이션 작동
             await page.waitForNavigation();
+            await page.goto(url);
         }
 
         // 매크로 작업 수행 - 예: 티켓 예매
-        await page.goto(url);
         /*
         // 여기에서 필요한 작업을 수행하세요.
 
@@ -78,5 +81,6 @@ async function interpark(url) {
 */
     } catch (error) {
         console.error(error);
+        // await browser.close();
     }
 }

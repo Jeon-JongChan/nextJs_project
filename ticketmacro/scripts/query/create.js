@@ -11,6 +11,7 @@ const query = {
             ID          INTEGER PRIMARY KEY AUTOINCREMENT,
             SSE         VARCHAR(20),
             SITE        VARCHAR(20),
+            TICKETDATE  VARCHAR(10),
             START_DT    DATETIME,
             URL         TEXT NOT NULL UNIQUE
         )

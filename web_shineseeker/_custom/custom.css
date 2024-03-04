@@ -1,0 +1,37 @@
+.title-circle-1 {
+  top: -90px;
+  right: -50px;
+}
+.rotating-right-5 {
+  animation: rotateRight 5s linear infinite;
+}
+.rotating-right-10 {
+  animation: rotateRight 10s linear infinite;
+}
+.rotating-right-20 {
+  animation: rotateRight 20s linear infinite;
+}
+.rotating-left-10 {
+  animation: rotateLeft 10s linear infinite;
+}
+.rotating-left-20 {
+  animation: rotateLeft 20s linear infinite;
+}
+
+@keyframes rotateRight {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateLeft {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}

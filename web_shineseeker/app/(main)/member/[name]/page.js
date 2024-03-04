@@ -1,10 +1,9 @@
-import Image from "next/image";
-import MemberPhoto from "/_custom/components/member/MemberPhoto";
+import MemberDetail from "/_custom/components/member/MemberDetail";
 
 export default function Home({params}) {
   return (
     <>
-      <p>{params.name}</p>
+      <MemberDetail />
     </>
   );
 }

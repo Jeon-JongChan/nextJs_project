@@ -1,6 +1,7 @@
 import {Inter} from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import BackgroundCanvas from "/_custom/components/BackgroundCanvas";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -24,7 +25,7 @@ export default function Layout({children}) {
           <Link href="/member" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
             멤버란
           </Link>
-          <Link href="/raid" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+          <Link href="/battle" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
             전투
           </Link>
           <Link href="/market" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
@@ -32,6 +33,8 @@ export default function Layout({children}) {
           </Link>
         </div>
       </nav>
+      <BackgroundCanvas objCount="20" />
+
       {children}
     </>
   );

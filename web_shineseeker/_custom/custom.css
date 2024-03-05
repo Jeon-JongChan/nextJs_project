@@ -1,3 +1,8 @@
+.init-main {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .init-title {
   width: 38vw;
   height: 20vw;

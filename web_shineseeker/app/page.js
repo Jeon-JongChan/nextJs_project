@@ -9,7 +9,7 @@ import imgTitleCircle4 from "/public/images/00_title_circle4.png";
 
 export default function Home() {
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center p-24" style={{backgroundImage: "url('/images/00_title_bg.png')"}}>
+    <main className="init-main flex h-screen flex-col items-center justify-center p-24" style={{backgroundImage: "url('/images/00_title_bg.png')"}}>
       <Link href="/main" className="max-w-full flex justify-center items-center">
         <div className="relative init-title">
           <Image src={imgTitleCircle1} className="absolute z-50 rotating-right-10 title-circle-1" style={{width: "12vw"}} />

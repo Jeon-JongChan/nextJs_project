@@ -10,17 +10,15 @@ import imgTitleCircle4 from "/public/images/00_title_circle4.png";
 export default function Home() {
   return (
     <main className="flex min-h-svh flex-col items-center justify-center p-24" style={{backgroundImage: "url('/images/00_title_bg.png')"}}>
-      <div className="w-full flex justify-center">
-        <div className="w-9/12 h-9/12">
-          <Link href="/main" className="relative w-full flex justify-center items-center">
-            <Image src={imgTitle} className="absolute z-50 rotating-right-5" />
-            <Image src={imgTitleCircle1} className="relative z-40 rotating-right-10 title-circle-1" />
-            <Image src={imgTitleCircle2} className="absolute z-30 rotating-right-20" />
-            <Image src={imgTitleCircle3} className="absolute z-20 rotating-left-10" />
-            <Image src={imgTitleCircle4} className="absolute z-10 rotating-right-20" />
-          </Link>
+      <Link href="/main" className="max-w-full flex justify-center items-center">
+        <div className="relative init-title">
+          <Image src={imgTitleCircle1} className="absolute z-50 rotating-right-10 title-circle-1" style={{width: "12vw"}} />
+          <Image src={imgTitle} className="w-full z-50" fill={true} />
         </div>
-      </div>
+        <Image src={imgTitleCircle2} className="fixed z-30 rotating-right-20" style={{width: "23vw"}} />
+        <Image src={imgTitleCircle3} className="fixed z-20 rotating-left-10" style={{width: "25vw"}} />
+        <Image src={imgTitleCircle4} className="fixed z-10 rotating-right-20" style={{width: "36vw"}} />
+      </Link>
     </main>
   );
 }

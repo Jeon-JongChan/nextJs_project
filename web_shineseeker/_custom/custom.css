@@ -1,6 +1,14 @@
+.init-title {
+  width: 38vw;
+  height: 20vw;
+  /* background-image: url("../public/images/00_title.png"); */
+  /* background-size: contain; */
+  /* background-repeat: no-repeat; */
+  /* background-position: center; */
+}
 .title-circle-1 {
-  top: -90px;
-  right: -50px;
+  top: 3%;
+  left: 40%;
 }
 .rotating-right-5 {
   animation: rotateRight 5s linear infinite;

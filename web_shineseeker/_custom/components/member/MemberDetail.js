@@ -1,19 +1,15 @@
 "use client";
 import {useState} from "react";
 import Image from "next/image";
+import TabStatus from "./TabStatus";
+import TabInventory from "./TabInventory";
 
-export default function Home({params}) {
+export default function Component({params}) {
   const [selectedTab, setSelectedTab] = useState(1);
   const images = ["https://via.placeholder.com/500?text=Image+1", "https://via.placeholder.com/500?text=Image+2", "https://via.placeholder.com/500?text=Image+3"];
   const contents = [
-    <div key="1">
-      <h2 className="text-lg font-bold">내용 1</h2>
-      <p>탭 1에 대한 내용입니다.</p>
-    </div>,
-    <div key="2">
-      <h2 className="text-lg font-bold">내용 2</h2>
-      <p>탭 2에 대한 내용입니다.</p>
-    </div>,
+    <TabStatus />,
+    <TabInventory />,
     <div key="3">
       <h2 className="text-lg font-bold">내용 3</h2>
       <p>탭 3에 대한 내용입니다.</p>

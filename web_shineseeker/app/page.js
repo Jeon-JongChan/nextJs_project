@@ -12,12 +12,12 @@ export default function Home() {
     <main className="init-main flex h-screen flex-col items-center justify-center p-24" style={{backgroundImage: "url('/images/00_title_bg.png')"}}>
       <Link href="/main" className="max-w-full flex justify-center items-center">
         <div className="relative init-title">
-          <Image src={imgTitleCircle1} className="absolute z-50 rotating-right-10 title-circle-1" style={{width: "12vw"}} />
-          <Image src={imgTitle} className="w-full z-50" fill={true} />
+          <Image src={imgTitleCircle1} alt={"로고"} className="absolute z-50 rotating-right-10 title-circle-1" style={{width: "12vw"}} />
+          <Image src={imgTitle} alt={"로고"} className="w-full z-50" fill={true} />
         </div>
-        <Image src={imgTitleCircle2} className="fixed z-30 rotating-right-20" style={{width: "23vw"}} />
-        <Image src={imgTitleCircle3} className="fixed z-20 rotating-left-10" style={{width: "25vw"}} />
-        <Image src={imgTitleCircle4} className="fixed z-10 rotating-right-20" style={{width: "36vw"}} />
+        <Image src={imgTitleCircle2} alt={"로고"} className="fixed z-30 rotating-right-20" style={{width: "23vw"}} />
+        <Image src={imgTitleCircle3} alt={"로고"} className="fixed z-20 rotating-left-10" style={{width: "25vw"}} />
+        <Image src={imgTitleCircle4} alt={"로고"} className="fixed z-10 rotating-right-20" style={{width: "36vw"}} />
       </Link>
     </main>
   );

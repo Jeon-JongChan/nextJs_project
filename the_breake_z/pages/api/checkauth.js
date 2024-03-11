@@ -1,4 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import {NextResponse} from "next/server";
+
 const authkeys = [process.env.NEXT_ADMIN || "qwer", process.env.NEXT_USER1 || "qwer1", process.env.NEXT_USER2 || "qwer2", process.env.NEXT_USER3 || "qwer3"];
 export default function handler(req, res) {
   if (!authkeys.includes(req.body.key)) {
@@ -9,5 +10,6 @@ export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // 허용하는 HTTP 메소드 목록
   res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // 허용하는 요청 헤더 목록
   res.setHeader("Set-Cookie", "authkey=" + req.body.key + "; max-age=86400;");
-  res.status(200).json({name: "John Doe"});
+
+  return res.redirect(new URL("/", request.url));
 }

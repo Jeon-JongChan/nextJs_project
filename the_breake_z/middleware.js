@@ -7,7 +7,7 @@ export function middleware(request) {
   let users = [process.env.NEXT_ADMIN || "qwer", process.env.NEXT_USER1 || "qwer1", process.env.NEXT_USER2 || "qwer2", process.env.NEXT_USER3 || "qwer3"];
   let authkey = request.cookies.get("authkey");
   // console.log(" >>>>>>>>>>>>>    middleware :", users);
-  console.log("authkey : ", authkey, host, request.url, request.nextUrl.pathname);
+  console.log("authkey : ", authkey, host, request.url, request.nextUrl, request.nextUrl.pathname);
   if (!authkey && !(request.nextUrl.pathname == "/auth")) {
     return NextResponse.redirect(new URL("/auth", request.url));
   } else if (users.includes(authkey)) {

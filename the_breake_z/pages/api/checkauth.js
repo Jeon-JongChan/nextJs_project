@@ -11,5 +11,5 @@ export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // 허용하는 요청 헤더 목록
   res.setHeader("Set-Cookie", "authkey=" + req.body.key + "; max-age=86400;");
 
-  return res.redirect(new URL("/", request.url));
+  return res.redirect(new URL("/", req.url));
 }

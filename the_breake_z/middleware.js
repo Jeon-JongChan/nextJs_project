@@ -7,7 +7,10 @@ export function middleware(request) {
   let users = [process.env.NEXT_ADMIN || "qwer", process.env.NEXT_USER1 || "qwer1", process.env.NEXT_USER2 || "qwer2", process.env.NEXT_USER3 || "qwer3"];
   let authkey = request.cookies.get("authkey");
   // console.log(" >>>>>>>>>>>>>    middleware :", users);
-  console.log("authkey : ", authkey, host, request.nextUrl.pathname);
+  // console.log("authkey : ", authkey, host, request.nextUrl.pathname);
+  NextResponse.setHeader("Access-Control-Allow-Origin", "*"); // 모든 출처 허용
+  NextResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // 허용하는 HTTP 메소드 목록
+  NextResponse.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (!authkey && !(request.nextUrl.pathname == "/auth")) {
     return NextResponse.redirect(host + "/auth");
   } else if (users.includes(authkey)) {

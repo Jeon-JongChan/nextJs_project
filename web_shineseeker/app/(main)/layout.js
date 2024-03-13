@@ -13,11 +13,11 @@ export const metadata = {
 export default function Layout({children}) {
   return (
     <>
-      <div className="flex flex-col justify-center p-10" style={{width: "1600px", height: "900px"}}>
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="flex flex-col justify-center p-10 items-center h-screen">
+        <main className="flex min-h-screen flex-col items-center justify-between p-24" style={{width: "1600px", height: "900px"}}>
           <nav className="block bg-gray-800 p-4 mb-8 w-full">
             <div className="grid grid-cols-6 items-center gap-x-4">
-              <Link href="/">
+              <Link href="/main">
                 <Image src="https://via.placeholder.com/800x400?text=Slide%201" alt="Shineseeker" width={100} height={50} />
               </Link>
               <Link href="/intro" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
@@ -39,8 +39,8 @@ export default function Layout({children}) {
           </nav>
           {children}
         </main>
+        <BackgroundCanvas objCount="20" />
       </div>
-      <BackgroundCanvas objCount="20" />
     </>
   );
 }

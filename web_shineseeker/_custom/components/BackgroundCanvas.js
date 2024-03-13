@@ -19,7 +19,7 @@ export default function Component(props) {
   }, []);
   return (
     <>
-      <canvas id="canvas" className="fixed background-canvas"></canvas>
+      <canvas id="canvas" className="fixed background-canvas top-0 left-0"></canvas>
     </>
   );
 }

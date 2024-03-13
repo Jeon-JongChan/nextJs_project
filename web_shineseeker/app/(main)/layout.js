@@ -13,29 +13,34 @@ export const metadata = {
 export default function Layout({children}) {
   return (
     <>
-      <nav className="bg-gray-800 p-4">
-        <div className="grid grid-cols-6 items-center gap-x-4">
-          <Image src="https://via.placeholder.com/800x400?text=Slide%201" alt="Shineseeker" width={100} height={50} />
-          <Link href="/intro" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-            세계관
-          </Link>
-          <Link href="/require" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-            필독
-          </Link>
-          <Link href="/member" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-            멤버란
-          </Link>
-          <Link href="/battle" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-            전투
-          </Link>
-          <Link href="/market" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-            상점
-          </Link>
-        </div>
-      </nav>
+      <div className="flex flex-col justify-center p-10" style={{width: "1600px", height: "900px"}}>
+        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+          <nav className="block bg-gray-800 p-4 mb-8 w-full">
+            <div className="grid grid-cols-6 items-center gap-x-4">
+              <Link href="/">
+                <Image src="https://via.placeholder.com/800x400?text=Slide%201" alt="Shineseeker" width={100} height={50} />
+              </Link>
+              <Link href="/intro" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+                세계관
+              </Link>
+              <Link href="/require" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+                필독
+              </Link>
+              <Link href="/member" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+                멤버란
+              </Link>
+              <Link href="/battle" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+                전투
+              </Link>
+              <Link href="/market" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
+                상점
+              </Link>
+            </div>
+          </nav>
+          {children}
+        </main>
+      </div>
       <BackgroundCanvas objCount="20" />
-
-      {children}
     </>
   );
 }

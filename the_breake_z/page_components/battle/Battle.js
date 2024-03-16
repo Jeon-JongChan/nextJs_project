@@ -3,10 +3,10 @@ import Nav from "/page_components/Nav";
 import BattleResearch from "./BattleResearch";
 import BattleWildbattle from "./BattleWildbattle";
 import BattleRoadbattle from "./BattleRoadbattle";
-import { LocalDataContext } from "/page_components/MyContext";
-import { useContext, useEffect, useRef, useState } from "react";
-import { changeTab, syncData, updateCheck } from "/scripts/client/client";
-import { asyncInterval, devLog } from "/scripts/common";
+import {LocalDataContext} from "/page_components/MyContext";
+import {useContext, useEffect, useRef, useState} from "react";
+import {changeTab, syncData, updateCheck} from "/scripts/client/client";
+import {asyncInterval, devLog} from "/scripts/common";
 // * react
 export default function Layout() {
     let localData = useContext(LocalDataContext);
@@ -15,7 +15,7 @@ export default function Layout() {
 
     useEffect(() => {
         setTimeout(initBattle, 1000);
-    }, []);
+    }, [localData]);
 
     async function initBattle() {
         if (initState) {

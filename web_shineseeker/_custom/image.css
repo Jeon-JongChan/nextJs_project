@@ -1,0 +1,21 @@
+.img-home-bg {
+  background-image: url("/images/home/01_home_bg.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.img-home-frame-bg {
+  background-image: url("/images/home/01_home_box01.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.slide-banner-img {
+  background-image: url("/images/home/01_home_box02.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}

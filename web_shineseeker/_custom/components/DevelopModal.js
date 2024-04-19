@@ -10,18 +10,18 @@ export default function Component() {
   };
   return (
     <>
-      <div className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300" style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px"}}>
+      <div
+        className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300"
+        style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px", zIndex: "100"}}
+      >
         {!isFolded && (
           <>
             <h3>개발 중 노트</h3>
             {/* prettier-ignore */}
             <div>
               <span>전투 페이지 개발중</span>
-              <br /><span>- 패트롤 텍스트 변경 완료</span>
-              <br /><span>- 패트롤 페이지 기본 프레임 완료</span>
-              <br /><span>디자인 다듬기 1차 작업</span>
-              <br /><span>- 메인 화면 디자인 1차 작업완료</span>
-              <br /><span>- 슬라이드 회전 완성</span>
+              <br /><span>디자인 다듬기 2차</span>
+              <br /><span>- 이미지</span>
             </div>
           </>
         )}

@@ -5,6 +5,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 @import "../_custom/custom.css";
+@import "../_custom/image.css";
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -32,5 +33,5 @@ body {
 }
 
 .background-canvas {
-  z-index: -10;
+  z-index: 0;
 }

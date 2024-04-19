@@ -2,7 +2,38 @@
 import {useState, useEffect} from "react";
 import {sleep} from "/_custom/utils.js";
 
+const defaultProps = {
+  slides: [
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%201",
+      title: "첫번째 슬라이드",
+      description: "첫번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%202",
+      title: "두번째 슬라이드",
+      description: "두번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%203",
+      title: "세번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%204",
+      title: "4번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%205",
+      title: "5번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+  ],
+};
+
 export default function Component(props) {
+  if (Object.keys(props).length === 0) props = defaultProps;
   const slides = props.slides;
   // const thumbnail = props.thumbnail || false;
   const description = props.description || true;
@@ -62,7 +93,7 @@ export default function Component(props) {
   }
 
   return (
-    <div className={`slide-banner w-full max-h-full overflow-hidden`} style={{height: "inherit"}}>
+    <div className={`slide-banner w-full max-h-full overflow-hidden slide-banner-img`} style={{height: "inherit"}}>
       <div
         className="flex flex-row h-full"
         style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
@@ -74,35 +105,6 @@ export default function Component(props) {
   );
 }
 
-Component.defaultProps = {
-  slides: [
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%201",
-      title: "첫번째 슬라이드",
-      description: "첫번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%202",
-      title: "두번째 슬라이드",
-      description: "두번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%203",
-      title: "세번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%204",
-      title: "4번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%205",
-      title: "5번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-  ],
-};
 /* 슬라이드 안에 dot 추가할 때
 <div className="dots absolute bottom-4 left-0 w-full flex justify-center">
   {slides.map((_, index) => (

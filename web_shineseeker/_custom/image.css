@@ -1,3 +1,30 @@
+.img-nav-bg {
+  background-image: url("/images/home/01_home_menu.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+.img-nav-btn-init {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+.img-nav-world {
+  background-image: url("/images/home/01_home_menu_01world.png");
+}
+.img-nav-read {
+  background-image: url("/images/home/01_home_menu_02read.png");
+}
+.img-nav-member {
+  background-image: url("/images/home/01_home_menu_03member.png");
+}
+.img-nav-shineseek {
+  background-image: url("/images/home/01_home_menu_04shineseek.png");
+}
+.img-nav-shop {
+  background-image: url("/images/home/01_home_menu_05shop.png");
+}
+/**************************************************************************************************************************** Path: /main */
 .img-home-bg {
   background-image: url("/images/home/01_home_bg.png");
   background-repeat: no-repeat;
@@ -12,10 +39,57 @@
   background-position: center center;
   background-size: contain;
 }
-
-.slide-banner-img {
-  background-image: url("/images/home/01_home_box02.png");
+.main-slide-mask {
+  -webkit-mask-image: url("/images/home/01_home_box02_mask.png"); /* 투명 공간을 정의할 마스크 이미지 */
+  mask-image: url("/images/home/01_home_box02_mask.png");
+  mask-repeat: no-repeat;
+  mask-position: center center;
+  mask-size: contain;
+}
+.img-main-slide {
+  /* position: absolute; */
+  /* top: 0; */
+  /* width: 100%; */
+  /* height: inherit; */
+  z-index: 100;
+  background-image: url("/images/home/01_home_box02_transparency.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  pointer-events: auto;
+}
+.main-slide-frame {
+  z-index: -10;
+  height: 80%;
+  width: 100%;
+  position: relative;
+  top: 40px;
+  pointer-events: auto;
+}
+.arrow-left {
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-image: url("/images/home/01_home_box02_button01.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+.arrow-right {
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-image: url("/images/home/01_home_box02_button02.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+.img-login-bg {
+  background-image: url("/images/home/01_home_login_box.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
 }
+/**************************************************************************************************************************** Path: /main */

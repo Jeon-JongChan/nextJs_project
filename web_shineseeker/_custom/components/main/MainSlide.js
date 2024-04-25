@@ -73,19 +73,14 @@ export default function Component(props) {
 
   function createSlide(slideInfo, index) {
     const hoverStyle = "opacity-0 group-hover:opacity-100 transition-opacity duration-300 ";
+    const slideDescStyle = "pl-16 ";
     return (
       <div key={index} className="relative w-full h-full group">
-        <button className={hoverStyle + "absolute left-0 top-1/2 transform -translate-y-1/2"} onClick={prevSlide}>
-          이전
-        </button>
         <img src={slideInfo.imageUrl} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-        <button className={hoverStyle + "absolute right-0 top-1/2 transform -translate-y-1/2"} onClick={nextSlide}>
-          다음
-        </button>
         {description && (
           <div className={hoverStyle + "absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-2"}>
-            <h3 className="text-lg font-bold">{slideInfo.title}</h3>
-            <p className="text-sm">{slideInfo.description}</p>
+            <h3 className={slideDescStyle + "text-lg font-bold"}>{slideInfo.title}</h3>
+            <p className={slideDescStyle + "text-sm"}>{slideInfo.description}</p>
           </div>
         )}
       </div>
@@ -93,15 +88,29 @@ export default function Component(props) {
   }
 
   return (
-    <div className={`slide-banner w-full max-h-full overflow-hidden relative`} style={{height: "inherit"}}>
-      <div
-        className="flex flex-row h-full z-0 relative"
-        style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
-      >
-        {createSlide(slides[slides.length - 1], 1)}
-        {slides.map((slide, index) => createSlide(slide, index + 1))}
+    <>
+      <div className={`slide-banner w-full max-h-full overflow-hidden relative group`} style={{height: "inherit"}}>
+        <div className="img-main-slide absolute w-full top-0" style={{height: "inherit"}}>
+          <button
+            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-left"}
+            onClick={prevSlide}
+          ></button>
+          <button
+            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-right"}
+            onClick={nextSlide}
+          ></button>
+        </div>
+        <div className="main-slide-frame overflow-hidden main-slide-mask">
+          <div
+            className="flex flex-row h-full z-0 relative"
+            style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
+          >
+            {createSlide(slides[slides.length - 1], 1)}
+            {slides.map((slide, index) => createSlide(slide, index + 1))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -11,30 +11,21 @@ export const metadata = {
 };
 
 export default function Layout({children}) {
+  const linkStyle = "text-white hover:text-gray-300 px-3 pb-2 pt-8 top-1 col-span-1 text-center relative img-nav-btn-init ";
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen img-home-bg">
         <main className="flex flex-col items-center justify-between p-24 img-home-frame-bg" style={{width: "1600px", height: "900px", zIndex: "2"}}>
-          <nav className="block bg-gray-800 p-4 mb-8 w-full">
+          <nav className="block p-4 mb-8 w-full img-nav-bg">
             <div className="grid grid-cols-6 items-center gap-x-4">
-              <Link href="/main">
-                <Image src="https://via.placeholder.com/800x400?text=Slide%201" alt="Shineseeker" width={100} height={50} />
-              </Link>
-              <Link href="/intro" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-                세계관
-              </Link>
-              <Link href="/require" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-                필독
-              </Link>
-              <Link href="/member" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-                멤버란
-              </Link>
-              <Link href="/battle" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-                전투
-              </Link>
-              <Link href="/market" className="text-white hover:text-gray-300 px-3 py-2 col-span-1">
-                상점
-              </Link>
+              <Link href="/main" className="col-span-2"></Link>
+              <div className="col-span-4 grid grid-cols-5 items-center gap-x-5">
+                <Link href="/require" className={linkStyle + "img-nav-world"}></Link>
+                <Link href="/require" className={linkStyle + "img-nav-read"}></Link>
+                <Link href="/member" className={linkStyle + "img-nav-member"}></Link>
+                <Link href="/battle" className={linkStyle + "img-nav-shineseek"}></Link>
+                <Link href="/market" className={linkStyle + "img-nav-shop"}></Link>
+              </div>
             </div>
           </nav>
           {children}

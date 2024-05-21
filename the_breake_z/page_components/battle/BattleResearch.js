@@ -219,9 +219,9 @@ export default function Layout(props) {
     return (
       <>
         🎵:<spen data-name={"music"}>(https://youtu.be/GOLMJjIP6pY?si=Izg-4PtAehO6xH_J)</spen> <br />
-        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
-        <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
+        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다! Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
         ...어떻게 할까? <br />
+        <br />
         ▷ 배틀한다. (포켓몬 선출) <br />
         ▷ 포획을 시도한다 <br />
         ▷ 도망친다. <br />

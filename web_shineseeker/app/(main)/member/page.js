@@ -8,10 +8,12 @@ export default function Home() {
     {id: 3, defaultImage: "https://via.placeholder.com/600x300?text=TEMP", overlayImage: "https://via.placeholder.com/600x300?text=TEMP2", link: "#"},
   ];
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {photoCards.map((card) => (
-        <MemberPhoto key={card.id} defaultImage={card.defaultImage} overlayImage={card.overlayImage} link={card.link} />
-      ))}
+    <div className="" style={{height: "600px"}}>
+      <div className="grid grid-cols-3 gap-4" style={{height: "inherit"}}>
+        {photoCards.map((card) => (
+          <MemberPhoto key={card.id} defaultImage={card.defaultImage} overlayImage={card.overlayImage} link={card.link} />
+        ))}
+      </div>
     </div>
   );
 }

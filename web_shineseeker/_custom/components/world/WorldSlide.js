@@ -77,30 +77,24 @@ export default function Component(props) {
     return (
       <div key={index} className="relative w-full h-full group">
         <img src={slideInfo.imageUrl} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-        {description && (
-          <div className={hoverStyle + "absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-2"}>
-            <h3 className={slideDescStyle + "text-lg font-bold"}>{slideInfo.title}</h3>
-            <p className={slideDescStyle + "text-sm"}>{slideInfo.description}</p>
-          </div>
-        )}
       </div>
     );
   }
 
   return (
     <>
-      <div className={`slide-banner w-full max-h-full overflow-hidden relative group`} style={{height: "inherit"}}>
-        <div className="img-main-slide absolute w-full top-0" style={{height: "inherit"}}>
+      <div className="slide-banner w-full max-h-full overflow-hidden relative group h-full">
+        <div className="img-world-slide absolute w-full top-0 h-full">
           <button
-            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"}
+            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-world-left"}
             onClick={prevSlide}
           ></button>
           <button
-            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"}
+            className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-world-right"}
             onClick={nextSlide}
           ></button>
         </div>
-        <div className="main-slide-frame overflow-hidden main-slide-mask">
+        <div className="overflow-hidden img-world-slidemask relative" style={{height: "98%", top: "10px"}}>
           <div
             className="flex flex-row h-full z-0 relative"
             style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}

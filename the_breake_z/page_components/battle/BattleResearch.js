@@ -215,6 +215,19 @@ export default function Layout(props) {
     setTraceFailText(failtext[getRandomInt(0, failtext.length)].TEXT);
   }
 
+  function researchTag() {
+    return (
+      <>
+        🎵<spen data-name={"music"}>(https://youtu.be/GOLMJjIP6pY?si=Izg-4PtAehO6xH_J)</spen> <br />
+        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
+        <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
+        ...어떻게 할까? <br />
+        ▷ 배틀한다. (포켓몬 선출) <br />
+        ▷ 포획을 시도한다 <br />
+        ▷ 도망친다. <br />
+      </>
+    );
+  }
   return (
     <>
       {/* prettier-ignore */}
@@ -248,14 +261,7 @@ export default function Layout(props) {
                   <div className="p-1">
                     <div className="shadow rounded-md p-3 bg-white overflow-x-auto scrollbar-remove">
                       <pre className="pre-research">
-                        🎵<spen data-name={"music"}>(https://youtu.be/GOLMJjIP6pY?si=Izg-4PtAehO6xH_J)</spen> <br />
-                        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
-                        <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
-                        <br />
-                        ...어떻게 할까? <br />
-                        ▷ 배틀한다. (포켓몬 선출) <br />
-                        ▷ 포획을 시도한다 <br />
-                        ▷ 도망친다. <br />
+                        {researchTag()}
                       </pre>
                       {researchImage != "" ? (
                         <div className="flex justify-center">
@@ -269,14 +275,7 @@ export default function Layout(props) {
                   <div className="p-1">
                     <div className="shadow rounded-md p-3 bg-white overflow-x-auto scrollbar-remove">
                       <pre className="pre-research2">
-                        🎵<spen data-name={"music"}>({youtubeLink})</spen> <br />
-                        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
-                        <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
-                        <br />
-                        ...어떻게 할까? <br />
-                        ▷ 배틀한다. (포켓몬 선출) <br />
-                        ▷ 포획을 시도한다 <br />
-                        ▷ 도망친다. <br />
+                        {researchTag()}
                       </pre>
                       {researchImage != "" ? (
                         <div className="flex justify-center">
@@ -290,14 +289,7 @@ export default function Layout(props) {
                   <div className="p-1">
                     <div className="shadow rounded-md p-3 bg-white overflow-x-auto scrollbar-remove">
                       <pre className="pre-research3">
-                        🎵<spen data-name={"music"}>({youtubeLink})</spen> <br />
-                        ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
-                        <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
-                        <br />
-                        ...어떻게 할까? <br />
-                        ▷ 배틀한다. (포켓몬 선출) <br />
-                        ▷ 포획을 시도한다 <br />
-                        ▷ 도망친다. <br />
+                        {researchTag()}
                       </pre>
                       {researchImage != "" ? (
                         <div className="flex justify-center">

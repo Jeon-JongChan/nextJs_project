@@ -218,7 +218,7 @@ export default function Layout(props) {
   function researchTag() {
     return (
       <>
-        🎵<spen data-name={"music"}>(https://youtu.be/GOLMJjIP6pY?si=Izg-4PtAehO6xH_J)</spen> <br />
+        🎵:<spen data-name={"music"}>(https://youtu.be/GOLMJjIP6pY?si=Izg-4PtAehO6xH_J)</spen> <br />
         ❗️ 앗, 야생의 <spen data-name={"poketmon"}>(포켓몬)</spen> 이(가) 나타났다!
         <spen data-name={"poketmon"}>(포켓몬)</spen> Lv.<spen data-name={"level"}>(00)</spen> | [<spen data-name={"spec"}>(특성)</spen>] <br />
         ...어떻게 할까? <br />

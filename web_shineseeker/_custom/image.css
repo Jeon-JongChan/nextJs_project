@@ -230,3 +230,14 @@
   background-image: url("/images/read/03_read_box_button05b.png");
 }
 /**************************************************************************************************************************** Path: /world */
+/**************************************************************************************************************************** Path: /patrol */
+.img-patrol-init {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+/*prettier-ignore*/
+.img-patrol-selector-bg { background-image: url("/images/patrol/05_patrol_startbox.png"); }
+/*prettier-ignore*/
+.img-patrol-timeline-bg { background-image: url("/images/patrol/05_patrol_timeline.png"); }

@@ -53,3 +53,12 @@
 .main-button {
   margin: 32px 32px;
 }
+
+/**************************************************************************************************************************** Path: /patrol */
+.patrol-selector-photo {
+  top: 28px;
+  left: 30px;
+  border-radius: 38px;
+  border: 1px;
+  overflow: hidden;
+}

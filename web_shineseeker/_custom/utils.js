@@ -2,7 +2,7 @@
 // 서버에서만 사용하는 함수는 server.js에 작성할 것
 // 클라이언트에서만 사용하는 함수는 client.js에 작성할 것
 
-export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx};
+export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx, getTestImageUrl};
 /**
  * sleep 함수 필요. 렉시컬 응용.
  * @param {*} fn 함수
@@ -54,6 +54,10 @@ function getDataIdx(objArr, value, key = "name") {
     }
   }
   return -1;
+}
+
+function getTestImageUrl(width, height, text = "TEST") {
+  return `https://via.placeholder.com/${width}x${height}?text=${text}`;
 }
 
 class asyncInterval {

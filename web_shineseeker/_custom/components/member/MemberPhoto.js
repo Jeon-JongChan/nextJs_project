@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Component({defaultImage, overlayImage, link}) {
   const [isHovered, setIsHovered] = useState(false);
-  defaultImage = defaultImage ? defaultImage : "https://via.placeholder.com/600x300?text=TEMP";
+  defaultImage = defaultImage ? defaultImage : "https://via.placeholder.com/300x300?text=TEMP";
   return (
     <>
       <div className="photocard relative w-48 h-72 overflow-hidden rounded-lg" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
@@ -13,8 +13,9 @@ export default function Component({defaultImage, overlayImage, link}) {
           <Image
             src={isHovered ? overlayImage : defaultImage}
             alt="Default Image"
-            fill={true}
-            className="w-full h-full object-cover transition-opacity duration-300"
+            width="138"
+            height="138"
+            className="object-cover transition-opacity duration-300"
             //style={{opacity: isHovered ? 0 : 1}}
           />
         </Link>

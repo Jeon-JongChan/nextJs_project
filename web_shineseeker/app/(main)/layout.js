@@ -21,7 +21,7 @@ export default function Layout({children}) {
               <Link href="/main" className="col-span-2"></Link>
               <div className="col-span-4 grid grid-cols-5 items-center gap-x-5">
                 <Link href="/world" className={linkStyle + "img-nav-world"}></Link>
-                <Link href="/require" className={linkStyle + "img-nav-read"}></Link>
+                <Link href="/read" className={linkStyle + "img-nav-read"}></Link>
                 <Link href="/member" className={linkStyle + "img-nav-member"}></Link>
                 <Link href="/battle" className={linkStyle + "img-nav-shineseek"}></Link>
                 <Link href="/market" className={linkStyle + "img-nav-shop"}></Link>

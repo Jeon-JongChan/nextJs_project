@@ -18,7 +18,7 @@ export default function Layout({children}) {
         <main className="flex flex-col items-center justify-between p-24 img-home-frame-bg" style={{width: "1600px", height: "900px", zIndex: "2"}}>
           <nav className="block p-4 mb-8 w-full img-nav-bg">
             <div className="grid grid-cols-6 items-center gap-x-4">
-              <Link href="/main" className="col-span-2"></Link>
+              <Link href="/main" className="col-span-2 h-[40px]"></Link>
               <div className="col-span-4 grid grid-cols-5 items-center gap-x-5">
                 <Link href="/world" className={linkStyle + "img-nav-world"}></Link>
                 <Link href="/read" className={linkStyle + "img-nav-read"}></Link>

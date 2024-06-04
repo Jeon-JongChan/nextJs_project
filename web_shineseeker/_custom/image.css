@@ -1,3 +1,9 @@
+.img-init {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
 .img-nav-bg {
   background-image: url("/images/home/01_home_menu.png");
   background-repeat: no-repeat;
@@ -229,7 +235,6 @@
 .img-read-tab-col5-active {
   background-image: url("/images/read/03_read_box_button05b.png");
 }
-/**************************************************************************************************************************** Path: /world */
 /**************************************************************************************************************************** Path: /patrol */
 .img-patrol-init {
   background-repeat: no-repeat;
@@ -241,3 +246,10 @@
 .img-patrol-selector-bg { background-image: url("/images/patrol/05_patrol_startbox.png"); }
 /*prettier-ignore*/
 .img-patrol-timeline-bg { background-image: url("/images/patrol/05_patrol_timeline.png"); }
+/*prettier-ignore*/
+.img-patrol-end-bg { background-image: url("/images/patrol/05_patrol_endbox.png"); }
+/*prettier-ignore*/
+.img-patrol-end-photoframe { background-image: url("/images/patrol/05_patrol_endbox_item.png"); }
+/**************************************************************************************************************************** Path: /market */
+
+/**************************************************************************************************************************** Path: /etc */

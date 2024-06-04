@@ -55,10 +55,13 @@
 }
 
 /**************************************************************************************************************************** Path: /patrol */
-.patrol-selector-photo {
-  top: 28px;
-  left: 30px;
+.patrol-round-photo {
   border-radius: 38px;
+  border: 1px;
+  overflow: hidden;
+}
+.patrol-round-endphoto {
+  border-radius: 40px;
   border: 1px;
   overflow: hidden;
 }

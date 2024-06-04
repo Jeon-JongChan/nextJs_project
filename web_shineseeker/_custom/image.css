@@ -92,6 +92,9 @@
   background-position: center center;
   background-size: contain;
 }
+.img-music-bg {
+  background-image: url("/images/home/01_home_music01.png");
+}
 /**************************************************************************************************************************** Path: /world */
 .img-world-slide {
   z-index: 100;

@@ -26,7 +26,7 @@ export default function Home() {
       </div>
       <div className="grid grid-cols-6  w-full mt-8" style={{height: "400px"}}>
         <div className="col-span-2 mr-4 px-2">
-          <div className="w-full h-full bg-slate-700"></div>
+          <div className="img-init img-music-bg w-full h-full"></div>
         </div>
         <div className="col-span-4 grid grid-cols-3 gap-x-3">
           <Link className="col-span-1 relative main-button" href="/main">

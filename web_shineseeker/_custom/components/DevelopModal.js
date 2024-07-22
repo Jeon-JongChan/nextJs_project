@@ -10,10 +10,7 @@ export default function Component() {
   };
   return (
     <>
-      <div
-        className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300"
-        style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px", zIndex: "100"}}
-      >
+      <div className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300" style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px", zIndex: "100"}}>
         {!isFolded && (
           <>
             <h3>개발 중 노트</h3>
@@ -23,6 +20,7 @@ export default function Component() {
               <br /><span>디자인 다듬기 2차</span>
               <br /><span>- 이미지 적용 : MAIN 80% 완료 </span>
               <br /><span>- 이미지 적용 : 메뉴별 이미지 적용 1차 완료 </span>
+              <span>데이터 입력 개발중</span>
             </div>
           </>
         )}

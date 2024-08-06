@@ -49,9 +49,15 @@ export default function Home() {
           <GridInputText label={"ID"} id={"userid"} />
           <GridInputText label={"PASSWORD"} id={"userpw"} />
           <GridInputText label={"NICKNAME"} id={"username"} />
-          <GridInputText label={"NICKNAME"} id={"username"} />
-          <GridInputText label={"NICKNAME"} id={"username"} />
-          <GridInputText label={"NICKNAME"} id={"username"} />
+          <GridInputText label={"프로필"} id={"username"} />
+          <GridInputText label={"직업"} id={"username"} />
+          <GridInputText label={"레벨"} id={"username"} />
+          <GridInputText label={"스탯"} id={"username"} />
+          <GridInputText label={"스킬"} id={"username"} />
+          <GridInputText label={"돈"} type={"number"} id={"username"} />
+          <label htmlFor="drag-drop-img" className="block text-sm font-medium text-gray-700 row">
+            캐릭터 프로필 이미지
+          </label>
           <FileDragAndDrop css={"mt-2 w-full col-span-6"} />
           <GridInputButton label={"submit"} type="submit" />
         </form>

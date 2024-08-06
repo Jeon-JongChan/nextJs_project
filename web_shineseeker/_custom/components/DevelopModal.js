@@ -20,7 +20,8 @@ export default function Component() {
               <br /><span>디자인 다듬기 2차</span>
               <br /><span>- 이미지 적용 : MAIN 80% 완료 </span>
               <br /><span>- 이미지 적용 : 메뉴별 이미지 적용 1차 완료 </span>
-              <span>데이터 입력 개발중</span>
+              <br />
+              <br /><span className="font-bold ">데이터 입력 개발중</span>
             </div>
           </>
         )}

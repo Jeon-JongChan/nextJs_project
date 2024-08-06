@@ -1,6 +1,5 @@
 import {NextResponse} from "next/server";
-import {promises as fs} from "fs";
-import path from "path";
+import {saveFiles} from "../../../_custom/scripts/server";
 
 export const POST = async (req) => {
   try {
@@ -12,17 +11,7 @@ export const POST = async (req) => {
       return NextResponse.json({error: "One or more files are not images"}, {status: 400});
     }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadDir, {recursive: true});
-
-    const fileUploadPromises = files.map(async (file) => {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filePath = path.join(uploadDir, `${Date.now()}-${file.name}`);
-      await fs.writeFile(filePath, buffer);
-      return filePath;
-    });
-
-    const filePaths = await Promise.all(fileUploadPromises);
+    const filePaths = await saveFiles(files);
 
     return NextResponse.json({message: "Files uploaded successfully", filePaths});
   } catch (error) {

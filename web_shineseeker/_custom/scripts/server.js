@@ -1,7 +1,8 @@
 import {promises as fs} from "fs";
 import path from "path";
+import jsondb from "./jsondb.js";
 
-export {saveFiles};
+export {saveFiles, saveData, deleteData, getData};
 
 async function saveFiles(files, uploadDir = undefined) {
   if (!uploadDir) {
@@ -18,4 +19,16 @@ async function saveFiles(files, uploadDir = undefined) {
   });
 
   return await Promise.all(fileUploadPromises); // 모든 파일 업로드 작업이 완료될 때까지 대기하고, 완료되면 파일 경로들의 배열을 반환
+}
+
+async function saveData(key, data) {
+  jsondb.updateObject(key, data);
+}
+
+async function deleteData(key) {
+  jsondb.deleteObject(key);
+}
+
+async function getData(key) {
+  jsondb.readObject(key);
 }

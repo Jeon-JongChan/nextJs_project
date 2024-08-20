@@ -7,10 +7,19 @@ export default function FileUpload(props) {
   const [preview, setPreview] = useState(null);
   const dropzoneRef = useRef(null);
   const inputRef = useRef(null);
+  const text = props?.text || "Drag 'n' drop files here, or click";
+  const limitType = props?.limitType || undefined;
 
   const updateInputFiles = (files) => {
     console.log("updateInputFiles : ", files);
     inputRef.current.files = files;
+  };
+
+  const fileTypeCheck = (type) => {
+    if (limitType) {
+      return type.startsWith(limitType); // image/png, image/jpeg, image/gif
+    }
+    return true;
   };
 
   const handleDrop = (event) => {
@@ -21,7 +30,7 @@ export default function FileUpload(props) {
 
     const file = droppedFiles[0];
     console.log("handleDrop !", file);
-    if (file && file.type.startsWith("image/")) {
+    if (file && fileTypeCheck(file.type)) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
@@ -42,7 +51,7 @@ export default function FileUpload(props) {
     setFiles(selectedFiles);
 
     const file = selectedFiles[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file && fileTypeCheck(file.type)) {
       const reader = new FileReader();
       reader.onloadend = () => {
         console.log("handleInputChange !");
@@ -81,7 +90,7 @@ export default function FileUpload(props) {
         onClick={() => dropzoneRef.current.querySelector("input").click()}
         style={{minHeight: "100px", minWidth: "300px"}}
       >
-        {!preview && <p className="text-slate-300 text-center">Drag 'n' drop files here, or click</p>}
+        {!preview && <p className="text-slate-300 text-center">{text}</p>}
         {preview && <img src={preview} alt="Preview" className="preview-image w-full h-full" />}
         <input ref={inputRef} id="drag-drop-img" type="file" onChange={handleInputChange} style={{display: "none"}} />
       </div>

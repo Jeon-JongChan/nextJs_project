@@ -1,5 +1,5 @@
 import Image from "next/image";
-import MemberPhoto from "/_custom/components/member/MemberPhoto";
+import MemberPhoto from "./MemberPhoto";
 
 export default function Home() {
   const photoCards = [

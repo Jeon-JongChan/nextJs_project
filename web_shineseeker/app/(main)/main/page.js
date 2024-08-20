@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import MainSlide from "/_custom/components/main/MainSlide";
-import MainLoginForm from "/_custom/components/main/MainLoginForm";
+import MainSlide from "./MainSlide";
+import MainLoginForm from "./MainLoginForm";
 
 export default function Home() {
   return (

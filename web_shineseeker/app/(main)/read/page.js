@@ -1,5 +1,5 @@
 import Image from "next/image";
-import TabParagraphVertical from "/_custom/components/read/TabParagraphVertical";
+import TabParagraphVertical from "./TabParagraphVertical";
 
 export default function Home() {
   return (

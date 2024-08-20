@@ -1,10 +1,10 @@
 import Image from "next/image";
-import BattleSelector from "/_custom/components/battle/BattleSelector";
+import BattleSelector from "./BattleSelector";
 
 export default function Home() {
-    return (
-        <>
-            <BattleSelector />
-        </>
-    );
+  return (
+    <>
+      <BattleSelector />
+    </>
+  );
 }

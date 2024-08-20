@@ -1,4 +1,4 @@
-import MemberDetail from "/_custom/components/member/MemberDetail";
+import MemberDetail from "../MemberDetail";
 
 export default function Home({params}) {
   return (

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Patrol from "/_custom/components/battle/Patrol";
+import Patrol from "../Patrol";
 
 export default function Home() {
   return (

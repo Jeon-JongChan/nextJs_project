@@ -25,8 +25,8 @@ export default function Home() {
           <AddUser />
         </div>
       )}
-      {activeTab === tabList[1] && <AddUser />}
-      {activeTab === tabList[2] && <AddUser />}
+      {activeTab === tabList[1] && <AddUser apitype={"test"} />}
+      {activeTab === tabList[2] && <AddUser apitype={"test"} />}
     </div>
   );
 }

@@ -4,10 +4,13 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 
-export default function Home() {
+export default function Home(props) {
+  const apitype = props?.apitype || "update_user";
+  const apiurl = props?.apiurl || "upload";
   const handleSubmitUser = (e) => {
     e.preventDefault();
-    updateData(e, "update_user", "upload");
+    console.log("handleSubmitUser", apitype, apiurl, props);
+    updateData(e, apitype, apiurl);
   };
 
   return (

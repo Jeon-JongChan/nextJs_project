@@ -2,12 +2,8 @@ import {NextResponse} from "next/server";
 import {saveFiles, saveData} from "@/_custom/scripts/server";
 import {devLog} from "@/_custom/scripts/common";
 // upload에 대한 post 요청을 처리하는 함수
-export async function POST(req) {
+export async function GET() {
   try {
-    let filePaths = [];
-    const data = await req.formData();
-    const apitype = data.get("apitype");
-    // console.log(data.get("apitype"), data);
     if (apitype === "update_user") {
       filePaths = updateUser(data);
       return NextResponse.json({message: "User And Images uploaded successfully", filePaths});

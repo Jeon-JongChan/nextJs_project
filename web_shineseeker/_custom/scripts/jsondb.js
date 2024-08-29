@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
-
+let dev = process.env.NEXT_PUBLIC_DEV || true;
+let devLog = (...msg) => {
+  if (dev) {
+    console.log(...msg);
+  }
+};
 // 데이터 파일 경로
 const tempDir = path.join(process.cwd(), "public", "temp");
 const filePath = path.join(tempDir, "data.db");
@@ -31,9 +36,11 @@ const readLine = (lineNumber) => {
 };
 
 // 특정 줄의 데이터를 수정하는 함수
-const updateLine = (lineNumber, data) => {
+const updateLine = (key, lineNumber, data) => {
   const lines = readAllLines();
-  lines[lineNumber] = JSON.stringify(data);
+  let updateLines = JSON.parse(lines[lineNumber]);
+  for (const [k, v] of Object.entries(data)) updateLines[key][k] = v;
+  lines[lineNumber] = JSON.stringify(updateLines);
   fs.writeFileSync(filePath, lines.join("\n"), "utf8");
 };
 
@@ -45,21 +52,32 @@ const deleteLine = (lineNumber) => {
 };
 
 // 인덱스 업데이트 함수
-const updateIndex = (index) => {
-  const lines = readAllLines();
-  lines[0] = JSON.stringify(index);
-  fs.writeFileSync(filePath, lines.join("\n"), "utf8");
+const updateIndex = (index, lines = []) => {
+  if (lines) lines[0] = JSON.stringify(index);
+  else console.error("jsondb updateIndex failed");
+
+  // fs.writeFileSync(filePath, lines.join("\n"), "utf8");
+  return lines;
 };
 
 // 새로운 객체 추가 및 인덱스 업데이트 함수
 const addNewObject = (key, data) => {
-  const lines = readAllLines();
-  const newLineNumber = lines.length;
-  lines.push(JSON.stringify(data));
+  let lines = readAllLines();
+  let newLineNumber = lines.length;
+  let index = {};
+  if (!newLineNumber) {
+    index[key] = 1;
+    lines = updateIndex(index, lines);
+  } else {
+    index = readIndex();
+    index[key] = newLineNumber;
+    lines = updateIndex(index, lines);
+  }
 
-  const index = readIndex();
-  index[key] = newLineNumber;
-  updateIndex(index);
+  let addData = {};
+  addData[key] = {};
+  for (const [k, v] of Object.entries(data)) addData[key][k] = v;
+  lines.push(JSON.stringify(addData));
   fs.writeFileSync(filePath, lines.join("\n"), "utf8");
 };
 
@@ -72,14 +90,20 @@ const readObject = (key) => {
 
 // 객체 수정 함수
 const updateObject = (key, newData) => {
-  const index = readIndex();
-  const lineNumber = index[key];
-
-  if (lineNumber !== undefined) {
-    updateLine(lineNumber, newData);
-  } else {
-    addNewObject(key, newData);
+  try {
+    const index = readIndex();
+    const lineNumber = index?.[key];
+    console.log("===== jsondb updateObject =====\n", key, newData, lineNumber);
+    if (lineNumber) {
+      updateLine(key, lineNumber, newData);
+    } else {
+      addNewObject(key, newData);
+    }
+  } catch (e) {
+    console.error("jsondb updateObject Function : ", e);
+    return false;
   }
+  return true;
 };
 
 // 객체 삭제 함수

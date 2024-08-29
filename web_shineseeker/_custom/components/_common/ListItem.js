@@ -9,7 +9,7 @@
 export default function Component(props) {
   // autoComplete("i-local");
   let label = props?.label || "Cover photo";
-  let count = props?.count || "file-input";
+  let count = props?.count || 0;
   let css = props?.css || "";
   let onclick = props?.onclick || null;
 

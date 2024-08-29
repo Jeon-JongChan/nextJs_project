@@ -7,7 +7,7 @@ export {updateData, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyTo
  */
 function updateData(event, apitype, url) {
   if (!apitype || !url) {
-    console.log("updateData : apitype or url is not defined");
+    console.log("updateData : apitype or url is not defined", apitype, url);
     return false;
   }
   try {

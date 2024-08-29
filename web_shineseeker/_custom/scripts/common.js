@@ -2,7 +2,7 @@
 // 서버에서만 사용하는 함수는 server.js에 작성할 것
 // 클라이언트에서만 사용하는 함수는 client.js에 작성할 것
 
-export { devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx };
+export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, getNameIdx, getTestImageUrl};
 /**
  * sleep 함수 필요. 렉시컬 응용.
  * @param {*} fn 함수
@@ -10,17 +10,17 @@ export { devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx,
  */
 let dev = process.env.NEXT_PUBLIC_DEV || undefined;
 let devLog = (...msg) => {
-    if (dev) {
-        console.log(...msg);
-    }
+  if (dev) {
+    console.log(...msg);
+  }
 };
 
 function sleep(ms) {
-    let timer;
-    return new Promise((resolve) => {
-        clearTimeout(timer);
-        timer = setTimeout(resolve, ms);
-    });
+  let timer;
+  return new Promise((resolve) => {
+    clearTimeout(timer);
+    timer = setTimeout(resolve, ms);
+  });
 }
 
 /**
@@ -30,57 +30,61 @@ function sleep(ms) {
  * @returns
  */
 function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; //최댓값도 미포함, 최솟값만 포함
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //최댓값도 미포함, 최솟값만 포함
 }
 
 function getRandomValue(values) {
-    let idx = getRandomInt(0, values.length);
-    return values[idx];
+  let idx = getRandomInt(0, values.length);
+  return values[idx];
 }
 function getNameIdx(objArr, name) {
-    for (let i = 0; i < objArr.length; i++) {
-        if (objArr[i].name === name) {
-            return i;
-        }
+  for (let i = 0; i < objArr.length; i++) {
+    if (objArr[i].name === name) {
+      return i;
     }
-    return -1;
+  }
+  return -1;
 }
 function getDataIdx(objArr, value, key = "name") {
-    for (let i = 0; i < objArr.length; i++) {
-        if (objArr[i][key] === value) {
-            return i;
-        }
+  for (let i = 0; i < objArr.length; i++) {
+    if (objArr[i][key] === value) {
+      return i;
     }
-    return -1;
+  }
+  return -1;
+}
+
+function getTestImageUrl(width, height, text = "TEST") {
+  return `https://via.placeholder.com/${width}x${height}?text=${text}`;
 }
 
 class asyncInterval {
-    constructor(fn, sec) {
-        this.startCount = 0;
-        this.fn = fn;
-        this.sec = sec * 1000;
+  constructor(fn, sec) {
+    this.startCount = 0;
+    this.fn = fn;
+    this.sec = sec * 1000;
+  }
+  stop() {
+    this.startCount = 0;
+    // devLog("asyncInterval stop, current count", this.startCount);
+  }
+  async start(...args) {
+    if (this.startCount > 0) {
+      devLog("asyncInterval have many jobs - ", this.startCount);
+      return;
     }
-    stop() {
-        this.startCount = 0;
-        // devLog("asyncInterval stop, current count", this.startCount);
+    this.stop();
+    this.startCount += 1;
+    // devLog("asyncInterval start current count : ", this.startCount);
+    while (this.startCount > 0 && this.startCount <= 1) {
+      await this.fn(...args);
+      await sleep(this.sec);
     }
-    async start(...args) {
-        if (this.startCount > 0) {
-            devLog("asyncInterval have many jobs - ", this.startCount);
-            return;
-        }
-        this.stop();
-        this.startCount += 1;
-        // devLog("asyncInterval start current count : ", this.startCount);
-        while (this.startCount > 0 && this.startCount <= 1) {
-            await this.fn(...args);
-            await sleep(this.sec);
-        }
-        devLog("asyncInterval exit current count : ", this.startCount);
-        this.startCount -= 1;
-    }
+    devLog("asyncInterval exit current count : ", this.startCount);
+    this.startCount -= 1;
+  }
 }
 /*
 // 함수형 asyncInterval

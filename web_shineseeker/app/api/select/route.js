@@ -1,18 +1,26 @@
 import {NextResponse} from "next/server";
-import {saveFiles, saveData} from "@/_custom/scripts/server";
+import {getData, saveData} from "@/_custom/scripts/server";
 import {devLog} from "@/_custom/scripts/common";
 // upload에 대한 post 요청을 처리하는 함수
-export async function GET() {
+export async function GET(req) {
+  const {searchParams} = new URL(req.url);
+  const apitype = searchParams.get("apitype");
+  const getcount = searchParams.get("getcount");
   try {
-    if (apitype === "update_user") {
-      filePaths = updateUser(data);
-      return NextResponse.json({message: "User And Images uploaded successfully", filePaths});
-    } else if (apitype === "test") {
-      test(data);
-      return NextResponse.json({message: "successfully api"});
+    const data = await getData(apitype);
+    console.log("GET", searchParams, apitype, getcount, data);
+    if (data) {
+      if (getcount == 1) {
+        // 최초요청일 경우 데이터 바로전송
+        return NextResponse.json({message: "successfully api", data: data[apitype]});
+      } else {
+        // 데이터 전송량을 줄이기 위해 최초가 아닐경우 1분이내 업데이트된 데이터만 전송
+        if (data[apitype].updated > Date.now() - 1000 * 60) {
+          console.log(data[apitype].updated);
+        }
+      }
     }
-
-    return NextResponse.json({message: "Files uploaded successfully", filePaths});
+    return NextResponse.json({message: "Files uploaded successfully", data: data});
   } catch (error) {
     return NextResponse.json({error: error.message}, {status: 500});
   }
@@ -23,47 +31,3 @@ export const config = {
     bodyParser: false, // Disallow body parsing, since we are handling it ourselves
   },
 };
-// --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
-async function updateUser(data) {
-  const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
-  let imagePaths = [];
-  let user = {};
-  if (!dataList.every((key) => data.has(key))) return NextResponse.json({error: "One or more fields are missing"}, {status: 400});
-
-  let userid = data.get("userid");
-  user[userid] = {};
-  dataList.forEach((key) => (user[userid][key] = data.get(key)));
-
-  const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) return NextResponse.json({error: "One or more files are not images"}, {status: 400});
-  else imagePaths = await saveFiles(files);
-
-  // devLog("api/upload/route.js updateUser : ", imagePaths);
-  user["imagePaths"] = imagePaths;
-
-  await saveData("user", user);
-
-  return imagePaths;
-}
-
-async function test(data) {
-  const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
-  let imagePaths = [];
-  let user = {};
-  if (!dataList.every((key) => data.has(key))) return NextResponse.json({error: "One or more fields are missing"}, {status: 400});
-
-  let userid = data.get("userid");
-  user[userid] = {};
-  dataList.forEach((key) => (user[userid][key] = data.get(key)));
-
-  const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) return NextResponse.json({error: "One or more files are not images"}, {status: 400});
-  else imagePaths = await saveFiles(files);
-
-  // devLog("api/upload/route.js updateUser : ", imagePaths);
-  user["imagePaths"] = imagePaths;
-
-  await saveData("test", user);
-
-  return imagePaths;
-}

@@ -11,7 +11,7 @@ export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, 
 let dev = process.env.NEXT_PUBLIC_DEV || undefined;
 let devLog = (...msg) => {
   if (dev) {
-    console.log(...msg);
+    console.log("############### dev Log ###############\n", ...msg);
   }
 };
 

@@ -3,9 +3,17 @@ import path from "path";
 let dev = process.env.NEXT_PUBLIC_DEV || true;
 let devLog = (...msg) => {
   if (dev) {
-    console.log(...msg);
+    console.log("############### dev Log ###############\n", ...msg);
   }
 };
+// 데이터를 저장할때 해당 키값 하위로 데이터를 넣어주고 마지막에 updated 시간을 넣어주는 함수
+const updateDataObject = (object, key, data) => {
+  if (!object?.[key]) object[key] = {};
+  for (const [k, v] of Object.entries(data)) object[key][k] = v;
+  object[key]["updated"] = Date.now();
+  return object;
+};
+
 // 데이터 파일 경로
 const tempDir = path.join(process.cwd(), "public", "temp");
 const filePath = path.join(tempDir, "data.db");
@@ -21,12 +29,37 @@ const readAllLines = () => {
 };
 
 // 첫 번째 줄(인덱스)을 읽는 함수
-const readIndex = () => {
+const readIndex = (lines = undefined) => {
   if (fs.existsSync(filePath)) {
-    const lines = readAllLines();
+    if (!lines) lines = readAllLines();
     return lines[0] ? JSON.parse(lines[0]) : {}; // 첫 줄이 인덱스
   }
   return {};
+};
+// 인덱스 업데이트 함수
+const updateIndex = (index, lines = []) => {
+  if (lines) lines[0] = JSON.stringify(index);
+  else throw new Error("===== jsondb updateIndex : lines is undefined");
+  // fs.writeFileSync(filePath, lines.join("\n"), "utf8");
+  return lines;
+};
+
+// 인덱스 삭제 함수. 삭제할 경우 모든 키에 대한 인덱스 재갱신 필요
+const deleteIndex = (key, lines = []) => {
+  if (!lines) lines = readAllLines();
+  let index = readIndex(lines);
+  delete index[key];
+  for (let k of Object.keys(index)) {
+    // `k`에 해당하는 객체의 인덱스를 `lines`에서 찾아 반환
+    let lineIndex = lines.findIndex((line) => line.hasOwnProperty(k));
+
+    if (lineIndex !== -1) {
+      index[k] = lineIndex;
+      devLog(`Key: ${k} is found at line index: ${lineIndex}`);
+    }
+  }
+  lines[0] = JSON.stringify(index);
+  return lines;
 };
 
 // 특정 줄의 데이터를 읽는 함수
@@ -38,25 +71,15 @@ const readLine = (lineNumber) => {
 // 특정 줄의 데이터를 수정하는 함수
 const updateLine = (key, lineNumber, data) => {
   const lines = readAllLines();
-  let updateLines = JSON.parse(lines[lineNumber]);
-  for (const [k, v] of Object.entries(data)) updateLines[key][k] = v;
+  let updateLines = updateDataObject(JSON.parse(lines[lineNumber]), key, data);
   lines[lineNumber] = JSON.stringify(updateLines);
   fs.writeFileSync(filePath, lines.join("\n"), "utf8");
 };
 
 // 특정 줄의 데이터를 삭제하는 함수
-const deleteLine = (lineNumber) => {
-  const lines = readAllLines();
+const deleteLine = (lineNumber, lines = undefined) => {
+  if (!lines) lines = readAllLines();
   lines.splice(lineNumber, 1);
-  fs.writeFileSync(filePath, lines.join("\n"), "utf8");
-};
-
-// 인덱스 업데이트 함수
-const updateIndex = (index, lines = []) => {
-  if (lines) lines[0] = JSON.stringify(index);
-  else console.error("jsondb updateIndex failed");
-
-  // fs.writeFileSync(filePath, lines.join("\n"), "utf8");
   return lines;
 };
 
@@ -74,18 +97,38 @@ const addNewObject = (key, data) => {
     lines = updateIndex(index, lines);
   }
 
-  let addData = {};
-  addData[key] = {};
-  for (const [k, v] of Object.entries(data)) addData[key][k] = v;
+  let addData = updateDataObject({}, key, data);
   lines.push(JSON.stringify(addData));
   fs.writeFileSync(filePath, lines.join("\n"), "utf8");
 };
 
-// 객체 읽기 함수
-const readObject = (key) => {
-  const index = readIndex();
-  const lineNumber = index[key];
-  return lineNumber !== undefined ? readLine(lineNumber) : {};
+/**
+ * 객체 읽기 함수. timesecgap 값이 존재할 경우 해당 시간 이내에 수정된 객체만 반환
+ * timegap is second
+ * @param {*} key
+ * @param {int} timeSecondgap
+ * @returns
+ */
+const readObject = (key, timeSecondgap = 0) => {
+  try {
+    devLog("jsondb readObject key : ", key);
+    const index = readIndex();
+    const lineNumber = index[key];
+    let lines = {};
+    if (lineNumber !== undefined) lines = readLine(lineNumber);
+
+    if (timeSecondgap) {
+      timeSecondgap = 1000 * timeSecondgap;
+      devLog("jsondb readObject timeSecondgap : ", timeSecondgap);
+      if (lines?.updated > Date.now() - timeSecondgap) {
+        return lines;
+      } else return null;
+    }
+    return lines;
+  } catch (e) {
+    console.error("jsondb readObject Function : ", e);
+    return null;
+  }
 };
 
 // 객체 수정 함수
@@ -93,7 +136,7 @@ const updateObject = (key, newData) => {
   try {
     const index = readIndex();
     const lineNumber = index?.[key];
-    console.log("===== jsondb updateObject =====\n", key, newData, lineNumber);
+    devLog("jsondb updateObject parameter : ", key, newData, lineNumber);
     if (lineNumber) {
       updateLine(key, lineNumber, newData);
     } else {
@@ -108,15 +151,16 @@ const updateObject = (key, newData) => {
 
 // 객체 삭제 함수
 const deleteObject = (key) => {
-  const index = readIndex();
+  let lines = readAllLines();
+  const index = readIndex(lines);
   const lineNumber = index[key];
 
   if (lineNumber !== undefined) {
-    deleteLine(lineNumber);
-    delete index[key];
-    updateIndex(index);
+    lines = deleteLine(lineNumber);
+    lines = deleteIndex(key, lines);
+    fs.writeFileSync(filePath, lines.join("\n"), "utf8");
   } else {
-    console.log(`Object with key "${key}" not found`);
+    console.error(`Object with key "${key}" not found`);
   }
 };
 

@@ -1,6 +1,8 @@
+import path from "path";
 import {NextResponse} from "next/server";
 import {saveFiles, saveData} from "@/_custom/scripts/server";
 import {devLog} from "@/_custom/scripts/common";
+
 // upload에 대한 post 요청을 처리하는 함수
 export async function POST(req) {
   try {
@@ -9,10 +11,10 @@ export async function POST(req) {
     const apitype = data.get("apitype");
     // console.log(data.get("apitype"), data);
     if (apitype === "update_user") {
-      filePaths = updateUser(data);
-      return NextResponse.json({message: "User And Images uploaded successfully", filePaths});
+      filePaths = await updateUser(data);
+      return NextResponse.json({message: "upload User And Images uploaded successfully", filePaths});
     } else if (apitype === "test") {
-      test(data);
+      await test(data);
       return NextResponse.json({message: "successfully api"});
     }
 
@@ -32,18 +34,17 @@ async function updateUser(data) {
   const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
   let imagePaths = [];
   let user = {};
-  if (!dataList.every((key) => data.has(key))) return NextResponse.json({error: "One or more fields are missing"}, {status: 400});
+  if (!dataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
+  const files = data.getAll("file");
+  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
+  imagePaths = await saveFiles(files);
 
   let userid = data.get("userid");
   user[userid] = {};
   dataList.forEach((key) => (user[userid][key] = data.get(key)));
 
-  const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) return NextResponse.json({error: "One or more files are not images"}, {status: 400});
-  else imagePaths = await saveFiles(files);
-
   // devLog("api/upload/route.js updateUser : ", imagePaths);
-  user["imagePaths"] = imagePaths;
+  user["imagePaths"] = "/temp/uploads/" + imagePaths;
 
   await saveData("user", user);
 
@@ -54,14 +55,14 @@ async function test(data) {
   const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
   let imagePaths = [];
   let user = {};
-  if (!dataList.every((key) => data.has(key))) return NextResponse.json({error: "One or more fields are missing"}, {status: 400});
+  if (!dataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
 
   let userid = data.get("userid");
   user[userid] = {};
   dataList.forEach((key) => (user[userid][key] = data.get(key)));
 
   const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) return NextResponse.json({error: "One or more files are not images"}, {status: 400});
+  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
   else imagePaths = await saveFiles(files);
 
   // devLog("api/upload/route.js updateUser : ", imagePaths);

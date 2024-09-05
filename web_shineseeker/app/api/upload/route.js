@@ -1,6 +1,6 @@
 import path from "path";
 import {NextResponse} from "next/server";
-import {saveFiles, saveData} from "@/_custom/scripts/server";
+import {saveFiles, saveData, getData} from "@/_custom/scripts/server";
 import {devLog} from "@/_custom/scripts/common";
 
 // upload에 대한 post 요청을 처리하는 함수
@@ -9,7 +9,7 @@ export async function POST(req) {
     let filePaths = [];
     const data = await req.formData();
     const apitype = data.get("apitype");
-    // console.log(data.get("apitype"), data);
+    console.log(data.get("apitype"), data);
     if (apitype === "update_user") {
       filePaths = await updateUser(data);
       return NextResponse.json({message: "upload User And Images uploaded successfully", filePaths});
@@ -35,16 +35,23 @@ async function updateUser(data) {
   let imagePaths = [];
   let user = {};
   if (!dataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
-  const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
-  imagePaths = await saveFiles(files);
 
   let userid = data.get("userid");
   user[userid] = {};
   dataList.forEach((key) => (user[userid][key] = data.get(key)));
-
-  // devLog("api/upload/route.js updateUser : ", imagePaths);
-  user["imagePaths"] = "/temp/uploads/" + imagePaths;
+  devLog("api/upload/route.js updateUser : ", user);
+  // 이미 이미지 파일이 존재할 경우에는 이미지 업로드를 하지 않더라도 데이터 갱신 진행
+  const userData = await getData("user");
+  devLog("api/upload/route.js 유저 데이터 : ", userData, userid, userData?.[userid]);
+  if (userData?.[userid]) {
+    devLog("api/upload/route.js 유저 재갱신입니다. 기존 이미지 경로 : ", userData[userid]["imagePaths"]);
+    user[userid]["imagePaths"] = userData[userid]["imagePaths"];
+  } else {
+    const files = data.getAll("file");
+    if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
+    imagePaths = await saveFiles(files);
+    user[userid]["imagePaths"] = "/temp/uploads/" + imagePaths;
+  }
 
   await saveData("user", user);
 

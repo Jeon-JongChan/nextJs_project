@@ -2,7 +2,7 @@
 import {useState} from "react";
 
 export default function Component() {
-  const [isFolded, setIsFolded] = useState(false); // 텍스트가 접혀있는지 여부를 추적하는 상태
+  const [isFolded, setIsFolded] = useState(true); // 텍스트가 접혀있는지 여부를 추적하는 상태
 
   // 텍스트를 접거나 펼치는 함수
   const toggleFold = () => {
@@ -21,7 +21,9 @@ export default function Component() {
               <br /><span>- 이미지 적용 : MAIN 80% 완료 </span>
               <br /><span>- 이미지 적용 : 메뉴별 이미지 적용 1차 완료 </span>
               <br />
-              <br /><span className="font-bold ">데이터 입력 개발중</span>
+              <br /><span className="font-bold ">데이터 입력 개발중 ( 데이터 저장 및 불러오기까지 완료 ) </span>
+              <br /><span> 이미지 리뉴얼 및 BGM 개발 중 </span>
+              <br /><span>- 이미지 적용 : 첫 페이지 완료 </span>
             </div>
           </>
         )}

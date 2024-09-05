@@ -15,7 +15,7 @@ export default function Layout({children}) {
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen">
-        <main className="flex flex-col items-center justify-between p-24">{children}</main>
+        <main className="flex flex-col items-center justify-between p-24 w-full">{children}</main>
       </div>
     </>
   );

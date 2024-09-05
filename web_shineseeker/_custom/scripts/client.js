@@ -1,11 +1,11 @@
 import {devLog} from "./common";
-export {updateData, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
+export {updateDataWithFormInputs, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
 
 /**
  * @param {*} event
  * @param {*} apitype
  */
-function updateData(event, apitype, url) {
+function updateDataWithFormInputs(event, apitype, url) {
   if (!apitype || !url) {
     console.log("updateData : apitype or url is not defined", apitype, url);
     return false;

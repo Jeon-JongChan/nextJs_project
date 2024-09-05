@@ -8,9 +8,9 @@ export {devLog, asyncInterval, sleep, getRandomInt, getRandomValue, getDataIdx, 
  * @param {*} fn 함수
  * @param {*} ms 반복 시간
  */
-let dev = process.env.NEXT_PUBLIC_DEV || undefined;
+let dev = process.env.NEXT_PUBLIC_DEV || "false";
 let devLog = (...msg) => {
-  if (dev) {
+  if (dev == "true" || dev == "dev") {
     console.log("############### dev Log ###############\n", ...msg);
   }
 };

@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
-let dev = process.env.NEXT_PUBLIC_DEV || true;
+const dev = process.env.NEXT_PUBLIC_DEV || "false";
 let devLog = (...msg) => {
-  if (dev) {
-    console.log("############### dev Log ###############\n", ...msg);
+  if (dev == "true" || dev == "dev") {
+    console.log("############### dev Log : " + dev + " ###############\n", ...msg);
   }
 };
 // 데이터를 저장할때 해당 키값 하위로 데이터를 넣어주고 마지막에 updated 시간을 넣어주는 함수
@@ -111,16 +111,17 @@ const addNewObject = (key, data) => {
  */
 const readObject = (key, timeSecondgap = 0) => {
   try {
-    devLog("jsondb readObject key : ", key);
     const index = readIndex();
     const lineNumber = index[key];
     let lines = {};
-    if (lineNumber !== undefined) lines = readLine(lineNumber);
+    if (lineNumber !== undefined) lines = readLine(lineNumber)[key];
+    // devLog("jsondb readObject key : ", key, lineNumber);
 
     if (timeSecondgap) {
       timeSecondgap = 1000 * timeSecondgap;
-      devLog("jsondb readObject timeSecondgap : ", timeSecondgap);
+      // devLog("jsondb readObject timeSecondgap : ", timeSecondgap, lines?.updated > Date.now() - timeSecondgap ? "o" : "x", lines?.updated, Date.now() - timeSecondgap);
       if (lines?.updated > Date.now() - timeSecondgap) {
+        devLog(`jsondb readObject timeSecondgap inner ${timeSecondgap}`);
         return lines;
       } else return null;
     }

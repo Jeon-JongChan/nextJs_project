@@ -7,21 +7,20 @@ export async function GET(req) {
   const apitype = searchParams.get("apitype");
   const getcount = searchParams.get("getcount");
   try {
-    const data = await getData(apitype);
-    console.log("GET", searchParams, apitype, getcount, data);
-    if (data) {
-      if (getcount == 1) {
-        // 최초요청일 경우 데이터 바로전송
-        return NextResponse.json({message: "successfully api", data: data[apitype]});
-      } else {
-        // 데이터 전송량을 줄이기 위해 최초가 아닐경우 1분이내 업데이트된 데이터만 전송
-        if (data[apitype].updated > Date.now() - 1000 * 60) {
-          console.log(data[apitype].updated);
-        }
-      }
+    // devLog("GET", searchParams, apitype, getcount);
+    if (getcount == 1) {
+      // 최초요청일 경우 데이터 바로전송
+      const data = await getData(apitype);
+      // devLog("GET first Call", data);
+      if (data) return NextResponse.json({message: "successfully api", data: data});
+    } else {
+      // 데이터 전송량을 줄이기 위해 최초가 아닐경우 1분이내 업데이트된 데이터만 전송
+      const data = await getData(apitype, 60);
+      if (data) return NextResponse.json({message: "successfully api", data: data});
     }
-    return NextResponse.json({message: "Files uploaded successfully", data: data});
+    return NextResponse.json({message: "successfully api but no data", data: null});
   } catch (error) {
+    console.log("GET error", error);
     return NextResponse.json({error: error.message}, {status: 500});
   }
 }

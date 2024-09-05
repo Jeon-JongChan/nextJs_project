@@ -22,6 +22,14 @@ export default function FileUpload(props) {
     return true;
   };
 
+  const previewImage = () => {
+    if (!preview) {
+      <p className="text-slate-300 text-center">{text}</p>;
+    } else {
+      <img src={preview} alt="Preview" className="preview-image w-full h-full" />;
+    }
+  };
+
   const handleDrop = (event) => {
     event.preventDefault();
     updateInputFiles(event.dataTransfer.files);

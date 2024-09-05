@@ -1,5 +1,5 @@
 "use client";
-import {updateData} from "/_custom/scripts/client";
+import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
@@ -10,7 +10,7 @@ export default function Home(props) {
   const handleSubmitUser = (e) => {
     e.preventDefault();
     console.log("handleSubmitUser", apitype, apiurl, props);
-    updateData(e, apitype, apiurl);
+    updateDataWithFormInputs(e, apitype, apiurl);
   };
 
   return (

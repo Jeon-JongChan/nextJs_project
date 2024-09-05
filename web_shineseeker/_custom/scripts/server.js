@@ -33,10 +33,16 @@ async function saveData(key, data) {
 async function deleteData(key) {
   jsondb.deleteObject(key);
 }
-
-async function getData(key) {
+/**
+ *
+ * @param {*} key
+ * @param {int} timeSecondgap
+ * @returns
+ */
+async function getData(key, timeSecondgap = 0) {
   try {
-    return jsondb.readObject(key);
+    if (timeSecondgap) return jsondb.readObject(key, timeSecondgap);
+    else return jsondb.readObject(key);
   } catch (e) {
     console.error("server.js getData Function : ", e);
   }

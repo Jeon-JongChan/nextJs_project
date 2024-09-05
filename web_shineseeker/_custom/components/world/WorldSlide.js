@@ -1,6 +1,6 @@
 "use client";
 import {useState, useEffect} from "react";
-import {sleep} from "/_custom/utils.js";
+import {sleep} from "/_custom/scripts/common.js";
 
 const defaultProps = {
   slides: [

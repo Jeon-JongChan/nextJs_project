@@ -29,7 +29,7 @@ export default function Home() {
         <div className="col-span-2 mr-4 px-2">
           <MainAudioPlayer />
         </div>
-        <div className="col-span-4 grid grid-cols-3 gap-x-3" style={{display: "none"}}>
+        <div className="col-span-4 grid grid-cols-3 gap-x-3">
           <Link className="col-span-1 relative main-button" href="/main">
             <Image src="/images/home/01_home_button01.png" alt="Shineseeker" fill={true} />
           </Link>

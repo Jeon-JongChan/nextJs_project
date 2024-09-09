@@ -55,12 +55,10 @@ const YouTubeAudioPlayer = ({css, videoUrl, istitle = false, parentRef}) => {
         playlist: id,
       },
       events: {
+        // onReady, onStateChange, onPlaybackQualityChange 이벤트 핸들러 등록
         onReady: (event) => {
-          playerRef.current.setPlaybackQuality("144p");
+          playerRef.current.setPlaybackQuality("tiny");
           setIsPlayerReady(true); // 플레이어가 준비되었음을 표시
-        },
-        onStateChange: (event) => {
-          playerRef.current.setPlaybackQuality("144p");
         },
       },
     });
@@ -81,6 +79,7 @@ const YouTubeAudioPlayer = ({css, videoUrl, istitle = false, parentRef}) => {
         next: () => nextVideo(),
         prev: () => nextVideo(true),
         setVolume: (volume) => setVolume(volume),
+        setQuality: (quality) => setVideoQuality(quality),
         getTitle: () => playerRef.current.getVideoData().title,
         title: playerRef.current.getVideoData().title,
       };
@@ -103,8 +102,10 @@ const YouTubeAudioPlayer = ({css, videoUrl, istitle = false, parentRef}) => {
         playerRef.current.setPlaybackQuality(quality);
         console.log(`해상도가 ${quality}로 설정되었습니다.`);
       } else {
-        console.log(`해상도 ${quality}는 사용할 수 없습니다.`);
+        console.log(`해상도 ${quality}는 사용할 수 없습니다.`, availableQualities);
       }
+    } else {
+      console.log("setVideoQuality : PlayerRef is not set yet");
     }
   };
 

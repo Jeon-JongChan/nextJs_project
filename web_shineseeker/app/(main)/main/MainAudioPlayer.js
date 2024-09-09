@@ -21,9 +21,10 @@ export default function Component() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current) {
+        clearInterval(interval);
         setVideoTitle(audioRef.current.title);
         audioRef.current.setVolume(50);
-        clearInterval(interval);
+        audioRef.current.setQuality("small");
         console.log("MainAudioPlayer title interval exit");
       }
     }, 1000);

@@ -8,8 +8,8 @@ export default function Component({params}) {
   const [selectedTab, setSelectedTab] = useState(1);
   const images = ["https://via.placeholder.com/500?text=Image+1", "https://via.placeholder.com/500?text=Image+2", "https://via.placeholder.com/500?text=Image+3"];
   const contents = [
-    <TabStatus />,
-    <TabInventory />,
+    <TabStatus key="1" />,
+    <TabInventory key="2" />,
     <div key="3">
       <h2 className="text-lg font-bold">내용 3</h2>
       <p>탭 3에 대한 내용입니다.</p>

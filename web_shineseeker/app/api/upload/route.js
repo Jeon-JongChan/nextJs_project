@@ -24,11 +24,13 @@ export async function POST(req) {
   }
 }
 
+/* 13에서 사용 안함
 export const config = {
   api: {
     bodyParser: false, // Disallow body parsing, since we are handling it ourselves
   },
 };
+*/
 // --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
 async function updateUser(data) {
   const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];

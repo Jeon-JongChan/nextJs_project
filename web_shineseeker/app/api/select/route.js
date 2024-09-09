@@ -24,9 +24,10 @@ export async function GET(req) {
     return NextResponse.json({error: error.message}, {status: 500});
   }
 }
-
+/* 13에서 사용 안함
 export const config = {
   api: {
     bodyParser: false, // Disallow body parsing, since we are handling it ourselves
   },
 };
+*/

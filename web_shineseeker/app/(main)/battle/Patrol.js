@@ -21,19 +21,19 @@ export default function Component() {
         </pre>
         <div className="patrol-selector-startbox absolute w-[750px] top-[200px] left-[430px]">
           <button className="patrol-selector-bar relative m-2" onClick={() => setIsSelector(!isSelector)}>
-            <img src="/images/patrol/05_patrol_startbox_bar.png" />
+            <Image src="/images/patrol/05_patrol_startbox_bar.png" />
             <p className="absolute text-nowrap overflow-hidden w-[700px] top-0 px-4 py-3">
               ★ 어쩌고저쩌고 어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고
             </p>
           </button>
           <button className="patrol-selector-bar relative m-2">
-            <img src="/images/patrol/05_patrol_startbox_bar.png" />
+            <Image src="/images/patrol/05_patrol_startbox_bar.png" />
             <p className="absolute text-nowrap overflow-hidden w-[700px] top-0 px-4 py-3">
               ★ 어쩌고저쩌고 어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고
             </p>
           </button>
           <button className="patrol-selector-bar relative m-2">
-            <img src="/images/patrol/05_patrol_startbox_bar.png" />
+            <Image src="/images/patrol/05_patrol_startbox_bar.png" />
             <p className="absolute text-nowrap overflow-hidden w-[700px] top-0 px-4 py-3">
               ★ 어쩌고저쩌고 어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고
             </p>
@@ -47,7 +47,7 @@ export default function Component() {
     return (
       <div className="selector relative flex-1 ml-[100px] w-full img-patrol-init img-patrol-end-bg" style={{width: "1200px", height: "400px"}}>
         <div className="absolute top-[20px] right-[20px]">
-          <img src="/images/patrol/05_patrol_endbox_bar_stemina.png" />
+          <Image src="/images/patrol/05_patrol_endbox_bar_stemina.png" />
           <span
             id="patrol-end-stamina"
             className="absolute flex flex-col justify-center align-middle"
@@ -62,7 +62,7 @@ export default function Component() {
           </div>
         </div>
         <button className="patrol-end-bar absolute bottom-[100px] left-[160px]" onClick={() => setIsSelector(!isSelector)}>
-          <img src="/images/patrol/05_patrol_endbox_bar.png" />
+          <Image src="/images/patrol/05_patrol_endbox_bar.png" />
           <p className="absolute text-nowrap overflow-hidden w-[700px] top-0 px-4 py-3">★ 어쩌고저쩌고 어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고어쩌고저쩌고</p>
         </button>
         <div className="absolute bottom-[40px] left-[160px] flex justify-center items-center" style={{width: "900px", fontSize: "24px"}}>

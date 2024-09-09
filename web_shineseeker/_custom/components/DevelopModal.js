@@ -18,7 +18,7 @@ export default function Component() {
           <>
             <h3>개발 중 노트</h3>
             {/* prettier-ignore */}
-            <div>
+            <div className="overflow-y-scroll no-scrollbar h-[27vw]">
               <span>전투 페이지 개발중</span>
               <br /><span>디자인 다듬기 2차</span>
               <br /><span>- 이미지 적용 : MAIN 80% 완료 </span>

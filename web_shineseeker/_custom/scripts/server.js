@@ -14,7 +14,7 @@ async function saveFiles(files, uploadDir = undefined) {
   try {
     if (!uploadDir) {
       uploadDir = path.join(process.cwd(), "public/temp", "uploads");
-      if (server == "vercel") uploadDir = path.join("public/temp", "uploads"); // vercel에서 process.cwd()는 /var/task로 인식해버림
+      if (server == "vercel") uploadDir = "/tmp/uploads"; // vercel에서 process.cwd()는 /var/task로 인식해버림
     }
     console.info("server.js saveFiles uploadDir : ", uploadDir);
     await fs.mkdir(uploadDir, {recursive: true});

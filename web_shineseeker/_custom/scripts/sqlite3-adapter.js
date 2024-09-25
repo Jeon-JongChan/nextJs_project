@@ -2,6 +2,7 @@ import Database from "better-sqlite3";
 import path from "path";
 
 let dev = process.env.NEXT_PUBLIC_DEV || "false";
+const server = process.env.NEXT_SERVER || "";
 let devLog = (...msg) => {
   if (dev == "true" || dev == "dev") {
     console.log("############### dev Log ###############\n", ...msg);
@@ -16,8 +17,8 @@ class DBManager {
     }
   });
 
-  // constructor(verbose = true, dbPath = path.join(process.cwd(), "public", "temp", "sqlite3.db")) { // vercel에서 process.cwd()는 /var/task로 인식해버림
-  constructor(verbose = true, dbPath = "public/temp/sqlite3.db") {
+  constructor(verbose = true, dbPath = path.join(process.cwd(), "public", "temp", "sqlite3.db")) {
+    if (server == "vercel") dbPath = "/tmp/sqlite3.db"; // vercel에서 process.cwd()는 /var/task로 인식해버림
     this.db = new Database(dbPath, {verbose: verbose ? console.log : undefined});
     DBManager.finalizationRegistry.register(this, this.db);
 

@@ -7,13 +7,14 @@ import {devLog} from "./common.js";
 
 export {saveFiles, saveData, deleteData, getData, getDataKey};
 
+const server = process.env.NEXT_SERVER || "";
 const sqlite = new Sqlite(); // 기본 dbPath 사용, verbose 출력 활성화
 
 async function saveFiles(files, uploadDir = undefined) {
   try {
     if (!uploadDir) {
-      // uploadDir = path.join(process.cwd(), "public/temp", "uploads");
-      uploadDir = path.join("public/temp", "uploads"); // vercel에서 process.cwd()는 /var/task로 인식해버림
+      uploadDir = path.join(process.cwd(), "public/temp", "uploads");
+      if (server == "vercel") uploadDir = path.join("public/temp", "uploads"); // vercel에서 process.cwd()는 /var/task로 인식해버림
     }
     await fs.mkdir(uploadDir, {recursive: true});
 

@@ -4,6 +4,8 @@ import {saveFiles, saveData, deleteData, getDataKey} from "@/_custom/scripts/ser
 import SqliteQuery from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 
+const server = process.env.NEXT_SERVER || "";
+const imageDir = server !== "vercel" ? path.join(process.cwd(), "/temp", "uploads") : "/tmp/uploads";
 // upload에 대한 post 요청을 처리하는 함수
 export async function POST(req) {
   try {
@@ -55,7 +57,7 @@ async function updateUser(data) {
           basename: value.name,
           size: value.size,
           lastModified: value.lastModified,
-          path: `/temp/uploads/${imagePath[0]}`,
+          path: `${imageDir}/${imagePath[0]}`,
         };
 
         await saveData("images", "name", images[key]); // 이미지 정보 저장

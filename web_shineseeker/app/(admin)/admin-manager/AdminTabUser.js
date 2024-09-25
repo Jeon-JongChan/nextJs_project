@@ -151,7 +151,7 @@ export default function Home() {
  */
 function makeInputList(inputNameObjects, checkboxOptionObjects = {}) {
   return (
-    <>
+    <React.Fragment>
       {inputNameObjects.map((obj, index) => (
         <React.Fragment key={index}>
           {obj?.header ? <h1 className="col-span-full font-bold text-2xl">{obj.header}</h1> : null}
@@ -173,7 +173,7 @@ function makeInputList(inputNameObjects, checkboxOptionObjects = {}) {
           )}
         </React.Fragment>
       ))}
-    </>
+    </React.Fragment>
   );
 }
 

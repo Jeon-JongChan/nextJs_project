@@ -12,9 +12,9 @@ const sqlite = new Sqlite(); // 기본 dbPath 사용, verbose 출력 활성화
 async function saveFiles(files, uploadDir = undefined) {
   try {
     if (!uploadDir) {
-      uploadDir = path.join(process.cwd(), "public/temp", "uploads");
+      // uploadDir = path.join(process.cwd(), "public/temp", "uploads");
+      uploadDir = path.join("public/temp", "uploads"); // vercel에서 process.cwd()는 /var/task로 인식해버림
     }
-    uploadDir = path.join(process.cwd(), "public/temp", "uploads");
     await fs.mkdir(uploadDir, {recursive: true});
 
     const fileUploadPromises = files.map(async (file) => {

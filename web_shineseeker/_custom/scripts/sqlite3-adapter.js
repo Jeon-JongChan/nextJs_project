@@ -16,7 +16,8 @@ class DBManager {
     }
   });
 
-  constructor(verbose = true, dbPath = path.join(process.cwd(), "public", "temp", "sqlite3.db")) {
+  // constructor(verbose = true, dbPath = path.join(process.cwd(), "public", "temp", "sqlite3.db")) { // vercel에서 process.cwd()는 /var/task로 인식해버림
+  constructor(verbose = true, dbPath = "public/temp/sqlite3.db") {
     this.db = new Database(dbPath, {verbose: verbose ? console.log : undefined});
     DBManager.finalizationRegistry.register(this, this.db);
 

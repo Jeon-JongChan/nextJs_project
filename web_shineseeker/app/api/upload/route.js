@@ -10,7 +10,7 @@ export async function POST(req) {
     let filePaths = [];
     const data = await req.formData();
     const apitype = data.get("apitype");
-    console.log(data.get("apitype"), data);
+    devLog(data.get("apitype"), data);
     if (apitype === "update_user") {
       filePaths = await updateUser(data);
       return NextResponse.json({message: "upload User And Images uploaded successfully", filePaths});

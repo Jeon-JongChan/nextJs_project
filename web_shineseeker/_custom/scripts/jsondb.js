@@ -15,7 +15,8 @@ const updateDataObject = (object, key, data) => {
 };
 
 // 데이터 파일 경로
-const tempDir = path.join(process.cwd(), "public", "temp");
+// const tempDir = path.join(process.cwd(), "public", "temp");
+const tempDir = path.join("public/temp"); // vercel에서 process.cwd()는 /var/task로 인식해버림
 const filePath = path.join(tempDir, "data.db");
 if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, {recursive: true});
 

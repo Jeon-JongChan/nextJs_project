@@ -10,24 +10,17 @@ export default function Component() {
   };
   return (
     <>
-      <div
-        className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300"
-        style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px", zIndex: "100"}}
-      >
+      <div className="fixed bottom-2 right-0 bg-orange-100 p-4 border-t border-gray-300" style={{width: !isFolded ? "30vw" : "90px", height: !isFolded ? "30vw" : "50px", zIndex: "100"}}>
         {!isFolded && (
           <>
             <h3>개발 중 노트</h3>
             {/* prettier-ignore */}
             <div className="overflow-y-scroll no-scrollbar h-[27vw]">
-              <span>전투 페이지 개발중</span>
-              <br /><span>디자인 다듬기 2차</span>
-              <br /><span>- 이미지 적용 : MAIN 80% 완료 </span>
-              <br /><span>- 이미지 적용 : 메뉴별 이미지 적용 1차 완료 </span>
+              <span>관리자페이지 개발중</span>
+              <br /><span>데이터 입력 및 수정, 저장</span>
+              <br /><span>- 유저관리 탭 완성 </span>
+              <br /><span>- 직업 및 몬스터 작업 </span>
               <br />
-              <br /><span className="font-bold ">데이터 입력 개발중 ( 데이터 저장 및 불러오기까지 완료 ) </span>
-              <br /><span> 이미지 리뉴얼 및 BGM 개발 </span>
-              <br /><span>- 이미지 적용 : 첫 페이지 완료 </span>
-              <br /><span>- 유투브 재생 및 조작 완료 (유투브주소입력 및 여러개 재생 미구현) </span>
             </div>
           </>
         )}

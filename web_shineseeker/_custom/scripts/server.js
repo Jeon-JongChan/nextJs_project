@@ -36,7 +36,7 @@ async function saveFiles(files, uploadDir = undefined) {
         return savename; // 저장한 파일명 반환
       } else {
         // 중복 파일이 있는 경우 저장 생략
-        console.log(`server.js saveFiles : 동일 파일 (크기, 파일명 ) 저장 생략: ${name}`);
+        console.info(`******** server.js saveFiles : 동일 파일 (크기, 파일명 ) 저장 생략: ${name} ${filePath}`);
         return isDuplicate; // 중복된 파일은 null 반환
       }
     });

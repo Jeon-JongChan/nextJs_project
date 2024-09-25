@@ -1,11 +1,15 @@
 import {devLog} from "./common";
 export {updateDataWithFormInputs, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
-
 /**
+ *
  * @param {*} event
  * @param {*} apitype
+ * @param {*} url
+ * @param {*} addObjectData
+ * @param {*} useFileId
+ * @returns
  */
-function updateDataWithFormInputs(event, apitype, url) {
+function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFileId = false) {
   if (!apitype || !url) {
     console.log("updateData : apitype or url is not defined", apitype, url);
     return false;
@@ -17,14 +21,20 @@ function updateDataWithFormInputs(event, apitype, url) {
 
     inputs.forEach((inputNode) => {
       if (inputNode.type === "file" && inputNode?.files) {
-        console.log("handleSubmitUser", inputNode, inputNode.files);
+        devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files);
         Array.from(inputNode.files).forEach((file) => {
-          formData.append("file", file);
+          if (useFileId) formData.append(inputNode.id, file);
+          else formData.append("file", file);
         });
       } else {
         formData.append(inputNode.id, inputNode.value);
       }
     });
+    // 추가데이터가 있을경우 추가해준다
+    if (Object.keys(addObjectData).length > 0) {
+      for (const key in addObjectData) formData.append(key, addObjectData[key]);
+    }
+
     fetch("/api/" + url, {
       method: "POST",
       body: formData,
@@ -33,7 +43,7 @@ function updateDataWithFormInputs(event, apitype, url) {
       .then((data) => console.log(data))
       .catch((error) => console.error("Error:", error));
   } catch (e) {
-    console.error("updateData error : ", e.message);
+    console.error("client.js updateDataWithFormInputs : updateData error : ", e.message);
   }
   return true;
 }

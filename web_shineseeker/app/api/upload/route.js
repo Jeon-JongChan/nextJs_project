@@ -1,6 +1,7 @@
 import path from "path";
 import {NextResponse} from "next/server";
-import {saveFiles, saveData, getData} from "@/_custom/scripts/server";
+import {saveFiles, saveData, deleteData, getDataKey} from "@/_custom/scripts/server";
+import SqliteQuery from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 
 // upload에 대한 post 요청을 처리하는 함수
@@ -33,51 +34,45 @@ export const config = {
 */
 // --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
 async function updateUser(data) {
-  const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
-  let imagePaths = [];
+  const essentialDataList = ["userid", "userpw", "username1"];
+  const exceptUserList = ["file", "apitype"];
+  const imageKeyList = ["user_img_1", "user_img_2", "user_img_3", "user_img_4"];
   let user = {};
-  if (!dataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
+  let images = {};
+  let items = [];
+  if (!essentialDataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
+  // if (files.length !== 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
 
-  let userid = data.get("userid");
-  user[userid] = {};
-  dataList.forEach((key) => (user[userid][key] = data.get(key)));
-  devLog("api/upload/route.js updateUser : ", user);
-  // 이미 이미지 파일이 존재할 경우에는 이미지 업로드를 하지 않더라도 데이터 갱신 진행
-  const userData = await getData("user");
-  devLog("api/upload/route.js 유저 데이터 : ", userData, userid, userData?.[userid]);
-  if (userData?.[userid]) {
-    devLog("api/upload/route.js 유저 재갱신입니다. 기존 이미지 경로 : ", userData[userid]["imagePaths"]);
-    user[userid]["imagePaths"] = userData[userid]["imagePaths"];
-  } else {
-    const files = data.getAll("file");
-    if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
-    imagePaths = await saveFiles(files);
-    user[userid]["imagePaths"] = "/temp/uploads/" + imagePaths;
+  // 이미지와 아이템을 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptUserList.includes(key)) {
+      if (key.startsWith("user_img")) {
+        // 이미지 처리 진행
+        if (value.type.split("/")[0] !== "image") throw new Error(`${value.name} file is not an image`);
+        const imagePath = await saveFiles([value]);
+        images[key] = {
+          name: imagePath[0],
+          basename: value.name,
+          size: value.size,
+          lastModified: value.lastModified,
+          path: `/temp/uploads/${imagePath[0]}`,
+        };
+
+        await saveData("images", "name", images[key]); // 이미지 정보 저장
+      } else if (key.startsWith("user_item")) {
+        items.push(value);
+      } else {
+        user[key] = value;
+      }
+    }
   }
+  Object.keys(images).map((key) => (user[key] = images[key]["path"])); // 이미지 경로를 user 객체에 추가
+  await deleteData("items", "userid", user.userid); // 기존 아이템 정보 삭제
+  items.forEach((item, idx) => {
+    saveData("items", "userid", {userid: user.userid, item: item});
+  }); // 아이템 정보를 user 객체에 추가
+  // devLog("api/upload/route.js updateUser : ", data, images, user);
+  await saveData("user", "userid", user);
 
-  await saveData("user", user);
-
-  return imagePaths;
-}
-
-async function test(data) {
-  const dataList = ["userpw", "username", "profill", "job", "level", "stat", "skill", "money"];
-  let imagePaths = [];
-  let user = {};
-  if (!dataList.every((key) => data.has(key))) throw new Error("One or more fields are missing");
-
-  let userid = data.get("userid");
-  user[userid] = {};
-  dataList.forEach((key) => (user[userid][key] = data.get(key)));
-
-  const files = data.getAll("file");
-  if (files.length === 0 || files.some((file) => file.type.split("/")[0] !== "image")) throw new Error("One or more files are not images");
-  else imagePaths = await saveFiles(files);
-
-  // devLog("api/upload/route.js updateUser : ", imagePaths);
-  user["imagePaths"] = imagePaths;
-
-  await saveData("test", user);
-
-  return imagePaths;
+  return Object.keys(images).map((key) => images[key].path);
 }

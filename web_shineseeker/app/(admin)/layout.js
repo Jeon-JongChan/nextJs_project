@@ -14,9 +14,11 @@ export default function Layout({children}) {
   const linkStyle = "text-white hover:text-gray-300 px-3 pb-2 pt-8 top-1 col-span-1 text-center relative img-nav-btn-init ";
   return (
     <>
-      <div className="flex flex-col justify-center p-10 items-center h-screen">
-        <main className="flex flex-col items-center justify-between p-24 w-full">{children}</main>
-      </div>
+      <main>
+        <div className="flex flex-col justify-center p-2 items-center h-fit">
+          <div className="flex flex-col items-center justify-between p-2 w-full h-fit">{children}</div>
+        </div>
+      </main>
     </>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import {useState, useRef} from "react";
+import {useState, useRef, useEffect} from "react";
 
 export default function FileUpload(props) {
   const css = props?.css || "";
@@ -8,8 +8,18 @@ export default function FileUpload(props) {
   const dropzoneRef = useRef(null);
   const inputRef = useRef(null);
   const text = props?.text || "Drag 'n' drop files here, or click";
+  const image = props?.image || null;
   const limitType = props?.limitType || undefined;
+  const id = props?.id || "drag-drop-img";
+  const minSize = props?.minSize || false;
+  const objectFit = props?.objectFit || null;
 
+  useEffect(() => {
+    console.log("FileDragAndDrop useEffect Image : ", image);
+    if (image) {
+      setPreview(image);
+    }
+  }, [image]);
   const updateInputFiles = (files) => {
     console.log("updateInputFiles : ", files);
     inputRef.current.files = files;
@@ -92,15 +102,15 @@ export default function FileUpload(props) {
     <div className={css + " file-upload"}>
       <div
         ref={dropzoneRef}
-        className="dropzone rounded-md border-gray-300 border bg-white p-2 flex justify-center items-center"
+        className="dropzone rounded-md border-gray-300 border bg-white p-2 flex justify-center items-center w-full h-full"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onClick={() => dropzoneRef.current.querySelector("input").click()}
-        style={{minHeight: "100px", minWidth: "300px"}}
+        style={minSize ? {minHeight: "100px", minWidth: "300px"} : {}}
       >
         {!preview && <p className="text-slate-300 text-center">{text}</p>}
-        {preview && <img src={preview} alt="Preview" className="preview-image w-full h-full" />}
-        <input ref={inputRef} id="drag-drop-img" type="file" onChange={handleInputChange} style={{display: "none"}} />
+        {preview && <img src={preview} alt="Preview" className="preview-image w-full h-full" style={objectFit ? {objectFit: objectFit} : {}} />}
+        <input ref={inputRef} id={id} type="file" onChange={handleInputChange} style={{display: "none"}} />
       </div>
       {/* <form onSubmit={handleSubmit}> */}
       {/* <button type="submit" className="bg-indigo-600 w-full inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Upload</button> */}

@@ -70,10 +70,10 @@ export default function Home() {
 
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 유저관리 항목 선택되었습니다.");
-    const response = await fetch("/api/select?apitype=skill");
+    const response = await fetch("/api/select?apitype=skill&getcount=1");
     const newData = await response.json();
-    if (newData?.data) setSkillList("", ...newData.data);
-    console.log("essential data skill: ", newData);
+    if (newData?.data) setSkillList({skill: ["", ...newData.data.map((data) => data.skill_name)]});
+    console.log("essential data skill: ", newData, {skill: ["", ...newData.data.map((data) => data.skill_name)]});
   }
 
   // 데이터를 주기적으로 가져오기 위한 함수

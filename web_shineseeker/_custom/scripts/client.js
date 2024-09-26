@@ -34,6 +34,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
     if (Object.keys(addObjectData).length > 0) {
       for (const key in addObjectData) formData.append(key, addObjectData[key]);
     }
+    console.info("updateDataWithFormInputs : ", apitype, url, formData);
     fetch("/api/" + url, {
       method: "POST",
       body: formData,

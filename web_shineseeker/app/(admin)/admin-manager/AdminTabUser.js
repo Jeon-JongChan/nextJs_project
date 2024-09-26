@@ -73,7 +73,7 @@ export default function Home() {
     const response = await fetch("/api/select?apitype=skill&getcount=1");
     const newData = await response.json();
     if (newData?.data) setSkillList({skill: ["", ...newData.data.map((data) => data.skill_name)]});
-    console.log("essential data skill: ", newData, {skill: ["", ...newData.data.map((data) => data.skill_name)]});
+    console.log("essential data skill: ", newData);
   }
 
   // 데이터를 주기적으로 가져오기 위한 함수

@@ -1,7 +1,5 @@
-import path from "path";
 import {NextResponse} from "next/server";
 import {saveFiles, saveData, getDataKey, deleteData, truncateData} from "@/_custom/scripts/server";
-import SqliteQuery from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 
 const imageDir = "/temp/uploads";
@@ -61,14 +59,14 @@ async function updateSkill(data) {
   ["skill_img_0", "skill_img_1"].forEach((imgKey) => {
     if (!data.has(imgKey) && existingSkill && existingSkill[imgKey]) {
       skill[imgKey] = existingSkill[imgKey]; // 기존 이미지 경로 유지
-    } else skill[imgKey] = images[imgKey]["path"];
+    } else skill[imgKey] = images[imgKey]?.path || null;
   });
 
   await truncateData("skill_detail"); // 한줄이므로 걍 삭세하고 넣어버려
   saveData("skill_detail", skills_detail); // 스킬 상세정보 저장
   await saveData("skill", skill);
 
-  return Object.keys(images).map((key) => images[key].path);
+  return Object.keys(images).map((key) => images[key]?.path || null);
 }
 // --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
 async function updateUser(data) {
@@ -92,11 +90,11 @@ async function updateUser(data) {
   ["user_img_0", "user_img_1", "user_img_2", "user_img_3"].forEach((imgKey) => {
     if (!data.has(imgKey) && existingUser && existingUser[imgKey]) {
       user[imgKey] = existingUser[imgKey]; // 기존 이미지 경로 유지
-    } else user[imgKey] = images[imgKey]["path"];
+    } else user[imgKey] = images[imgKey]?.path || null;
   });
   await deleteData("items", "userid", user.userid); // 기존 아이템 정보 삭제
   items.forEach((item, idx) => saveData("items", {userid: user.userid, item: item})); // 아이템 정보를 user 객체에 추가
   await saveData("user", user);
 
-  return Object.keys(images).map((key) => images[key].path);
+  return Object.keys(images).map((key) => images[key]?.path || null);
 }

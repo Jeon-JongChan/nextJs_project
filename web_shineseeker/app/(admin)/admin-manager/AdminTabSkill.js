@@ -14,7 +14,7 @@ const menuName = "skill";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
-  const [skillList, setSkillList] = useState({skill: [""]});
+  const [skillList, setSkillList] = useState({});
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -79,9 +79,6 @@ export default function Home() {
         skillList[id] = newData.data[0][key].split(",");
       }
       setSkillList({...skillList});
-    } else {
-      // default 값으로 넣어줄 것
-      setSkillList({...skillDefaultList});
     }
     console.log("essential data skill detail: ", newData);
   }
@@ -138,7 +135,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          {makeInputList(userinputNames, skillList)}
+          {makeInputList(userinputNames, Object.keys(skillList).length ? skillList : skillDefaultList)}
           <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
           <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
           <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />

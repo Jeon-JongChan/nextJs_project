@@ -62,6 +62,11 @@ export default function Home() {
       selectElements.forEach((select) => {
         select.value = data[select.id];
       });
+      // textarea 채우기
+      const textareaElements = document.querySelectorAll(`.${menuName}-form form textarea`);
+      textareaElements.forEach((textarea) => {
+        textarea.value = data[textarea.id];
+      });
     }
   };
 

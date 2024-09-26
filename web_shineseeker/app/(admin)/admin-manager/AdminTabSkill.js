@@ -140,10 +140,10 @@ export default function Home() {
           </div>
           {makeInputList(userinputNames, skillList)}
           <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
-          <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(', ') } css="border-b" />
-          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(', ')} css="border-b" />
-          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(', ')} css="border-b" />
-          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(', ')} css="border-b" />
+          <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
+          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />
+          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(',')} css="border-b" />
+          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(',')} css="border-b" />
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>

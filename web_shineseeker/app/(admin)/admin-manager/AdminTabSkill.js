@@ -79,6 +79,9 @@ export default function Home() {
         skillList[id] = newData.data[0][key].split(",");
       }
       setSkillList({...skillList});
+    } else {
+      // default 값으로 넣어줄 것
+      setSkillList({...skillDefaultList});
     }
     console.log("essential data skill detail: ", newData);
   }
@@ -137,10 +140,10 @@ export default function Home() {
           </div>
           {makeInputList(userinputNames, skillList)}
           <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
-          <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={"공격,방어,회복,정지,조정"} css="border-b" />
-          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={"자신,아군,적,전체"} css="border-b" />
-          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={"HP,ATK,DEF,WIS,AGI,LUK"} css="border-b" />
-          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={"HP,ATK,DEF,WIS,AGI,LUK"} css="border-b" />
+          <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(', ') } css="border-b" />
+          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(', ')} css="border-b" />
+          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(', ')} css="border-b" />
+          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(', ')} css="border-b" />
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
@@ -176,7 +179,12 @@ function makeInputList(inputNameObjects, checkboxOptionObjects = {}) {
     </React.Fragment>
   );
 }
-
+const skillDefaultList = {
+  skill_type: ["공격", "방어", "회복", "정지", "조정"],
+  skill_range: ["자신", "아군", "적", "전체"],
+  skill_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
+  skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
+};
 // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)
 const userinputNames = [
   {label: "이펙트 이미지 On / Off", id: "skill_effect_usage", inputType: "checkbox", class: "skill", colSpan: 3, checkOptions: ["", "ON", "OFF"]},

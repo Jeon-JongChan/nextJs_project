@@ -66,7 +66,7 @@ async function updateSkill(data) {
   saveData("skill_detail", skills_detail); // 스킬 상세정보 저장
   await saveData("skill", skill);
 
-  return Object.keys(images).map((key) => images[key]?.path || null);
+  return skill;
 }
 // --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
 async function updateUser(data) {
@@ -96,5 +96,5 @@ async function updateUser(data) {
   items.forEach((item, idx) => saveData("items", {userid: user.userid, item: item})); // 아이템 정보를 user 객체에 추가
   await saveData("user", user);
 
-  return Object.keys(images).map((key) => images[key]?.path || null);
+  return user;
 }

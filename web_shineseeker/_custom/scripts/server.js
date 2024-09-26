@@ -5,15 +5,13 @@ import Sqlite from "./sqlite3-adapter.js";
 import SqliteQuery from "./sqlite3-query.js";
 import {devLog} from "./common.js";
 
-export {saveFiles, saveData, deleteData, getData, getDataKey};
+export {saveFiles, saveData, deleteData, truncateData, getData, getDataKey};
 
 const sqlite = new Sqlite(); // 기본 dbPath 사용, verbose 출력 활성화
 
 async function saveFiles(files, uploadDir = undefined) {
   try {
-    if (!uploadDir) {
-      uploadDir = path.join(process.cwd(), "public/temp", "uploads");
-    }
+    if (!uploadDir) uploadDir = "public/temp/uploads";
     console.info("server.js saveFiles uploadDir : ", uploadDir);
     await fs.mkdir(uploadDir, {recursive: true});
 
@@ -53,7 +51,7 @@ function checkDuplicateImageFile(name, size) {
   return result?.count > 0 ? result.name : null;
 }
 
-async function saveData(table, key, data) {
+async function saveData(table, data) {
   // jsondb.updateObject(key, data);
   if (!sqlite.tableExists(table)) SqliteQuery?.create?.[table] ? sqlite.db.exec(SqliteQuery.create?.[table]) : sqlite.createTableFromObject(table, data, true);
   sqlite.insert(table, data);
@@ -62,6 +60,10 @@ async function saveData(table, key, data) {
 async function deleteData(table, key, keyValue) {
   // jsondb.deleteObject(key);
   sqlite.deleteByKey(table, key, keyValue);
+}
+async function truncateData(table) {
+  // jsondb.deleteObject(key);
+  sqlite.truncate(table);
 }
 /**
  * @param {*} table

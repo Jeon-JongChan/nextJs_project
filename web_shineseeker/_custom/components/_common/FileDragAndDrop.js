@@ -15,7 +15,7 @@ export default function FileUpload(props) {
   const objectFit = props?.objectFit || null;
 
   useEffect(() => {
-    console.log("FileDragAndDrop useEffect Image : ", image);
+    //console.log("FileDragAndDrop useEffect Image : ", image);
     if (image) {
       setPreview(image);
     }

@@ -8,7 +8,7 @@ export async function GET(req) {
   const getcount = searchParams.get("getcount");
   try {
     const data = await getData(apitype, getcount == 1 ? 0 : 60);
-    // devLog("select GET ::::::: ", apitype, data);
+    devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
         // user의 경우 item 값을 추가해줘야 함

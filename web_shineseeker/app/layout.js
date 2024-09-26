@@ -1,6 +1,6 @@
 import {Inter} from "next/font/google";
 import "./globals.css";
-import DevelopModal from "/_custom/components/DevelopModal";
+import DevelopModal from "/_custom/components/_common/DevelopModal";
 const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {

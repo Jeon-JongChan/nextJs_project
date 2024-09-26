@@ -139,6 +139,18 @@ class DBManager {
     }
   }
 
+  // 삭제 함수
+  truncate(table) {
+    try {
+      const stmt = this.db.exec(`DELETE FROM ${table}`);
+      this.updateTableTime(table); // 테이블 갱신 시간 업데이트
+      return true; // 삭제 성공
+    } catch (error) {
+      console.error("** Sql-adapter.js(truncate) Delete failed:", error);
+      return false; // 실패 시 false 반환
+    }
+  }
+
   // 데이터 삽입
   insert(table, data, isReplace = true) {
     try {

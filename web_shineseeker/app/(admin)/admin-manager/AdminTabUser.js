@@ -5,14 +5,14 @@ import {devLog} from "@/_custom/scripts/common";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
-import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import MakeInputList from "./MakeInputList";
 
 export default function Home() {
   const [userdata, setUserData] = useState([]);
   const [clickUserImage, setClickUserImage] = useState([]);
-  const [skillList, setSkillList] = useState({skill: ["", "1", "2", "3"]});
+  const [skillList, setSkillList] = useState({skill: [""]});
   const [itemList, setItemList] = useState(["dsf", "sdfds", "SDfds"]);
   let fetchIndex = 0;
 
@@ -68,20 +68,32 @@ export default function Home() {
     }
   };
 
+  async function fetchEssentialData() {
+    console.info("ADMIN DATA MANAGEMENT PAGE : 유저관리 항목 선택되었습니다.");
+    const response = await fetch("/api/select?apitype=skill");
+    const newData = await response.json();
+    if (newData?.data) setSkillList("", ...newData.data);
+    console.log("essential data skill: ", newData);
+  }
+
   // 데이터를 주기적으로 가져오기 위한 함수
-  async function fetchData() {
+  async function fetchUserData() {
     let response;
     if (fetchIndex++ == 0) response = await fetch("/api/select?apitype=user&getcount=1");
     else response = await fetch("/api/select?apitype=user");
     const newData = await response.json();
-    if (newData?.data?.length) setUserData([...newData.data]);
+    if (newData?.data?.length) {
+      devLog(`admin page data 갱신되었습니다(${fetchIndex}): `, newData);
+      setUserData([...newData.data]);
+    }
     // console.log(`${fetchIndex} user admin page data : `, newData);
   }
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(fetchData, 3 * 1000);
+    fetchEssentialData();
+    fetchUserData();
+    const intervalId = setInterval(fetchUserData, 30 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     return () => clearInterval(intervalId);
   }, []);
@@ -105,7 +117,7 @@ export default function Home() {
       <div className="w-3/5 flex flex-col user-form">
         {/* <h3 className="text-center">유저리스트</h3> */}
         <form onSubmit={handleSubmitUser} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}} data-apitype="update_user">
-          {makeInputList(userinputNames, skillList)}
+          <MakeInputList inputNameObjects={userinputNames} checkboxOptionObjects={skillList} />
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[
               ["두상", clickUserImage?.[0] || false],
@@ -141,39 +153,6 @@ export default function Home() {
       </div>
       <div className="w-1/5 flex"></div>
     </div>
-  );
-}
-/**
- *
- * @param {*} inputNameObjects
- * @param {*} checkboxOptionObjects
- * @returns
- */
-function makeInputList(inputNameObjects, checkboxOptionObjects = {}) {
-  return (
-    <React.Fragment>
-      {inputNameObjects.map((obj, index) => (
-        <React.Fragment key={index}>
-          {obj?.header ? <h1 className="col-span-full font-bold text-2xl">{obj.header}</h1> : null}
-          {obj?.inputType === "checkbox" ? (
-            Object.keys(checkboxOptionObjects).length === 0 || !(obj?.class && checkboxOptionObjects[obj.class].length !== 0) ? (
-              <GridInputSelectBox key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} />
-            ) : (
-              <GridInputSelectBox key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} options={checkboxOptionObjects[obj.class]} />
-            )
-          ) : obj?.inputType === "text" ? (
-            <div key={index} className={`relative col-span-${obj.colSpan || 12}`}>
-              <label htmlFor="usertab_second_word" className="block text-sm font-medium text-gray-700 ">
-                {obj.label}
-              </label>
-              <p className="bg-gray-400 border-b mt-1 block w-full focus:outline-none rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">{obj.text}</p>
-            </div>
-          ) : (
-            <GridInputText key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} css="border-b" />
-          )}
-        </React.Fragment>
-      ))}
-    </React.Fragment>
   );
 }
 

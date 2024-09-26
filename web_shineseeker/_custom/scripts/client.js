@@ -21,7 +21,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
 
     inputs.forEach((inputNode) => {
       if (inputNode.type === "file" && inputNode?.files) {
-        devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files);
+        // devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files);
         Array.from(inputNode.files).forEach((file) => {
           if (useFileId) formData.append(inputNode.id, file);
           else formData.append("file", file);
@@ -34,7 +34,6 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
     if (Object.keys(addObjectData).length > 0) {
       for (const key in addObjectData) formData.append(key, addObjectData[key]);
     }
-
     fetch("/api/" + url, {
       method: "POST",
       body: formData,

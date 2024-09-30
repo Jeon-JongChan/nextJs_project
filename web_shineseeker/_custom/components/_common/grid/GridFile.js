@@ -22,37 +22,48 @@ export default function Component(props) {
   let smallLabel = props?.smallLabel || "";
   let inputId = props?.id || "input-text";
   let colSpan = props?.colSpan || 6;
-  // let colSmSpenValue = props?.colSmSpan || 4;
-  let autoComplete = autoCompleteType.find((e) => e === props?.autoComplete) || "on";
   let dirmode = props?.dirmode || "col";
   let rowWidth = props?.rowWidth || "w-2/5";
-  let defaultValue = props?.default || null;
   let dataName = props?.dataName || null;
-  let type = props?.type || "text";
-  let readonly = props?.readonly || false;
-  let readonlyClass = readonly ? "bg-gray-200" : "";
+  let buttonWidth = props?.buttonWidth || "w-1/2";
   let css = props?.css || "";
 
   return (
     <>
       {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
-      {/* sm:col-span-${colSmSpenValue} 일단 제외 */}
-      <div className={["relative", colSpanClass[colSpan], dirmode === "row" ? "flex" : ""].join(" ")}>
+      {/*prettier-ignore*/}
+      <div className={["relative", colSpanClass[colSpan], dirmode === "row" ? "flex" : "", css].join(" ")}>
         {!nolabel || label ? (
           <label htmlFor={inputId} className={["block text-sm font-medium text-gray-700", dirmode === "row" ? `${rowWidth}` : ""].join(" ")}>
             {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
           </label>
         ) : null}
-        <input
-          type={type}
-          name={inputId}
-          id={inputId}
-          autoComplete={autoComplete}
-          data-name={dataName}
-          readOnly={readonly}
-          className={[css, "mt-1 block w-full focus:outline-none rounded-md", "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500", readonlyClass].join(" ")}
-          defaultValue={defaultValue || ""}
-        />
+        <div className="relative w-full h-[36px] flex items-end justify-start p-0 m-0">
+          <button className={"text-white rounded-md cursor-pointer bg-green-400 px-[2px] p-1 text-sm h-[34px] "+buttonWidth} onClick={() => document.querySelector(`#${inputId}`).click()}>
+            파일 선택
+          </button>
+          <div className="relative overflow-hidden w-full min-w-32 h-full flex items-center justify-start pl-2">
+            <span className="absolute text-nowrap " id={`${inputId}_span`}>선택된 파일 없음</span>
+          </div>
+          <input
+            id={`${inputId}`} name={inputId} type="file" style={{display: "none"}} data-name={dataName}
+            onChange={(e) => {
+              const fileName = e.target.files.length > 0 ? e.target.files[0].name : "선택된 파일 없음";
+              const fileNameSpan = document.querySelector(`${inputId}_span`);
+              fileNameSpan.textContent = fileName;
+
+              const textWidth = fileNameSpan.scrollWidth;
+              if (textWidth > 150) fileNameSpan.style.animation = `scrollText ${textWidth / 50}s linear infinite`;
+              else fileNameSpan.style.animation = "";
+            }}
+          />
+        </div>
+        <style jsx>{`
+          @keyframes scrollText {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%);}
+          }
+        `}</style>
       </div>
     </>
   );
@@ -74,25 +85,3 @@ const colSpanClass = {
   11: "col-span-11",
   12: "col-span-12",
 };
-const autoCompleteType = [
-  "on",
-  "off",
-  "name",
-  "honorific-prefix",
-  "family-name",
-  "given-name",
-  "additional-name",
-  "honorific-suffix",
-  "nickname",
-  "email",
-  "username",
-  "new-password",
-  "current-password",
-  "street-address",
-  "country",
-  "country-name",
-  "sex",
-  "url",
-  "photo",
-];
-Object.freeze(autoCompleteType);

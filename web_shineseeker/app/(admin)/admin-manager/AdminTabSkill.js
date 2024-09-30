@@ -5,8 +5,7 @@ import {devLog} from "@/_custom/scripts/common";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
-import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextArea";
-import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
+import MakeInputList from "./MakeInputList";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 
@@ -140,7 +139,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          {makeInputList(userinputNames, Object.keys(skillList).length ? skillList : skillDefaultList)}
+          <MakeInputList inputNameObjects={inputNames} checkboxOptionObjects={ Object.keys(skillList).length ? skillList : skillDefaultList} />
           <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
           <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
           <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />
@@ -152,35 +151,7 @@ export default function Home() {
     </div>
   );
 }
-function makeInputList(inputNameObjects, checkboxOptionObjects = {}) {
-  return (
-    <React.Fragment>
-      {inputNameObjects.map((obj, index) => (
-        <React.Fragment key={index}>
-          {obj?.header ? <h1 className="col-span-full font-bold text-2xl">{obj.header}</h1> : null}
-          {obj?.inputType === "checkbox" ? (
-            obj?.checkOptions?.length || !(obj?.class && checkboxOptionObjects?.[obj.class]?.length) ? (
-              <GridInputSelectBox key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} options={obj?.checkOptions || []} />
-            ) : (
-              <GridInputSelectBox key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} options={checkboxOptionObjects[obj.class]} />
-            )
-          ) : obj?.inputType === "textarea" ? (
-            <GridInputTextArea key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} css={"border-b" + (obj?.css || "")} />
-          ) : obj?.inputType === "text" ? (
-            <div key={index} className={`relative col-span-${obj.colSpan || 12}`}>
-              <label htmlFor="usertab_second_word" className="block text-sm font-medium text-gray-700 ">
-                {obj.label}
-              </label>
-              <p className="bg-gray-400 border-b mt-1 block w-full focus:outline-none rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">{obj.text}</p>
-            </div>
-          ) : (
-            <GridInputText key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} css={"border-b" + (obj?.css || "")} />
-          )}
-        </React.Fragment>
-      ))}
-    </React.Fragment>
-  );
-}
+
 const skillDefaultList = {
   skill_type: ["공격", "방어", "회복", "정지", "조정"],
   skill_range: ["자신", "아군", "적", "전체"],
@@ -188,7 +159,7 @@ const skillDefaultList = {
   skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
 };
 // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)
-const userinputNames = [
+const inputNames = [
   {label: "이펙트 이미지 On / Off", id: "skill_effect_usage", inputType: "checkbox", class: "skill", colSpan: 3, checkOptions: ["", "ON", "OFF"]},
   {header: "일반 설정", label: "스킬이름", id: "skill_name", colSpan: 6},
   {label: "설명", id: "skill_desc", inputType: "textarea", colSpan: 12},
@@ -198,6 +169,6 @@ const userinputNames = [
   {label: "적용비율(%)", id: "skill_rate", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
   {label: "스킬소비항목", id: "skill_cost_stat", inputType: "checkbox", class: "skill_stat", colSpan: 2},
   {label: "소비계수", id: "skill_cost", type: "number", css: " h-[36px]", colSpan: 2},
-  {label: "조정 능력치 (조정시에만 사용됨)", id: "skill_control_cost", inputType: "checkbox", class: "skill_stat", colSpan: 3},
+  {label: "조정 능력치 (조정시 사용됨)", id: "skill_control_cost", inputType: "checkbox", class: "skill_stat", colSpan: 3},
   {label: "조정 능력 계수", id: "skill_control_rate", class: "skill", css: " h-[36px]", colSpan: 2},
 ];

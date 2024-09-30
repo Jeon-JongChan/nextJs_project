@@ -9,7 +9,8 @@
  * @returns
  */
 export default function Component(props) {
-  let label = props?.label || "Label";
+  let label = props?.label || null;
+  let nolabel = props?.nolabel || false;
   let id = props?.id || "grid-input-select-box";
   let name = props?.name || "grid-input-select-box";
   let onchange = props?.onchange || null;
@@ -20,9 +21,11 @@ export default function Component(props) {
     <>
       {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
       <div className={["", colSpanClass[colSpan]].join(" ")}>
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
+        {!nolabel || label ? (
+          <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        ) : null}
         <select
           id={id}
           name={name}

@@ -7,7 +7,7 @@ const Tooltip = ({children, content, css = "", style = {}}) => {
   return (
     <div className={"tooltip-container " + css} style={style} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
       {children}
-      {isVisible && <div className="tooltip">{content}</div>}
+      {isVisible && content && <div className="tooltip">{content}</div>}
       <style jsx>{`
         .tooltip-container {
           position: relative;

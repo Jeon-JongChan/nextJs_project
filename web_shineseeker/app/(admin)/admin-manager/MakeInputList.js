@@ -8,6 +8,7 @@ export default function makeInputList({inputNameObjects, checkboxOptionObjects =
     <React.Fragment>
       {inputNameObjects.map((obj, index) => (
         <React.Fragment key={index}>
+          {obj?.delimiter ? <div className="col-span-full" /> : null}
           {obj?.header ? <h1 className="col-span-full font-bold text-2xl">{obj.header}</h1> : null}
           {obj?.inputType === "checkbox" ? (
             obj?.checkOptions?.length || !(obj?.class && checkboxOptionObjects?.[obj.class]?.length) ? (
@@ -25,7 +26,7 @@ export default function makeInputList({inputNameObjects, checkboxOptionObjects =
               <p className="bg-gray-400 border-b mt-1 block w-full focus:outline-none rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">{obj.text}</p>
             </div>
           ) : (
-            <GridInputText key={index} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} css={"border-b" + (obj?.css || "")} />
+            <GridInputText key={index} nolabel={obj?.nolabel} label={obj.label} id={obj.id} type={obj.type || "text"} colSpan={obj?.colSpan || 12} css={"border-b" + (obj?.css || "")} />
           )}
         </React.Fragment>
       ))}

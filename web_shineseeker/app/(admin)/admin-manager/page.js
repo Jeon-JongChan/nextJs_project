@@ -2,10 +2,14 @@
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import {useState, useEffect} from "react";
 import AdminTabUser from "./AdminTabUser";
+import AdminTabJob from "./AdminTabJob";
+import AdminTabMonster from "./AdminTabMonster";
 import AdminTabSkill from "./AdminTabSkill";
+import AdminTabItem from "./AdminTabItem";
+import AdminTabPatrol from "./AdminTabPatrol";
 
 export default function Home() {
-  const tabList = ["유저관리", "직업", "몬스터", "스펠", "아이템", "레이드", "패트롤"];
+  const tabList = ["유저관리", "직업", "몬스터", "스펠", "아이템", "패트롤", "레이드"];
   const [activeTab, setActiveTab] = useState(tabList[0]);
 
   useEffect(() => {
@@ -31,7 +35,11 @@ export default function Home() {
         })}
       </div>
       {activeTab === tabList[0] && <AdminTabUser />}
-      {activeTab === tabList[3] && <AdminTabSkill apitype={"skill"} />}
+      {activeTab === tabList[1] && <AdminTabJob />}
+      {activeTab === tabList[2] && <AdminTabMonster />}
+      {activeTab === tabList[3] && <AdminTabSkill />}
+      {activeTab === tabList[4] && <AdminTabItem />}
+      {activeTab === tabList[5] && <AdminTabPatrol />}
     </div>
   );
 }

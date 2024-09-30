@@ -16,6 +16,23 @@ export async function GET(req) {
           let items = await getDataKey("items", "userid", data[i].userid, true);
           data[i].items = items.map((item) => item.item);
         }
+      } else if (apitype === "job") {
+        // job의 경우 해당하는 skill값을 배열로 추가해줘야함
+        let skills = await getData("job_skill", 0);
+        for (let i = 0; i < data.length; i++) {
+          data[i].job_skill = skills.filter((skill) => skill.job_name === data[i].job_name).map((skill) => skill.skill);
+        }
+      } else if (apitype === "monster") {
+        // monster의 경우 해당하는 monster_event값을 배열로 추가해줘야함
+        for (let i = 0; i < data.length; i++) {
+          let monster_events = await getDataKey("monster_event", "monster_name", data[i].monster_name, true);
+          monster_events.forEach((event) => {
+            for (let key in event) {
+              if (key === "monster_event_idx" || key === "monster_name") continue;
+              else data[i][`${key}_${event.monster_event_idx}`] = event[key];
+            }
+          });
+        }
       }
       return NextResponse.json({message: "successfully api", data: data});
     }

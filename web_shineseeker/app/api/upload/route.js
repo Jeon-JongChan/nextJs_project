@@ -6,21 +6,19 @@ const imageDir = "/temp/uploads";
 // upload에 대한 post 요청을 처리하는 함수
 export async function POST(req) {
   try {
-    let filePaths = [];
+    let returnData = null;
     const data = await req.formData();
     const apitype = data.get("apitype");
     devLog(data.get("apitype"), data);
-    if (apitype === "update_user") {
-      filePaths = await updateUser(data);
-      return NextResponse.json({message: "upload User And Images uploaded successfully", filePaths});
-    } else if (apitype === "update_skill") {
-      filePaths = await updateSkill(data);
-      return NextResponse.json({message: "upload Skill And Images uploaded successfully", filePaths});
-    }
+    if (apitype === "update_user") returnData = await updateUser(data);
+    else if (apitype === "update_skill") returnData = await updateSkill(data);
+    else if (apitype === "update_job") returnData = await updateJob(data);
+    else if (apitype === "update_monster") returnData = await updatMonster(data);
+    else if (apitype === "update_item") returnData = await updateItem(data);
+    return NextResponse.json({message: "upload Skill And Images uploaded successfully", returnData: returnData});
   } catch (error) {
-    return NextResponse.json({error: error.message}, {status: 500});
+    return NextResponse.json({message: "upload fail", error: error.message}, {status: 500});
   }
-  return NextResponse.json({message: "Files uploaded successfully"});
 }
 
 async function saveImage(file) {
@@ -36,6 +34,70 @@ async function saveImage(file) {
   await saveData("images", imageData);
   return imageData;
 }
+
+async function updateItem(data) {
+  const essentialDataList = ["item_name"];
+  const exceptList = ["file", "apitype"];
+  let item = {}, images = {}, items_option = {}; // prettier-ignore
+
+  if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
+
+  devLog("update Item all data", data);
+  // 이미지를 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptList.includes(key)) {
+      if (key.startsWith("item_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("item_option")) items_option[key] = value; // 스킬 상세정보 저장
+      else item[key] = value; // 스킬 정보 저장
+    }
+  }
+  // 기존 item 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
+  const existingItem = await getDataKey("item", "item_name", item["item_name"]); // item_name을 기준으로 데이터 조회
+
+  // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
+  ["item_img_0"].forEach((imgKey) => {
+    if (!data.has(imgKey) && existingItem && existingItem[imgKey]) {
+      item[imgKey] = existingItem[imgKey]; // 기존 이미지 경로 유지
+    } else item[imgKey] = images[imgKey]?.path || null;
+  });
+
+  await truncateData("item_option"); // 한줄이므로 걍 삭세하고 넣어버려
+  saveData("item_option", items_option); // 스킬 상세정보 저장
+  await saveData("item", item);
+
+  return item;
+}
+// --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
+async function updateUser(data) {
+  const essentialDataList = ["userid", "userpw", "username1"];
+  const exceptUserList = ["file", "apitype"];
+  let user = {},images = {}, items = []; // prettier-ignore
+
+  if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
+
+  // 이미지와 아이템을 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptUserList.includes(key)) {
+      if (key.startsWith("user_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("user_item")) items.push(value); // 아이템 저장
+      else user[key] = value; // 유저 정보 저장
+    }
+  }
+  // 기존 skill 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
+  const existingData = await getDataKey("user", "userid", user["userid"]); // skill_name을 기준으로 데이터 조회
+  // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
+  ["user_img_0", "user_img_1", "user_img_2", "user_img_3"].forEach((imgKey) => {
+    if (!data.has(imgKey) && existingData && existingData[imgKey]) {
+      user[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
+    } else user[imgKey] = images[imgKey]?.path || null;
+  });
+  await deleteData("user_item", "userid", user.userid); // 기존 아이템 정보 삭제
+  items.forEach((item, idx) => saveData("user_item", {userid: user.userid, item: item})); // 아이템 정보를 user 객체에 추가
+  await saveData("user", user);
+
+  return user;
+}
+
 async function updateSkill(data) {
   const essentialDataList = ["skill_name"];
   const exceptList = ["file", "apitype"];
@@ -68,33 +130,71 @@ async function updateSkill(data) {
 
   return skill;
 }
-// --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
-async function updateUser(data) {
-  const essentialDataList = ["userid", "userpw", "username1"];
+async function updateJob(data) {
+  const essentialDataList = ["job_name"];
   const exceptUserList = ["file", "apitype"];
-  let user = {},images = {}, items = []; // prettier-ignore
+  let job = {},images = {}, skill = []; // prettier-ignore
 
   if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
 
   // 이미지와 아이템을 제외한 데이터만 추출
   for (const [key, value] of data.entries()) {
     if (!exceptUserList.includes(key)) {
-      if (key.startsWith("user_img")) images[key] = await saveImage(value); // 이미지 저장
-      else if (key.startsWith("user_item")) items.push(value); // 아이템 저장
-      else user[key] = value; // 유저 정보 저장
+      if (key.startsWith("job_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("job_skill")) skill.push(value); // 스킬 저장
+      else job[key] = value; // 직업 정보 저장
     }
   }
   // 기존 skill 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
-  const existingUser = await getDataKey("user", "userid", user["userid"]); // skill_name을 기준으로 데이터 조회
+  const existingData = await getDataKey("job", "job_name", job["job_name"]); // job_name 기준으로 데이터 조회
   // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
-  ["user_img_0", "user_img_1", "user_img_2", "user_img_3"].forEach((imgKey) => {
-    if (!data.has(imgKey) && existingUser && existingUser[imgKey]) {
-      user[imgKey] = existingUser[imgKey]; // 기존 이미지 경로 유지
-    } else user[imgKey] = images[imgKey]?.path || null;
+  ["job_img_0"].forEach((imgKey) => {
+    if (!data.has(imgKey) && existingData && existingData[imgKey]) {
+      job[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
+    } else job[imgKey] = images[imgKey]?.path || null;
   });
-  await deleteData("items", "userid", user.userid); // 기존 아이템 정보 삭제
-  items.forEach((item, idx) => saveData("items", {userid: user.userid, item: item})); // 아이템 정보를 user 객체에 추가
-  await saveData("user", user);
+  // await deleteData("job_skill", "job_name", job.job_name); // 기존 스킬정보를 삭제하지 않고 중복일 경우 추가 안되게 primary key로 묶음
+  skill.forEach((skill, idx) => saveData("job_skill", {job_name: job.job_name, skill: skill})); // 스킬 정보를 job_skill 객체에 추가
+  await saveData("job", job);
 
-  return user;
+  return job;
+}
+async function updatMonster(data) {
+  const essentialDataList = ["monster_name"];
+  const exceptUserList = ["file", "apitype"];
+  let monster = {},images = {}, items = [], monster_event=[{},{},{},{},{}], skills_detail = {}; // prettier-ignore
+
+  if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
+
+  // 이미지와 아이템을 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptUserList.includes(key)) {
+      if (key.startsWith("monster_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("skill_detail")) skills_detail[key] = value; // 스킬 상세정보 저장
+      else if (key.startsWith("monster_event")) {
+        let index = parseInt(key.split("_").pop());
+        monster_event[index][key.replace(`_${index}`, "")] = value;
+      } else monster[key] = value; // 유저 정보 저장
+    }
+  }
+
+  // 기존 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
+  const existingData = await getDataKey("monster", "monster_name", monster["monster_name"]); // skill_name을 기준으로 데이터 조회
+  // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
+  ["monster_img_0"].forEach((imgKey) => {
+    if (!data.has(imgKey) && existingData && existingData[imgKey]) {
+      monster[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
+    } else monster[imgKey] = images[imgKey]?.path || null;
+  });
+  // await deleteData("monster_event", "monster_name", monster.monster_name); // 기존 정보 삭제
+  monster_event.forEach((monster_skill, idx) => {
+    monster_skill["monster_name"] = monster["monster_name"];
+    monster_skill["monster_event_idx"] = idx;
+    saveData("monster_event", monster_skill);
+  });
+  await truncateData("skill_detail"); // 한줄이므로 걍 삭세하고 넣어버려
+  saveData("skill_detail", skills_detail); // 스킬 상세정보 저장
+  await saveData("monster", monster);
+
+  return monster;
 }

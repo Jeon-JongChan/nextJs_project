@@ -129,6 +129,7 @@ class DBManager {
   // 삭제 함수
   deleteByKey(table, key, keyValue) {
     try {
+      if (!this.tableExists(table)) return false; // 테이블이 없는 경우
       const stmt = this.db.prepare(`DELETE FROM ${table} WHERE ${key} = ?`);
       const result = stmt.run(keyValue);
       this.updateTableTime(table); // 테이블 갱신 시간 업데이트
@@ -142,11 +143,12 @@ class DBManager {
   // 삭제 함수
   truncate(table) {
     try {
-      const stmt = this.db.exec(`DELETE FROM ${table}`);
+      if (!this.tableExists(table)) return false; // 테이블이 없는 경우
+      this.db.exec(`DELETE FROM ${table}`);
       this.updateTableTime(table); // 테이블 갱신 시간 업데이트
       return true; // 삭제 성공
     } catch (error) {
-      console.error("** Sql-adapter.js(truncate) Delete failed:", error);
+      console.error("** Sql-adapter.js(truncate) truncate failed:", error);
       return false; // 실패 시 false 반환
     }
   }

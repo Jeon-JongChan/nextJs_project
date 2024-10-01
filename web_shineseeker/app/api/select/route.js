@@ -6,8 +6,9 @@ export async function GET(req) {
   const {searchParams} = new URL(req.url);
   const apitype = searchParams.get("apitype");
   const getcount = searchParams.get("getcount");
+
   try {
-    const data = await getData(apitype, getcount == 1 ? 0 : 60);
+    let data = await getData(apitype, getcount == 1 ? 0 : 60);
     devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
@@ -44,6 +45,10 @@ export async function GET(req) {
             }
           });
         }
+      } else if (apitype === "page") {
+        // page의 경우 각 탭별로 데이터를 보내줌
+        const pagename = searchParams.get("pagename");
+        data = data.filter((page) => page.page_name === pagename);
       }
       return NextResponse.json({message: "successfully api", data: data});
     }

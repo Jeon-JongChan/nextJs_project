@@ -80,8 +80,9 @@ export default function Home() {
     }
   };
 
-  const addOption = () => {
-    setInputOptionList([...inputOptionList, inputOptionList.length]);
+  const manageOption = (status = 1) => {
+    if (status > 0) setInputOptionList([...inputOptionList, ...Array(status).map((_, index) => inputOptionList.length + index)]);
+    else setInputOptionList(inputOptionList.slice(0, inputOptionList.length - 1));
   };
 
   async function fetchEssentialData() {
@@ -156,11 +157,12 @@ export default function Home() {
           <GridInputTextArea label={"설명"} id={"patrol_desc"} type={"text"} colSpan={12} css={"border-b"} />
 
           <h1 className="mt-8 col-span-full font-bold text-2xl">패트롤 상세설정</h1>
-          {inputOptionList.map((index) => {
+          {inputOptionList.map((_, index) => {
             return <GridInputText key={index} nolabel={true} default={`선택지 ${index + 1} 글`} id={`patrol_select_${index}`} type={"text"} colSpan={12} css="border-b h-[36px]" />;
           })}
-          <div className="col-span-8" />
-          <GridInputButton colSpan={4} label={"선택지 추가 생성"} type="button" onclick={addOption} />
+          <div className="col-span-4" />
+          <GridInputButton colSpan={4} label={"선택지 추가 삭제"} type="button" buttonColor="red" onclick={() => manageOption(0)} />
+          <GridInputButton colSpan={4} label={"선택지 추가 생성"} type="button" onclick={() => manageOption()} />
 
           <h1 className="mt-8 col-span-full font-normal text-xl">보상받을 조건</h1>
           {["ATK", "DEF", "WIS", "AGI", "LUK"].map((item, index) => {
@@ -169,7 +171,7 @@ export default function Home() {
           <div className="col-span-full" />
 
           <h1 className="mt-8 col-span-full font-normal text-2xl">패트롤 결과 재화</h1>
-          {inputOptionList.map((index) => {
+          {inputOptionList.map((_, index) => {
             let option = index === 0 ? {type: "종류", money: "재화", count: "개수", img: "출력이미지", msg: "메세지"} : {};
             return <React.Fragment key={index}>{makeRetOptionGenerator(index, option)}</React.Fragment>;
           })}

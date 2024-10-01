@@ -139,6 +139,32 @@ class DBManager {
       return false; // 실패 시 false 반환
     }
   }
+  // 삭제 함수 (여러 키 지원)
+  deleteByKeys(table, keys = {}) {
+    try {
+      if (!this.tableExists(table)) return false; // 테이블이 없는 경우
+
+      // keys 객체에서 키-값 쌍을 추출하여 WHERE 절을 동적으로 생성
+      const keyColumns = Object.keys(keys);
+      if (keyColumns.length === 0) throw new Error("No keys provided for deletion");
+
+      // WHERE 절 생성: 'key1 = ? AND key2 = ? ...'
+      const whereClause = keyColumns.map((key) => `${key} = ?`).join(" AND ");
+
+      // 해당 키-값 쌍에 대응하는 값을 추출하여 prepared statement에 넣을 배열 생성
+      const values = Object.values(keys);
+
+      // DELETE 쿼리 실행
+      const stmt = this.db.prepare(`DELETE FROM ${table} WHERE ${whereClause}`);
+      const result = stmt.run(...values);
+
+      this.updateTableTime(table); // 테이블 갱신 시간 업데이트
+      return result.changes === 0 ? null : result.changes; // 0이면 삭제 실패
+    } catch (error) {
+      console.error("** Sql-adapter.js(deleteByKeys) Delete failed:", error);
+      return false; // 실패 시 false 반환
+    }
+  }
 
   // 삭제 함수
   truncate(table) {
@@ -172,6 +198,41 @@ class DBManager {
       return false; // 실패 시 false 반환
     }
   }
+  // 데이터 삽입 (한 번의 쿼리로 여러 데이터 삽입)
+  multiInsert(table, dataArray, isReplace = true) {
+    try {
+      if (!Array.isArray(dataArray)) throw new Error("Input data must be an array of objects");
+      if (dataArray.length === 0) throw new Error("Input array is empty");
+
+      const columns = Object.keys(dataArray[0]).join(", ") + ", updated"; // 컬럼 목록에 updated 필드 추가
+
+      const placeholdersArray = dataArray
+        .map(() => {
+          const placeholders = Object.keys(dataArray[0])
+            .map(() => "?")
+            .join(", "); // 객체의 키마다 ? 표시
+          return `(${placeholders}, ?)`; // 각 객체마다 updated 값도 추가
+        })
+        .join(", ");
+
+      const stmt = this.db.prepare(`INSERT ${isReplace ? "OR REPLACE" : ""} INTO ${table} (${columns}) VALUES ${placeholdersArray}`);
+
+      // 모든 데이터 값을 모아 하나의 배열로 합침
+      const values = dataArray.reduce((acc, data) => {
+        const rowValues = [...Object.values(data), Date.now()]; // 각 객체의 값과 updated 값 추가
+        return acc.concat(rowValues);
+      }, []);
+
+      const result = stmt.run(values);
+      this.updateTableTime(table); // 테이블 갱신 시간 업데이트
+
+      return result.changes === 0 ? null : result.changes; // 0이면 삽입 실패
+    } catch (error) {
+      console.error("** Sql-adapter.js(insert) Insert failed:", error);
+      return false; // 실패 시 false 반환
+    }
+  }
+
   // 검색 함수 (단일 행 조회)
   searchByKey(table, key, keyValue) {
     try {

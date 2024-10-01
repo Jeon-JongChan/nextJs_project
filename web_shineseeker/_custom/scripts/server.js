@@ -5,7 +5,7 @@ import Sqlite from "./sqlite3-adapter.js";
 import SqliteQuery from "./sqlite3-query.js";
 import {devLog} from "./common.js";
 
-export {saveFiles, saveData, deleteData, truncateData, getData, getDataKey};
+export {saveFiles, saveImage, saveData, deleteData, truncateData, getData, getDataKey};
 
 const sqlite = new Sqlite(); // 기본 dbPath 사용, verbose 출력 활성화
 
@@ -43,6 +43,20 @@ async function saveFiles(files, uploadDir = undefined) {
   }
 }
 
+async function saveImage(file, imageDir = "/temp/uploads") {
+  if (file.type.split("/")[0] !== "image") throw new Error(`${file.name} file is not an image`);
+  const imagePath = await saveFiles([file]);
+  const imageData = {
+    name: imagePath[0],
+    basename: file.name,
+    size: file.size,
+    lastModified: file.lastModified,
+    path: `${imageDir}/${imagePath[0]}`,
+  };
+  await saveData("images", imageData);
+  return imageData;
+}
+
 // 중복 파일 체크 함수
 function checkDuplicateImageFile(name, size) {
   if (!sqlite.tableExists("images")) sqlite.db.exec(SqliteQuery.create.images);
@@ -51,16 +65,26 @@ function checkDuplicateImageFile(name, size) {
   return result?.count > 0 ? result.name : null;
 }
 
-async function saveData(table, data) {
+async function saveData(table, data, isObjectArray = false) {
   // jsondb.updateObject(key, data);
-  if (!sqlite.tableExists(table)) SqliteQuery?.create?.[table] ? sqlite.db.exec(SqliteQuery.create?.[table]) : sqlite.createTableFromObject(table, data, true);
-  sqlite.insert(table, data);
+  if (!sqlite.tableExists(table)) {
+    const isQuery = SqliteQuery?.create?.[table];
+    if (isQuery) sqlite.db.exec(isQuery);
+    else if (!isQuery && !isObjectArray) sqlite.createTableFromObject(table, data, true);
+    else {
+      sqlite.createTableFromObject(table, data, true);
+      if (Array.isArray(data)) sqlite.createTableFromObject(table, data[0], true);
+    }
+  }
+  if (!isObjectArray) sqlite.insert(table, data);
+  else sqlite.multiInsert(table, data);
 }
 
 async function deleteData(table, key, keyValue) {
   // jsondb.deleteObject(key);
   sqlite.deleteByKey(table, key, keyValue);
 }
+
 async function truncateData(table) {
   // jsondb.deleteObject(key);
   sqlite.truncate(table);

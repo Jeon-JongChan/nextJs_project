@@ -13,8 +13,8 @@ export async function GET(req) {
       if (apitype === "user") {
         // user의 경우 item 값을 추가해줘야 함
         for (let i = 0; i < data.length; i++) {
-          let items = await getDataKey("items", "userid", data[i].userid, true);
-          data[i].items = items.map((item) => item.item);
+          let items = await getDataKey("user_item", "userid", data[i].userid, true);
+          if (items?.length) data[i].items = items.map((item) => item.item);
         }
       } else if (apitype === "job") {
         // job의 경우 해당하는 skill값을 배열로 추가해줘야함
@@ -30,6 +30,17 @@ export async function GET(req) {
             for (let key in event) {
               if (key === "monster_event_idx" || key === "monster_name") continue;
               else data[i][`${key}_${event.monster_event_idx}`] = event[key];
+            }
+          });
+        }
+      } else if (apitype === "patrol") {
+        // patrol의 경우 해당하는 선택지와 결과값을 배열로 추가해줘야함
+        for (let i = 0; i < data.length; i++) {
+          let patrol_result = await getDataKey("patrol_result", "patrol_name", data[i].patrol_name, true);
+          patrol_result.forEach((result) => {
+            for (let key in result) {
+              if (key === "patrol_ret_idx" || key === "patrol_name") continue;
+              else data[i][`${key}_${result.patrol_ret_idx}`] = result[key];
             }
           });
         }

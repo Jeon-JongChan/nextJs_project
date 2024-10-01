@@ -57,7 +57,7 @@ export default function Home() {
         select.value = data[select.id];
       });
       // 4. 아이템 채우기
-      setItemList([...data.items]);
+      setItemList(data?.items ? [...data.items] : []);
     }
   };
 

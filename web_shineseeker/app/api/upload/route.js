@@ -15,6 +15,7 @@ export async function POST(req) {
     else if (apitype === "update_job") returnData = await updateJob(data);
     else if (apitype === "update_monster") returnData = await updatMonster(data);
     else if (apitype === "update_item") returnData = await updateItem(data);
+    else if (apitype === "update_patrol") returnData = await updatePatrol(data);
     return NextResponse.json({message: "upload Skill And Images uploaded successfully", returnData: returnData});
   } catch (error) {
     return NextResponse.json({message: "upload fail", error: error.message}, {status: 500});
@@ -35,10 +36,10 @@ async function saveImage(file) {
   return imageData;
 }
 
-async function updateItem(data) {
-  const essentialDataList = ["item_name"];
+async function updatePatrol(data) {
+  const essentialDataList = ["patrol_name", "patrol_type"];
   const exceptList = ["file", "apitype"];
-  let item = {}, images = {}, items_option = {}; // prettier-ignore
+  let patrol = {}, images = {}, patrol_ret = {}; // prettier-ignore
 
   if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
 
@@ -46,26 +47,41 @@ async function updateItem(data) {
   // 이미지를 제외한 데이터만 추출
   for (const [key, value] of data.entries()) {
     if (!exceptList.includes(key)) {
-      if (key.startsWith("item_img")) images[key] = await saveImage(value); // 이미지 저장
-      else if (key.startsWith("item_option")) items_option[key] = value; // 스킬 상세정보 저장
-      else item[key] = value; // 스킬 정보 저장
+      if (key.startsWith("patrol_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("patrol_ret")) {
+        let index = parseInt(key.split("_").pop());
+        if (!patrol_ret?.[index]) patrol_ret[index] = {patrol_ret_idx: index};
+        if (key.startsWith("patrol_ret_img")) images[key] = await saveImage(value); // 이미지 저장
+        else {
+          patrol_ret[index][key.replace(`_${index}`, "")] = value; // 패트롤 상세정보 저장
+          patrol_ret[index]["patrol_select"] = data.get(`patrol_select_${index}`); // 패트롤 선택 정보 저장
+        }
+      } else if (!key.startsWith("patrol_select")) patrol[key] = value; // 패트롤 정보 저장
     }
   }
-  // 기존 item 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
-  const existingItem = await getDataKey("item", "item_name", item["item_name"]); // item_name을 기준으로 데이터 조회
-
+  // 기존 patrol 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
+  const get_patrol = await getDataKey("patrol", "patrol_name", patrol["patrol_name"]); // patrol_name을 기준으로 데이터 조회
+  const get_patrol_ret = await getDataKey("patrol_result", "patrol_name", patrol["patrol_name"], true); // patrol_name을 기준으로 데이터 조회
   // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
-  ["item_img_0"].forEach((imgKey) => {
-    if (!data.has(imgKey) && existingItem && existingItem[imgKey]) {
-      item[imgKey] = existingItem[imgKey]; // 기존 이미지 경로 유지
-    } else item[imgKey] = images[imgKey]?.path || null;
+  ["patrol_img", "patrol_img_fail"].forEach((imgKey) => {
+    if (!data.has(imgKey)) patrol[imgKey] = get_patrol?.[imgKey];
+    else patrol[imgKey] = images[imgKey]?.path || null;
   });
+  if (get_patrol_ret) {
+    for (const ret of get_patrol_ret) {
+      if (patrol_ret?.[ret.patrol_ret_idx]) {
+        if (!data.has(`patrol_ret_img_${ret.patrol_ret_idx}`)) patrol_ret[ret.patrol_ret_idx].patrol_ret_img = ret["patrol_ret_img"];
+        else patrol_ret[ret.patrol_ret_idx].patrol_ret_img = images[`patrol_ret_img_${ret.patrol_ret_idx}`]?.path || null;
+      }
+    }
+  }
 
-  await truncateData("item_option"); // 한줄이므로 걍 삭세하고 넣어버려
-  saveData("item_option", items_option); // 스킬 상세정보 저장
-  await saveData("item", item);
+  for (const value of Object.values(patrol_ret)) {
+    await saveData("patrol_result", {patrol_name: patrol.patrol_name, ...value}); // 패트롤 결과값 저장
+  }
+  await saveData("patrol", patrol);
 
-  return item;
+  return patrol;
 }
 // --------------- 아래는 upload 요청 중 api type에 따른 함수리스트
 async function updateUser(data) {
@@ -197,4 +213,37 @@ async function updatMonster(data) {
   await saveData("monster", monster);
 
   return monster;
+}
+
+async function updateItem(data) {
+  const essentialDataList = ["item_name"];
+  const exceptList = ["file", "apitype"];
+  let item = {}, images = {}, items_option = {}; // prettier-ignore
+
+  if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
+
+  devLog("update Item all data", data);
+  // 이미지를 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptList.includes(key)) {
+      if (key.startsWith("item_img")) images[key] = await saveImage(value); // 이미지 저장
+      else if (key.startsWith("item_option")) items_option[key] = value; // 스킬 상세정보 저장
+      else item[key] = value; // 스킬 정보 저장
+    }
+  }
+  // 기존 item 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
+  const existingItem = await getDataKey("item", "item_name", item["item_name"]); // item_name을 기준으로 데이터 조회
+
+  // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
+  ["item_img_0"].forEach((imgKey) => {
+    if (!data.has(imgKey) && existingItem && existingItem[imgKey]) {
+      item[imgKey] = existingItem[imgKey]; // 기존 이미지 경로 유지
+    } else item[imgKey] = images[imgKey]?.path || null;
+  });
+
+  await truncateData("item_option"); // 한줄이므로 걍 삭세하고 넣어버려
+  saveData("item_option", items_option); // 스킬 상세정보 저장
+  await saveData("item", item);
+
+  return item;
 }

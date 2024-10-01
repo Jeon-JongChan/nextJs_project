@@ -11,11 +11,11 @@ import GridFile from "/_custom/components/_common/grid/GridFile";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 
-const menuName = "item";
+const menuName = "patrol";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState(null);
-  const [itemOptionList, setItemOptionList] = useState({});
+  const [patrolOptionList, setPatrolOptionList] = useState({});
   let fetchIndex = 0;
   /* 입력 Input 조절에 쓰일 state */
   const [inputOptionList, setInputOptionList] = useState([0, 1, 2]);
@@ -44,14 +44,14 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
-    devLog("clickListItem", itemOptionList, maindata);
+    devLog("clickListItem", patrolOptionList, maindata);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
       devLog("clickUser", name, data, clickImage);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_detail_`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img`) || input.id.startsWith(`${menuName}_ret_img`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
@@ -59,16 +59,23 @@ export default function Home() {
         }
       });
       // 2. 이미지 채우기
-      setClickImage([data[`${menuName}_img_0`], data[`${menuName}_img_1`]]);
+      setClickImage(data?.[`${menuName}_img`]);
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
       selectElements.forEach((select) => {
         select.value = data[select.id];
       });
-      // textarea 채우기
+      // 4.textarea 채우기
       const textareaElements = document.querySelectorAll(`.${menuName}-form form textarea`);
       textareaElements.forEach((textarea) => {
         textarea.value = data[textarea.id];
+      });
+      // 5. 결과 부분 file input의 span 채우기
+      const spanElements = document.querySelectorAll(`.${menuName}-form form .grid-file span`);
+      spanElements.forEach((span) => {
+        const spanId = span.id.replace("_span", "");
+        devLog("clickuser span", span, span.id.replace("_span", ""), data[spanId]);
+        span.textContent = data[spanId] ? data[spanId].replace("/temp/uploads/", "") : "선택된 파일 없음";
       });
     }
   };
@@ -79,18 +86,18 @@ export default function Home() {
 
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 패트롤 항목 선택되었습니다.");
-    const response = await fetch("/api/select?apitype=patrol_option&getcount=1");
+    const response = await fetch("/api/select?apitype=patrol_result&getcount=1");
     const newData = await response.json();
     if (newData?.data?.length) {
       // 패트롤 상세정보를 input과 select에 넣기
-      const itemOptionList = {};
+      const optionList = {};
       for (const key of Object.keys(newData.data[0])) {
         if (key.startsWith("updated")) continue;
         document.querySelector(`#${key}`).value = newData.data[0][key]; // input에 기본값 넣기
         let id = key.replace("_option", "");
-        itemOptionList[id] = newData.data[0][key].split(",");
+        optionList[id] = newData.data[0][key].split(",");
       }
-      setItemOptionList({...itemOptionList});
+      setPatrolOptionList({...optionList});
     }
     console.log("essential data item detail: ", newData);
   }
@@ -109,7 +116,7 @@ export default function Home() {
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    fetchEssentialData();
+    //fetchEssentialData();
     fetchData();
     const intervalId = setInterval(fetchData, 10 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
@@ -133,15 +140,10 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             <div className="block w-1/4">
-              <label htmlFor="patrol_icon" className="block text-2xl font-bold">
+              <label htmlFor="patrol_img" className="block text-2xl font-bold">
                 출력이미지
               </label>
               <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`patrol_img`} type={"image/"} text={clickImage ? null : "Drag Or Click"} image={clickImage} objectFit={"fill"} />
@@ -167,18 +169,17 @@ export default function Home() {
           <div className="col-span-full" />
 
           <h1 className="mt-8 col-span-full font-normal text-2xl">패트롤 결과 재화</h1>
-          {[...inputOptionList, inputOptionList.length].map((index) => {
-            let option = {};
-            switch (index) {
-              case 0:
-                option = {type: "종류", money: "재화", count: "개수", img: "출력이미지", msg: "메세지"};
-                break;
-              case inputOptionList.length:
-                option = {span: "조건미달", spanCss: "text-red-500"};
-                break;
-            }
+          {inputOptionList.map((index) => {
+            let option = index === 0 ? {type: "종류", money: "재화", count: "개수", img: "출력이미지", msg: "메세지"} : {};
             return <React.Fragment key={index}>{makeRetOptionGenerator(index, option)}</React.Fragment>;
           })}
+          <span className="col-span-1 relative row flex items-end justify-center font-bold text-red-500">"조건미달</span>
+          <GridInputSelectBox id={`patrol_fail_type`} type={"text"} colSpan={2} options={patrolDefaultList.patrol_option_item} />
+          <GridInputText id={`patrol_fail_money`} type={"text"} colSpan={2} css="border-b h-[36px]" />
+          <GridInputText id={`patrol_fail_count`} type={"text"} colSpan={2} css="border-b h-[36px]" />
+          <GridFile id={`patrol_img_fail`} colSpan={5} buttonWidth={"w-1/4"} />
+          <div className="col-span-1" />
+          <GridInputText id={`patrol_fail_msg`} type={"text"} colSpan={11} css="border-b h-[36px]" />
           <style jsx>{`
             @keyframes scrollText {
               0% {
@@ -199,15 +200,13 @@ export default function Home() {
 function makeRetOptionGenerator(index, option = {}) {
   return (
     <React.Fragment key={index}>
-      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>
-        {option.span ? option?.span : `${index + 1} 선택지`}
-      </span>
+      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>{option.span ? option?.span : `${index + 1} 선택지`}</span>
       <GridInputSelectBox label={option?.type} id={`patrol_ret_type_${index}`} type={"text"} colSpan={2} options={patrolDefaultList.patrol_option_item} />
       <GridInputText label={option?.money} id={`patrol_ret_money_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />
       <GridInputText label={option?.count} id={`patrol_ret_count_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />
       <GridFile label={option?.img} id={`patrol_ret_img_${index}`} colSpan={5} buttonWidth={"w-1/4"} />
       <div className="col-span-1" />
-      <GridInputText label={option?.msg} id={`patrol_ret_count_${index}`} type={"text"} colSpan={11} css="border-b h-[36px]" />
+      <GridInputText label={option?.msg} id={`patrol_ret_msg_${index}`} type={"text"} colSpan={11} css="border-b h-[36px]" />
     </React.Fragment>
   );
 }

@@ -9,7 +9,7 @@ export {updateDataWithFormInputs, getDomIndex, checkHangulEncode, copyToClipBoar
  * @param {*} useFileId
  * @returns
  */
-function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFileId = false) {
+function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFileId = false, isFileDataCheck = true) {
   if (!apitype || !url) {
     console.log("updateData : apitype or url is not defined", apitype, url);
     return false;
@@ -20,12 +20,17 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
     const inputs = event.target.querySelectorAll("input");
 
     inputs.forEach((inputNode) => {
-      if (inputNode.type === "file" && inputNode?.files) {
-        // devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files);
-        Array.from(inputNode.files).forEach((file) => {
-          if (useFileId) formData.append(inputNode.id, file);
-          else formData.append("file", file);
-        });
+      if (inputNode.type === "file") {
+        // devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files, isFileDataCheck, formData);
+        if (inputNode?.files.length) {
+          Array.from(inputNode.files).forEach((file) => {
+            if (useFileId) formData.append(inputNode.id, file);
+            else formData.append("file", file);
+          });
+        } else if (!isFileDataCheck) {
+          formData.append(inputNode.id, null); // 파일이 없을경우에도 보내고 싶을 경우 null값으로 넣어준다
+          devLog("client.js updateDataWithFormInputs : handleSubmitUser isFileDataCheck false", isFileDataCheck, formData);
+        }
       } else {
         formData.append(inputNode.id, inputNode.value);
       }

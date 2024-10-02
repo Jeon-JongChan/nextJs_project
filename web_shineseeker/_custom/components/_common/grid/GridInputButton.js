@@ -15,10 +15,11 @@ export default function Component(props) {
   let type = props?.type || "submit";
   let onclick = props?.onclick || null;
   let buttonColor = props?.buttonColor || "blue";
+  let css = props?.css || "";
   return (
     <>
       {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
-      <div className={["px-1 py-1 text-right", colSpanClass[colSpan]].join(" ")}>
+      <div className={["px-1 py-1 text-right", colSpanClass[colSpan], css].join(" ")}>
         <button
           type={type}
           className={[

@@ -94,15 +94,14 @@ async function truncateData(table) {
  * @param {int} timeSecondgap
  * @returns
  */
-async function getData(table, timeSecondgap = 0) {
+async function getData(table, timeSecondgap = 0, isAll = false) {
   try {
     if (!sqlite.tableExists(table)) return null;
-    // return jsondb.readObject(key, timeSecondgap);
     if (timeSecondgap) {
       const tableTime = sqlite.getTableTime(table);
-      //devLog("server.js getData", timeSecondgap, table, tableTime, Date.now() - timeSecondgap * 1000, tableTime > Date.now() - timeSecondgap * 1000);
-      if (tableTime > Date.now() - timeSecondgap * 1000) return sqlite.searchAll(table);
-    } else return sqlite.searchAll(table);
+      // devLog("server.js getData", timeSecondgap, table, tableTime, Date.now() - timeSecondgap * 1000, tableTime > Date.now() - timeSecondgap * 1000);
+      if (tableTime > Date.now() - timeSecondgap * 1000) return sqlite.searchAll(table, !isAll);
+    } else return sqlite.searchAll(table, !isAll);
     return null;
   } catch (e) {
     console.error("server.js getData Function : ", e);
@@ -117,6 +116,7 @@ async function getData(table, timeSecondgap = 0) {
  */
 async function getDataKey(table, key, keyValue, isAll = false) {
   try {
+    // devLog("server.js getDataKey", table, key, keyValue, isAll);
     if (!sqlite.tableExists(table)) return null;
     if (isAll) return sqlite.searchByKeyAll(table, key, keyValue);
     else return sqlite.searchByKey(table, key, keyValue);

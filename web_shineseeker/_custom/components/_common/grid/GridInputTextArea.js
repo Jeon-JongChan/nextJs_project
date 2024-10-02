@@ -8,7 +8,7 @@ import {useEffect, useRef} from "react";
  */
 export default function Component(props) {
   const textAreaRef = useRef(null);
-  let label = props?.label || "상용구 내용";
+  let label = props?.label || "";
   let id = props?.id || "";
   let css = props?.css || "";
   let colSpan = props?.colSpan || 6;
@@ -37,9 +37,11 @@ export default function Component(props) {
   return (
     <>
       <div className={["relative", colSpanClass[colSpan]].join(" ")}>
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
+        {label ? (
+          <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        ) : null}
         <textarea
           ref={textAreaRef}
           // onInput={handleResizeHeight}

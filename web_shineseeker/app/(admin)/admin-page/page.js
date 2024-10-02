@@ -1,7 +1,10 @@
 "use client";
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import {useState, useEffect} from "react";
-import AdminTabPage from "./AdminTabPage";
+import AdminPageMain from "./AdminPageMain";
+import AdminPageWorld from "./AdminPageWorld";
+import AdminPageRead from "./AdminPageRead";
+import AdminPageMarket from "./AdminPageMarket";
 
 export default function Home() {
   const tabList = ["메인화면", "세계관", "필독", "교환소"];
@@ -29,7 +32,10 @@ export default function Home() {
           );
         })}
       </div>
-      {activeTab === tabList[0] && <AdminTabPage />}
+      {activeTab === tabList[0] && <AdminPageMain />}
+      {activeTab === tabList[1] && <AdminPageWorld />}
+      {activeTab === tabList[2] && <AdminPageRead />}
+      {activeTab === tabList[3] && <AdminPageMarket />}
     </div>
   );
 }

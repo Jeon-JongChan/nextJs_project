@@ -8,8 +8,8 @@ export async function GET(req) {
   const getcount = searchParams.get("getcount");
 
   try {
-    let data = await getData(apitype, getcount == 1 ? 0 : 60);
-    devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
+    let data = await getData(apitype, getcount == 1 ? 0 : 60, true);
+    // devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
         // user의 경우 item 값을 추가해줘야 함
@@ -48,7 +48,9 @@ export async function GET(req) {
       } else if (apitype === "page") {
         // page의 경우 각 탭별로 데이터를 보내줌
         const pagename = searchParams.get("pagename");
-        data = data.filter((page) => page.page_name === pagename);
+        let returndata = data.filter((page) => page.page_name === pagename);
+        data = returndata;
+        //data.forEach((page) => {if (page.id.startsWith(`${pagename}_img`)) page.value = "/temp/upload/" + page.value}); // 이미지 경로 추가
       }
       return NextResponse.json({message: "successfully api", data: data});
     }

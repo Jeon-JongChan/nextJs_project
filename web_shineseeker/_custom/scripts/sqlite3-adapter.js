@@ -256,11 +256,16 @@ class DBManager {
     }
   }
   // 다중 행 검색 함수 (옵션 추가)
-  searchAll(table, options = {}) {
+  searchAll(table, isLimit = true, options = {}) {
     const {limit = 10, offset = 0} = options;
     try {
-      const stmt = this.db.prepare(`SELECT * FROM ${table} LIMIT ? OFFSET ?`);
-      return stmt.all(limit, offset);
+      let stmt = this.db.prepare(`SELECT * FROM ${table}`);
+      if (isLimit) {
+        stmt = this.db.prepare(`SELECT * FROM ${table} LIMIT ? OFFSET ?`);
+        return stmt.all(limit, offset);
+      } else {
+        return stmt.all();
+      }
     } catch (error) {
       console.error("** Sql-adapter.js(searchAll) Search all failed:", error);
       return false;

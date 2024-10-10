@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function Component() {
   return (
     <>
-      <div className="max-w-md mx-auto p-6 rounded-lg grid grid-cols-3" style={{width: "312px"}}>
+      <div className="max-w-md mx-auto p-6 rounded-lg grid grid-cols-3" style={{width: "320px"}}>
         <button className="col-span-1 relative" style={{margin: "4px 4px"}}>
           <Image src="/images/home/01_home_login_box_button.png" alt="Shineseeker" fill={true} />
         </button>

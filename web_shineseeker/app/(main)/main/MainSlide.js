@@ -2,41 +2,11 @@
 import {useState, useEffect} from "react";
 import {sleep} from "/_custom/scripts/common.js";
 
-const defaultProps = {
-  slides: [
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%201",
-      title: "첫번째 슬라이드",
-      description: "첫번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%202",
-      title: "두번째 슬라이드",
-      description: "두번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%203",
-      title: "세번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%204",
-      title: "4번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%205",
-      title: "5번째 슬라이드",
-      description: "세번째 슬라이드 설명",
-    },
-  ],
-};
-
 export default function Component(props) {
   if (Object.keys(props).length === 0) props = defaultProps;
   const slides = props.slides;
   // const thumbnail = props.thumbnail || false;
-  const description = props.description || true;
+  const description = props?.description || false;
   const [currentSlide, setCurrentSlide] = useState(1);
   const [slideAnimation, setSlideAnimation] = useState(true);
   const slideCount = slides.length + 1; // 반복되는 슬라이드를 위해 1개를 추가 (마지막 슬라이드(첫번째위치)를 추가)
@@ -107,6 +77,36 @@ export default function Component(props) {
     </>
   );
 }
+
+const defaultProps = {
+  slides: [
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%201",
+      title: "첫번째 슬라이드",
+      // description: "첫번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%202",
+      title: "두번째 슬라이드",
+      description: "두번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%203",
+      title: "세번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%204",
+      title: "4번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+    {
+      imageUrl: "https://via.placeholder.com/800x400?text=Slide%205",
+      title: "5번째 슬라이드",
+      description: "세번째 슬라이드 설명",
+    },
+  ],
+};
 
 /* 슬라이드 안에 dot 추가할 때
 <div className="dots absolute bottom-4 left-0 w-full flex justify-center">

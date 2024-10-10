@@ -13,22 +13,37 @@
 .img-nav-btn-init {
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: auto;
 }
 .img-nav-world {
-  background-image: url("/images/home/01_home_menu_01world.png");
+  background-image: url("/images/home/01_home_menu01a.png");
+}
+.img-nav-world:hover {
+  background-image: url("/images/home/01_home_menu01.png");
 }
 .img-nav-read {
-  background-image: url("/images/home/01_home_menu_02read.png");
+  background-image: url("/images/home/01_home_menu02a.png");
+}
+.img-nav-read:hover {
+  background-image: url("/images/home/01_home_menu02.png");
 }
 .img-nav-member {
-  background-image: url("/images/home/01_home_menu_03member.png");
+  background-image: url("/images/home/01_home_menu03a.png");
+}
+.img-nav-member:hover {
+  background-image: url("/images/home/01_home_menu03.png");
 }
 .img-nav-shineseek {
-  background-image: url("/images/home/01_home_menu_04shineseek.png");
+  background-image: url("/images/home/01_home_menu04a.png");
+}
+.img-nav-shineseek:hover {
+  background-image: url("/images/home/01_home_menu04.png");
 }
 .img-nav-shop {
-  background-image: url("/images/home/01_home_menu_05shop.png");
+  background-image: url("/images/home/01_home_menu05a.png");
+}
+.img-nav-shop:hover {
+  background-image: url("/images/home/01_home_menu05.png");
 }
 /**************************************************************************************************************************** Path: /main */
 .img-home-bg {
@@ -43,9 +58,11 @@
   background-image: url("/images/home/01_home_box01.png");
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: initial;
 }
 .main-slide-mask {
+  z-index: 101;
+  /* background-image: url("/images/home/01_home_box02_mask.png"); */
   -webkit-mask-image: url("/images/home/01_home_box02_mask.png"); /* 투명 공간을 정의할 마스크 이미지 */
   mask-image: url("/images/home/01_home_box02_mask.png");
   mask-repeat: no-repeat;
@@ -54,18 +71,19 @@
 }
 .img-main-slide {
   z-index: 100;
-  background-image: url("/images/home/01_home_box02_transparency.png");
+  background-image: url("/images/home/01_home_banner01.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
   pointer-events: auto;
 }
 .main-slide-frame {
-  z-index: -10;
+  /* z-index: -10; */
   height: 80%;
-  width: 100%;
+  width: 85%;
   position: relative;
   top: 40px;
+  left: 70px;
   pointer-events: auto;
 }
 .arrow-init {
@@ -78,13 +96,13 @@
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background-image: url("/images/home/01_home_box02_button01.png");
+  background-image: url("/images/home/01_home_banner_button_left.png");
 }
 .arrow-right {
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background-image: url("/images/home/01_home_box02_button02.png");
+  background-image: url("/images/home/01_home_banner_button_right.png");
 }
 .img-login-bg {
   background-image: url("/images/home/01_home_login_box.png");

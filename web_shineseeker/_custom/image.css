@@ -61,13 +61,13 @@
   /* background-size: initial; */
 }
 .main-slide-mask {
-  z-index: 101;
+  z-index: 103;
   /* background-image: url("/images/home/01_home_box02_mask.png"); */
-  -webkit-mask-image: url("/images/home/01_home_box02_mask.png"); /* 투명 공간을 정의할 마스크 이미지 */
+  -webkit-mask-image: url("/images/home/01_home_box02_mask.png"); /*투명 공간을 정의할 마스크 이미지*/
   mask-image: url("/images/home/01_home_box02_mask.png");
   mask-repeat: no-repeat;
   mask-position: center center;
-  mask-size: contain;
+  mask-size: initial;
 }
 .img-main-slide {
   z-index: 100;

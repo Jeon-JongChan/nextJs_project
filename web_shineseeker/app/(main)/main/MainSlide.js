@@ -64,7 +64,7 @@ export default function Component(props) {
           <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"} onClick={prevSlide}></button>
           <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"} onClick={nextSlide}></button>
         </div>
-        <div className="main-slide-frame overflow-hidden main-slide-mask">
+        <div className="main-slide-mask main-slide-frame overflow-hidden ">
           <div
             className="flex flex-row h-full z-0 relative"
             style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}

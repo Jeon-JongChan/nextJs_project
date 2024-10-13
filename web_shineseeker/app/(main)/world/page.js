@@ -1,6 +1,6 @@
 import Image from "next/image";
 import TabParagraph from "./TabParagraph";
-import WorldSlide from "/_custom/components/world/WorldSlide";
+import WorldSlide from "./WorldSlide";
 
 export default function Home() {
   return (

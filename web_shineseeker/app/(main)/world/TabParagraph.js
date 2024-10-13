@@ -33,7 +33,7 @@ export default function Component() {
   return (
     <>
       <div className="flex flex-col rounded-3xl img-world-tab-bg" style={{height: "-webkit-fill-available", borderRadius: "3rem"}}>
-        <div className="grid grid-cols-5 w-full relative top-10" style={{height: "32px"}}>
+        <div className="grid grid-cols-5 w-full relative" style={{height: "32px", top: "0px"}}>
           <button className="col-span-1 img-world-tab-init img-world-tab-col1" data-key={1} onClick={(e) => clickTab(e.target, "1")}></button>
           <button className="col-span-1 img-world-tab-init img-world-tab-col2" data-key={2} onClick={(e) => clickTab(e.target, "2")}></button>
           <button className="col-span-1 img-world-tab-init img-world-tab-col3" data-key={3} onClick={(e) => clickTab(e.target, "3")}></button>

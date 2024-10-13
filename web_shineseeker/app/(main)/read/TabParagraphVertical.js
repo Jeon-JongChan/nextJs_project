@@ -32,8 +32,8 @@ export default function Component() {
   };
   return (
     <>
-      <div className="flex rounded-3xl img-read-tab-bg px-4" style={{height: "inherit", borderRadius: "3rem"}}>
-        <div className="w-[13%]" style={{height: "inherit"}}>
+      <div className="flex rounded-3xl px-4" style={{height: "inherit", borderRadius: "3rem"}}>
+        <div className="w-[15%]" style={{height: "inherit"}}>
           <div className="grid grid-cols-1 relative h-full">
             <button className="col-span-1 img-read-tab-init img-read-tab-col1" data-key={1} onClick={(e) => clickTab(e.target, "1")}></button>
             <button className="col-span-1 img-read-tab-init img-read-tab-col2" data-key={2} onClick={(e) => clickTab(e.target, "2")}></button>
@@ -42,7 +42,7 @@ export default function Component() {
             <button className="col-span-1 img-read-tab-init img-read-tab-col5" data-key={5} onClick={(e) => clickTab(e.target, "5")}></button>
           </div>
         </div>
-        <div className="w-[87%]">
+        <div className="w-[85%] img-read-tab-bg ">
           <div className="flex-1 overflow-y-auto m-12 p-4">
             <TabContent tab={activeTab} />
           </div>

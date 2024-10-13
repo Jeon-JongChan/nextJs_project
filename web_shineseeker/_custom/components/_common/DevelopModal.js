@@ -16,10 +16,11 @@ export default function Component() {
             <h3>개발 중 노트</h3>
             {/* prettier-ignore */}
             <div className="overflow-y-scroll no-scrollbar h-[27vw]">
-              <span>관리자페이지 개발중</span>
-              <br /><span>데이터 입력 및 수정, 저장</span>
-              <br /><span>- 유저관리 탭 완성 </span>
-              <br /><span>- 직업 및 몬스터 작업 </span>
+              <span>관리자페이지 개발완료</span>
+              <br /><span>이미지 교체 1차 완료</span>
+              <br /><span>레이드 제작 및 교체 아직 안함</span>
+              <br /><span>이미지 리사이징 작업 아직 안함 </span>
+              <br /><span>페이지별 서버 액션 작업 아직 안함</span>
               <br />
             </div>
           </>

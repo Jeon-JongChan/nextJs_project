@@ -45,3 +45,31 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+.text-line-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@font-face {
+  font-family: "DNF";
+  src: url("/fonts/DNFBitBitOTF.otf") format("opentype"); /* OTF 폰트 경로 */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NEXON";
+  src: url("/fonts/NEXONLv1GothicRegular.ttf") format("truetype"); /* TTF 폰트 경로 */
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-dnf {
+  font-family: "DNF", sans-serif;
+}
+
+.font-nexon {
+  font-family: "NEXON", sans-serif;
+}

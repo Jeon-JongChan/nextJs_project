@@ -25,7 +25,7 @@ export default function Layout({children}) {
               </Link>
             </div>
             <div className="grid grid-cols-5 items-center gap-x-4 img-nav-bg relative w-[1028px] h-[86px] px-4 top-[-4px]">
-              <div className="col-span-5 grid grid-cols-5 items-center gap-x-3">
+              <div className="col-span-5 grid grid-cols-5 items-center gap-x-3 relative" style={{top: "-5px"}}>
                 <Link href="/world" className={linkStyle + "img-nav-world" + navSize}></Link>
                 <Link href="/read" className={linkStyle + "img-nav-read" + navSize}></Link>
                 <Link href="/member" className={linkStyle + "img-nav-member" + navSize}></Link>

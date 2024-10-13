@@ -58,7 +58,7 @@
   background-image: url("/images/home/01_home_box01.png");
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: initial;
+  /* background-size: initial; */
 }
 .main-slide-mask {
   z-index: 101;
@@ -116,18 +116,21 @@
 /**************************************************************************************************************************** Path: /world */
 .img-world-slide {
   z-index: 100;
-  background-image: url("/images/world/02_world_box02_outline.png");
+  background-image: url("/images/world/02_world_banner01.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
   pointer-events: auto;
+  height: 577px;
 }
 .img-world-slidemask {
-  -webkit-mask-image: url("/images/world/02_world_box02_inner.png"); /* 투명 공간을 정의할 마스크 이미지 */
-  mask-image: url("/images/world/02_world_box02_inner.png");
+  z-index: 101;
+  -webkit-mask-image: url("/images/world/02_world_banner02.png"); /* 투명 공간을 정의할 마스크 이미지 */
+  mask-image: url("/images/world/02_world_banner02.png");
   mask-repeat: no-repeat;
   mask-position: center center;
   mask-size: contain;
+  height: 557px;
 }
 .arrow-world-left {
   transform: translateY(-50%);
@@ -142,25 +145,25 @@
   background-image: url("/images/world/02_world_box02_button02.png");
 }
 .img-world-tab-bg {
-  background-image: url("/images/world/02_world_box01.png");
+  background-image: url("/images/world/02_world_textbanner.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
 }
 .img-world-tab-col1 {
-  background-image: url("/images/world/02_world_box01_01a.png");
+  background-image: url("/images/world/02_world_textbanner01.png");
 }
 .img-world-tab-col2 {
-  background-image: url("/images/world/02_world_box01_02a.png");
+  background-image: url("/images/world/02_world_textbanner02.png");
 }
 .img-world-tab-col3 {
-  background-image: url("/images/world/02_world_box01_03a.png");
+  background-image: url("/images/world/02_world_textbanner03.png");
 }
 .img-world-tab-col4 {
-  background-image: url("/images/world/02_world_box01_04a.png");
+  background-image: url("/images/world/02_world_textbanner04.png");
 }
 .img-world-tab-col5 {
-  background-image: url("/images/world/02_world_box01_05a.png");
+  background-image: url("/images/world/02_world_textbanner05.png");
 }
 
 .img-world-tab-init {
@@ -203,28 +206,28 @@
   background-image: url("/images/read/03_read_box.png");
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: initial;
 }
 .img-read-tab-init {
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: initial;
 }
 
 .img-read-tab-col1 {
-  background-image: url("/images/read/03_read_box_button01a.png");
+  background-image: url("/images/read/03_read_text01.png");
 }
 .img-read-tab-col2 {
-  background-image: url("/images/read/03_read_box_button02a.png");
+  background-image: url("/images/read/03_read_text02.png");
 }
 .img-read-tab-col3 {
-  background-image: url("/images/read/03_read_box_button03a.png");
+  background-image: url("/images/read/03_read_text03.png");
 }
 .img-read-tab-col4 {
-  background-image: url("/images/read/03_read_box_button04a.png");
+  background-image: url("/images/read/03_read_text04.png");
 }
 .img-read-tab-col5 {
-  background-image: url("/images/read/03_read_box_button05a.png");
+  background-image: url("/images/read/03_read_text05.png");
 }
 .img-read-tab-col1:hover {
   background-image: url("/images/read/03_read_box_button01b.png");
@@ -256,6 +259,41 @@
 .img-read-tab-col5-active {
   background-image: url("/images/read/03_read_box_button05b.png");
 }
+/**************************************************************************************************************************** Path: /member */
+.img-member-init {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: initial;
+}
+.img-member-char-bg {
+  background-image: url("/images/member/04_member_ch_bg.png");
+  width: 543px;
+  height: 609px;
+}
+.img-member-char-banner-bg {
+  background-image: url("/images/member/04_member_ch_banner_bg.png");
+  width: 453px;
+  height: 139px;
+}
+.img-member-tab-bg {
+  background-image: url("/images/member/tab/04_ch_tab01_bannerbg.png");
+}
+.img-member-tab-btn {
+  background-image: url("/images/member/tab/04_ch_tab01_banner_button01.png");
+}
+.img-member-tab-btn-select {
+  background-image: url("/images/member/tab/04_ch_tab01_banner_button02.png");
+}
+.img-member-tab-imagebox {
+  background-image: url("/images/member/04_ch_tab02_smallbox.png");
+  width: 100px;
+  height: 100px;
+}
+.img-member-tab-imagebox-pink {
+  background-image: url("/images/member/04_ch_tab03_smallbox.png");
+  width: 100px;
+  height: 100px;
+}
 /**************************************************************************************************************************** Path: /patrol */
 .img-patrol-init {
   background-repeat: no-repeat;
@@ -263,14 +301,38 @@
   background-size: contain;
 }
 
-/*prettier-ignore*/
-.img-patrol-selector-bg { background-image: url("/images/patrol/05_patrol_startbox.png"); }
-/*prettier-ignore*/
-.img-patrol-timeline-bg { background-image: url("/images/patrol/05_patrol_timeline.png"); }
-/*prettier-ignore*/
-.img-patrol-end-bg { background-image: url("/images/patrol/05_patrol_endbox.png"); }
-/*prettier-ignore*/
-.img-patrol-end-photoframe { background-image: url("/images/patrol/05_patrol_endbox_item.png"); }
+.img-patrol-selector-bg {
+  background-image: url("/images/patrol/05_patrol_banner01.png");
+}
+.img-patrol-result-bg {
+  background-image: url("/images/patrol/05_patrol2_banner.png");
+}
+.img-patrol-timeline-bg {
+  background-image: url("/images/patrol/05_patrol_banner02.png");
+}
+.img-patrol-result-next {
+  background-image: url("/images/patrol/05_patrol2_banner_button.png");
+  width: 128px;
+  height: 23px;
+}
 /**************************************************************************************************************************** Path: /market */
-
+.img-market-init {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: initial;
+}
+.img-market-bg {
+  background-image: url("/images/market/06_shop_bg.png");
+}
+.img-market-npc {
+  background-image: url("/images/market/06_shop_npc.png");
+}
+.img-market-banner {
+  background-image: url("/images/market/06_shop_banner.png");
+}
+.img-market-itemframe {
+  background-image: url("/images/market/06_shop_item.png");
+  width: 225px;
+  height: 96px;
+}
 /**************************************************************************************************************************** Path: /etc */

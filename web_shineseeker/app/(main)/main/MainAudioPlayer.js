@@ -12,9 +12,8 @@ import MusicBtnPrev from "@/public/images/home/01_home_music_button03.png";
 // dynamic을 사용하여 YouTubeAudioPlayer 컴포넌트 lazy load
 const YouTubeAudioPlayer = dynamic(() => import("@/_custom/components/_common/YoutubeAudioPlayer"), {
   ssr: false,
-  loading: () => <p className="relative left-[160px] top-[91px]">Loading...</p>,
+  loading: () => <p className="relative left-[173px] top-[76px]">Loading...</p>,
 });
-
 export default function Component() {
   const audioRef = useRef(null);
   const [videoTitle, setVideoTitle] = useState(null);
@@ -23,13 +22,15 @@ export default function Component() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current) {
-        clearInterval(interval);
         setVideoTitle(audioRef.current.title);
         audioRef.current.setVolume(50);
         audioRef.current.setQuality("small");
         audioRef.current.play();
-        setIsPlaying(true);
-        console.log("MainAudioPlayer title interval exit");
+        if (audioRef.current.status(true) == 1) {
+          setIsPlaying(true);
+          clearInterval(interval);
+          console.log("MainAudioPlayer title interval exit");
+        }
       }
     }, 1000);
   }, []);

@@ -21,10 +21,7 @@ export default function Home(props) {
             </span>
             <div className={"market_npc_text relative text-[16px] px-6 py-1 font-nexon font-bold" + npcTextColor} style={{top: "40px"}}>
               <span className={"" + npcTextColor}>안녕하세요 {username}</span>
-              <p>
-                오늘은 어떤 물품을 교환하시겠어요? <br />
-                천천히 둘러보세요~
-              </p>
+              <pre>오늘은 어떤 물품을 교환하시겠어요? 천천히 둘러보세요~</pre>
             </div>
           </div>
         </div>

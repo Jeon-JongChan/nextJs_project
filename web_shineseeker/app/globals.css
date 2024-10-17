@@ -52,6 +52,14 @@ body {
   white-space: nowrap;
 }
 
+.text-x-wrap {
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-overflow: ellipsis;
+  white-space: pre;
+  text-wrap: balance;
+}
+
 @font-face {
   font-family: "DNF";
   src: url("/fonts/DNFBitBitOTF.otf") format("opentype"); /* OTF 폰트 경로 */

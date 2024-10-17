@@ -1,12 +1,45 @@
-import Image from "next/image";
+"use client";
 import MemberPhoto from "./MemberPhoto";
+import React, {useState, useEffect} from "react";
 
-export default function Home() {
-  const photoCards = [
-    {id: 1, defaultImage: "/images/04_member_box.webp", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "/member/test"},
-    {id: 2, defaultImage: "https://via.placeholder.com/300x300?text=TEMP", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "#"},
-    {id: 3, defaultImage: "https://via.placeholder.com/300x300?text=TEMP", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "#"},
-  ];
+const menuName = "member";
+export default function Home(props) {
+  const [maindata, setMainData] = useState([]);
+  const [photoCards, setPhotoCards] = useState([]);
+  let fetchIndex = 0;
+  // 데이터를 주기적으로 가져오기 위한 함수
+  async function fetchData() {
+    let response = await fetch(`/api/select?apitype=page&getcount=1&pagename=${menuName}&getcount=1`);
+    console.log("야 메인 땡긴다?", response);
+    // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
+    // else response = await fetch(`/api/select?apitype=${menuName}`);
+    const newData = await response.json();
+    if (newData?.data?.length) {
+      console.log(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
+      setMainData([...newData.data]);
+    }
+  }
+  // 최초 데이터 빠르게 가져오기 위한 useEffect
+  useEffect(() => {
+    fetchData();
+    // const intervalId = setInterval(fetchData, 10 * 1000);
+    // return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
+  }, []);
+
+  /* prettier-ignore */
+  useEffect(() => {
+    let contents = {};
+    if (maindata.length) {
+      contents = maindata.filter((data) => data.id.includes("_tab") && data.value).reduce((acc, cur) => {
+          const key = cur.id.split("_")[2];
+          acc[key] = cur.value;
+          return acc;
+        }, {});
+      setPhotoCards(contents);
+    }
+    console.log("maindata:", contents);
+  }, [maindata]);
+
   return (
     <div className="" style={{height: "600px"}}>
       <div className="grid grid-cols-9 gap-4" style={{height: "inherit"}}>
@@ -17,3 +50,9 @@ export default function Home() {
     </div>
   );
 }
+
+const defaultPhotoCards = [
+  {id: 1, defaultImage: "/images/04_member_box.webp", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "/member/test"},
+  // {id: 2, defaultImage: "https://via.placeholder.com/300x300?text=TEMP", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "#"},
+  // {id: 3, defaultImage: "https://via.placeholder.com/300x300?text=TEMP", overlayImage: "https://via.placeholder.com/300x300?text=TEMP2", link: "#"},
+];

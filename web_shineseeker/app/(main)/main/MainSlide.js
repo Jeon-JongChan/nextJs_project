@@ -4,7 +4,7 @@ import {sleep} from "/_custom/scripts/common.js";
 
 export default function Component(props) {
   if (Object.keys(props).length === 0) props = defaultProps;
-  const slides = props.slides;
+  const slides = props?.slides || defaultProps.slides;
   // const thumbnail = props.thumbnail || false;
   const description = props?.description || false;
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -37,6 +37,7 @@ export default function Component(props) {
   };
 
   useEffect(() => {
+    console.log("currentSlide:", slides);
     const intervalId = setInterval(nextSlide, 100000); // 3초마다 다음 슬라이드로 이동
     return () => clearInterval(intervalId);
   }, [currentSlide]);
@@ -60,18 +61,15 @@ export default function Component(props) {
   return (
     <>
       <div className={`slide-banner w-full max-h-full overflow-hidden relative group`} style={{height: "inherit"}}>
-        <div className="img-main-slide absolute w-full top-0" style={{height: "inherit"}}>
-          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"} onClick={prevSlide}></button>
-          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"} onClick={nextSlide}></button>
-        </div>
         <div className="main-slide-mask main-slide-frame overflow-hidden ">
-          <div
-            className="flex flex-row h-full z-0 relative"
-            style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
-          >
+          <div className="flex flex-row h-full z-0 relative" style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}>
             {createSlide(slides[slides.length - 1], 1)}
             {slides.map((slide, index) => createSlide(slide, index + 1))}
           </div>
+        </div>
+        <div className="img-main-slide absolute w-full top-0" style={{height: "inherit"}}>
+          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"} onClick={prevSlide}></button>
+          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"} onClick={nextSlide}></button>
         </div>
       </div>
     </>

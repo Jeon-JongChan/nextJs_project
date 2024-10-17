@@ -15,13 +15,14 @@ const YouTubeAudioPlayer = dynamic(() => import("@/_custom/components/_common/Yo
   loading: () => <p className="relative left-[173px] top-[76px]">Loading...</p>,
 });
 export default function Component() {
+  const initRef = useRef(false);
   const audioRef = useRef(null);
   const [videoTitle, setVideoTitle] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 관리
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (audioRef.current) {
+      if (audioRef.current && !initRef.current) {
         setVideoTitle(audioRef.current.title);
         audioRef.current.setVolume(50);
         audioRef.current.setQuality("small");
@@ -31,6 +32,7 @@ export default function Component() {
           clearInterval(interval);
           console.log("MainAudioPlayer title interval exit");
         }
+        initRef.current = true;
       }
     }, 1000);
   }, []);

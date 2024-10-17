@@ -15,11 +15,10 @@ export default function FileUpload(props) {
   const objectFit = props?.objectFit || null;
 
   useEffect(() => {
-    //console.log("FileDragAndDrop useEffect Image : ", image);
-    if (image) {
-      setPreview(image);
-    }
-  }, [image]);
+    setPreview(image);
+    // if (image) setPreview(image);
+    // console.log("FileDragAndDrop useEffect Image : ", image, preview);
+  }, [props, image, preview]);
   const updateInputFiles = (files) => {
     console.log("updateInputFiles : ", files);
     inputRef.current.files = files;

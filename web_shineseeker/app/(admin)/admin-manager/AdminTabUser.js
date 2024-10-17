@@ -50,6 +50,7 @@ export default function Home() {
         }
       });
       // 2. 이미지 채우기
+      devLog("clickUserImage", [data["user_img_0"], data["user_img_1"], data["user_img_2"], data["user_img_3"]]);
       setClickUserImage([data["user_img_0"], data["user_img_1"], data["user_img_2"], data["user_img_3"]]);
       // 3. 스킬(select) 채우기
       const selectElements = document.querySelectorAll(".user-form form select");
@@ -124,14 +125,17 @@ export default function Home() {
               ["전신", clickUserImage?.[1] || false],
               ["추가전신", clickUserImage?.[2] || false],
               ["마스코트", clickUserImage?.[3] || false],
-            ].map((data, index) => (
-              <div className="block w-1/4" key={index}>
-                <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
-                  {data[0]}
-                </label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
-              </div>
-            ))}
+            ].map((data, index) => {
+              console.log(data, data[1] ? null : "Drag Or Click");
+              return (
+                <div className="block w-1/4" key={index}>
+                  <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
+                    {data[0]}
+                  </label>
+                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
+                </div>
+              );
+            })}
           </div>
           <div className="relative col-span-12 mt-4 user-itemlist">
             <h3 className="text-center font-bold text-2xl">유저 아이템 리스트</h3>

@@ -30,7 +30,9 @@ export default function Home() {
         // return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     }, []);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        console.log("maindata:", main);
+    }, [maindata]);
     return (
         <>
             <div className="relative grid grid-cols-6" style={{height: "400px"}}>

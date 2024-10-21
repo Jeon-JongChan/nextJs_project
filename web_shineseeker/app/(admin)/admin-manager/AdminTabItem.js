@@ -56,7 +56,7 @@ export default function Home() {
         }
       });
       // 2. 이미지 채우기
-      setClickImage([data[`${menuName}_img_0`], data[`${menuName}_img_1`]]);
+      setClickImage([data[`${menuName}_img_0`] || "init", data[`${menuName}_img_1`] || "init"]);
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
       selectElements.forEach((select) => {

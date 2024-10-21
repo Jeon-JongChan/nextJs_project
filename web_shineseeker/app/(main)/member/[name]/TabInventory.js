@@ -5,11 +5,26 @@ import Image from "next/image";
 export default function Component(props) {
   const [draggedItem, setDraggedItem] = useState(null);
   const [items, setItems] = useState([]);
-  useEffect(() => {
-    if (props?.items?.length) {
-      setItems(props.items);
+
+  const getItemImage = (name) => {
+    if (props?.items) {
+      let item = props.items.find((item) => item.item_name === name);
+      console.log("getItenImage", name, item);
+      return item?.item_img_0 || null;
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    console.log("TabInventory useEffect", props);
+    if (props?.user?.items.length) {
+      let itemArr = [];
+      props.user.items.forEach((item) => {
+        let itemImage = getItemImage(item);
+        if (itemImage) itemArr.push(itemImage);
+      });
+      setItems(itemArr);
+    }
+  }, [props]);
 
   const dragStart = (event) => {
     setDraggedItem(event.currentTarget);
@@ -55,15 +70,7 @@ export default function Component(props) {
       <h1 className="text-[24px] text-white mb-4 mt-4">게임 인벤토리</h1>
       <div className="flex flex-wrap drop-parent" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="img-member-init img-member-tab-imagebox flex justify-center items-center cursor-move inventory-item"
-            draggable="true"
-            onDragStart={dragStart}
-            onDragEnd={dragEnd}
-            onDragOver={dragOver}
-            onDrop={drop}
-          >
+          <div key={index} className="img-member-init img-member-tab-imagebox flex justify-center items-center cursor-move inventory-item" draggable="true" onDragStart={dragStart} onDragEnd={dragEnd} onDragOver={dragOver} onDrop={drop}>
             <Image src={item} alt="item" width={100} height={100} />
           </div>
         ))}

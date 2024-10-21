@@ -13,10 +13,11 @@ export default function FileUpload(props) {
   const id = props?.id || "drag-drop-img";
   const minSize = props?.minSize || false;
   const objectFit = props?.objectFit || null;
+  const extFunc = props?.extFunc || null;
 
   useEffect(() => {
-    setPreview(image);
-    // if (image) setPreview(image);
+    if (image == "init") setPreview(null);
+    else if (image) setPreview(image);
     // console.log("FileDragAndDrop useEffect Image : ", image, preview);
   }, [props, image, preview]);
   const updateInputFiles = (files) => {
@@ -64,6 +65,7 @@ export default function FileUpload(props) {
   };
 
   const handleInputChange = (event) => {
+    if (extFunc) extFunc(event);
     const selectedFiles = Array.from(event.target.files);
     setFiles(selectedFiles);
 

@@ -49,7 +49,7 @@ export default function Home() {
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_detail_`)) return; // 특수 input은 제외
         try {
-          input.value = data[input.id];
+          input.value = data[input.id] || "init";
         } catch (e) {
           console.error(input, e);
         }

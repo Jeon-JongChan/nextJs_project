@@ -14,7 +14,7 @@ export default function Home() {
   let fetchIndex = 0;
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
-    let response = await fetch(`/api/select?apitype=page&getcount=1&pagename=${menuName}&getcount=1`);
+    let response = await fetch(`/api/select?apitype=page&pagename=${menuName}&getcount=1`);
     console.log("야 메인 땡긴다?", response);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);

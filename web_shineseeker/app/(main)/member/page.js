@@ -9,7 +9,7 @@ export default function Home(props) {
   let fetchIndex = 0;
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
-    let response = await fetch(`/api/select?apitype=page&getcount=1&pagename=${menuName}&getcount=1`);
+    let response = await fetch(`/api/select?apitype=user&getcount=1`);
     console.log("야 메인 땡긴다?", response);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);
@@ -29,14 +29,12 @@ export default function Home(props) {
   /* prettier-ignore */
   useEffect(() => {
     let contents = {};
+    
     if (maindata.length) {
-      contents = maindata.filter((data) => data.id.includes("_tab") && data.value).reduce((acc, cur) => {
-          const key = cur.id.split("_")[2];
-          acc[key] = cur.value;
-          return acc;
-        }, {});
+      contents = maindata.filter((data) => data?.['user_img_0'] ).map((data) => ({defaultImage: data.user_img_0, overlayImage: data.user_img_0, link: `/member/${data.userid}`}));
       setPhotoCards(contents);
     }
+      
     console.log("maindata:", contents);
   }, [maindata]);
 

@@ -51,7 +51,7 @@ export default function Home() {
       });
       // 2. 이미지 채우기
       devLog("clickUserImage", [data["user_img_0"], data["user_img_1"], data["user_img_2"], data["user_img_3"]]);
-      setClickUserImage([data["user_img_0"], data["user_img_1"], data["user_img_2"], data["user_img_3"]]);
+      setClickUserImage([data["user_img_0"] || "init", data["user_img_1"] || "init", data["user_img_2"] || "init", data["user_img_3"] || "init"]);
       // 3. 스킬(select) 채우기
       const selectElements = document.querySelectorAll(".user-form form select");
       selectElements.forEach((select) => {
@@ -67,6 +67,19 @@ export default function Home() {
     if (item) {
       setItemList([...itemList, item]);
     }
+  };
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    devLog("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const clickUserImageCopy = [...clickUserImage];
+    clickUserImageCopy[index] = null;
+    setClickUserImage(clickUserImageCopy);
+    devLog("imgInitFn : ", clickUserImageCopy);
   };
 
   async function fetchEssentialData() {
@@ -132,7 +145,7 @@ export default function Home() {
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
                     {data[0]}
                   </label>
-                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
+                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn} />
                 </div>
               );
             })}

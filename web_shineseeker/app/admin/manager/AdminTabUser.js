@@ -94,8 +94,8 @@ export default function Home() {
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchUserData() {
     let response;
-    if (fetchIndex++ == 0) response = await fetch("/api/select?apitype=user&getcount=1");
-    else response = await fetch("/api/select?apitype=user");
+    if (fetchIndex++ == 0) response = await fetch("/api/select?apitype=user_admin&getcount=1");
+    else response = await fetch("/api/select?apitype=user_admin");
     const newData = await response.json();
     if (newData?.data?.length) {
       devLog(`admin page data 갱신되었습니다(${fetchIndex}): `, newData);
@@ -148,15 +148,7 @@ export default function Home() {
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
                     {data[0]}
                   </label>
-                  <FileDragAndDrop
-                    css={"mt-2 w-full col-span-4 h-[200px]"}
-                    id={`user_img_${index}`}
-                    type={"image/"}
-                    text={data[1] ? null : "Drag Or Click"}
-                    image={data[1]}
-                    objectFit={"fill"}
-                    extFunc={imgInitFn}
-                  />
+                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn} />
                 </div>
               );
             })}

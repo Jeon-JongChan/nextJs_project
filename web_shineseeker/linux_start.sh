@@ -47,6 +47,8 @@ fi
 echo "최신 변경 사항을 가져오는 중..."
 git pull
 
+cat linux_start.sh > start.sh
+
 # 6. Next.js 애플리케이션 빌드
 echo "Next.js 애플리케이션 빌드 중..."
 npm run build

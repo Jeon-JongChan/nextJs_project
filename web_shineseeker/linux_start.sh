@@ -1,14 +1,17 @@
 #!/bin/bash
 
+# 현재 스크립트가 위치한 경로
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cd "$script_dir"
+
 # Node.js 버전과 다운로드 링크 설정
 nodejs_version="20.10.0"
 node_folder_name="node-v${nodejs_version}-linux-x64"
 nodejs_url="https://nodejs.org/dist/v${nodejs_version}/${node_folder_name}.tar.xz"
-output_path="$(pwd)/node_temp"
-node_path="$(pwd)/node"
-
-export NODE_PATH="$(pwd)/node"
-export PATH="$NODE_PATH/bin:$PATH"
+output_path="${script_dir}/node_temp"
+node_path="${script_dir}/node"
+node_modules_path="${script_dir}/node_modules"  # node_modules 경로 지정
 
 # 1. node 폴더가 존재하지 않으면 Node.js 다운로드
 if [ ! -d "$node_path" ]; then
@@ -35,7 +38,7 @@ fi
 export PATH="$node_path/bin:$PATH"
 
 # 4. node_modules가 존재하지 않으면 npm install 실행
-if [ ! -d "node_modules" ]; then
+if [ ! -d "$node_modules_path" ]; then
     echo "node_modules가 존재하지 않음. npm install 실행 중..."
     npm install
 fi

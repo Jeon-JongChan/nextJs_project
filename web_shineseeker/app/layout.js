@@ -1,4 +1,4 @@
-import {Inter} from "next/font/google";
+// import {Inter} from "next/font/google";
 import "./globals.css";
 import DevelopModal from "/_custom/components/_common/DevelopModal";
 import {AuthProvider} from "./AuthContext";

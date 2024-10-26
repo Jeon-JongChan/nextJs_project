@@ -20,22 +20,6 @@ export default function Component() {
   const [videoTitle, setVideoTitle] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 관리
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (audioRef.current && !initRef.current) {
-        setVideoTitle(audioRef.current.title);
-        audioRef.current.setVolume(50);
-        audioRef.current.setQuality("small");
-        audioRef.current.play();
-        if (audioRef.current.status(true) == 1) {
-          setIsPlaying(true);
-          clearInterval(interval);
-          console.log("MainAudioPlayer title interval exit");
-        }
-        initRef.current = true;
-      }
-    }, 1000);
-  }, []);
   // 재생/정지 토글 함수 (useCallback으로 메모이제이션하여 함수가 불필요하게 재생성되지 않도록 함)
   const handlePlayToggle = useCallback(() => {
     console.log("handlePlayToggle 실행 audioRef.current", audioRef.current, audioRef.current.title, audioRef.current.getTitle());
@@ -49,6 +33,25 @@ export default function Component() {
         setIsPlaying(false);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (audioRef.current && !initRef.current) {
+        clearInterval(interval);
+        setVideoTitle(audioRef.current.title);
+        audioRef.current.setVolume(50);
+        audioRef.current.setQuality("tiny");
+        audioRef.current.play();
+        initRef.current = true;
+        setTimeout(() => {
+          console.log("MainAudioPlayer traffic check", audioRef.current.status(true));
+          if (audioRef.current.status(true) == 1) {
+            setIsPlaying(true);
+          }
+        }, 1000);
+      }
+    }, 1000);
   }, []);
 
   // MemoizedYouTubeAudioPlayer를 useRef를 사용해 메모이제이션 처리

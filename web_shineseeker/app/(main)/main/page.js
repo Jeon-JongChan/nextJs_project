@@ -6,8 +6,11 @@ import MainSlide from "./MainSlide";
 import MainLoginForm from "./MainLoginForm";
 import MainAudioPlayer from "./MainAudioPlayer";
 
+import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
+
 const menuName = "main";
 export default function Home() {
+  const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
   const [maindata, setMainData] = useState([]);
   const [slideData, setSlideData] = useState([]);
   const [user, setUser] = useState({});
@@ -15,7 +18,7 @@ export default function Home() {
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
     let response = await fetch(`/api/select?apitype=page&pagename=${menuName}&getcount=1`);
-    console.log("야 메인 땡긴다?", response);
+    console.log("야 메인 땡긴다?", response, tokenRef);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);
     const newData = await response.json();

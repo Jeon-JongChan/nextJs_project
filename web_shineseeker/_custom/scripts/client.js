@@ -1,5 +1,5 @@
 import {devLog} from "./common";
-export {updateDataWithFormInputs, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
+export {updateDataWithFormInputs, cookieFetch, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
 /**
  *
  * @param {*} event
@@ -53,6 +53,26 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
   return true;
 }
 
+async function cookieFetch(url, token = null, method = "GET", data = null) {
+  const options = {method: method};
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+    options.headers = headers;
+  } else {
+    options.credentials = "include";
+  }
+
+  if (data && (method === "POST" || method === "PUT")) {
+    options.body = JSON.stringify(data);
+  }
+
+  // fetch를 await하지 않고 반환
+  return fetch(url, options);
+}
 function getDomIndex(dom, elem = null) {
   if (!elem) elem = dom.parentNode;
   var idx = null;

@@ -1,6 +1,7 @@
 import {Inter} from "next/font/google";
 import "./globals.css";
 import DevelopModal from "/_custom/components/_common/DevelopModal";
+import {AuthProvider} from "./AuthContext";
 const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function RootLayout({children}) {
     <html lang="en">
       {/* <body className={inter.className}> */}
       <body className="font-dnf">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         <DevelopModal />
       </body>
     </html>

@@ -12,10 +12,15 @@ export async function GET(req) {
     // devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
-        // user의 경우 item 값을 추가해줘야 함
+        // user의 경우 item, role 값을 추가해줘야 함
         for (let i = 0; i < data.length; i++) {
           let items = await getDataKey("user_item", "userid", data[i].userid, true);
           if (items?.length) data[i].items = items.map((item) => item.item);
+          let role = await getDataKey("user_auth", "userid", data[i].userid);
+          if (role?.userpw) {
+            data[i].userpw = role.userpw;
+            data[i].role = role.role;
+          }
         }
         // userid가 존재하는 경우 해당 값만 보내도록 한다
         let userid = searchParams.get("userid") || null;

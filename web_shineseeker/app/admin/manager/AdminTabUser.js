@@ -94,10 +94,11 @@ export default function Home() {
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchUserData() {
     let response;
-    if (fetchIndex++ == 0) response = await fetch("/api/select?apitype=user_admin&getcount=1");
-    else response = await fetch("/api/select?apitype=user_admin");
+    if (fetchIndex++ == 0) response = await fetch("/api/select?apitype=user&apioption=admin&getcount=1");
+    else response = await fetch("/api/select?apitype=user&apioption=admin");
     const newData = await response.json();
     if (newData?.data?.length) {
+      1;
       devLog(`admin page data 갱신되었습니다(${fetchIndex}): `, newData);
       setUserData([...newData.data]);
     }

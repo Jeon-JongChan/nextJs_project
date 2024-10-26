@@ -130,7 +130,7 @@
   mask-size: contain;
   height: 557px;
 }
-.arrow-world-left {
+/* .arrow-world-left {
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
@@ -141,7 +141,7 @@
   width: 50px;
   height: 50px;
   background-image: url("/images/world/02_world_box02_button02.png");
-}
+} */
 .img-world-tab-bg {
   background-image: url("/images/world/02_world_textbanner.png");
   background-repeat: no-repeat;

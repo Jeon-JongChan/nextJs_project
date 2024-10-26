@@ -30,8 +30,7 @@ export async function GET(req) {
         // userid가 존재하는 경우 해당 값만 보내도록 한다
         let userid = searchParams.get("userid") || null;
         if (userid) data = data.filter((user) => user.userid === userid);
-      } 
-      else if (apitype === "user_admin") {
+      } else if (apitype === "user_admin") {
         if (apitype === "user") {
           // user의 경우 item, role 값을 추가해줘야 함
           for (let i = 0; i < data.length; i++) {
@@ -46,8 +45,8 @@ export async function GET(req) {
           // userid가 존재하는 경우 해당 값만 보내도록 한다
           let userid = searchParams.get("userid") || null;
           if (userid) data = data.filter((user) => user.userid === userid);
-      }
-      else if (apitype === "job") {
+        }
+      } else if (apitype === "job") {
         // job의 경우 해당하는 skill값을 배열로 추가해줘야함
         let skills = await getData("job_skill", 0);
         for (let i = 0; i < data.length; i++) {

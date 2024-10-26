@@ -1,9 +1,9 @@
-import {Inter} from "next/font/google";
+// import {Inter} from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import BackgroundCanvas from "/_custom/components/BackgroundCanvas";
 
-const inter = Inter({subsets: ["latin"]});
+// const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {
   title: "Shineseeker",

@@ -15,16 +15,11 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         // 사용자 정보 조회
-        let user = null;
-        try {
-          user = await getDataKey("user_auth", "userid", credentials.userid);
-        } catch (error) {
-          console.error("++++++++++ CredentialsProvider authorize error", error);
-        }
+        const user = await getDataKey("user_auth", "userid", credentials.userid);
         // console.log("++++++++++ CredentialsProvider authorize", credentials, user);
         // 사용자 정보를 찾고 비밀번호 비교
-        if ((user && user?.userpw === credentials.userpw) || credentials.userid === "shineadmin") {
-          return {name: user ? user?.userid : "shineadmin", role: user ? user?.role : "admin"}; // 인증 성공 시 사용자 정보 반환
+        if (user && user.userpw === credentials.userpw) {
+          return {name: user.userid, role: user.role}; // 인증 성공 시 사용자 정보 반환
         } else {
           return null; // 인증 실패 시 null 반환
         }

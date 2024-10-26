@@ -55,4 +55,4 @@ npm run build
 
 # 7. 프로덕션 모드로 실행
 echo "Next.js 애플리케이션을 프로덕션 모드로 실행 중..."
-npm run start -- -p 80
+sudo npm run start -- -p 80

@@ -27,11 +27,11 @@ async function initializeDatabase() {
 
   // admin 계정이 없으면 초기화해주면서 추가
   const prepare = sqlite.db.prepare("SELECT * FROM user_auth WHERE userid = ?");
-  const admin = prepare.get("shineseeker");
+  const admin = prepare.get("shineseekeradmin");
 
   if (!admin) {
-    sqlite.db.prepare("INSERT INTO user (userid) VALUES (?)").run(["shineseeker"]);
-    sqlite.db.prepare("INSERT INTO user_auth (userid, userpw, role) VALUES (?, ?, ?)").run(["shineseeker", "shineseeker", "admin"]);
+    sqlite.db.prepare("INSERT INTO user (userid) VALUES (?)").run(["shineseekeradmin"]);
+    sqlite.db.prepare("INSERT INTO user_auth (userid, userpw, role) VALUES (?, ?, ?)").run(["shineseekeradmin", "shineseekeradmin", "admin"]);
   }
 }
 

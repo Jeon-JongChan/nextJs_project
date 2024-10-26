@@ -14,6 +14,8 @@ export async function GET(req) {
       if (apitype === "user") {
         // user의 경우 item, role 값을 추가해줘야 함
         for (let i = 0; i < data.length; i++) {
+          // userid가 shineseekeradmin 인 경우 삭제
+          if (data[i].userid === "shineseekeradmin") data.splice(i, 1);
           let items = await getDataKey("user_item", "userid", data[i].userid, true);
           if (items?.length) data[i].items = items.map((item) => item.item);
           let role = await getDataKey("user_auth", "userid", data[i].userid);

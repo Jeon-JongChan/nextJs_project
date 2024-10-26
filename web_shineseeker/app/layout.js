@@ -2,7 +2,7 @@
 import "./globals.css";
 import DevelopModal from "/_custom/components/_common/DevelopModal";
 import {AuthProvider} from "./AuthContext";
-const inter = Inter({subsets: ["latin"]});
+// const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {
   title: "Shineseeker",

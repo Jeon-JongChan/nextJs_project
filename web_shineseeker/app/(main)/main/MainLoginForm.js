@@ -31,9 +31,9 @@ export default function Component() {
   return (
     <>
       {!user ? (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 rounded-lg grid grid-cols-3" style={{width: "320px"}}>
-          <button type="submit" className="col-span-1 relative" style={{margin: "4px 4px"}}>
-            <Image src="/images/home/01_home_login_box_button.png" alt="Shineseeker" fill={true} />
+        <form onSubmit={handleSubmit} className="absolute rounded-lg flex" style={{width: "195px", bottom: "25px"}}>
+          <button type="submit" className="relative" style={{minWidth: "53px"}}>
+            <Image src="/images/home/01_home_login_box_button.png" alt="Shineseeker" width={53} height={53} />
           </button>
           <div className="col-span-2">
             <input type="text" placeholder="ID" id="username" name="userid" className="mt-1 p-2 block w-full border-gray-300 rounded-full focus:outline-none" />
@@ -45,23 +45,30 @@ export default function Component() {
         </form>
       ) : (
         <>
-          <div className="max-w-md mx-auto p-6 rounded-lg grid grid-cols-3" style={{width: "320px"}}>
+          <pre className="absolute text-center font-dnf text-[20px]" style={{top: "140px"}}>
+            {user?.name} 님
+          </pre>
+          <div className="absolute rounded-lg grid grid-cols-3 text-center font-dnf text-[20px]" style={{width: "182px", bottom: "40px", left: "40px"}}>
             <div className="col-span-1">
-              <Link href="/battle/patrol">패트롤</Link>
+              <Link href="/battle/patrol" className="text-[#6231C5]">
+                패트롤
+              </Link>
+              <span className="text-black" style={{marginLeft: "2px"}}>
+                |
+              </span>
             </div>
-            <div className="col-span-2">
-              <div className="flex justify-between">
-                <Link href={`/member/${user.name}`}>캐릭터</Link>
-              </div>
-              <div className="flex justify-between">
-                <button
-                  onClick={() => {
-                    alert("연습장");
-                  }}
-                >
-                  연습장
-                </button>
-              </div>
+            <div className="col-span-1">
+              <Link href={`/member/${user.name}`} style={{marginLeft: "3px"}}>
+                캐릭터
+              </Link>
+              <span className="text-black" style={{marginLeft: "3px"}}>
+                |
+              </span>
+            </div>
+            <div className="col-span-1">
+              <button onClick={() => alert("연습장")} className="text-[#6231C5]">
+                연습장
+              </button>
             </div>
           </div>
         </>

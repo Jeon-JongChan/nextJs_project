@@ -10,13 +10,13 @@ export default function Component(props) {
     const activeTab = document.querySelector(".img-read-tab-active");
     if (activeTab) {
       activeTab.classList.remove("img-read-tab-active");
-      activeTab.classList.remove("img-read-tab-col" + activeTab.dataset.key + "-active");
-      activeTab.classList.add("img-read-tab-col" + activeTab.dataset.key);
+      // activeTab.classList.remove("img-read-tab-col" + activeTab.dataset.key + "-active");
+      // activeTab.classList.add("img-read-tab-col" + activeTab.dataset.key);
     }
     // 클릭한 tab 활성화
     target.classList.remove("img-read-tab-col" + tab);
-    target.classList.add("img-read-tab-col" + tab + "-active");
-    target.classList.add("img-read-tab-active");
+    // target.classList.add("img-read-tab-col" + tab + "-active");
+    // target.classList.add("img-read-tab-active");
     setActiveTab(tab);
   };
   const TabContent = ({tab}) => {
@@ -27,16 +27,28 @@ export default function Component(props) {
     if (props?.tabContent) setTabContent(props.tabContent);
     console.log("TabParagraph props:", props);
   }, [props]);
+
+  const tabTextCss = "text-white hover:text-[#806FAF] focus:text-[#806FAF] ";
   return (
     <>
       <div className="flex rounded-3xl px-4" style={{height: "inherit", borderRadius: "3rem"}}>
         <div className="w-[15%]" style={{height: "inherit"}}>
           <div className="grid grid-cols-1 relative h-full">
-            <button className="col-span-1 img-read-tab-init img-read-tab-col1 img-read-tab-col1-active img-read-tab-active" data-key={1} onClick={(e) => clickTab(e.target, 1)}></button>
-            <button className="col-span-1 img-read-tab-init img-read-tab-col2" data-key={2} onClick={(e) => clickTab(e.target, 2)}></button>
-            <button className="col-span-1 img-read-tab-init img-read-tab-col3" data-key={3} onClick={(e) => clickTab(e.target, 3)}></button>
-            <button className="col-span-1 img-read-tab-init img-read-tab-col4" data-key={4} onClick={(e) => clickTab(e.target, 4)}></button>
-            <button className="col-span-1 img-read-tab-init img-read-tab-col5" data-key={5} onClick={(e) => clickTab(e.target, 5)}></button>
+            <button className={tabTextCss + "col-span-1 img-read-tab-active"} data-key={1} onClick={(e) => clickTab(e.target, 1)}>
+              ★커뮤니티
+            </button>
+            <button className={tabTextCss + "col-span-1"} data-key={2} onClick={(e) => clickTab(e.target, 2)}>
+              ★로그 작성 기준
+            </button>
+            <button className={tabTextCss + "col-span-1"} data-key={3} onClick={(e) => clickTab(e.target, 3)}>
+              ★러닝 시 유의사항
+            </button>
+            <button className={tabTextCss + "col-span-1"} data-key={4} onClick={(e) => clickTab(e.target, 4)}>
+              ★주의사항
+            </button>
+            <button className={tabTextCss + "col-span-1"} data-key={5} onClick={(e) => clickTab(e.target, 5)}>
+              ★하차 및 제명
+            </button>
           </div>
         </div>
         <div className="w-[85%] img-read-tab-bg ">

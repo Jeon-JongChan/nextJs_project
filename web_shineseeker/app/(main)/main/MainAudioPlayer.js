@@ -42,7 +42,7 @@ export default function Component() {
         setVideoTitle(audioRef.current.title);
         audioRef.current.setVolume(50);
         audioRef.current.setQuality("tiny");
-        audioRef.current.play();
+        // audioRef.current.play();
         initRef.current = true;
         setTimeout(() => {
           console.log("MainAudioPlayer traffic check", audioRef.current.status(true));

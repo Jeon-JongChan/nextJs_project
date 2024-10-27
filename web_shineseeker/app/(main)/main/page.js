@@ -44,14 +44,9 @@ export default function Home() {
   }, [maindata]);
   return (
     <>
-      <div className="relative grid grid-cols-6" style={{height: "400px"}}>
-        <div className="relative login col-span-2 max-h-full mr-4" style={{height: "440px", top: "-30px"}}>
+      <div className="relative flex" style={{minWidth: "932px", height: "311px"}}>
+        <div className="relative login col-span-2 max-h-full mr-4" style={{minWidth: "254px", height: "311px"}}>
           <div className="relative img-login-bg flex flex-col items-center h-full">
-            {/* 로고 */}
-            <div className="text-white w-full py-4 px-28 " style={{height: "300px"}}>
-              {/* <div className="relative w-full h-3/4 top-10"> <Image src="/images/home/01_butterfly.webp" alt="login logo" fill={true} /> </div> */}
-            </div>
-            {/* 로그인 폼 */}
             <MainLoginForm />
           </div>
         </div>

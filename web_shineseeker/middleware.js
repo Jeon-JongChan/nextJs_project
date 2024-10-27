@@ -34,5 +34,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/amdin/:path*", "/api/app/:path*", "/market", "/member/:path*", "/battle/:path*"], // 관리 페이지와 사용자 페이지에 적용
+  matcher: ["/admin/manager", "/admin/page", "/api/amdin/:path*", "/api/app/:path*", "/market", "/member/:path*", "/battle/:path*"], // 관리 페이지와 사용자 페이지에 적용
 };

@@ -42,6 +42,7 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
+    devLog("clickListItem", maindata, e.target.dataset);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
@@ -50,13 +51,13 @@ export default function Home() {
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`skill_detail_`)) return; // 특수 input은 제외
         try {
-          input.value = data[input.id] || "init";
+          input.value = data[input.id];
         } catch (e) {
           console.error(input, e);
         }
       });
       // 2. 이미지 채우기
-      setClickImage([data[`${menuName}_img_0`]]);
+      setClickImage([data[`${menuName}_img_0`] || "init"]);
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
       selectElements.forEach((select) => {
@@ -69,6 +70,21 @@ export default function Home() {
       });
     }
   };
+
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    devLog("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const clickImageCopy = [...clickImage];
+    clickImageCopy[index] = null;
+    setClickImage(clickImageCopy);
+    devLog("imgInitFn : ", clickImageCopy);
+  };
+
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 몬스터 항목 선택되었습니다.");
     const response = await fetch("/api/select?apitype=skill_detail&getcount=1");
@@ -121,7 +137,7 @@ export default function Home() {
             if (maindata[key]["monster_name"]) {
               return (
                 <Tooltip key={index} content={null} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["monster_name"]} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["monster_name"]} index={index} onclick={clickListItem} />
                 </Tooltip>
               );
             }
@@ -129,18 +145,13 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["보스 이미지", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
               <div className="block w-1/4" key={index}>
                 <label htmlFor={`monster_img_${index}`} className="block text-2xl font-bold">{data[0]}</label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`monster_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
+                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`monster_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn}/>
               </div>
             )}
           </div>
@@ -150,38 +161,10 @@ export default function Home() {
             {[...Array(5)].map((_, index) => (
               <React.Fragment key={index}>
                 <GridInputText label={"계수(% 미만)"} id={`monster_event_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
-                <GridInputSelectBox
-                  label={"사용스탯"}
-                  id={`monster_event_cost_stat_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_stat || skillDefaultList.skill_stat}
-                />
-                <GridInputSelectBox
-                  label={"효과"}
-                  id={`monster_event_type_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_type || skillDefaultList.skill_type}
-                />
-                <GridInputSelectBox
-                  label={"범위"}
-                  id={`monster_event_range_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_range || skillDefaultList.skill_range}
-                />
-                <GridInputSelectBox
-                  label={"위력스탯"}
-                  id={`monster_event_stat_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat}
-                />
+                <GridInputSelectBox label={"사용스탯"} id={`monster_event_cost_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_stat || skillDefaultList.skill_stat} />
+                <GridInputSelectBox label={"효과"} id={`monster_event_type_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_type || skillDefaultList.skill_type} />
+                <GridInputSelectBox label={"범위"} id={`monster_event_range_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_range || skillDefaultList.skill_range} />
+                <GridInputSelectBox label={"위력스탯"} id={`monster_event_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat} />
                 <GridInputText label={"스탯 적용(%)"} id={`monster_event_stat_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
                 <GridInputText label={"출력메세지"} id={`monster_event_msg_${index}`} type={"text"} colSpan={6} css={"text-center border h-[36px]"} />
               </React.Fragment>

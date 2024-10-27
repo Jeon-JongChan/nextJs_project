@@ -49,13 +49,13 @@ export default function Home() {
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_detail_`)) return; // 특수 input은 제외
         try {
-          input.value = data[input.id] || "init";
+          input.value = data[input.id];
         } catch (e) {
           console.error(input, e);
         }
       });
       // 2. 이미지 채우기
-      setClickImage([data[`${menuName}_img_0`], data[`${menuName}_img_1`]]);
+      setClickImage([data[`${menuName}_img_0`] || "init", data[`${menuName}_img_1`] || "init"]);
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
       selectElements.forEach((select) => {
@@ -67,6 +67,20 @@ export default function Home() {
         textarea.value = data[textarea.id];
       });
     }
+  };
+
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    devLog("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const clickImageCopy = [...clickImage];
+    clickImageCopy[index] = null;
+    setClickImage(clickImageCopy);
+    devLog("imgInitFn : ", clickImageCopy);
   };
 
   async function fetchEssentialData() {
@@ -117,7 +131,7 @@ export default function Home() {
             if (maindata[key]["skill_name"]) {
               return (
                 <Tooltip key={index} content={<span>{maindata[key]["skill_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["skill_name"]} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["skill_name"]} index={index} onclick={clickListItem} />
                 </Tooltip>
               );
             }
@@ -135,7 +149,7 @@ export default function Home() {
               //prettier-ignore
               <div className="block w-1/4" key={index}>
                 <label htmlFor="skill_icon" className="block text-2xl font-bold">{data[0]}</label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`skill_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
+                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`skill_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn}/>
               </div>
             )}
           </div>

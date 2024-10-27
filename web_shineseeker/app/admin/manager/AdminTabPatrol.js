@@ -53,13 +53,13 @@ export default function Home() {
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img`) || input.id.startsWith(`${menuName}_ret_img`)) return; // 특수 input은 제외
         try {
-          input.value = data[input.id] || "init";
+          input.value = data[input.id];
         } catch (e) {
           console.error(input, e);
         }
       });
       // 2. 이미지 채우기
-      setClickImage(data?.[`${menuName}_img`]);
+      setClickImage(data?.[`${menuName}_img`] || "init");
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
       selectElements.forEach((select) => {
@@ -83,6 +83,20 @@ export default function Home() {
   const manageOption = (status = 1) => {
     if (status > 0) setInputOptionList([...inputOptionList, ...Array(status).map((_, index) => inputOptionList.length + index)]);
     else setInputOptionList(inputOptionList.slice(0, inputOptionList.length - 1));
+  };
+
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    devLog("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const clickImageCopy = [...clickImage];
+    clickImageCopy[index] = null;
+    setClickImage(clickImageCopy);
+    devLog("imgInitFn : ", clickImageCopy);
   };
 
   async function fetchEssentialData() {
@@ -133,7 +147,7 @@ export default function Home() {
             if (maindata[key]["patrol_name"]) {
               return (
                 <Tooltip key={index} content={<span>{maindata[key]["patrol_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["patrol_name"]} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["patrol_name"]} index={index} onclick={clickListItem} />
                 </Tooltip>
               );
             }
@@ -141,18 +155,13 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             <div className="block w-1/4">
               <label htmlFor="patrol_img" className="block text-2xl font-bold">
                 출력이미지
               </label>
-              <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`patrol_img`} type={"image/"} text={clickImage ? null : "Drag Or Click"} image={clickImage} objectFit={"fill"} />
+              <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`patrol_img`} type={"image/"} text={clickImage ? null : "Drag Or Click"} image={clickImage} objectFit={"fill"} extFunc={imgInitFn} />
             </div>
           </div>
           <h1 className="mt-8 col-span-full font-bold text-2xl">항목설정</h1>
@@ -207,9 +216,7 @@ export default function Home() {
 function makeRetOptionGenerator(index, option = {}) {
   return (
     <React.Fragment key={index}>
-      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>
-        {option.span ? option?.span : `${index + 1} 선택지`}
-      </span>
+      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>{option.span ? option?.span : `${index + 1} 선택지`}</span>
       <GridInputSelectBox label={option?.type} id={`patrol_ret_type_${index}`} type={"text"} colSpan={2} options={patrolDefaultList.patrol_option_item} />
       <GridInputText label={option?.money} id={`patrol_ret_money_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />
       <GridInputText label={option?.count} id={`patrol_ret_count_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />

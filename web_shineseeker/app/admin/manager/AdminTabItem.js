@@ -41,7 +41,7 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
-    devLog("clickListItem", itemOptionList, maindata);
+    devLog("clickListItem", itemOptionList, maindata, e.target.dataset);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
@@ -68,6 +68,20 @@ export default function Home() {
         textarea.value = data[textarea.id];
       });
     }
+  };
+
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    devLog("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const clickImageCopy = [...clickImage];
+    clickImageCopy[index] = null;
+    setClickImage(clickImageCopy);
+    devLog("imgInitFn : ", clickImageCopy);
   };
 
   async function fetchEssentialData() {
@@ -118,7 +132,7 @@ export default function Home() {
             if (maindata[key]["item_name"]) {
               return (
                 <Tooltip key={index} content={<span>{maindata[key]["item_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["item_name"]} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["item_name"]} index={index} onclick={clickListItem} />
                 </Tooltip>
               );
             }
@@ -135,7 +149,7 @@ export default function Home() {
               //prettier-ignore
               <div className="block w-1/4" key={index}>
                 <label htmlFor="item_icon" className="block text-2xl font-bold">{data[0]}</label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`item_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} />
+                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`item_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn}/>
               </div>
             )}
           </div>

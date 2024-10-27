@@ -38,7 +38,25 @@ export default function Home() {
 
   const manageSlide = (status) => {
     if (status) setSlideList([...slideList, ...Array(status).map((_, index) => slideList.length + index)]);
-    else setSlideList(slideList.slice(0, slideList.length - 1));
+    else {
+      setSlideList(slideList.slice(0, slideList.length - 1));
+      const images = {...savedImage};
+      delete images[slideList.length - 1];
+      setSavedImage(images);
+    }
+  };
+
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    console.log("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const images = {...savedImage};
+    images[index] = URL.createObjectURL(files[0]);
+    setSavedImage(images);
   };
 
   const fillNode = () => {
@@ -48,10 +66,10 @@ export default function Home() {
     maindata.forEach((data) => {
       if (data.id.startsWith(`${name}_img`)) {
         let idx = data.id.split("_").pop();
-        images[idx] = data.value;
+        images[idx] = data.value || "init";
       } else {
         const element = document.querySelector(`#${data.id}`);
-        if (element) element.value = data.value;
+        if (element) element.value = data.value || "init";
       }
     });
     setSavedImage(images);
@@ -86,12 +104,7 @@ export default function Home() {
   return (
     <div className="flex w-full">
       <div className={`w-full flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <h1 className="mt-8 font-bold text-2xl col-span-12">메인 페이지 슬라이드 관리</h1>
           {slideList.map((_, index) => (
             <FileDragAndDrop
@@ -102,6 +115,7 @@ export default function Home() {
               text={savedImage?.[index] ? null : "Drag Or Click"}
               image={savedImage?.[index]}
               objectFit={"fill"}
+              extFunc={imgInitFn}
             />
           ))}
           <div className="col-span-full" />

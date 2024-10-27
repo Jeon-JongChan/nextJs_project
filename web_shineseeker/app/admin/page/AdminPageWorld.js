@@ -40,7 +40,18 @@ export default function Home() {
     if (status) setSlideList([...slideList, ...Array(status).map((_, index) => slideList.length + index)]);
     else setSlideList(slideList.slice(0, slideList.length - 1));
   };
-
+  // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
+  const imgInitFn = (event) => {
+    const id = event.target.id;
+    const files = Array.from(event.target.files);
+    console.log("imgInitFn : ", id);
+    // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
+    if (!id || files.length == 0) return;
+    const index = id.slice(-1);
+    const images = {...savedImage};
+    images[index] = URL.createObjectURL(files[0]);
+    setSavedImage(images);
+  };
   const fillNode = () => {
     const name = menuName; // e.target.dataset.name;
     const images = {};
@@ -89,7 +100,16 @@ export default function Home() {
         <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <h1 className="mt-8 font-bold text-2xl col-span-12">세계관 페이지 슬라이드 관리</h1>
           {slideList.map((_, index) => (
-            <FileDragAndDrop key={index} css={"mt-2 w-full col-span-2 h-[500px]"} id={`world_img_slide_${index}`} type={"image/"} text={savedImage?.[index] ? null : "Drag Or Click"} image={savedImage?.[index]} objectFit={"fill"} />
+            <FileDragAndDrop
+              key={index}
+              css={"mt-2 w-full col-span-2 h-[500px]"}
+              id={`world_img_slide_${index}`}
+              type={"image/"}
+              text={savedImage?.[index] ? null : "Drag Or Click"}
+              image={savedImage?.[index]}
+              objectFit={"fill"}
+              extFunc={imgInitFn}
+            />
           ))}
           <div className="col-span-full" />
           <div className="col-span-8" />

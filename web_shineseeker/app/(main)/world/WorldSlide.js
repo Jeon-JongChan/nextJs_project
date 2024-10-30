@@ -7,18 +7,6 @@ const defaultProps = {
     {
       imageUrl: "https://via.placeholder.com/800x400?text=Slide%201",
     },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%202",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%203",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%204",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/800x400?text=Slide%205",
-    },
   ],
 };
 
@@ -65,20 +53,20 @@ export default function Component(props) {
     const hoverStyle = "opacity-0 group-hover:opacity-100 transition-opacity duration-300 ";
     const slideDescStyle = "pl-16 ";
     return (
-      <div key={index} className="relative w-full h-full group">
-        <img src={slideInfo?.imageUrl} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+      <div key={index} className="relative w-full group" style={{maxHeight: "372px"}}>
+        <img src={slideInfo?.imageUrl} alt={`Slide ${index + 1}`} className="w-full h-full" style={{width: "215px", height: "372px"}} />
       </div>
     );
   }
 
   return (
     <>
-      <div className="slide-banner w-full max-h-full overflow-hidden relative group" style={{height: "579px"}}>
-        <div className="img-world-slide absolute w-full top-0" style={{height: "579px"}}>
+      <div className="slide-banner w-full max-h-full overflow-hidden relative group" style={{width: "215px", height: "372px"}}>
+        <div className="img-world-slide absolute w-full top-0" style={{width: "215px", height: "372px"}}>
           {/* <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-world-left"} onClick={prevSlide}></button> */}
           {/* <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-world-right"} onClick={nextSlide}></button> */}
         </div>
-        <div className="overflow-hidden img-world-slidemask relative" style={{top: "12px"}}>
+        <div className="overflow-hidden img-world-slidemask relative" style={{top: "7px", width: "215px", height: "350px"}}>
           <div className="flex flex-row h-full z-0 relative" style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}>
             {createSlide(slides[slides.length - 1], 1)}
             {slides.map((slide, index) => createSlide(slide, index + 1))}

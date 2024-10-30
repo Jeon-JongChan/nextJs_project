@@ -28,12 +28,12 @@ export default function Component(props) {
     console.log("TabParagraph props:", props);
   }, [props]);
 
-  const tabTextCss = "text-white hover:text-[#806FAF] focus:text-[#806FAF] ";
+  const tabTextCss = "hover:text-[#806FAF] focus:text-[#806FAF] ";
   return (
     <>
       <div className="flex rounded-3xl px-4" style={{height: "inherit", borderRadius: "3rem"}}>
-        <div className="w-[15%]" style={{height: "inherit"}}>
-          <div className="grid grid-cols-1 relative h-full">
+        <div className="" style={{minWidth: "125px", height: "inherit"}}>
+          <div className="grid grid-cols-1 relative h-full text-white">
             <button className={tabTextCss + "col-span-1 img-read-tab-active"} data-key={1} onClick={(e) => clickTab(e.target, 1)}>
               ★커뮤니티
             </button>
@@ -51,8 +51,8 @@ export default function Component(props) {
             </button>
           </div>
         </div>
-        <div className="w-[85%] img-read-tab-bg ">
-          <div className="flex-1 overflow-y-auto pl-8 py-4 text-m">
+        <div className="img-read-tab-bg" style={{width: "780px", height: "375px"}}>
+          <div className="flex-1 overflow-y-auto pl-8 py-4 text-m" style={{width: "780px", height: "375px"}}>
             <TabContent tab={activeTab} />
           </div>
         </div>

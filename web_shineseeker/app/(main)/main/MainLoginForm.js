@@ -24,6 +24,14 @@ export default function Component() {
     }
   };
 
+  const logout = async () => {
+    if (handleLogout) {
+      console.log("로그아웃 시도:", tokenRef.current); // 시도 메시지
+      await handleLogout(); // 로그아웃 처리
+      console.log("로그아웃 성공", tokenRef.current); // 성공 메시지
+    }
+  };
+
   useEffect(() => {
     console.log("로그인 컴포넌트 렌더링:", tokenRef.current);
     setUser(tokenRef.current?.user);
@@ -35,9 +43,9 @@ export default function Component() {
           <button type="submit" className="relative" style={{minWidth: "53px"}}>
             <Image src="/images/home/01_home_login_box_button.png" alt="Shineseeker" width={53} height={53} />
           </button>
-          <div className="col-span-2">
-            <input type="text" placeholder="ID" id="username" name="userid" className="mt-1 p-2 block w-full border-gray-300 rounded-full focus:outline-none" />
-            <input type="password" placeholder="PW" id="password" name="userpw" className="mt-1 p-2 block w-full border-gray-300 rounded-full focus:outline-none" />
+          <div className="col-span-2" style={{width: "131px", height: "48px", fontSize: "14px"}}>
+            <input type="text" placeholder="ID" id="username" name="userid" className="mt-1 p-2 block w-full border-gray-300 rounded-full focus:outline-none" style={{height: "22px"}} />
+            <input type="password" placeholder="PW" id="password" name="userpw" className="mt-1 p-2 block w-full border-gray-300 rounded-full focus:outline-none" style={{height: "22px"}} />
           </div>
           {/* <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700">
           로그인
@@ -45,6 +53,11 @@ export default function Component() {
         </form>
       ) : (
         <>
+          <div className="absolute text-center font-dnf text-[20px]" style={{top: "20px"}}>
+            <button onClick={() => logout()} className="text-[#6231C5]">
+              로그아웃
+            </button>
+          </div>
           <pre className="absolute text-center font-dnf text-[20px]" style={{top: "140px"}}>
             {user?.name} 님
           </pre>

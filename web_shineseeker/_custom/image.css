@@ -77,11 +77,9 @@
   pointer-events: auto;
 }
 .main-slide-frame {
-  height: 80%;
-  width: 85%;
-  position: relative;
-  top: 40px;
-  left: 70px;
+  position: absolute;
+  top: 45px;
+  left: 55px;
   pointer-events: auto;
 }
 .arrow-init {
@@ -145,8 +143,12 @@
 .img-world-tab-bg {
   background-image: url("/images/world/02_world_textbanner.png");
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
+  background-position: initial initial;
+  background-size: cover;
+  background-origin: padding-box;
+}
+.img-world-tab-active {
+  color: #806faf;
 }
 .img-world-tab-col1 {
   background-image: url("/images/world/02_world_textbanner01.png");
@@ -203,15 +205,18 @@
 .img-read-tab-bg {
   background-image: url("/images/read/03_read_box.png");
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: initial;
+  background-position: initial initial;
+  background-size: cover;
+  background-origin: padding-box;
 }
 .img-read-tab-init {
   background-repeat: no-repeat;
   background-position: center center;
   background-size: initial;
 }
-
+.img-read-tab-active {
+  color: #806faf;
+}
 .img-read-tab-col1 {
   background-image: url("/images/read/03_read_text01.png");
 }

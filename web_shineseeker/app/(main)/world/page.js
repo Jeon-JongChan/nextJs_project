@@ -45,11 +45,11 @@ export default function Home() {
   }, [maindata]);
   return (
     <>
-      <div className="flex w-full" style={{height: "600px"}}>
-        <div className="w-1/3">
+      <div className="relative flex w-full" style={{height: "375px", left: "-15px", marginTop: "20px"}}>
+        <div className="">
           <WorldSlide slides={slideData} />
         </div>
-        <div className="w-2/3">
+        <div className="" style={{marginLeft: "75px", marginTop: "10px"}}>
           <TabParagraph tabContent={tabContent} />
         </div>
       </div>

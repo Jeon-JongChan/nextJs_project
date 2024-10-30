@@ -19,7 +19,7 @@ export default function Component(props) {
     setActiveTab(parseInt(tab));
   };
   const TabContent = ({tab}) => {
-    const className = "w-full h-full max-h-[440px] text-white text-x-wrap";
+    const className = "w-full h-full max-h-[320px] text-white text-x-wrap";
     return <pre className={className}>{tabContent?.[tab - 1]}</pre>;
   };
 
@@ -28,11 +28,11 @@ export default function Component(props) {
     console.log("TabParagraph props:", props);
   }, [props]);
 
-  const tabTextCss = "text-white hover:text-[#806FAF] focus:text-[#806FAF] ";
+  const tabTextCss = "hover:text-[#806FAF] focus:text-[#806FAF] ";
   return (
     <>
-      <div className="flex flex-col rounded-3xl img-world-tab-bg" style={{height: "-webkit-fill-available", borderRadius: "3rem"}}>
-        <div className="grid grid-cols-5 w-full relative" style={{height: "32px", top: "0px"}}>
+      <div className="flex flex-col rounded-3xl" style={{width: "620px", height: "320px"}}>
+        <div className="grid grid-cols-5 w-full relative text-white" style={{height: "32px", top: "0px"}}>
           <button className={tabTextCss + "col-span-1 img-world-tab-active"} data-key={1} onClick={(e) => clickTab(e.target, 1)}>
             ★세계
           </button>
@@ -49,7 +49,7 @@ export default function Component(props) {
             ★사도
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto pl-12 py-12 pr-2 text-m">
+        <div className="flex-1 overflow-y-auto pl-4 py-4 pr-2 text-m img-world-tab-bg">
           <TabContent tab={activeTab} />
         </div>
       </div>

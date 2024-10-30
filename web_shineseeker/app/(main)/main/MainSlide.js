@@ -60,16 +60,16 @@ export default function Component(props) {
 
   return (
     <>
-      <div className={`slide-banner w-full max-h-full overflow-hidden relative group`} style={{height: "inherit"}}>
-        <div className="main-slide-mask main-slide-frame overflow-hidden ">
+      <div className={`slide-banner w-full max-h-full overflow-hidden relative group`} style={{width: "636px", height: "248px", marginTop: "38px"}}>
+        <div className="main-slide-mask main-slide-frame overflow-hidden " style={{width: "528px", height: "157px"}}>
           <div className="flex flex-row h-full z-0 relative" style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}>
             {createSlide(slides[slides.length - 1], 1)}
             {slides.map((slide, index) => createSlide(slide, index + 1))}
           </div>
         </div>
         <div className="img-main-slide absolute w-full top-0" style={{height: "inherit"}}>
-          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"} onClick={prevSlide}></button>
-          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"} onClick={nextSlide}></button>
+          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute left-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-left"} onClick={prevSlide} style={{width: "28px", height: "28px"}}></button>
+          <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-right"} onClick={nextSlide} style={{width: "28px", height: "28px"}}></button>
         </div>
       </div>
     </>

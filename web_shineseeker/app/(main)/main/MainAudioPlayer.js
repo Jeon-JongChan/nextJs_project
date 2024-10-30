@@ -12,7 +12,7 @@ import MusicBtnPrev from "@/public/images/home/01_home_music_button03.png";
 // dynamic을 사용하여 YouTubeAudioPlayer 컴포넌트 lazy load
 const YouTubeAudioPlayer = dynamic(() => import("@/_custom/components/_common/YoutubeAudioPlayer"), {
   ssr: false,
-  loading: () => <p className="relative left-[173px] top-[76px]">Loading...</p>,
+  loading: () => <p className="relative left-[95px] top-[42px] text-[12px]">Loading...</p>,
 });
 export default function Component() {
   const initRef = useRef(false);
@@ -58,21 +58,21 @@ export default function Component() {
   const MemoizedYouTubeAudioPlayer = useRef(<YouTubeAudioPlayer parentRef={audioRef} videoUrl={"https://www.youtube.com/watch?v=ehX7MAhc5iA"} css={"relative left-[540px] top-[20px]"} />);
 
   return (
-    <div className="img-init img-music-bg w-full h-full relative">
-      <Image className={isPlaying ? "rotating-right-5" : ""} src={MusicCD} alt="music cd" style={{position: "absolute", top: "30px", left: "70px"}} />
-      <Image src={MusicBGM} alt="music bgm text" style={{position: "absolute", top: "40px", left: "160px"}} />
-      <Image src={MusicTitle} alt="music bgm title" style={{position: "absolute", top: "70px", left: "160px", width: "195px"}} />
-      <button style={{position: "absolute", top: "40px", left: "230px"}} onClick={() => audioRef.current?.next()}>
-        <Image src={MusicBtnNext} alt="music next" />
+    <div className="img-init img-music-bg relative" style={{maxWidth: "245px", height: "80px"}}>
+      <Image className={isPlaying ? "rotating-right-5" : ""} src={MusicCD} alt="music cd" width={50} height={50} style={{position: "absolute", top: "15px", left: "30px"}} />
+      <Image src={MusicBGM} alt="music bgm text" width={35} height={20} style={{position: "absolute", top: "16px", left: "90px"}} />
+      <Image src={MusicTitle} alt="music bgm title" width={120} height={24} style={{position: "absolute", top: "40px", left: "90px"}} />
+      <button style={{position: "absolute", top: "16px", left: "140px"}} onClick={() => audioRef.current?.next()}>
+        <Image width={12} height={12} src={MusicBtnNext} alt="music next" />
       </button>
-      <button style={{position: "absolute", top: "40px", left: "280px"}} onClick={handlePlayToggle}>
-        <Image src={MusicBtnPlay} alt="music play" />
+      <button style={{position: "absolute", top: "17px", left: "170px"}} onClick={handlePlayToggle}>
+        <Image width={12} height={12} src={MusicBtnPlay} alt="music play" />
       </button>
-      <button style={{position: "absolute", top: "40px", left: "330px"}} onClick={() => audioRef.current?.prev()}>
-        <Image src={MusicBtnPrev} alt="music prev" />
+      <button style={{position: "absolute", top: "16px", left: "200px"}} onClick={() => audioRef.current?.prev()}>
+        <Image width={12} height={12} src={MusicBtnPrev} alt="music prev" />
       </button>
       {videoTitle ? (
-        <p className="overflow-hidden text-ellipsis whitespace-nowrap" style={{position: "absolute", top: "76px", left: "173px", width: "190px"}}>
+        <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px]" style={{position: "absolute", top: "42px", left: "95px", width: "115px"}}>
           {videoTitle}
         </p>
       ) : null}

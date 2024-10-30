@@ -54,19 +54,19 @@ export default function Home() {
           <MainSlide slides={slideData.length ? slideData : null} />
         </div>
       </div>
-      <div className="grid grid-cols-6  w-full mt-8" style={{height: "400px"}}>
-        <div className="col-span-2 mr-4 px-2">
+      <div className="relative flex w-full" style={{width: "903px", height: "90px", left: "-10px", marginTop: "20px"}}>
+        <div className="" style={{width: "245px", height: "80px", marginTop: "4px"}}>
           <MainAudioPlayer />
         </div>
-        <div className="col-span-4 grid grid-cols-3 gap-x-3">
-          <Link className="col-span-1 relative main-button" href="/main">
-            <Image src="/images/home/01_home_button01.png" alt="Shineseeker" fill={true} />
+        <div className="relative flex" style={{marginLeft: "64px"}}>
+          <Link className="relative main-button" href="/main">
+            <Image src="/images/home/01_home_button01.png" width={170} height={90} alt="Shineseeker" />
           </Link>
-          <Link className="col-span-1 relative main-button" href="/main">
-            <Image src="/images/home/01_home_button02.png" alt="Shineseeker" fill={true} />
+          <Link className="relative main-button" href="/main">
+            <Image src="/images/home/01_home_button02.png" width={170} height={90} alt="Shineseeker" />
           </Link>
-          <Link className="col-span-1 relative main-button" href="/main">
-            <Image src="/images/home/01_home_button03.png" alt="Shineseeker" fill={true} />
+          <Link className="relative main-button" href="/main">
+            <Image src="/images/home/01_home_button03.png" width={170} height={90} alt="Shineseeker" />
           </Link>
         </div>
       </div>

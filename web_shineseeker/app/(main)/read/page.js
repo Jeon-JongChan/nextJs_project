@@ -41,7 +41,7 @@ export default function Home() {
   }, [maindata]);
   return (
     <>
-      <div className="w-full" style={{height: "600px"}}>
+      <div className="relative w-full" style={{height: "375px", left: "-20px"}}>
         <TabParagraphVertical tabContent={tabContent} />
       </div>
     </>

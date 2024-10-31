@@ -16,10 +16,10 @@ export default function Component(props) {
 
   useEffect(() => {
     console.log("TabInventory useEffect", props);
-    if (props?.user?.items.length) {
+    if (props?.items?.length) {
       let itemArr = [];
-      props.user.items.forEach((item) => {
-        let itemImage = getItemImage(item);
+      props.items.forEach((item) => {
+        let itemImage = getItemImage(item.item_name);
         if (itemImage) itemArr.push(itemImage);
       });
       setItems(itemArr);
@@ -66,12 +66,21 @@ export default function Component(props) {
     // event.currentTarget.appendChild(draggedItem);
   }
   return (
-    <div className="flex flex-col w-full px-12 py-2">
-      <h1 className="text-[24px] text-white mb-4 mt-4">게임 인벤토리</h1>
+    <div className="flex flex-col w-full px-6 py-2">
+      <h1 className="text-[16px] text-white mb-2 mt-4">게임 인벤토리</h1>
       <div className="flex flex-wrap drop-parent" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
         {items.map((item, index) => (
-          <div key={index} className="img-member-init img-member-tab-imagebox flex justify-center items-center cursor-move inventory-item" draggable="true" onDragStart={dragStart} onDragEnd={dragEnd} onDragOver={dragOver} onDrop={drop}>
-            <Image src={item} alt="item" width={100} height={100} />
+          <div
+            key={index}
+            className="relative img-member-init img-member-tab-imagebox flex justify-center items-center cursor-move inventory-item ml-2"
+            style={{widht: "70px", height: "70px"}}
+            draggable="true"
+            onDragStart={dragStart}
+            onDragEnd={dragEnd}
+            onDragOver={dragOver}
+            onDrop={drop}
+          >
+            <Image src={item} alt="item" width={45} height={45} className="max-h-[45px]" />
           </div>
         ))}
       </div>

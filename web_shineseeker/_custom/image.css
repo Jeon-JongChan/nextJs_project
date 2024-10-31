@@ -266,20 +266,25 @@
 .img-member-init {
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: initial;
+  background-size: contain;
 }
 .img-member-char-bg {
   background-image: url("/images/member/04_member_ch_bg.png");
-  width: 543px;
-  height: 609px;
+  background-position: initial;
+  background-size: contain;
+  background-origin: padding-box;
 }
 .img-member-char-banner-bg {
   background-image: url("/images/member/04_member_ch_banner_bg.png");
-  width: 453px;
-  height: 139px;
+  background-position: initial;
+  background-size: contain;
+  background-origin: padding-box;
+  width: 300px;
+  height: 95px;
 }
 .img-member-tab-bg {
   background-image: url("/images/member/tab/04_ch_tab01_bannerbg.png");
+  background-size: contain;
 }
 .img-member-tab-btn {
   background-image: url("/images/member/tab/04_ch_tab01_banner_button01.png");
@@ -289,13 +294,13 @@
 }
 .img-member-tab-imagebox {
   background-image: url("/images/member/04_ch_tab02_smallbox.png");
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
 }
 .img-member-tab-imagebox-pink {
   background-image: url("/images/member/04_ch_tab03_smallbox.png");
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
 }
 /**************************************************************************************************************************** Path: /patrol */
 .img-patrol-init {

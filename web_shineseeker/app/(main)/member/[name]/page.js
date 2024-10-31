@@ -62,48 +62,69 @@ export default function Home({params}) {
 
   return (
     <>
-      <div className="flex justify-between space-x-4 w-full h-full">
-        <div className="w-3/10 h-full">
-          <div className="relative img-member-init img-member-char-bg">
-            <div className="absolute" style={{top: "10px", left: "80px", width: "406px", height: "482px"}}>
+      <div className="flex" style={{width: "960px", height: "415px"}}>
+        <div className="relative" style={{width: "400px", height: "415px"}}>
+          <div className="relative img-member-init img-member-char-bg w-full h-full">
+            <div className="absolute" style={{width: "300px", height: "315px", top: "20px", left: "40px"}}>
               <Image src={DefaultCharacterImage} alt="character image" fill={true} />
-              <Image src={DefaultCPetImage} alt="character image" width={80} height={80} style={{position: "absolute", bottom: "60px", right: "0px"}} />
+              <Image src={DefaultCPetImage} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />
             </div>
 
-            <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "35px", left: "70px"}}>
-              <Image src={BannerIcon} alt="banner icon" width={89} height={89} style={{position: "relative", top: "25px", left: "25px"}} />
-              <div className="absolute flex flex-row" style={{top: "25px", left: "130px"}}>
-                <span className="member_banner_title1 relative text-white text-[16px]">이거만들때배아픔</span>
-                <span className="member_banner_title2 ml-4 relative text-white text-[16px]">이거만들때배아픔</span>
+            <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "0px", left: "35px"}}>
+              <Image src={BannerIcon} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
+              <div className="absolute flex flex-row text-white text-[16px]" style={{width: "200px", height: "25px", top: "15px", left: "90px"}}>
+                <span className="member_banner_title relative">SEEKER&nbsp;</span>
+                <span className="member_banner_title1 relative text-line-wrap" style={{width: "70px"}}>
+                  {maindata?.username1 || ""}
+                </span>
+                <span className="member_banner_title2 relative text-line-wrap ml-2" style={{width: "70px"}}>
+                  {maindata?.username2 || ""}
+                </span>
               </div>
-              <p className="member_banner_text font-nexon absolute" style={{top: "50px", left: "130px"}}>
-                배가 너무 아파용?
-              </p>
+              <div className="absolute member_banner_text font-nexon flex flex-col" style={{top: "35px", left: "90px"}}>
+                <span className="text-[13px] text-line-wrap" style={{width: "200px"}}>
+                  {maindata?.addinfo1}
+                </span>
+                <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
+                  {maindata?.addinfo2}
+                </span>
+              </div>
             </div>
 
             <div className="absolute flex flex-col gap-3">
-              <button className="relative w-[40px] h-[58px]">
-                <Image src={CharacterButton} alt="character button" fill={true} />
+              <button className="relative">
+                <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
-              <button className="relative w-[40px] h-[58px]">
-                <Image src={CharacterButton} alt="character button" fill={true} />
+              <button className="relative">
+                <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
-              <button className="relative w-[40px] h-[58px]">
-                <Image src={CharacterButton} alt="character button" fill={true} />
+              <button className="relative">
+                <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
             </div>
           </div>
         </div>
-        <div className="w-7/10 space-y-4 w-full">
+        <div className="relative" style={{width: "550px", height: "365px", marginTop: "45px"}}>
           <div className="flex w-full justify-end gap-3">
             {[1, 2, 3].map((tab) => (
-              <button key={tab} onClick={() => setSelectedTab(tab)} className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`} style={{width: "123px", height: "51px"}}>
+              <button
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`}
+                style={{width: "85px", height: "35px"}}
+              >
                 {tab === 1 ? "정보" : tab === 2 ? "스테이터스" : "인벤토리"}
               </button>
             ))}
           </div>
-          <div className="relative img-member-init img-member-tab-bg w-full h-[490px]" style={{marginTop: "0"}}>
-            {selectedTab === 1 ? <TabInfo user={maindata} /> : selectedTab === 2 ? <TabStatus user={maindata} skill={skilldata} /> : selectedTab === 3 ? <TabInventory user={maindata} items={itemdata} /> : null}
+          <div className="relative img-member-tab-bg w-full" style={{height: "325px", marginTop: "0"}}>
+            {selectedTab === 1 ? (
+              <TabInfo user={maindata} />
+            ) : selectedTab === 2 ? (
+              <TabStatus user={maindata} skill={skilldata} />
+            ) : selectedTab === 3 ? (
+              <TabInventory user={maindata} items={itemdata} />
+            ) : null}
           </div>
         </div>
       </div>

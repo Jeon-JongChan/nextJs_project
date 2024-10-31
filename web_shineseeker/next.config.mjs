@@ -12,6 +12,14 @@ const nextConfig = {
 
 // 초기화 함수 정의
 async function initializeDatabase() {
+  // temp 폴더 없으면 생성
+  const fs = (await import("fs")).default;
+  const tempFolderPath = "./public/temp";
+
+  if (!fs.existsSync(tempFolderPath)) {
+    fs.mkdirSync(tempFolderPath, {recursive: true});
+    console.log("📁 public/temp 폴더가 생성되었습니다.");
+  }
   // 비동기 import로 SQLite 어댑터 가져오기
   const Sqlite = (await import("./_custom/scripts/sqlite3-adapter.js")).default;
 

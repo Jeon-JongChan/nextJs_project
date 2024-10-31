@@ -14,7 +14,7 @@ export default function Home(props) {
   return (
     <div id="market" className="w-full h-full relative">
       <div className="img-market-init img-market-bg relative flex w-full h-full">
-        <div className="relative img-market-init img-market-npc flex w-1/3 h-[477px]" style={{top: "55px", left: "30px"}}>
+        <div className="absolute img-market-init img-market-npc flex" style={{top: "55px", left: "30px"}}>
           <div className="market_npc_banner img-market-init img-market-banner absolute w-full h-[154px]" style={{bottom: "20px", left: "20px"}}>
             <span className="absolute text-white text-[24px]" style={{left: "30px"}}>
               요정헤이프릴

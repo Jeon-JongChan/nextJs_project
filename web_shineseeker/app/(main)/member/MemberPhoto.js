@@ -8,13 +8,13 @@ export default function Component({defaultImage, overlayImage, link}) {
   defaultImage = defaultImage ? defaultImage : "https://via.placeholder.com/300x300?text=TEMP";
   return (
     <>
-      <div className="photocard relative w-48 h-72 overflow-hidden rounded-lg max-h-[138px] max-w-[138px]" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <div className="photocard relative w-48 h-72 overflow-hidden rounded-lg max-h-[70px] max-w-[70px]" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         <Link href={link ? link : "/member/test"}>
           <Image
             src={isHovered ? overlayImage : defaultImage}
             alt="Default Image"
-            width="138"
-            height="138"
+            width="70"
+            height="70"
             className="object-cover transition-opacity duration-300"
             //style={{opacity: isHovered ? 0 : 1}}
           />

@@ -45,7 +45,7 @@ export default function Home(props) {
   return (
     <div id="market" className="w-full h-full relative">
       <div className="relative img-market-init img-market-bg flex w-full h-full">
-        <div className="relative img-market-npc flex" style={{top: "30px", left: "30px"}}>
+        <div className="relative img-market-npc flex" style={{top: "56px", left: "30px"}}>
           <div className="absolute market_npc_banner img-market-banner" style={{width: "301px", height: "103px", bottom: "20px", left: "20px"}}>
             <span className="absolute text-white text-[16px]" style={{left: "15px"}}>
               요정헤이프릴
@@ -62,10 +62,10 @@ export default function Home(props) {
             </div>
           </div>
         </div>
-        <div className="absolute market-itembox flex p-2 overflow-y-auto" style={{width: "530px", height: "230px", top: "100px", right: "70px"}}>
+        <div className="absolute market-itembox flex p-2 overflow-y-auto" style={{width: "530px", height: "230px", top: "125px", right: "70px"}}>
           <Item />
         </div>
-        <div className="absolute market-costbox flex justify-center items-center" style={{width: "160px", height: "40px", top: "20px", right: "60px"}}>
+        <div className="absolute market-costbox flex justify-center items-center" style={{width: "160px", height: "40px", top: "40px", right: "60px"}}>
           <span className="inline-block text-[20px] w-[160px] text-right text-line-wrap">{1000000000000000000}</span>
           <span className="text-[18px] text-[#ff7ea7] ml-2">AKA</span>
           <span className="absolute text-[#b094f3] w-[300px] text-right font-nexon font-bold text-[12px]" style={{top: "60px", right: "20px"}}>

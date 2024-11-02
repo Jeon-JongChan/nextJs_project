@@ -39,7 +39,7 @@ export default function Home(props) {
   }, [maindata]);
 
   return (
-    <div className="relative w-full overflow-y-auto no-scrollbar" style={{height: "325px", marginTop: "15px"}}>
+    <div className="relative w-full overflow-y-auto no-scrollbar" style={{height: "325px", top: "-60px"}}>
       <div className="grid grid-cols-9 gap-4" style={{height: "inherit"}}>
         {photoCards.map((card) => (
           <MemberPhoto key={card.id} defaultImage={card.defaultImage} overlayImage={card.overlayImage} link={card.link} />

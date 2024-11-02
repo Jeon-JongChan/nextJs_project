@@ -17,7 +17,7 @@ export default function Layout({children}) {
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen img-home-bg">
-        <main className="relative flex flex-col items-center justify-between p-24 img-home-frame-bg" style={{width: "1051px", height: "560px", zIndex: "2"}}>
+        <main className="relative flex flex-col items-center justify-between p-12 img-home-frame-bg" style={{width: "1051px", height: "560px", zIndex: "2"}}>
           <nav className="relative w-full flex flex-row justify-center" style={{width: "1021px", height: "59px"}}>
             <div className="relative inline-block w-fit" style={{minWidth: "282px", bottom: "16px"}}>
               <Link href="/main" className="block relative w-full h-full">

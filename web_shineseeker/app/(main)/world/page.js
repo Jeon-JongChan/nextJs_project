@@ -45,7 +45,7 @@ export default function Home() {
   }, [maindata]);
   return (
     <>
-      <div className="relative flex w-full" style={{height: "375px", left: "-15px", marginTop: "20px"}}>
+      <div className="relative flex w-full" style={{height: "375px", left: "25px", marginTop: "20px"}}>
         <div className="">
           <WorldSlide slides={slideData} />
         </div>

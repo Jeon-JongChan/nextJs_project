@@ -55,9 +55,11 @@
 }
 
 .img-home-frame-bg {
-  background-image: url("/images/home/01_home_box01.png");
+  background-image: url("/images/home/01_home_bg2.webp");
   background-repeat: no-repeat;
   background-position: center center;
+  background-size: cover;
+  background-origin: padding-box;
   /* background-size: initial; */
 }
 .main-slide-mask {
@@ -327,20 +329,24 @@
 .img-market-init {
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: initial;
+  background-size: contain;
 }
 .img-market-bg {
   background-image: url("/images/market/06_shop_bg.png");
 }
 .img-market-npc {
   background-image: url("/images/market/06_shop_npc.png");
+  background-size: contain;
+  width: 260px;
+  height: 320px;
 }
 .img-market-banner {
-  background-image: url("/images/market/06_shop_banner.png");
+  background-image: url("/images/market/06_shop_banner.webp");
+  background-size: cover;
+  width: 300px;
+  height: 80px;
 }
 .img-market-itemframe {
   background-image: url("/images/market/06_shop_item.png");
-  width: 225px;
-  height: 96px;
 }
 /**************************************************************************************************************************** Path: /etc */

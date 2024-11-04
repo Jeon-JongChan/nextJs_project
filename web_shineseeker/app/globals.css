@@ -55,8 +55,9 @@ body {
 .text-x-wrap {
   overflow-x: hidden;
   overflow-y: auto;
+  word-break: break-all; /* 긴 단어가 있으면 개행 */
   text-overflow: ellipsis;
-  white-space: pre;
+  white-space: pre-wrap; /* 자동 개행 */
   text-wrap: balance;
 }
 

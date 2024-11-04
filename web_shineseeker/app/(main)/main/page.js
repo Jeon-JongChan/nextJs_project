@@ -13,6 +13,7 @@ export default function Home() {
   const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
   const [maindata, setMainData] = useState([]);
   const [slideData, setSlideData] = useState([]);
+  const [mainAudioUrl, setMainAudioUrl] = useState("");
   const [user, setUser] = useState({});
   let fetchIndex = 0;
   // 데이터를 주기적으로 가져오기 위한 함수
@@ -35,12 +36,15 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    let slideData = [];
+    let slideData = [],
+      audioData;
     if (maindata.length) {
       slideData = maindata.filter((data) => data.id.includes("main_img") && data.value).map((data) => ({imageUrl: data.value}));
+      audioData = maindata.filter((data) => data.id.includes("main_youtube") && data.value).map((data) => data.value);
       setSlideData(slideData);
+      if (audioData.length) setMainAudioUrl(audioData[0]);
     }
-    console.log("maindata:", slideData);
+    console.log("maindata filter :", slideData, audioData);
   }, [maindata]);
   return (
     <>
@@ -56,7 +60,7 @@ export default function Home() {
       </div>
       <div className="relative flex w-full" style={{width: "903px", height: "90px", left: "-10px", marginTop: "20px"}}>
         <div className="" style={{width: "245px", height: "80px", marginTop: "4px"}}>
-          <MainAudioPlayer />
+          <MainAudioPlayer url={mainAudioUrl} />
         </div>
         <div className="relative flex" style={{marginLeft: "64px"}}>
           <Link className="relative main-button" href="/main">

@@ -5,12 +5,12 @@ const YouTubeAudioPlayer = ({css, videoUrl, istitle = false, parentRef}) => {
   const playerRef = useRef(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false); // 플레이어 준비 상태를 추적
   css = css || null;
-  videoUrl = videoUrl || "https://www.youtube.com/watch?v=ehX7MAhc5iA";
+  videoUrl = videoUrl || "";
 
   // videoId를 추출하는 함수
   const extractVideoId = (url) => {
     if (!url || typeof url !== "string") return null;
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
   };

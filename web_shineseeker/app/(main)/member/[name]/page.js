@@ -74,15 +74,15 @@ export default function Home({params}) {
               <Image src={BannerIcon} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
               <div className="absolute flex flex-row text-white text-[16px]" style={{width: "200px", height: "25px", top: "15px", left: "90px"}}>
                 <span className="member_banner_title relative">SEEKER&nbsp;</span>
-                <span className="member_banner_title1 relative text-line-wrap" style={{width: "70px"}}>
+                <span className="member_banner_title1 relative text-line-wrap" style={{width: "140px"}}>
                   {maindata?.username1 || ""}
                 </span>
-                <span className="member_banner_title2 relative text-line-wrap ml-2" style={{width: "70px"}}>
+                {/* <span className="member_banner_title2 relative text-line-wrap ml-2" style={{width: "70px"}}>
                   {maindata?.username2 || ""}
-                </span>
+                </span> */}
               </div>
               <div className="absolute member_banner_text font-nexon flex flex-col" style={{top: "35px", left: "90px"}}>
-                <span className="text-[13px] text-line-wrap" style={{width: "200px"}}>
+                <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
                   {maindata?.addinfo1}
                 </span>
                 <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
@@ -91,7 +91,7 @@ export default function Home({params}) {
               </div>
             </div>
 
-            <div className="absolute flex flex-col gap-3">
+            {/* <div className="absolute flex flex-col gap-3">
               <button className="relative">
                 <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
@@ -101,30 +101,19 @@ export default function Home({params}) {
               <button className="relative">
                 <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="relative" style={{width: "550px", height: "365px", marginTop: "45px"}}>
           <div className="flex w-full justify-end gap-3">
             {[1, 2, 3].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`}
-                style={{width: "85px", height: "35px"}}
-              >
+              <button key={tab} onClick={() => setSelectedTab(tab)} className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`} style={{width: "85px", height: "35px"}}>
                 {tab === 1 ? "정보" : tab === 2 ? "스테이터스" : "인벤토리"}
               </button>
             ))}
           </div>
           <div className="relative img-member-tab-bg w-full" style={{height: "325px", marginTop: "0"}}>
-            {selectedTab === 1 ? (
-              <TabInfo user={maindata} />
-            ) : selectedTab === 2 ? (
-              <TabStatus user={maindata} skill={skilldata} />
-            ) : selectedTab === 3 ? (
-              <TabInventory user={maindata} items={itemdata} />
-            ) : null}
+            {selectedTab === 1 ? <TabInfo user={maindata} /> : selectedTab === 2 ? <TabStatus user={maindata} skill={skilldata} /> : selectedTab === 3 ? <TabInventory user={maindata} items={itemdata} /> : null}
           </div>
         </div>
       </div>

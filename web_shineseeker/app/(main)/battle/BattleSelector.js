@@ -9,12 +9,12 @@ export default function Component() {
       <div className="grid grid-cols-2 gap-48">
         <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto">
           <Link href="/battle/patrol" className="mt-10">
-            <Image src="/images/patrol/05_patrol_enter_button.png" alt="이미지" className="mb-4" width={444} height={529} />
+            <Image src="/images/patrol/05_patrol_enter_button.png" alt="이미지" className="mb-4" width={298} height={306} />
           </Link>
         </div>
         <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto">
           <Link href="/battle/raid">
-            <Image src="/images/patrol/05_raid_enter_button.png" alt="이미지" className="mb-4" width={376} height={529} />
+            <Image src="/images/patrol/05_raid_enter_button.png" alt="이미지" className="mb-4" width={262} height={362} />
           </Link>
         </div>
       </div>

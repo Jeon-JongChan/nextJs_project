@@ -308,22 +308,25 @@
 .img-patrol-init {
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
 }
 
 .img-patrol-selector-bg {
   background-image: url("/images/patrol/05_patrol_banner01.png");
+  background-size: contain;
 }
 .img-patrol-result-bg {
   background-image: url("/images/patrol/05_patrol2_banner.png");
+  background-size: contain;
 }
 .img-patrol-timeline-bg {
   background-image: url("/images/patrol/05_patrol_banner02.png");
+  background-size: cover;
 }
 .img-patrol-result-next {
   background-image: url("/images/patrol/05_patrol2_banner_button.png");
   width: 128px;
   height: 23px;
+  background-size: contain;
 }
 /**************************************************************************************************************************** Path: /market */
 .img-market-init {

@@ -65,7 +65,7 @@ export default function Home(props) {
         <div className="absolute market-itembox flex p-2 overflow-y-auto" style={{width: "530px", height: "230px", top: "125px", right: "70px"}}>
           <Item />
         </div>
-        <div className="absolute market-costbox flex justify-center items-center" style={{width: "160px", height: "40px", top: "40px", right: "60px"}}>
+        <div className="absolute market-costbox flex justify-center items-center" style={{width: "160px", height: "40px", top: "40px", right: "55px"}}>
           <span className="inline-block text-[20px] w-[160px] text-right text-line-wrap">{1000000000000000000}</span>
           <span className="text-[18px] text-[#ff7ea7] ml-2">AKA</span>
           <span className="absolute text-[#b094f3] w-[300px] text-right font-nexon font-bold text-[12px]" style={{top: "60px", right: "20px"}}>
@@ -80,15 +80,15 @@ export default function Home(props) {
 function Item(props) {
   return (
     <div className="relative market-itembox-item img-market-init img-market-itemframe flex" style={{width: "150px", height: "65px"}}>
-      <div className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]" style={{width: "45px", height: "45px", margin: "10px 8px 6px 6px"}}>
+      <div className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]" style={{width: "45px", height: "45px", margin: "10px 2px 6px 7px"}}>
         <Image src="https://via.placeholder.com/100?text=Image+1" className="relative max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px]" width={40} height={40} alt="item image" />
       </div>
-      <div className="market-itembox-item-info flex flex-col p-1 font-nexon font-bold h-full" style={{width: "100px", marginLeft: "5px"}}>
-        <div className="w-full flex flex-row justify-center items-center mt-2">
-          <span className="text-white text-[10px] w-[36px] text-center">아이템</span>
+      <div className="market-itembox-item-info flex flex-col p-1 font-nexon font-bold h-full" style={{width: "100px"}}>
+        <div className="w-full flex flex-row mt-2">
+          <span className="text-white text-[10px] w-[30px]">아이템</span>
           <span className="text-[10px] text-center text-line-wrap">1000 AKA</span>
         </div>
-        <p className="text-[12px] text-x-wrap no-scrollbar" style={{width: "90px", height: "35px", marginLeft: "5px"}}>
+        <p className="text-[12px] text-x-wrap no-scrollbar" style={{width: "90px", height: "35px", marginLeft: "1px"}}>
           아이템 설명ddddd
         </p>
       </div>

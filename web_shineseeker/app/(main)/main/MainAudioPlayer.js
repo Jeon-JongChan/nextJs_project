@@ -1,5 +1,6 @@
 "use client";
 import React, {useState, useRef, useCallback, useEffect} from "react";
+import {devLog} from "@/_custom/scripts/common";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import MusicCD from "@/public/images/home/01_home_music_cd.png";
@@ -14,7 +15,8 @@ const YouTubeAudioPlayer = dynamic(() => import("@/_custom/components/_common/Yo
   ssr: false,
   loading: () => <p className="relative left-[95px] top-[42px] text-[12px]">Loading...</p>,
 });
-export default function Component() {
+export default function Component(props) {
+  const [url, setUrl] = useState(null);
   const initRef = useRef(false);
   const audioRef = useRef(null);
   const [videoTitle, setVideoTitle] = useState(null);
@@ -36,26 +38,31 @@ export default function Component() {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (audioRef.current && !initRef.current) {
-        clearInterval(interval);
-        setVideoTitle(audioRef.current.title);
-        audioRef.current.setVolume(50);
-        audioRef.current.setQuality("tiny");
-        // audioRef.current.play();
-        initRef.current = true;
-        setTimeout(() => {
-          console.log("MainAudioPlayer traffic check", audioRef.current.status(true));
-          if (audioRef.current.status(true) == 1) {
-            setIsPlaying(true);
-          }
-        }, 1000);
-      }
-    }, 1000);
-  }, []);
+    devLog("MainAudio", props.url);
+    if (props?.url) {
+      const interval = setInterval(() => {
+        if (audioRef.current && !initRef.current) {
+          initRef.current = true;
+          clearInterval(interval);
+          setVideoTitle(audioRef.current.title);
+          audioRef.current.setVolume(50);
+          audioRef.current.setQuality("tiny");
+          // audioRef.current.play();
+          setTimeout(() => {
+            console.log("MainAudioPlayer traffic check", audioRef.current.status(true));
+            if (audioRef.current.status(true) == 1) {
+              setIsPlaying(true);
+            }
+          }, 1000);
+        }
+      }, 1000);
+      setUrl(props.url);
+    }
+    devLog("MainAudio", props.url);
+  }, [props]);
 
   // MemoizedYouTubeAudioPlayer를 useRef를 사용해 메모이제이션 처리
-  const MemoizedYouTubeAudioPlayer = useRef(<YouTubeAudioPlayer parentRef={audioRef} videoUrl={"https://www.youtube.com/watch?v=ehX7MAhc5iA"} css={"relative left-[540px] top-[20px]"} />);
+  // const MemoizedYouTubeAudioPlayer = useRef(<YouTubeAudioPlayer parentRef={audioRef} videoUrl={url} css={"relative left-[540px] top-[20px]"} />);
 
   return (
     <div className="img-init img-music-bg relative" style={{maxWidth: "245px", height: "80px"}}>
@@ -76,7 +83,7 @@ export default function Component() {
           {videoTitle}
         </p>
       ) : null}
-      {MemoizedYouTubeAudioPlayer.current}
+      {url && <YouTubeAudioPlayer parentRef={audioRef} videoUrl={url} css={"relative left-[540px] top-[20px]"} />}
     </div>
   );
 }

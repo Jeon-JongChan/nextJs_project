@@ -77,7 +77,7 @@ export default function Home() {
         textarea.value = data[textarea.id];
       });
       //4.직업 스킬 채우기
-      if (data.job_skill.length) setJobSkillList([...data.job_skill]);
+      if (data?.job_skill?.length) setJobSkillList([...data.job_skill]);
     }
   };
 

@@ -27,17 +27,17 @@ export default function Home() {
     const jobs = checkboxOptionList.jobs.filter((job) => job.job_name === event.target.value);
     devLog("changeHandler", event.target.value, checkboxOptionList.job, jobs);
     let dom = document.querySelector("#user_hp");
-    dom.value = dom.value || jobs[0].job_hp;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_hp;
     dom = document.querySelector("#user_atk");
-    dom.value = dom.value || jobs[0].job_atk;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_atk;
     dom = document.querySelector("#user_def");
-    dom.value = dom.value || jobs[0].job_def;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_def;
     dom = document.querySelector("#user_wis");
-    dom.value = dom.value || jobs[0].job_wis;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_wis;
     dom = document.querySelector("#user_agi");
-    dom.value = dom.value || jobs[0].job_agi;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_agi;
     dom = document.querySelector("#user_luk");
-    dom.value = dom.value || jobs[0].job_luk;
+    if (dom && jobs[0]) dom.value = dom.value || jobs[0].job_luk;
   };
 
   const userinputNames = [

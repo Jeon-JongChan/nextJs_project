@@ -5,17 +5,18 @@ import {devLog} from "@/_custom/scripts/common";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
-import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextArea";
-import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
+import InputTextList from "./InputTextList";
+import Autocomplete from "/_custom/components/_common/Autocomplete";
 
 const menuName = "job";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
-  const [jobList, setJobList] = useState([]);
+  const [jobSkillList, setJobSkillList] = useState([]);
+  const [autoList, setAutoList] = useState([]);
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -41,7 +42,7 @@ export default function Home() {
   const addItem = (e) => {
     const item = document.querySelector("#job_skill_add").value;
     if (item) {
-      setJobList([...jobList, item]);
+      setJobSkillList([...jobSkillList, item]);
     }
   };
 
@@ -49,7 +50,7 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
-    devLog("clickListItem", jobList, maindata);
+    devLog("clickListItem", jobSkillList, maindata);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
@@ -76,7 +77,7 @@ export default function Home() {
         textarea.value = data[textarea.id];
       });
       //4.직업 스킬 채우기
-      setJobList([...data.job_skill]);
+      setJobSkillList([...data.job_skill]);
     }
   };
 
@@ -94,20 +95,26 @@ export default function Home() {
     devLog("imgInitFn : ", clickImageCopy);
   };
 
+  const deleteSkill = (e) => {
+    const inputElement = e.target.parentElement.querySelector("input");
+    const skill = inputElement.value;
+
+    // 삭제할 아이템의 인덱스를 찾고 복사본에 반영
+    const listIndex = jobSkillList.indexOf(skill);
+    if (listIndex > -1) {
+      const listCopy = [...jobSkillList];
+      listCopy.splice(listIndex, 1); // 아이템 삭제
+      setJobSkillList(listCopy);
+    }
+    e.preventDefault();
+  };
+
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 스킬 항목 선택되었습니다.");
-    const response = await fetch("/api/select?apitype=skill_detail&getcount=1");
+    const response = await fetch("/api/select?apitype=skill&getcount=1");
     const newData = await response.json();
     if (newData?.data?.length) {
-      // 스킬 상세정보를 input과 select에 넣기
-      const skillList = {};
-      for (const key of Object.keys(newData.data[0])) {
-        if (key.startsWith("updated")) continue;
-        document.querySelector(`#${key}`).value = newData.data[0][key]; // input에 기본값 넣기
-        let id = key.replace("_detail", "");
-        skillList[id] = newData.data[0][key].split(",");
-      }
-      setSkillList({...skillList});
+      setAutoList(newData.data);
     }
     console.log("essential data skill detail: ", newData);
   }
@@ -126,7 +133,7 @@ export default function Home() {
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    // fetchEssentialData();
+    fetchEssentialData();
     fetchData();
     const intervalId = setInterval(fetchData, 10 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
@@ -164,9 +171,9 @@ export default function Home() {
           <div className="relative col-span-12 job-skill-list">
             <h1 className="mt-8 font-bold text-2xl">습득가능스펠</h1>
             <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100">
-              {jobList.map((item, index) => (
-                <Tooltip key={index} content={<span>이것은 테스트 툴팁입니다!</span>} css={"w-1/6"}>
-                  <GridInputText nolabel={true} readonly={true} default={item} id={`job_skill_${index}`} type={"text"} css={"text-center border"} />
+              {jobSkillList.map((item, index) => (
+                <Tooltip key={`${item}-${index}`} content={<span>이것은 테스트 툴팁입니다!</span>} css={"w-1/6"}>
+                  <InputTextList nolabel={true} readonly={true} default={item} id={`job_skill_${index}`} type={"text"} css={"text-center border"} deleteButton={true} deleteFunc={deleteSkill} />
                 </Tooltip>
               ))}
             </div>
@@ -179,6 +186,7 @@ export default function Home() {
           <GridInputButton label={"추가"} type={"button"} onclick={addItem} />
         </div>
       </div>
+      <Autocomplete id={"#job_skill_add"} data={autoList} autokey={"skill_name"} />
     </div>
   );
 }

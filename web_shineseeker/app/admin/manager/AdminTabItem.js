@@ -48,7 +48,7 @@ export default function Home() {
       devLog("clickUser", name, data, clickImage);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_detail_`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_option_`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
@@ -94,8 +94,8 @@ export default function Home() {
       for (const key of Object.keys(newData.data[0])) {
         if (key.startsWith("updated")) continue;
         document.querySelector(`#${key}`).value = newData.data[0][key]; // input에 기본값 넣기
-        let id = key.replace("_option", "");
-        itemOptionList[id] = newData.data[0][key].split(",");
+        // let id = key.replace("_option", "");
+        itemOptionList[key] = newData.data[0][key].split(",");
       }
       setItemOptionList({...itemOptionList});
     }

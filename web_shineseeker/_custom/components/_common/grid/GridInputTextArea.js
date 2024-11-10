@@ -50,6 +50,7 @@ export default function Component(props) {
           rows={4}
           className={[
             css,
+            maxHeight ? `max-h-[${maxHeight}px]` : "",
             "block focus:outline-none rounded-md",
             "mt-1 w-full h-full px-2 py-1",
             "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500",

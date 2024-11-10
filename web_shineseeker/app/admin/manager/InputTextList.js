@@ -19,46 +19,38 @@ import {useEffect} from "react";
  */
 //  @param {int} [colSmSpan=4] - 최소 width(640px) 기준 input 넓이(Grid Column 기준)
 export default function Component(props) {
-  let label = props?.label || null;
   const nolabel = props?.nolabel || false;
-  let smallLabel = props?.smallLabel || "";
   let inputId = props?.id || "input-text";
   let colSpan = props?.colSpan || 6;
   // let colSmSpenValue = props?.colSmSpan || 4;
-  let autoComplete = autoCompleteType.find((e) => e === props?.autoComplete) || "on";
-  let dirmode = props?.dirmode || "col";
-  let rowWidth = props?.rowWidth || "w-2/5";
-  let defaultValue = props?.default || null;
   let dataName = props?.dataName || null;
   let type = props?.type || "text";
   let readonly = props?.readonly || false;
   let readonlyClass = readonly ? "bg-gray-200" : "";
   let css = props?.css || "";
-  let numberMax = props?.numberMax || null;
-  let numberMin = props?.numberMin || props?.numberMin === 0 ? 0 : null;
+  let defaultValue = props?.default || "";
+  let deleteButton = props?.deleteButton || false;
+  let deleteFunc = props?.deleteFunc || null;
 
   return (
     <>
       {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
       {/* sm:col-span-${colSmSpenValue} 일단 제외 */}
-      <div className={["relative", colSpanClass[colSpan], dirmode === "row" ? "flex" : ""].join(" ")}>
-        {!nolabel || label ? (
-          <label htmlFor={inputId} className={["block text-sm font-medium text-gray-700", dirmode === "row" ? `${rowWidth}` : ""].join(" ")}>
-            {label} {smallLabel === "" ? "" : <span className="text-xs text-red-300">{smallLabel}</span>}
-          </label>
-        ) : null}
+      <div className={["relative grid", colSpanClass[colSpan]].join(" ")}>
         <input
           type={type}
           name={inputId}
           id={inputId}
-          max={type === "number" ? numberMax : undefined} // 조건 추가
-          min={type === "number" ? numberMin : undefined} // 조건 추가
-          autoComplete={autoComplete}
           data-name={dataName}
           readOnly={readonly}
+          defaultValue={defaultValue} // default 값
           className={[css, "mt-1 block w-full focus:outline-none rounded-md", "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500", readonlyClass].join(" ")}
-          defaultValue={defaultValue || ""}
         />
+        {deleteButton && (
+          <button onClick={deleteFunc} className="absolute inline-block h-full right-[5px]">
+            x
+          </button>
+        )}
       </div>
     </>
   );
@@ -80,25 +72,3 @@ const colSpanClass = {
   11: "col-span-11",
   12: "col-span-12",
 };
-const autoCompleteType = [
-  "on",
-  "off",
-  "name",
-  "honorific-prefix",
-  "family-name",
-  "given-name",
-  "additional-name",
-  "honorific-suffix",
-  "nickname",
-  "email",
-  "username",
-  "new-password",
-  "current-password",
-  "street-address",
-  "country",
-  "country-name",
-  "sex",
-  "url",
-  "photo",
-];
-Object.freeze(autoCompleteType);

@@ -119,7 +119,7 @@ async function updateJob(data) {
       job[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
     } else job[imgKey] = images[imgKey]?.path || null;
   });
-  // await deleteData("job_skill", "job_name", job.job_name); // 기존 스킬정보를 삭제하지 않고 중복일 경우 추가 안되게 primary key로 묶음
+  await deleteData("job_skill", "job_name", job.job_name); // 기존 스킬정보를 삭제하지 않고 중복일 경우 추가 안되게 primary key로 묶음
   skill.forEach((skill, idx) => saveData("job_skill", {job_name: job.job_name, skill: skill})); // 스킬 정보를 job_skill 객체에 추가
   await saveData("job", job);
 

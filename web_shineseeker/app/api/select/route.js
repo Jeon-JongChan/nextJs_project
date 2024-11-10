@@ -34,8 +34,10 @@ export async function GET(req) {
       } else if (apitype === "job") {
         // job의 경우 해당하는 skill값을 배열로 추가해줘야함
         let skills = await getData("job_skill", 0);
-        for (let i = 0; i < data.length; i++) {
-          data[i].job_skill = skills.filter((skill) => skill.job_name === data[i].job_name).map((skill) => skill.skill);
+        if (skills) {
+          for (let i = 0; i < data.length; i++) {
+            data[i].job_skill = skills.filter((skill) => skill.job_name === data[i].job_name).map((skill) => skill.skill);
+          }
         }
       } else if (apitype === "monster") {
         // monster의 경우 해당하는 monster_event값을 배열로 추가해줘야함

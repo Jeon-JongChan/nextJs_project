@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 
 // Tooltip 컴포넌트
-const Tooltip = ({children, content, css = "", style = {}}) => {
+const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
     <div className={"tooltip-container " + css} style={style} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
       {children}
-      {isVisible && content && <div className="tooltip">{content}</div>}
+      {isVisible && content && <div className={"tooltip " + tooltipCss}>{content}</div>}
       <style jsx>{`
         .tooltip-container {
           position: relative;

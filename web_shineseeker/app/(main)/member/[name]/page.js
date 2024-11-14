@@ -5,48 +5,62 @@ import TabInfo from "./TabInfo";
 import TabStatus from "./TabStatus";
 import TabInventory from "./TabInventory";
 import BannerIcon from "@/public/images/member/04_member_ch_banner_icon.png";
-import CharacterButton from "@/public/images/member/04_member_ch_button.png";
+// import CharacterButton from "@/public/images/member/04_member_ch_button.png";
 import DefaultCharacterImage from "@/public/images/member/04_member_ch02.png";
-import DefaultCPetImage from "@/public/images/member/04_member_ch01.png";
+import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
+import {devLog} from "@/_custom/scripts/common";
+// import DefaultCPetImage from "@/public/images/member/04_member_ch01.png";
 
 const menuName = "memberDetail";
 export default function Home({params}) {
+  const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
   const [maindata, setMainData] = useState({});
   const [skilldata, setSkillData] = useState([]);
   const [itemdata, setItemData] = useState([]);
   const [selectedTab, setSelectedTab] = useState(1);
-  const [petImage, setPetImage] = useState(null);
-  const images = ["https://via.placeholder.com/500?text=Image+1", "https://via.placeholder.com/500?text=Image+2", "https://via.placeholder.com/500?text=Image+3"];
+  // const images = ["https://via.placeholder.com/500?text=Image+1", "https://via.placeholder.com/500?text=Image+2", "https://via.placeholder.com/500?text=Image+3"];
 
   // 데이터를 주기적으로 가져오기 위한 함수
-  async function fetchData() {
+  async function fetchDataEssential() {
     let response = await fetch(`/api/select?apitype=user&getcount=1&userid=${params.name}`);
-    console.log("야 메인 땡긴다?", response);
+    devLog("야 메인 땡긴다?", response);
     const newData = await response.json();
     if (newData?.data?.length) {
-      console.log(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, params);
+      devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
       setMainData(newData.data[0]);
-    }
-
-    let skillResponse = await fetch(`/api/select?apitype=skill&getcount=1`);
-    const newSkillData = await skillResponse.json();
-    if (newSkillData?.data?.length) {
-      console.log(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newSkillData);
-      setSkillData(newSkillData.data);
     }
 
     let itemResponse = await fetch(`/api/select?apitype=item&getcount=1`);
     const newItemData = await itemResponse.json();
     if (newItemData?.data?.length) {
-      console.log(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newItemData);
+      devLog(`admin *** ${menuName} page item data 갱신되었습니다 : `, newItemData);
       setItemData(newItemData.data);
     }
+
+    if (params.name === tokenRef.current?.user?.name) {
+      devLog(`${params.name}님 환영합니다.`);
+      // let skillResponse = await fetch(`/api/select?apitype=skill&getcount=1`);
+      let skillResponse = await fetch(`/api/page?apitype=member_skill&userid=${params.name}`);
+      const newSkillData = await skillResponse.json();
+      if (newSkillData?.data?.length) {
+        devLog(`admin *** ${menuName} page skill data 갱신되었습니다 : `, newSkillData);
+        setSkillData(newSkillData.data);
+      }
+    }
   }
+  const fetchData = async () => {
+    let response = await fetch(`/api/select?apitype=user&userid=${params.name}`);
+    const newData = await response.json();
+    if (newData?.data?.length) {
+      devLog(`admin *** ${menuName} *** page data 반복 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
+      setMainData(newData.data[0]);
+    }
+  };
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    fetchData();
-    // const intervalId = setInterval(fetchData, 10 * 1000);
-    // return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
+    fetchDataEssential();
+    const intervalId = setInterval(fetchData, 10 * 1000);
+    return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
   }, []);
 
   useEffect(() => {
@@ -66,8 +80,8 @@ export default function Home({params}) {
         <div className="relative" style={{width: "400px", height: "415px"}}>
           <div className="relative img-member-init img-member-char-bg w-full h-full">
             <div className="absolute" style={{width: "300px", height: "315px", top: "20px", left: "40px"}}>
-              <Image src={DefaultCharacterImage} alt="character image" fill={true} />
-              <Image src={DefaultCPetImage} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />
+              <Image src={maindata?.user_img_1 || DefaultCharacterImage} alt="character image" fill={true} />
+              {maindata?.user_img_3 && <Image src={maindata.user_img_3} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />}
             </div>
 
             <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "0px", left: "35px"}}>
@@ -91,7 +105,8 @@ export default function Home({params}) {
               </div>
             </div>
 
-            {/* <div className="absolute flex flex-col gap-3">
+            {/* 사진 변경 버튼 
+            <div className="absolute flex flex-col gap-3">
               <button className="relative">
                 <Image src={CharacterButton} alt="character button" width={30} height={30} />
               </button>
@@ -107,13 +122,24 @@ export default function Home({params}) {
         <div className="relative" style={{width: "550px", height: "365px", marginTop: "45px"}}>
           <div className="flex w-full justify-end gap-3">
             {[1, 2, 3].map((tab) => (
-              <button key={tab} onClick={() => setSelectedTab(tab)} className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`} style={{width: "85px", height: "35px"}}>
+              <button
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`}
+                style={{width: "85px", height: "35px"}}
+              >
                 {tab === 1 ? "정보" : tab === 2 ? "스테이터스" : "인벤토리"}
               </button>
             ))}
           </div>
           <div className="relative img-member-tab-bg w-full" style={{height: "325px", marginTop: "0"}}>
-            {selectedTab === 1 ? <TabInfo user={maindata} /> : selectedTab === 2 ? <TabStatus user={maindata} skill={skilldata} /> : selectedTab === 3 ? <TabInventory user={maindata} items={itemdata} /> : null}
+            {selectedTab === 1 ? (
+              <TabInfo user={maindata} />
+            ) : selectedTab === 2 ? (
+              <TabStatus user={maindata} skill={skilldata} currentUser={tokenRef.current?.user?.name} />
+            ) : selectedTab === 3 ? (
+              <TabInventory user={maindata} items={itemdata} currentUser={tokenRef.current?.user?.name} />
+            ) : null}
           </div>
         </div>
       </div>

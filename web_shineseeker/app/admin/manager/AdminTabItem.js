@@ -97,6 +97,8 @@ export default function Home() {
         // let id = key.replace("_option", "");
         itemOptionList[key] = newData.data[0][key].split(",");
       }
+      itemOptionList.item_option_consumable = itemDefaultList.item_option_consumable;
+      itemOptionList.item_option_msg = itemDefaultList.item_option_msg;
       setItemOptionList({...itemOptionList});
     }
     console.log("essential data item detail: ", newData);
@@ -166,8 +168,8 @@ export default function Home() {
 
 const itemDefaultList = {
   item_option_type: ["성장재료", "이벤트", "우편"],
-  item_option_consumable: ["O", "X"],
   item_option_addstat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
+  item_option_consumable: ["O", "X"],
   item_option_msg: ["X", "O"],
 };
 // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)

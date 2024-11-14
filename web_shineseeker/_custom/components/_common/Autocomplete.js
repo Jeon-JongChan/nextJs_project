@@ -9,7 +9,7 @@ import React, {useState, useEffect, useRef} from "react";
  * @param {function} onSelect - 선택된 항목을 처리할 콜백 함수 (선택된 항목의 id나 전체 데이터를 전달)
  * @param {number} [height=40] - 드롭다운 높이 (기본값 40px)
  */
-export default function Autocomplete({data, id, onSelect, autokey = "name", height = 40}) {
+export default function Autocomplete({data, id, onSelect, autokey = "name", height = 40, maxVisibleItem = 5}) {
   let inputElement = null;
   const dropdownRef = useRef(null);
   const [inputValue, setInputValue] = useState(""); // 입력값
@@ -36,7 +36,7 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
           // console.log("Autocomplete.js  filterd --> ",item, value, item.item_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()))
           // item.item_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
           let name = item?.[autokey];
-          return name.includes(value)
+          return name.toLowerCase().includes(value)
         });
         console.log("Autocomplete.js --> ", value, data, filtered, data[0]?.[autokey].normalize("NFD"), data[0]?.[autokey].includes(value));
         setFilteredData(filtered);
@@ -84,12 +84,12 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
           className="absolute left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg overflow-auto z-10"
           style={{
             width: `${dropdownWidth}px`, // input의 넓이를 기준으로 드롭다운 넓이 설정
-            maxHeight: `${height}px`, // 드롭다운 최대 높이
+            maxHeight: `${height * ((filteredData?.length || 0) > maxVisibleItem ? maxVisibleItem : filteredData?.length || 0)}px`, // 드롭다운 최대 높이
           }}
         >
           {filteredData.map((item) => (
             <li
-              key={item.id}
+              key={`${item?.[autokey]}-${item.id}`}
               onClick={(e) => handleItemClick(e, item)} // 항목 클릭 시 처리
               className="cursor-pointer p-2 hover:bg-gray-100"
             >

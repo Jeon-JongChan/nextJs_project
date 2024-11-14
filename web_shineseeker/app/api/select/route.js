@@ -14,12 +14,14 @@ export async function GET(req) {
     if (data) {
       if (apitype === "user") {
         // user의 경우 item, role 값을 추가해줘야 함
+        let users = [];
         for (let i = 0; i < data.length; i++) {
           // userid가 shineseekeradmin 인 경우 삭제
-          if (data[i].userid === "shineseekeradmin" && apioption !== "admin") {
-            data.splice(i, 1);
+          if (data[i].userid === "shineseekeradmin" && apioption === "notadmin") {
+            // data.splice(i, 1);
             continue;
           }
+          // 유저별 아이템 추가
           let items = await getDataKey("user_item", "userid", data[i].userid, true);
           if (items?.length) data[i].items = items.map((item) => item.item);
           let role = await getDataKey("user_auth", "userid", data[i].userid);
@@ -27,8 +29,13 @@ export async function GET(req) {
             data[i].userpw = role.userpw;
             data[i].role = role.role;
           }
+          // 유저별 스킬 목록 전부 추가
+          let skill = await getDataKey("user_skill", "userid", data[i].userid, true);
+          if (skill?.length) data[i].skills = skill.map((skill) => skill.skill_name);
+          users.push(data[i]);
         }
         // userid가 존재하는 경우 해당 값만 보내도록 한다
+        data = users;
         let userid = searchParams.get("userid") || null;
         if (userid) data = data.filter((user) => user.userid === userid);
       } else if (apitype === "job") {
@@ -36,7 +43,7 @@ export async function GET(req) {
         let skills = await getData("job_skill", 0);
         if (skills) {
           for (let i = 0; i < data.length; i++) {
-            data[i].job_skill = skills.filter((skill) => skill.job_name === data[i].job_name).map((skill) => skill.skill);
+            data[i].job_skill = skills.filter((skill) => skill.job_name === data[i].job_name).map((skill) => skill.skill_name);
           }
         }
       } else if (apitype === "monster") {

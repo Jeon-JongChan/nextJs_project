@@ -19,7 +19,9 @@ export default function Home() {
   const [clickUserImage, setClickUserImage] = useState([]);
   const [checkboxOptionList, setCheckboxOptionList] = useState({skill: [""], job: [""]});
   const [itemList, setItemList] = useState([]);
+  const [skillList, setSkillList] = useState([]);
   const [allItems, setAllItems] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
   let fetchIndex = 0;
 
   // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)
@@ -119,8 +121,9 @@ export default function Home() {
       textareaElements.forEach((textarea) => {
         textarea.value = data[textarea.id];
       });
-      // 5. 아이템 채우기
+      // 5. 아이템 및 스킬 채우기
       setItemList(data?.items ? [...data.items] : []);
+      setSkillList(data?.skills ? [...data.skills] : []);
     }
   };
 
@@ -139,9 +142,16 @@ export default function Home() {
   };
 
   const addItem = (e) => {
-    const item = document.getElementById("user_item_add").value;
+    const item = document.querySelector("#user_item_add").value;
     if (item) {
       setItemList([...itemList, item]);
+    }
+  };
+
+  const addSkill = (e) => {
+    const item = document.querySelector("#user_skillList_add").value;
+    if (item) {
+      setSkillList([...skillList, item]);
     }
   };
 
@@ -183,6 +193,20 @@ export default function Home() {
     e.preventDefault();
   };
 
+  const deleteSkill = (e) => {
+    e.preventDefault();
+    const inputElement = e.target.parentElement.querySelector("input");
+    const skill = inputElement.value;
+
+    // 삭제할 아이템의 인덱스를 찾고 복사본에 반영
+    const index = skillList.indexOf(skill);
+    if (index > -1) {
+      const listCopy = [...skillList];
+      listCopy.splice(index, 1); // 아이템 삭제
+      setSkillList(listCopy);
+    }
+  };
+
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 유저관리 항목 선택되었습니다.");
     const inputData = {};
@@ -197,7 +221,11 @@ export default function Home() {
     const response3 = await fetch("/api/select?apitype=item&getcount=1");
     const newData3 = await response3.json();
 
-    if (newData?.data) inputData.skill = ["", ...newData.data.map((data) => data.skill_name)];
+    if (newData?.data) {
+      setAllSkills(newData.data);
+      devLog("essential data fetch skill : ", newData);
+      inputData.skill = ["", ...newData.data.map((data) => data.skill_name)];
+    }
     if (newData2?.data) {
       inputData.job = ["", ...newData2.data.map((data) => data.job_name)];
       inputData.jobs = newData2.data;
@@ -266,7 +294,15 @@ export default function Home() {
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
                     {data[0]}
                   </label>
-                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn} />
+                  <FileDragAndDrop
+                    css={"mt-2 w-full col-span-4 h-[200px]"}
+                    id={`user_img_${index}`}
+                    type={"image/"}
+                    text={data[1] ? null : "Drag Or Click"}
+                    image={data[1]}
+                    objectFit={"fill"}
+                    extFunc={imgInitFn}
+                  />
                 </div>
               );
             })}
@@ -282,16 +318,34 @@ export default function Home() {
                 ))}
             </div>
           </div>
+          <div className="relative col-span-12 mt-4 user-itemlist">
+            <h3 className="text-center font-bold text-2xl">유저 스킬 리스트</h3>
+            <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100">
+              {skillList &&
+                skillList.map((skill, index) => (
+                  <Tooltip key={`${skill}-${index}`} content={<span>이것은 테스트 툴팁입니다!</span>} css={"w-1/6"}>
+                    {/* prettier-ignore */}
+                    <InputTextList nolabel={true} readonly={true} default={skill} id={`user_skillList_${index}`} type={"text"} css={"text-center border"} deleteButton={true} deleteFunc={deleteSkill} />
+                  </Tooltip>
+                ))}
+            </div>
+          </div>
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
-        <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100">
-          <h3 className="text-center font-bold text-2xl mr-4">유저 아이템 추가 - 미완성</h3>
+        <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100 items-center justify-center">
+          <h3 className="text-center font-bold text-2xl mr-4">유저 아이템 추가</h3>
           <GridInputText nolabel={true} id={"user_item_add"} type={"text"} css={"text-center border"} />
           <GridInputButton label={"추가"} type={"button"} onclick={addItem} />
+        </div>
+        <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100 items-center justify-center">
+          <h3 className="text-center font-bold text-2xl mr-4">유저 스킬 추가</h3>
+          <GridInputText nolabel={true} id={"user_skillList_add"} type={"text"} css={"text-center border"} />
+          <GridInputButton label={"추가"} type={"button"} onclick={addSkill} />
         </div>
       </div>
       <div className="w-1/5 flex"></div>
       <Autocomplete id={"#user_item_add"} data={allItems} autokey={"item_name"} />
+      <Autocomplete id={"#user_skillList_add"} data={allSkills} autokey={"skill_name"} />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 // import {Inter} from "next/font/google";
 import Image from "next/image";
-import Link from "next/link";
 import BackgroundCanvas from "/_custom/components/BackgroundCanvas";
+import Nav from "./Nav";
+import Link from "next/link";
 
 // const inter = Inter({subsets: ["latin"]});
 
@@ -10,10 +11,7 @@ export const metadata = {
   description: "Lee ju eun's community website.",
 };
 
-const navSize = " ";
-
 export default function Layout({children}) {
-  const linkStyle = "text-white hover:text-gray-300 px-3 pb-2 pt-8 top-1 col-span-1 text-center relative img-nav-btn-init hover:text-[#806FAF] focus:text-[#806FAF]";
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen img-home-bg">
@@ -24,25 +22,7 @@ export default function Layout({children}) {
                 <Image src="/images/home/01_home_title_homebutton.png" width={282} height={53} />
               </Link>
             </div>
-            <div className="relative grid grid-cols-5 items-center gap-x-4 img-nav-bg" style={{minWidth: "687px"}}>
-              <div className="relative col-span-5 grid grid-cols-5 items-center gap-x-1" style={{top: "-18px", fontSize: "18px"}}>
-                <Link href="/world" className={linkStyle + navSize}>
-                  세계관
-                </Link>
-                <Link href="/read" className={linkStyle + navSize}>
-                  필독
-                </Link>
-                <Link href="/member" className={linkStyle + navSize}>
-                  멤버란
-                </Link>
-                <Link href="/battle" className={linkStyle + navSize}>
-                  샤인시커
-                </Link>
-                <Link href="/market" className={linkStyle + navSize}>
-                  교환소
-                </Link>
-              </div>
-            </div>
+            <Nav />
           </nav>
           {children}
         </main>

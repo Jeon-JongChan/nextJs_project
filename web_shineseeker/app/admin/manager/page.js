@@ -24,7 +24,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full min-w-[1400px]">
+    <div className="flex flex-col w-full min-w-[1400px] pb-20">
       <div className="flex justify-center mb-4 w-full">
         {tabList.map((tab, index) => {
           return (

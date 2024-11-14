@@ -47,7 +47,7 @@ export default function Home() {
       devLog("clickUser", name, data, clickImage);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_detail_`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_option_`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
@@ -85,7 +85,7 @@ export default function Home() {
 
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 스킬 항목 선택되었습니다.");
-    const response = await fetch("/api/select?apitype=skill_detail&getcount=1");
+    const response = await fetch("/api/select?apitype=skill_option&getcount=1");
     const newData = await response.json();
     if (newData?.data?.length) {
       // 스킬 상세정보를 input과 select에 넣기
@@ -93,12 +93,12 @@ export default function Home() {
       for (const key of Object.keys(newData.data[0])) {
         if (key.startsWith("updated")) continue;
         document.querySelector(`#${key}`).value = newData.data[0][key]; // input에 기본값 넣기
-        let id = key.replace("_detail", "");
+        let id = key.replace("_option", "");
         skillList[id] = newData.data[0][key].split(",");
       }
       setSkillList({...skillList});
     }
-    console.log("essential data skill detail: ", newData);
+    console.log("essential data skill option: ", newData);
   }
 
   // 데이터를 주기적으로 가져오기 위한 함수
@@ -155,10 +155,10 @@ export default function Home() {
           </div>
           <MakeInputList inputNameObjects={inputNames} checkboxOptionObjects={ Object.keys(skillList).length ? skillList : skillDefaultList} />
           <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
-          <GridInputText label={"스킬 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
-          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />
-          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(',')} css="border-b" />
-          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(',')} css="border-b" />
+          <GridInputText label={"스킬 유형"} id={"skill_option_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
+          <GridInputText label={"스킬 범위"} id={"skill_option_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />
+          <GridInputText label={"위력 능력치"} id={"skill_option_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(',')} css="border-b" />
+          <GridInputText label={"스킬소비항목"} id={"skill_option_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(',')} css="border-b" />
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>

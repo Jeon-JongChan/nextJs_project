@@ -49,7 +49,7 @@ export default function Home() {
       devLog("clickUser", name, data, clickImage, skillList);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`skill_detail_`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`skill_option_`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
@@ -87,7 +87,7 @@ export default function Home() {
 
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 몬스터 항목 선택되었습니다.");
-    const response = await fetch("/api/select?apitype=skill_detail&getcount=1");
+    const response = await fetch("/api/select?apitype=skill_optiongetcount=1");
     const newData = await response.json();
     const secondResponse = await fetch("/api/select?apitype=skill&getcount=1");
     const secondNewData = await secondResponse.json();
@@ -145,7 +145,12 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["보스 이미지", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
@@ -161,20 +166,48 @@ export default function Home() {
             {[...Array(5)].map((_, index) => (
               <React.Fragment key={index}>
                 <GridInputText label={"계수(% 미만)"} id={`monster_event_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
-                <GridInputSelectBox label={"사용스탯"} id={`monster_event_cost_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_stat || skillDefaultList.skill_stat} />
-                <GridInputSelectBox label={"효과"} id={`monster_event_type_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_type || skillDefaultList.skill_type} />
-                <GridInputSelectBox label={"범위"} id={`monster_event_range_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_range || skillDefaultList.skill_range} />
-                <GridInputSelectBox label={"위력스탯"} id={`monster_event_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat} />
+                <GridInputSelectBox
+                  label={"사용스탯"}
+                  id={`monster_event_cost_stat_${index}`}
+                  type={"number"}
+                  colSpan={1}
+                  css={"text-center border"}
+                  options={skillList?.skill_stat || skillDefaultList.skill_stat}
+                />
+                <GridInputSelectBox
+                  label={"효과"}
+                  id={`monster_event_type_${index}`}
+                  type={"number"}
+                  colSpan={1}
+                  css={"text-center border"}
+                  options={skillList?.skill_type || skillDefaultList.skill_type}
+                />
+                <GridInputSelectBox
+                  label={"범위"}
+                  id={`monster_event_range_${index}`}
+                  type={"number"}
+                  colSpan={1}
+                  css={"text-center border"}
+                  options={skillList?.skill_range || skillDefaultList.skill_range}
+                />
+                <GridInputSelectBox
+                  label={"위력스탯"}
+                  id={`monster_event_stat_${index}`}
+                  type={"number"}
+                  colSpan={1}
+                  css={"text-center border"}
+                  options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat}
+                />
                 <GridInputText label={"스탯 적용(%)"} id={`monster_event_stat_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
                 <GridInputText label={"출력메세지"} id={`monster_event_msg_${index}`} type={"text"} colSpan={6} css={"text-center border h-[36px]"} />
               </React.Fragment>
             ))}
           </div>
           <h1 className="mt-8 col-span-full font-bold text-2xl">이벤트 조건 입력칸 ( 구분자 &apos;,&apos; 로 / 스킬페이지와 연동됨 )</h1>
-          <GridInputText label={"효과 유형"} id={"skill_detail_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(",")} css="border-b" />
-          <GridInputText label={"스킬 범위"} id={"skill_detail_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(",")} css="border-b" />
-          <GridInputText label={"위력 능력치"} id={"skill_detail_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(",")} css="border-b" />
-          <GridInputText label={"스킬소비항목"} id={"skill_detail_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(",")} css="border-b" />
+          <GridInputText label={"효과 유형"} id={"skill_option_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(",")} css="border-b" />
+          <GridInputText label={"스킬 범위"} id={"skill_option_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(",")} css="border-b" />
+          <GridInputText label={"위력 능력치"} id={"skill_option_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(",")} css="border-b" />
+          <GridInputText label={"스킬소비항목"} id={"skill_option_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(",")} css="border-b" />
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>

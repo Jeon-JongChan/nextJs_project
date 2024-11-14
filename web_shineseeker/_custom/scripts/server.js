@@ -5,7 +5,7 @@ import Sqlite from "./sqlite3-adapter.js";
 import SqliteQuery from "./sqlite3-query.js";
 import {devLog} from "./common.js";
 
-export {saveFiles, saveImage, saveData, deleteData, truncateData, getData, getDataKey};
+export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKey, executeSelectQuery, executeQuery};
 
 const sqlite = new Sqlite(); // 기본 dbPath 사용, verbose 출력 활성화
 
@@ -72,12 +72,25 @@ async function saveData(table, data, isObjectArray = false) {
     if (isQuery) sqlite.db.exec(isQuery);
     else if (!isQuery && !isObjectArray) sqlite.createTableFromObject(table, data, true);
     else {
-      sqlite.createTableFromObject(table, data, true);
       if (Array.isArray(data)) sqlite.createTableFromObject(table, data[0], true);
+      else sqlite.createTableFromObject(table, data, true);
     }
   }
   if (!isObjectArray) sqlite.insert(table, data);
   else sqlite.multiInsert(table, data);
+}
+
+async function updateData(table, key, keyValue, data) {
+  if (!sqlite.tableExists(table)) {
+    const isQuery = SqliteQuery?.create?.[table];
+    if (isQuery) sqlite.db.exec(isQuery);
+    else if (!isQuery) sqlite.createTableFromObject(table, data, true);
+    else {
+      if (Array.isArray(data)) sqlite.createTableFromObject(table, data[0], true);
+      else sqlite.createTableFromObject(table, data, true);
+    }
+  }
+  sqlite.updateByKey(table, key, keyValue, data);
 }
 
 async function deleteData(table, key, keyValue) {
@@ -118,10 +131,27 @@ async function getDataKey(table, key, keyValue, isAll = false) {
   try {
     // devLog("server.js getDataKey", table, key, keyValue, isAll);
     if (!sqlite.tableExists(table)) return null;
-    if (isAll) return sqlite.searchByKeyAll(table, key, keyValue);
+    if (isAll) return sqlite.searchByKeyAll(table, key, keyValue, !isAll);
     else return sqlite.searchByKey(table, key, keyValue);
   } catch (e) {
     console.error("server.js getDataKey Function : ", e);
     return null;
+  }
+}
+
+async function executeSelectQuery(query, value = null) {
+  try {
+    return sqlite.db.prepare(query).all(value);
+  } catch (error) {
+    console.error("** server.js(executeSelectQuery) failed:", error);
+    return null; // 실패 시 null 반환
+  }
+}
+async function executeQuery(query, value = null) {
+  try {
+    return sqlite.db.prepare(query).run(value);
+  } catch (error) {
+    console.error("** server.js(executeSelectQuery) failed:", error);
+    return null; // 실패 시 null 반환
   }
 }

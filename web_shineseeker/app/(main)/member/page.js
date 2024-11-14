@@ -9,7 +9,7 @@ export default function Home(props) {
   let fetchIndex = 0;
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
-    let response = await fetch(`/api/select?apitype=user&getcount=1`);
+    let response = await fetch(`/api/select?apitype=user&getcount=1&apioption=notadmin`);
     console.log("야 메인 땡긴다?", response);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);
@@ -41,8 +41,8 @@ export default function Home(props) {
   return (
     <div className="relative w-full overflow-y-auto no-scrollbar" style={{height: "325px", top: "-60px"}}>
       <div className="grid grid-cols-9 gap-4" style={{height: "inherit"}}>
-        {photoCards.map((card) => (
-          <MemberPhoto key={card.id} defaultImage={card.defaultImage} overlayImage={card.overlayImage} link={card.link} />
+        {photoCards.map((card, idx) => (
+          <MemberPhoto key={`${card.link}`} defaultImage={card.defaultImage} overlayImage={card.overlayImage} link={card.link} />
         ))}
       </div>
     </div>

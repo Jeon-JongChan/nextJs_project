@@ -258,11 +258,11 @@ class DBManager {
   }
 
   // 검색 함수 (전체 행 조회)
-  searchByKeyAll(table, key, keyValue, options = {}) {
+  searchByKeyAll(table, key, keyValue, isLimit = true, options = {}) {
     const {limit = 10, offset = 0} = options;
     try {
-      const stmt = this.db.prepare(`SELECT * FROM ${table} WHERE ${key} = ? LIMIT ? OFFSET ?`);
-      return stmt.all(keyValue, limit, offset);
+      const stmt = this.db.prepare(`SELECT * FROM ${table} WHERE ${key} = ? ${isLimit ? "LIMIT ? OFFSET ?" : ""}`);
+      return isLimit ? stmt.all(keyValue, limit, offset) : stmt.all(keyValue);
     } catch (error) {
       console.error("** Sql-adapter.js(searchByKey) Search failed:", error);
       return null; // 실패 시 null 반환

@@ -29,7 +29,7 @@ export async function POST(req) {
 async function updateUser(data) {
   const essentialDataList = ["userid", "userpw", "username1"];
   const exceptUserList = ["file", "apitype", "userpw", "role"];
-  let user = {},images = {}, items = [], auth = {}; // prettier-ignore
+  let user = {},images = {},items = [],auth = {},skills=[] // prettier-ignore
 
   if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
 
@@ -38,7 +38,9 @@ async function updateUser(data) {
     if (!exceptUserList.includes(key)) {
       if (key.startsWith("user_img")) images[key] = await saveImage(value); // 이미지 저장
       else if (key.startsWith("user_item")) items.push(value); // 아이템 저장
-      else user[key] = value; // 유저 정보 저장
+      else if (key.startsWith("user_skillList")) {
+        if (!skills.includes(value)) skills.push(value); // 스킬 저장 및 중복 스킬은 저장 X
+      } else user[key] = value; // 유저 정보 저장
     } else if (key === "userpw" || key === "role") auth[key] = value; // 유저 인증 정보 저장
   }
   auth["userid"] = user["userid"];
@@ -52,7 +54,10 @@ async function updateUser(data) {
     } else user[imgKey] = images[imgKey]?.path || null;
   });
   await deleteData("user_item", "userid", user.userid); // 기존 아이템 정보 삭제
-  items.forEach((item, idx) => saveData("user_item", {userid: user.userid, item: item})); // 아이템 정보를 user 객체에 추가
+  await deleteData("user_skill", "userid", user.userid); // 기존 스킬리스트 정보 삭제
+  devLog("updateUser all data", user, items, skills);
+  items.forEach((item, idx) => saveData("user_item", {userid: user.userid, item: item})); // 아이템 정보를 user_item 객체에 추가
+  skills.forEach((skill, idx) => saveData("user_skill", {userid: user.userid, skill_name: skill})); // 스킬리스트 정보를 user_skill 객체에 추가
   await saveData("user", user);
   await saveData("user_auth", auth);
 
@@ -73,7 +78,7 @@ async function updateSkill(data) {
   for (const [key, value] of data.entries()) {
     if (!exceptList.includes(key)) {
       if (key.startsWith("skill_img")) images[key] = await saveImage(value); // 이미지 저장
-      else if (key.startsWith("skill_detail")) skills_detail[key] = value; // 스킬 상세정보 저장
+      else if (key.startsWith("skill_option")) skills_detail[key] = value; // 스킬 상세정보 저장
       else skill[key] = value; // 스킬 정보 저장
     }
   }
@@ -87,8 +92,8 @@ async function updateSkill(data) {
     } else skill[imgKey] = images[imgKey]?.path || null;
   });
 
-  await truncateData("skill_detail"); // 한줄이므로 걍 삭세하고 넣어버려
-  saveData("skill_detail", skills_detail); // 스킬 상세정보 저장
+  await truncateData("skill_option"); // 한줄이므로 걍 삭세하고 넣어버려
+  saveData("skill_option", skills_detail); // 스킬 상세정보 저장
   await saveData("skill", skill);
 
   return skill;
@@ -120,7 +125,7 @@ async function updateJob(data) {
     } else job[imgKey] = images[imgKey]?.path || null;
   });
   await deleteData("job_skill", "job_name", job.job_name); // 기존 스킬정보를 삭제하지 않고 중복일 경우 추가 안되게 primary key로 묶음
-  skill.forEach((skill, idx) => saveData("job_skill", {job_name: job.job_name, skill: skill})); // 스킬 정보를 job_skill 객체에 추가
+  skill.forEach((skill, idx) => saveData("job_skill", {job_name: job.job_name, skill_name: skill})); // 스킬 정보를 job_skill 객체에 추가
   await saveData("job", job);
 
   return job;
@@ -139,7 +144,7 @@ async function updatMonster(data) {
   for (const [key, value] of data.entries()) {
     if (!exceptUserList.includes(key)) {
       if (key.startsWith("monster_img")) images[key] = await saveImage(value); // 이미지 저장
-      else if (key.startsWith("skill_detail")) skills_detail[key] = value; // 스킬 상세정보 저장
+      else if (key.startsWith("skill_option")) skills_detail[key] = value; // 스킬 상세정보 저장
       else if (key.startsWith("monster_event")) {
         let index = parseInt(key.split("_").pop());
         monster_event[index][key.replace(`_${index}`, "")] = value;
@@ -161,8 +166,8 @@ async function updatMonster(data) {
     monster_skill["monster_event_idx"] = idx;
     saveData("monster_event", monster_skill);
   });
-  await truncateData("skill_detail"); // 한줄이므로 걍 삭세하고 넣어버려
-  saveData("skill_detail", skills_detail); // 스킬 상세정보 저장
+  await truncateData("skill_option"); // 한줄이므로 걍 삭세하고 넣어버려
+  saveData("skill_option", skills_detail); // 스킬 상세정보 저장
   await saveData("monster", monster);
 
   return monster;

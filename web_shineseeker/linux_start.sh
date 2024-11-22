@@ -62,4 +62,4 @@ fi
 # 7. 프로덕션 모드로 실행
 echo "Next.js 애플리케이션을 프로덕션 모드로 실행 중..."
 # root권한때문에 잘 안됨 npm run start -- -p 80
-npm run start
+npm run start -- -p 80

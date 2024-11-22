@@ -11,6 +11,7 @@ import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import InputTextList from "./InputTextList";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "user";
 export default function Home() {
@@ -299,7 +300,7 @@ export default function Home() {
                     id={`user_img_${index}`}
                     type={"image/"}
                     text={data[1] ? null : "Drag Or Click"}
-                    image={data[1]}
+                    image={getImageUrl(data[1])}
                     objectFit={"fill"}
                     extFunc={imgInitFn}
                   />

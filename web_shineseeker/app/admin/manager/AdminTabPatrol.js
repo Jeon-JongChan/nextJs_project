@@ -10,6 +10,7 @@ import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextAre
 import GridFile from "/_custom/components/_common/grid/GridFile";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "patrol";
 export default function Home() {
@@ -155,13 +156,26 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <div className="relative col-span-12 mt-4 flex gap-1">
             <div className="block w-1/4">
               <label htmlFor="patrol_img" className="block text-2xl font-bold">
                 출력이미지
               </label>
-              <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`patrol_img`} type={"image/"} text={clickImage ? null : "Drag Or Click"} image={clickImage} objectFit={"fill"} extFunc={imgInitFn} />
+              <FileDragAndDrop
+                css={"mt-2 w-full col-span-4 h-[200px]"}
+                id={`patrol_img`}
+                type={"image/"}
+                text={clickImage ? null : "Drag Or Click"}
+                image={getImageUrl(clickImage)}
+                objectFit={"fill"}
+                extFunc={imgInitFn}
+              />
             </div>
           </div>
           <h1 className="mt-8 col-span-full font-bold text-2xl">항목설정</h1>
@@ -216,7 +230,9 @@ export default function Home() {
 function makeRetOptionGenerator(index, option = {}) {
   return (
     <React.Fragment key={index}>
-      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>{option.span ? option?.span : `${index + 1} 선택지`}</span>
+      <span className={["col-span-1 relative row flex items-end justify-center font-bold", option?.spanCss ? option?.spanCss : ""].join(" ")}>
+        {option.span ? option?.span : `${index + 1} 선택지`}
+      </span>
       <GridInputSelectBox label={option?.type} id={`patrol_ret_type_${index}`} type={"text"} colSpan={2} options={patrolDefaultList.patrol_option_item} />
       <GridInputText label={option?.money} id={`patrol_ret_money_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />
       <GridInputText label={option?.count} id={`patrol_ret_count_${index}`} type={"text"} colSpan={2} css="border-b h-[36px]" />

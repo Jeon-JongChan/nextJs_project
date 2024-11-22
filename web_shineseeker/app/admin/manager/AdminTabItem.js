@@ -8,6 +8,7 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import MakeInputList from "./MakeInputList";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "item";
 export default function Home() {
@@ -151,7 +152,7 @@ export default function Home() {
               //prettier-ignore
               <div className="block w-1/4" key={index}>
                 <label htmlFor="item_icon" className="block text-2xl font-bold">{data[0]}</label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`item_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn}/>
+                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`item_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={getImageUrl(data[1])} objectFit={"fill"} extFunc={imgInitFn}/>
               </div>
             )}
           </div>

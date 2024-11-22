@@ -353,7 +353,26 @@
   background-image: url("/images/market/06_shop_item.png");
 }
 /**************************************************************************************************************************** Path: /raid */
+.img-raid-bg {
+  background-image: url("/images/raid/05_raid_bg.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
 .img-raid-make-btn {
   background-image: url("/images/05_raid_button1.png");
+}
+.img-raid-icon-frame {
+  background-image: url("/images/raid/05_raid_04_boxitem.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+.img-raid-success-frame {
+  background-image: url("/images/raid/05_raid_04_frame.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 /**************************************************************************************************************************** Path: /etc */

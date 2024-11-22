@@ -1,4 +1,6 @@
+"use client";
 // import {Inter} from "next/font/google";
+import {usePathname} from "next/navigation";
 import Image from "next/image";
 import BackgroundCanvas from "/_custom/components/BackgroundCanvas";
 import Nav from "./Nav";
@@ -6,12 +8,13 @@ import Link from "next/link";
 
 // const inter = Inter({subsets: ["latin"]});
 
-export const metadata = {
-  title: "Shineseeker",
-  description: "Lee ju eun's community website.",
-};
-
 export default function Layout({children}) {
+  const pathname = usePathname();
+
+  // 특정 페이지에서는 레이아웃을 무시
+  if (pathname === "/battle/raid") {
+    return <>{children}</>;
+  }
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen img-home-bg">

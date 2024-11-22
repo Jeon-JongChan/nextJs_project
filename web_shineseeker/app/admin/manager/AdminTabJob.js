@@ -10,6 +10,7 @@ import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
 import InputTextList from "./InputTextList";
 import Autocomplete from "/_custom/components/_common/Autocomplete";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "job";
 export default function Home() {
@@ -157,13 +158,18 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["상징 아이콘", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
               <div className="block w-1/4" key={index}>
                 <label htmlFor={`job_img_${index}`} className="block text-2xl font-bold">{data[0]}</label>
-                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`job_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={data[1]} objectFit={"fill"} extFunc={imgInitFn} />
+                <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`job_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={getImageUrl(data[1])} objectFit={"fill"} extFunc={imgInitFn} />
               </div>
             )}
           </div>

@@ -1,127 +1,132 @@
 "use client";
 import {useState} from "react";
 import Image from "next/image";
-import {devLog, updateDataWithFormInputs} from "/_custom/scripts/common";
-import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
-import ImageMakeButton from "@/public/images/raid/05_raid_button1.png";
+import {devLog} from "/_custom/scripts/common";
+import {updateDataWithFormInputs} from "/_custom/scripts/client";
+import RaidProcessButton from "@/public/images/raid/05_raid_03_gobutton.png";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 export default function Home() {
-  const [raids, setRaids] = useState([
-    {id: 1, name: "다크리사 던전", leader: "유저1", members: 4, status: "참가 가능"},
-    {id: 2, name: "다크리사 챔버", leader: "유저2", members: 6, status: "관전 가능"},
-    {id: 2, name: "다크리사 챔버", leader: "유저2", members: 6, status: "관전 가능"},
-  ]);
-  const [raidTeamMember, setRaidTeamMember] = useState([
-    {id: 1, name: "유저1", team_order: 1},
-    {id: 2, name: "유저2", team_order: 2},
-    {id: 2, name: "유저2", team_order: 2},
-    {id: 2, name: "유저2", team_order: 2},
-    {id: 2, name: "유저2", team_order: 2},
-    {id: 2, name: "유저2", team_order: 2},
-  ]);
+  const [isGameEnded, setIsGameEnded] = useState(false);
+  const [isGameClear, setIsGameClear] = useState(true);
+  const [hpCurrent, setHpCurrent] = useState(110);
+  const bgImage = "/images/raid/05_raid_button1.png"; // 배경 이미지 경로
+  const bossImage = "/images/raid/boss_example.webp"; // 보스 이미지 경로
+  const hpMax = 200;
+  const iconUrls = ["/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp"];
+  const MemberPosCss = ["top-[0px] left-[0px]", "top-[145px] left-[0px]", "top-[290px] left-[0px]", "top-[0px] right-[0px]", "top-[145px] right-[0px]", "top-[290px] right-[0px]"];
 
-  const handleJoin = (id) => {
-    alert(`${id}번 레이드에 참가합니다!`);
-  };
-
-  const handleSpectate = (id) => {
-    alert(`${id}번 레이드를 관전합니다!`);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const apitype = e.target.dataset.apitype;
-    const addObject = {};
-
-    // 각 select의 id와 선택된 value를 가져와 result 객체에 저장
-    const selectElements = e.target.querySelectorAll("select");
-    selectElements.forEach((select) => {
-      addObject[select.id] = select.value; // id: value 형태로 저장
-    });
-
-    devLog("handleSubmitUser", apitype);
-    updateDataWithFormInputs(e, apitype, "page/raid", addObject, true);
-  };
-
-  return (
-    <>
-      <div className="relative flex" style={{width: "900px", height: "350px", top: "-20px"}}>
-        <div className="flex flex-col h-full" style={{width: "560px"}}>
-          <div id="raid-teamlist" className="border border-[#806FAF]">
-            {/* 헤더 영역 */}
-            <div className="bg-[#806FAF] text-black text-center flex">
-              <div className="flex-1 border-r border-gray-300 px-4 py-2">레이드명</div>
-              <div className="flex-1 border-r border-gray-300 px-4 py-2">방장</div>
-              <div className="flex-1 border-r border-gray-300 px-4 py-2">인원</div>
-              <div className="flex-1 px-4 py-2">상태</div>
-            </div>
-
-            {/* 데이터 영역 (스크롤 가능) */}
-            <div className="overflow-y-scroll max-h-[200px]" style={{height: "200px"}}>
-              {raids.map((raid, index) => (
-                <div key={raid.id} className={`flex text-white text-center ${index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}`} style={{height: "35px"}}>
-                  <div className="flex-1 border-r border-gray-300 px-4 py-2">{raid.name}</div>
-                  <div className="flex-1 border-r border-gray-300 px-4 py-2">{raid.leader}</div>
-                  <div className="flex-1 border-r border-gray-300 px-4 py-2">{raid.members}/6</div>
-                  <div className="flex-1 px-[7px] py-[6px]">
-                    {raid.members >= 6 ? (
-                      <button onClick={() => handleSpectate(raid.id)} className="bg-gray-500 text-white px-2 rounded hover:bg-gray-600">
-                        관전하기
-                      </button>
-                    ) : (
-                      <button onClick={() => handleJoin(raid.id)} className="bg-blue-500 text-white px-2 rounded hover:bg-blue-600">
-                        참가하기
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <form onSubmit={handleSubmit} data-apitype="update_user" id="raid-teammaker" className="relative flex flex-row" style={{height: "85px", marginTop: "20px"}}>
-            <div className="border border-[#806FAF]" style={{width: "345px"}}>
-              <div className="bg-[#806FAF] text-black text-center flex">
-                <div className="flex-1 border-r border-gray-300 px-4 py-2">레이드명</div>
-                <div className="flex-1 border-r border-gray-300 px-4 py-2">참가인원</div>
+  function Ended({isClear = true, image = "", item = ""}) {
+    return (
+      <div className={"fixed flex flex-col items-center justify-center w-screen h-screen z-50 top-0 left-0 " + (isClear ? "img-home-bg" : "bg-black")}>
+        <div className={"relative flex flex-col items-center justify-center text-white " + (isClear ? "img-raid-success-frame" : "bg-black")} style={{width: "670px", height: "420px"}}>
+          {isClear ? (
+            <>
+              <h6 className="relative text-[60px] font-bold">VICTORY!</h6>
+              <div className="relative flex items-center justify-center img-raid-icon-frame" style={{width: "145px", height: "145px"}}>
+                <img src={getImageUrl(image)} alt="raid-item" style={{width: "130px", height: "130px"}} />
               </div>
-              <div className={`flex text-black text-center`}>
-                <div className="flex-1 border-r border-gray-300 px-4">
-                  <GridInputSelectBox id={"raid-namelist"} type={"text"} colSpan={12} onchange={null} options={["퍼큐", "시발"]} />
-                </div>
-                <div className="flex-1 border-r border-gray-300 px-4 py-2">
-                  <input type="number" min={0} max={6} value={6} id={"raid-headcount"} className="w-full h-full rounded-md text-center pl-[20px]" />
-                </div>
-              </div>
-            </div>
-            <button type="submit" className="relative" style={{width: "180px", height: "90px", marginLeft: "30px"}}>
-              <Image src={ImageMakeButton} alt="레이드생성버튼" widht={180} height={90} className="hover:opacity-80" />
-            </button>
-          </form>
+              <span className="relative text-[24px]">레이드를 성공했습니다.</span>
+              <span className="relative text-[24px]">{item} 을(를) 획득했습니다.</span>
+            </>
+          ) : (
+            <>
+              <h6 className="relative text-[60px] font-bold">DEFEAT!</h6>
+              <span className="relative text-[24px]">레이드에 실패했습니다....</span>
+            </>
+          )}
         </div>
-        <div className="flex flex-col h-full" style={{width: "260px", marginLeft: "80px"}}>
-          <div id="raid-memberlist" className="border border-[#806FAF]">
-            {/* 헤더 영역 */}
-            <div className="bg-[#806FAF] text-black text-center flex">
-              <div className="flex-1 border-r border-gray-300 px-4 py-2">참가인원 리스트</div>
-              <div className="flex-1 border-r border-gray-300 px-4 py-2">순서</div>
-            </div>
+        <button className="relative text-[24px] text-white" style={{top: "-445px", right: "-260px"}} onClick={() => setIsGameEnded(false)}>
+          홈으로 돌아가기▶
+        </button>
+      </div>
+    );
+  }
 
-            {/* 데이터 영역 (스크롤 가능) */}
-            <div className="max-h-[235px]" style={{height: "235px"}}>
-              {raidTeamMember.map((member, index) => (
-                <div key={member.id} className={`flex text-white text-center ${index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}`} style={{height: "39px"}}>
-                  <div className="flex-1 border-r border-gray-300 px-4 py-2">{member.name}</div>
-                  <div className="flex-1 border-r border-gray-300 px-4 py-2">{member.team_order}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-row mt-[40px] justify-end">
-            <button className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400">시작하기</button>
-            <button className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400 ml-3">방나가기</button>
-          </div>
+  return isGameEnded ? (
+    <Ended isClear={isGameClear} item={"사람얼굴"} image={"/images/04_member_box.webp"} />
+  ) : (
+    <>
+      <button
+        className="fixed text-[40px] top-0"
+        onClick={() => {
+          setIsGameEnded(true);
+          setIsGameClear(false);
+        }}
+      >
+        게임 실패
+      </button>
+      <button
+        className="fixed text-[40px] top-0 left-[40px]"
+        onClick={() => {
+          setIsGameEnded(true);
+          setIsGameClear(true);
+        }}
+      >
+        게임 성공
+      </button>
+      <input type="number" max={200} onChange={(e) => setHpCurrent(e.target.value > 200 ? 200 : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" />
+      <div className="absolute flex flex-col items-center" style={{width: "760px", height: "600px", top: "-30px"}}>
+        <div className="relative block text-white text-[24px]">보스 이름</div>
+        <div className="relative flex w-full h-full mt-1">
+          <HPBar maxHP={hpMax} currentHP={hpCurrent} />
+        </div>
+        <div className="relative flex" style={{width: "760px", height: "535px"}}>
+          <img src={getImageUrl(bossImage)} alt="raid-bg" className="w-full h-full" />
         </div>
       </div>
+      <div className="relative flex w-full h-full">
+        {MemberPosCss.map((css, index) => (
+          <RaidMember bgImage={bgImage} hpCurrent={hpCurrent} hpMax={hpMax} iconUrls={iconUrls} css={css} />
+        ))}
+      </div>
     </>
+  );
+}
+
+function RaidMember({bgImage, hpCurrent, hpMax, iconUrls, css = ""}) {
+  return (
+    <div
+      className={"absolute w-[245px] h-[125px] bg-cover bg-center rounded-lg " + css}
+      style={{backgroundImage: `url(${getImageUrl(bgImage)})`}} // 배경화면
+    >
+      {/* 진행하기 버튼 */}
+      <button className="absolute w-[80px] h-[25px]" style={{top: "10px", right: "12px"}}>
+        <Image src={RaidProcessButton} alt="raid-process-button" width={80} height={25} />
+      </button>
+
+      {/* HP 텍스트 */}
+      <div className="absolute text-white" style={{top: "40px", right: "15px"}}>
+        HP
+      </div>
+
+      {/* 잔여 HP */}
+      <div className="absolute text-white" style={{top: "55px", right: "15px"}}>
+        {hpCurrent}/{hpMax}
+      </div>
+
+      {/* 아이콘들 */}
+      <div className="absolute bottom-2 left-2 flex space-x-3">
+        {iconUrls.map((icon, index) => (
+          <div key={index} className="relative flex justify-center items-center w-[35px] h-[35px] img-raid-icon-frame">
+            <img src={getImageUrl(icon)} alt={`icon-${index}`} className="max-w-[30px] max-h-[30px]" width={30} height={30} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HPBar({maxHP, currentHP}) {
+  // HP 비율 계산
+  const hpPercentage = (currentHP / maxHP) * 100;
+
+  return (
+    <div className="relative w-full bg-white rounded-full" style={{height: "8px"}}>
+      {/* 초록색 바 (HP가 남아있는 부분) */}
+      <div className="absolute top-0 left-0 h-full bg-green-500 rounded-full transition-all duration-300" style={{width: `${hpPercentage}%`}} />
+      {/* 흰색 바 (HP가 부족한 부분, 오른쪽에만 표시) */}
+      {/* <div className="absolute top-0 right-0 h-full bg-white rounded-full transition-all duration-300" style={{width: `${100 - hpPercentage}%`}} /> */}
+    </div>
   );
 }

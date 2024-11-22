@@ -56,7 +56,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
 // 이미지 URL 변환 함수
 function getImageUrl(src) {
   // src가 http:// 또는 https:// 로 시작하는지 확인
-  if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src)) {
+  if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src) || src == "init") {
     devLog("client.js : getImageUrl src : ", src, /^\/api\/image(\?)?src=/.test(src));
     return src; // URL 그대로 반환
   } else if (src) {

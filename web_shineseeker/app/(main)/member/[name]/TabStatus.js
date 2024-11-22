@@ -4,6 +4,7 @@ import Image from "next/image";
 import ItemSelectorModal from "@/_custom/components/ItemSelectorModal";
 import {devLog} from "@/_custom/scripts/common";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 export default function Component(props) {
   const tabTextBg = " bg-[#0f113f] max-h-[30px] px-4";
@@ -50,7 +51,7 @@ export default function Component(props) {
 
   // 모달 열기 및 데이터 전달
   const openModalWithData = async (idx) => {
-    devLog("openModalWithData", idx, props.currentUser, props.user, props.currentUser, props.skill);
+    devLog("openModalWithData", idx, props.currentUser, props.user, props.skill, props?.skill?.length);
     if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
     if (props?.skill?.length) modalRef.current.openModal(props.skill); // openModal 호출
     setSelectedItem(idx);
@@ -60,7 +61,7 @@ export default function Component(props) {
   const getSpellImage = (spellname) => {
     if (props?.skill) {
       let spell = props.skill.find((item) => item.skill_name === spellname);
-      devLog("getSpellImage", spellname, spell);
+      // devLog("TabStatus getSpellImage", spellname, spell);
       return spell?.skill_img_0 || null;
     }
   };
@@ -133,7 +134,7 @@ export default function Component(props) {
           {[0, 1, 2, 3, 4].map((index) => (
             <Tooltip key={index} content={spell?.[index]?.img ? <span>{spell?.[index].name}</span> : null}>
               <div onClick={() => openModalWithData(index)} className="img-member-init img-member-tab-imagebox flex justify-center items-center font-nexon text-white text-[45px]">
-                {spell?.[index]?.img ? <img src={spell[index].img} className="w-[45px] h-[45px]" /> : <span style={{position: "relative", top: "3px"}}>+</span>}
+                {spell?.[index]?.img ? <img src={getImageUrl(spell[index].img)} className="w-[45px] h-[45px]" /> : <span style={{position: "relative", top: "3px"}}>+</span>}
               </div>
             </Tooltip>
           ))}

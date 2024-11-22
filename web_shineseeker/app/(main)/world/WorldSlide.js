@@ -1,6 +1,7 @@
 "use client";
 import {useState, useEffect} from "react";
 import {sleep} from "/_custom/scripts/common.js";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const defaultProps = {
   slides: [
@@ -54,7 +55,7 @@ export default function Component(props) {
     const slideDescStyle = "pl-16 ";
     return (
       <div key={index} className="relative w-full group" style={{maxHeight: "372px"}}>
-        <img src={slideInfo?.imageUrl} alt={`Slide ${index + 1}`} className="w-full h-full" style={{width: "215px", height: "372px"}} />
+        <img src={getImageUrl(slideInfo?.imageUrl)} alt={`Slide ${index + 1}`} className="w-full h-full" style={{width: "215px", height: "372px"}} />
       </div>
     );
   }

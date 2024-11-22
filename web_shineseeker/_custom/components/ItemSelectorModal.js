@@ -1,5 +1,7 @@
 import {useState, forwardRef, useImperativeHandle} from "react";
 import Image from "next/image";
+import {getImageUrl} from "../scripts/client";
+import {devLog} from "../scripts/common";
 
 // 모달 컴포넌트
 const ModalExample = forwardRef(({onSelect, dataNameKey = "name", dataImageKey = "imageUrl", title = "아이템 선택"}, ref) => {
@@ -10,6 +12,7 @@ const ModalExample = forwardRef(({onSelect, dataNameKey = "name", dataImageKey =
   // 외부에서 openModal 함수 호출 가능하도록 설정
   useImperativeHandle(ref, () => ({
     openModal: (data) => {
+      devLog("ModalExample openModal", data);
       if (data && data?.length) setItemData(data); // 전달받은 데이터 설정
       setIsModalOpen(true); // 모달이 열리기 시작
       setTimeout(() => setIsVisible(true), 10); // 애니메이션 적용
@@ -51,7 +54,7 @@ const ModalExample = forwardRef(({onSelect, dataNameKey = "name", dataImageKey =
               {itemData.length
                 ? itemData.map((item, idx) => (
                     <div key={`${item?.[dataNameKey] || ""}-${idx}`} className="cursor-pointer hover:scale-105 transition-transform" onClick={() => handleItemClick(item)}>
-                      <Image src={item?.[dataImageKey]} alt={item?.[dataNameKey]} width={80} height={80} />
+                      <img src={getImageUrl(item?.[dataImageKey])} alt={item?.[dataNameKey]} width={80} height={80} />
                       <p className="text-sm mt-2">{item?.[dataNameKey]}</p>
                     </div>
                   ))

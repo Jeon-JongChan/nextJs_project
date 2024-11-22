@@ -1,14 +1,13 @@
 "use client";
 import {useState, useEffect} from "react";
-import Image from "next/image";
 import TabInfo from "./TabInfo";
 import TabStatus from "./TabStatus";
 import TabInventory from "./TabInventory";
-import BannerIcon from "@/public/images/member/04_member_ch_banner_icon.png";
 // import CharacterButton from "@/public/images/member/04_member_ch_button.png";
 import DefaultCharacterImage from "@/public/images/member/04_member_ch02.png";
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
 import {devLog} from "@/_custom/scripts/common";
+import {getImageUrl, getImageUrlAsync} from "@/_custom/scripts/client";
 // import DefaultCPetImage from "@/public/images/member/04_member_ch01.png";
 
 const menuName = "memberDetail";
@@ -27,7 +26,14 @@ export default function Home({params}) {
     const newData = await response.json();
     if (newData?.data?.length) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
-      setMainData(newData.data[0]);
+      const newMainData = newData.data[0];
+      // Object.keys(newMainData).forEach(async (key) => {
+      //   if (key.includes("user_img")) {
+      //     if (newMainData[key]) newMainData[key] = getImageUrl(newMainData[key]);
+      //     devLog("Member user change maindata imgage key", key, newMainData[key]);
+      //   }
+      // });
+      setMainData(newMainData);
     }
 
     let itemResponse = await fetch(`/api/select?apitype=item&getcount=1`);
@@ -52,8 +58,15 @@ export default function Home({params}) {
     let response = await fetch(`/api/select?apitype=user&userid=${params.name}`);
     const newData = await response.json();
     if (newData?.data?.length) {
-      devLog(`admin *** ${menuName} *** page data 반복 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
-      setMainData(newData.data[0]);
+      const newMainData = newData.data[0];
+      Object.keys(newMainData).forEach(async (key) => {
+        if (key.includes("user_img")) {
+          if (newMainData[key]) newMainData[key] = await getImageUrlAsync(newMainData[key]);
+          devLog("Member user change maindata imgage key", key, newMainData[key]);
+        }
+      });
+      devLog(`admin *** ${menuName} *** page data 반복 갱신되었습니다 : `, newData, params, newMainData?.items);
+      setMainData(newMainData);
     }
   };
   // 최초 데이터 빠르게 가져오기 위한 useEffect
@@ -63,29 +76,18 @@ export default function Home({params}) {
     return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
   }, []);
 
-  useEffect(() => {
-    let contents = {};
-
-    if (maindata != {}) {
-      contents = maindata;
-      // setPhotoCards(contents);
-    }
-
-    console.log("maindata:", contents);
-  }, [maindata]);
-
   return (
     <>
       <div className="flex" style={{width: "960px", height: "415px"}}>
         <div className="relative" style={{width: "400px", height: "415px"}}>
           <div className="relative img-member-init img-member-char-bg w-full h-full">
             <div className="absolute" style={{width: "300px", height: "315px", top: "20px", left: "40px"}}>
-              <Image src={maindata?.user_img_1 || DefaultCharacterImage} alt="character image" fill={true} />
-              {maindata?.user_img_3 && <Image src={maindata.user_img_3} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />}
+              <img src={getImageUrl(maindata?.user_img_1) || DefaultCharacterImage} alt="character image" className="w-full h-full" />
+              {maindata?.user_img_3 && <img src={getImageUrl(maindata.user_img_3)} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />}
             </div>
 
             <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "0px", left: "35px"}}>
-              <Image src={BannerIcon} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
+              <img src={"/api/image?src=images/member/04_member_ch_banner_icon.png"} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
               <div className="absolute flex flex-row text-white text-[16px]" style={{width: "200px", height: "25px", top: "15px", left: "90px"}}>
                 <span className="member_banner_title relative">SEEKER&nbsp;</span>
                 <span className="member_banner_title1 relative text-line-wrap" style={{width: "140px"}}>

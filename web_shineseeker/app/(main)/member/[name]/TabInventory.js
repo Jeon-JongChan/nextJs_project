@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import Image from "next/image";
 import {devLog} from "@/_custom/scripts/common";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 export default function Component(props) {
   const [draggedItem, setDraggedItem] = useState(null);
@@ -55,7 +56,7 @@ export default function Component(props) {
   const getItemData = (name) => {
     if (props?.items) {
       let item = props.items.find((item) => item.item_name === name);
-      devLog("getItenImage", name, item);
+      // devLog("TabInventory getItenImage", name, item);
       return item ? item : null;
     }
   };
@@ -142,7 +143,7 @@ export default function Component(props) {
                   onDragOver={dragOver}
                   onDrop={drop}
                 >
-                  <Image src={item.item_img_0} alt="item" width={45} height={45} className="max-h-[45px]" />
+                  <img src={getImageUrl(item.item_img_0)} alt="item" width={45} height={45} className="max-h-[45px]" />
                 </div>
               </Tooltip>
             )

@@ -24,6 +24,7 @@ const query = {
     user_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",
     user_item: "SELECT B.* FROM (SELECT * FROM user_item WHERE userid = ?) A INNER JOIN item B ON A.item = B.item_name order by a.updated",
     using_item: "SELECT B.* FROM (SELECT * FROM user_item WHERE userid = ? AND item = ?) A INNER JOIN item B ON A.item = B.item_name LIMIT 1",
+    member_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",
   },
   delete: {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",

@@ -56,6 +56,11 @@ export async function POST(req) {
           return NextResponse.json({message: "successfully page api", data: "성장재료 사용 성공"});
         }
       }
+    } else if (apitype === "member_skill") {
+      const userid = data.get("userid");
+      const skillInfo = await executeSelectQuery(query.select.member_skill, [userid]);
+      devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 스킬반환!", skillInfo);
+      returnData = skillInfo;
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

@@ -1,5 +1,5 @@
 import {devLog} from "./common";
-export {updateDataWithFormInputs, cookieFetch, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
+export {updateDataWithFormInputs, getImageUrl, getImageUrlAsync, cookieFetch, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
 /**
  *
  * @param {*} event
@@ -51,6 +51,34 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
     console.error("client.js updateDataWithFormInputs : updateData error : ", e.message);
   }
   return true;
+}
+
+// 이미지 URL 변환 함수
+function getImageUrl(src) {
+  // src가 http:// 또는 https:// 로 시작하는지 확인
+  if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src)) {
+    devLog("client.js : getImageUrl src : ", src, /^\/api\/image(\?)?src=/.test(src));
+    return src; // URL 그대로 반환
+  } else if (src) {
+    devLog("client.js : getImageUrl Change : ", src, /^\/api\/image(\?)?src=/.test(src));
+    return `/api/image?src=${src}`;
+  }
+  return null;
+}
+// 이미지 URL 변환 함수
+async function getImageUrlAsync(src) {
+  // src가 http:// 또는 https:// 로 시작하는지 확인
+  if (/^https?:\/\//.test(src) || /^\/_next\/image?/.test(src)) {
+    return src; // URL 그대로 반환
+  } else if (src) {
+    await fetch(`/api/image/check?src=${src}`)
+      .then((res) => res.json())
+      .then((data) => {
+        src = data;
+      });
+    return src.src;
+  }
+  return null;
 }
 
 async function cookieFetch(url, token = null, method = "GET", data = null) {

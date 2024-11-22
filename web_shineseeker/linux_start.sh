@@ -47,14 +47,13 @@ fi
 echo "최신 변경 사항을 가져오는 중..."
 
 # 6. 변경 사항이 있는지 확인
+git pull
 if [ "$(git diff --shortstat HEAD@{1} HEAD)" ]; then
-    sudo git pull
     echo "권한을 변경합니다. chown shineseeker78:shineseeker78 -R $script_dir"
     sudo chown shineseeker78:shineseeker78 -R "$script_dir"
     echo "변경 사항이 감지되었습니다. Next.js 애플리케이션 빌드 중..."
     npm run build
-    # 권한문제로 미리 권한 준 파일에 붙여넣기
-    cat linux_start.sh > start.sh
+    # 권한문제로 미리 권한 준 파일에 붙여넣기 cat linux_start.sh > start.sh
 else
     echo "변경 사항이 없습니다. 빌드 생략."
 fi

@@ -1,7 +1,8 @@
 "use client";
 import {useState} from "react";
 import Image from "next/image";
-import {devLog, updateDataWithFormInputs} from "/_custom/scripts/common";
+import {devLog} from "/_custom/scripts/common";
+import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import ImageMakeButton from "@/public/images/raid/05_raid_button1.png";
 

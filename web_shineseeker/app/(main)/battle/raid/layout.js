@@ -1,9 +1,6 @@
 "use client";
 // import {Inter} from "next/font/google";
 import {usePathname} from "next/navigation";
-import Image from "next/image";
-import BackgroundCanvas from "/_custom/components/BackgroundCanvas";
-import Link from "next/link";
 
 // const inter = Inter({subsets: ["latin"]});
 

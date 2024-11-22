@@ -77,7 +77,7 @@ export default function Home() {
       </div>
       <div className="relative flex w-full h-full">
         {MemberPosCss.map((css, index) => (
-          <RaidMember bgImage={bgImage} hpCurrent={hpCurrent} hpMax={hpMax} iconUrls={iconUrls} css={css} />
+          <RaidMember key={index} bgImage={bgImage} hpCurrent={hpCurrent} hpMax={hpMax} iconUrls={iconUrls} css={css} />
         ))}
       </div>
     </>

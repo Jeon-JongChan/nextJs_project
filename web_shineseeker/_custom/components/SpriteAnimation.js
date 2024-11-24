@@ -60,22 +60,19 @@ const SpriteAnimation = forwardRef(
     };
 
     const startAnimation = () => {
-      if (!isVisible) {
-        setIsVisible(true);
-        currentFrameRef.current = 0; // 프레임 초기화
-        repeatCountRef.current = 0; // 반복 횟수 초기화
-        lastUpdateTimeRef.current = 0; // 업데이트 시간 초기화
-        animationIdRef.current = requestAnimationFrame(animateSprite);
-      }
+      setIsVisible(true);
+      currentFrameRef.current = 0; // 프레임 초기화
+      repeatCountRef.current = 0; // 반복 횟수 초기화
+      lastUpdateTimeRef.current = 0; // 업데이트 시간 초기화
+      animationIdRef.current = requestAnimationFrame(animateSprite);
+      console.log(" spriteAnimation.js  ++++++ startAnimation", isVisible, animationIdRef.current);
     };
 
     const stopAnimation = () => {
-      if (isVisible) {
+      if (isVisible && animationIdRef.current) {
         setIsVisible(false);
-        if (animationIdRef.current) {
-          cancelAnimationFrame(animationIdRef.current); // 애니메이션 정지
-          animationIdRef.current = null;
-        }
+        cancelAnimationFrame(animationIdRef.current); // 애니메이션 정지
+        animationIdRef.current = null;
         if (spriteRef.current) console.log(" spriteAnimation.js  stopAnimation", spriteRef.current, spriteRef.current.style, spriteRef.current.style.display);
         else console.log(" spriteAnimation.js  stopAnimation", spriteRef.current);
       }
@@ -91,7 +88,7 @@ const SpriteAnimation = forwardRef(
 
     useEffect(() => {
       console.log(" spriteAnimation.js  useEffect", defaultVisible, isVisible);
-      if (defaultVisible) {
+      if (defaultVisible && isVisible) {
         startAnimation(); // 초기 가시성 상태가 true라면 애니메이션 시작
       }
 

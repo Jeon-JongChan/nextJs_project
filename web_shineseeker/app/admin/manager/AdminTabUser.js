@@ -286,8 +286,7 @@ export default function Home() {
             {[
               ["두상", clickUserImage?.[0] || false],
               ["전신", clickUserImage?.[1] || false],
-              ["추가전신", clickUserImage?.[2] || false],
-              ["마스코트", clickUserImage?.[3] || false],
+              ["마스코트", clickUserImage?.[2] || false],
             ].map((data, index) => {
               // console.log(data, data[1] ? null : "Drag Or Click");
               return (
@@ -295,18 +294,26 @@ export default function Home() {
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
                     {data[0]}
                   </label>
-                  <FileDragAndDrop
-                    css={"mt-2 w-full col-span-4 h-[200px]"}
-                    id={`user_img_${index}`}
-                    type={"image/"}
-                    text={data[1] ? null : "Drag Or Click"}
-                    image={getImageUrl(data[1])}
-                    objectFit={"fill"}
-                    extFunc={imgInitFn}
-                  />
+                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={getImageUrl(data[1])} objectFit={"fill"} extFunc={imgInitFn} />
                 </div>
               );
             })}
+          </div>
+          <div className="relative col-span-12 mt-4 flex gap-1">
+            <div className="block w-1/2">
+              <label htmlFor={`user_img_3`} className="block text-sm font-medium text-gray-700 row">
+                레이드 이미지
+              </label>
+              <FileDragAndDrop
+                css={"mt-2 w-full col-span-12 h-[200px]"}
+                id={`user_img_3`}
+                type={"image/"}
+                text={clickUserImage?.[3] ? null : "Drag Or Click"}
+                image={getImageUrl(clickUserImage?.[3] || null)}
+                objectFit={"fill"}
+                extFunc={imgInitFn}
+              />
+            </div>
           </div>
           <div className="relative col-span-12 mt-4 user-itemlist">
             <h3 className="text-center font-bold text-2xl">유저 아이템 리스트</h3>

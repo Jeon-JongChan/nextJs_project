@@ -94,7 +94,8 @@ export default function Home() {
       const itemOptionList = {};
       for (const key of Object.keys(newData.data[0])) {
         if (key.startsWith("updated")) continue;
-        document.querySelector(`#${key}`).value = newData.data[0][key]; // input에 기본값 넣기
+        let dom = document.querySelector(`#${key}`);
+        if (dom) dom.value = newData.data[0][key]; // input에 기본값 넣기
         // let id = key.replace("_option", "");
         itemOptionList[key] = newData.data[0][key].split(",");
       }

@@ -83,7 +83,7 @@ export default function Home({params}) {
           <div className="relative img-member-init img-member-char-bg w-full h-full">
             <div className="absolute" style={{width: "300px", height: "315px", top: "20px", left: "40px"}}>
               <img src={getImageUrl(maindata?.user_img_1) || DefaultCharacterImage} alt="character image" className="w-full h-full" />
-              {maindata?.user_img_3 && <img src={getImageUrl(maindata.user_img_3)} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />}
+              {maindata?.user_img_2 && <img src={getImageUrl(maindata.user_img_2)} alt="character image" width={105} height={130} style={{position: "absolute", bottom: "20px", right: "-10px"}} />}
             </div>
 
             <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "0px", left: "35px"}}>
@@ -124,12 +124,7 @@ export default function Home({params}) {
         <div className="relative" style={{width: "550px", height: "365px", marginTop: "45px"}}>
           <div className="flex w-full justify-end gap-3">
             {[1, 2, 3].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`}
-                style={{width: "85px", height: "35px"}}
-              >
+              <button key={tab} onClick={() => setSelectedTab(tab)} className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`} style={{width: "85px", height: "35px"}}>
                 {tab === 1 ? "정보" : tab === 2 ? "스테이터스" : "인벤토리"}
               </button>
             ))}

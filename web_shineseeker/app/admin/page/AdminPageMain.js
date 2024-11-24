@@ -107,16 +107,19 @@ export default function Home() {
         <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <h1 className="mt-8 font-bold text-2xl col-span-12">메인 페이지 슬라이드 관리</h1>
           {slideList.map((_, index) => (
-            <FileDragAndDrop
-              key={index}
-              css={"mt-2 w-full col-span-4 h-[200px]"}
-              id={`main_img_slide_${index}`}
-              type={"image/"}
-              text={savedImage?.[index] ? null : "Drag Or Click"}
-              image={savedImage?.[index]}
-              objectFit={"fill"}
-              extFunc={imgInitFn}
-            />
+            <div key={index} className="flex flex-col col-span-4 justify-center">
+              <FileDragAndDrop
+                key={index}
+                css={"mt-2 w-full h-[200px]"}
+                id={`main_img_slide_${index}`}
+                type={"image/"}
+                text={savedImage?.[index] ? null : "Drag Or Click"}
+                image={savedImage?.[index]}
+                objectFit={"fill"}
+                extFunc={imgInitFn}
+              />
+              <GridInputText label={`슬라이드 ${index + 1} 링크`} id={`main_slide_link_${index}`} type={"text"} colSpan={12} />
+            </div>
           ))}
           <div className="col-span-full" />
           <div className="col-span-8" />

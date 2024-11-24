@@ -35,16 +35,17 @@ export default function Home() {
     // return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
   }, []);
 
+  // prettier-ignore
   useEffect(() => {
-    let slideData = [],
-      audioData;
+    let slideLink = [], slideData = [], audioData;
     if (maindata.length) {
-      slideData = maindata.filter((data) => data.id.includes("main_img") && data.value).map((data) => ({imageUrl: data.value}));
+      slideLink = maindata.filter((data) => data.id.includes("main_slide_link") && data.value).map((data) => data.value);
+      slideData = maindata.filter((data) => data.id.includes("main_img") && data.value).map((data, idx) => ({imageUrl: data.value, link: slideLink[idx]}));
       audioData = maindata.filter((data) => data.id.includes("main_youtube") && data.value).map((data) => data.value);
       setSlideData(slideData);
       if (audioData.length) setMainAudioUrl(audioData[0]);
     }
-    console.log("maindata filter :", slideData, audioData);
+    console.log("maindata filter :", slideLink, slideData, audioData);
   }, [maindata]);
   return (
     <>

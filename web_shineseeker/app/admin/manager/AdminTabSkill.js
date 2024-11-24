@@ -97,6 +97,7 @@ export default function Home() {
         let id = key.replace("_option", "");
         skillList[id] = newData.data[0][key].split(",");
       }
+      skillList.skill_operator_option = skillDefaultList.skill_operator_option;
       setSkillList({...skillList});
     }
     console.log("essential data skill option: ", newData);
@@ -170,6 +171,7 @@ export default function Home() {
 const skillDefaultList = {
   skill_type: ["공격", "방어", "회복", "정지", "조정"],
   skill_range: ["자신", "아군", "적", "전체"],
+  skill_operator_option: ["곱", "합", "잔여곱"],
   skill_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
   skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
 };
@@ -182,8 +184,11 @@ const inputNames = [
   {label: "범위", id: "skill_range", inputType: "checkbox", class: "skill_range", colSpan: 2},
   {label: "위력능력치", id: "skill_stat", inputType: "checkbox", class: "skill_stat", colSpan: 2},
   {label: "적용비율(%)", id: "skill_rate", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {label: "스킬소비항목", id: "skill_cost_stat", inputType: "checkbox", class: "skill_stat", colSpan: 2},
+  {label: "스킬소비연산", id: "skill_operator", inputType: "checkbox", class: "skill_operator_option", colSpan: 1},
+  {label: "스킬소비항목", id: "skill_cost_stat", inputType: "checkbox", class: "skill_stat", colSpan: 1},
   {label: "소비계수", id: "skill_cost", type: "number", css: " h-[36px]", colSpan: 2},
   {label: "조정 능력치 (조정시 사용됨)", id: "skill_control_cost", inputType: "checkbox", class: "skill_stat", colSpan: 3},
   {label: "조정 능력 계수", id: "skill_control_rate", class: "skill", css: " h-[36px]", colSpan: 2},
+  {label: "랜덤 최소 계수", id: "skill_min", class: "skill", css: " h-[36px]", colSpan: 2},
+  {label: "랜덤 최대 계수", id: "skill_max", class: "skill", css: " h-[36px]", colSpan: 2},
 ];

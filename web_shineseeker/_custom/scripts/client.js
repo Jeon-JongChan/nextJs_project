@@ -57,10 +57,10 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
 function getImageUrl(src) {
   // src가 http:// 또는 https:// 로 시작하는지 확인
   if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src) || src == "init") {
-    devLog("client.js : getImageUrl src : ", src, /^\/api\/image(\?)?src=/.test(src));
+    // devLog("client.js : getImageUrl src : ", src, /^\/api\/image(\?)?src=/.test(src));
     return src; // URL 그대로 반환
   } else if (src) {
-    devLog("client.js : getImageUrl Change : ", src, /^\/api\/image(\?)?src=/.test(src));
+    // devLog("client.js : getImageUrl Change : ", src, /^\/api\/image(\?)?src=/.test(src));
     return `/api/image?src=${src}`;
   }
   return null;

@@ -30,7 +30,7 @@ export default function Component(props) {
           id={id}
           name={name}
           onChange={onchange}
-          className={[css, "mt-1 block w-full py-2 px-3 shadow-sm sm:text-sm", "rounded-md border border-gray-300 bg-white, shadow-sm", "focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"].join(" ")}
+          className={["mt-1 block w-full py-2 px-3 shadow-sm sm:text-sm", "rounded-md border border-gray-300 bg-white shadow-sm", "focus:border-indigo-500 focus:outline-none focus:ring-indigo-500", css].join(" ")}
         >
           {options.map((option, idx) => {
             return (

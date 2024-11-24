@@ -13,7 +13,7 @@ export default function Component() {
           </Link>
         </div>
         <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto">
-          <Link href="/battle/raid">
+          <Link href="/battle/lobby">
             <Image src="/images/patrol/05_raid_enter_button.png" alt="이미지" className="mb-4" width={262} height={362} />
           </Link>
         </div>

@@ -5,6 +5,7 @@ import {devLog} from "/_custom/scripts/common";
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import RaidProcessButton from "@/public/images/raid/05_raid_03_gobutton.png";
 import {getImageUrl} from "@/_custom/scripts/client";
+import SpriteAnimation from "@/_custom/components/SpriteAnimation";
 
 export default function Home() {
   const [isGameEnded, setIsGameEnded] = useState(false);
@@ -65,6 +66,17 @@ export default function Home() {
       >
         게임 성공
       </button>
+      <SpriteAnimation
+        spriteImage="/images/raid/Slash.webp"
+        frameWidth={160} // 한 프레임의 가로 크기
+        frameHeight={160} // 한 프레임의 세로 크기
+        cols={5} // 가로 칸 수
+        rows={1} // 세로 줄 수
+        frameDuration={100} // 각 프레임의 지속 시간 (밀리초 단위)
+        scale={2}
+        playCount={2}
+        // css="min-w-[500px] min-h-[500px]"
+      />
       <input type="number" max={200} onChange={(e) => setHpCurrent(e.target.value > 200 ? 200 : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" />
       <div className="absolute flex flex-col items-center" style={{width: "760px", height: "600px", top: "-30px"}}>
         <div className="relative block text-white text-[24px]">보스 이름</div>

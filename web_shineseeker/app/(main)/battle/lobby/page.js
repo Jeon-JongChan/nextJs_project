@@ -5,6 +5,7 @@ import {devLog} from "/_custom/scripts/common";
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import ImageMakeButton from "@/public/images/raid/05_raid_button1.png";
+import Link from "next/link";
 
 export default function Home() {
   const [raids, setRaids] = useState([
@@ -118,7 +119,9 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-row mt-[40px] justify-end">
-            <button className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400">시작하기</button>
+            <Link href="/battle/raid" className="flex justify-center items-center w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400">
+              시작하기
+            </Link>
             <button className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400 ml-3">방나가기</button>
           </div>
         </div>

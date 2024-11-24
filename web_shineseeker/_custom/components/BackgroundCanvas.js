@@ -25,6 +25,7 @@ export default function Component(props) {
 }
 class Animate {
   constructor(ctx, objCount = 10) {
+    this.canvas = document.querySelector("canvas") || null;
     this.ctx = ctx;
     this.objCount = objCount;
     this.stars = [];
@@ -41,7 +42,8 @@ class Animate {
 
   animate() {
     this.rafId = requestAnimationFrame(this.animate.bind(this));
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!this.canvas) return;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.stars.forEach((star) => {
       star.update();
@@ -55,8 +57,9 @@ class Animate {
 
 class Star {
   constructor(ctx) {
+    this.canvas = document.querySelector("canvas") || null;
     this.ctx = ctx;
-    this.x = Math.random() * canvas.width;
+    this.x = Math.random() * this.canvas.width;
     this.y = 0;
     this.size = Math.random() * 40 + 10;
     this.speed = Math.random() * 3 + 1;
@@ -86,11 +89,12 @@ class Star {
   }
 
   update() {
+    if (!this.canvas) return;
     this.y += this.speed;
     this.angle += this.rotationSpeed;
-    if (this.y > canvas.height) {
+    if (this.y > this.canvas.height) {
       this.y = 0;
-      this.x = Math.random() * canvas.width;
+      this.x = Math.random() * this.canvas.width;
     }
     this.draw();
 

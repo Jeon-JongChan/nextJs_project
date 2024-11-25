@@ -8,6 +8,7 @@ const SpriteAnimation = forwardRef(
       frameHeight,
       cols, // 프레임 가로 칸
       rows, // 프레임 세로 줄
+      totalFrame,
       frameDuration = 100,
       scale = 1, // 확대/축소 배율
       css = "",
@@ -16,7 +17,7 @@ const SpriteAnimation = forwardRef(
     },
     ref
   ) => {
-    const totalFrames = cols * rows; // 전체 프레임 수 계산
+    let totalFrames = totalFrame || cols * rows; // 전체 프레임 수 계산
     const spriteRef = useRef(null); // 스프라이트 div 참조
     const currentFrameRef = useRef(0); // 현재 프레임을 Ref로 관리
     const repeatCountRef = useRef(0); // 반복 횟수 관리

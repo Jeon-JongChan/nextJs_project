@@ -48,8 +48,9 @@ export default function Home() {
     {label: "비밀번호", id: "userpw", colSpan: 3},
     {label: "첫번째 닉네임", id: "username1", colSpan: 3},
     {label: "두번째 닉네임", id: "username2", colSpan: 3},
+    {label: "유저 현재 스테미나", id: "user_stamina", type: "number", max: 5, min: 0, css: " h-[36px]", colSpan: 6},
     {label: "직업", id: "job", colSpan: 6, inputType: "checkbox", class: "job", onchange: changeHandler},
-    {label: "추가정보", id: "addinfo1", colSpan: 6, delimiter: true},
+    {label: "추가정보", id: "addinfo1", colSpan: 6},
     {label: "추가정보2", id: "addinfo2", colSpan: 6},
     {header: "탭 내용", label: "탭 기본정보", id: "usertab_baseinfo", inputType: "textarea", colSpan: 12},
     {label: "탭 상세정보", id: "usertab_detailinfo", inputType: "textarea", colSpan: 12},
@@ -310,6 +311,20 @@ export default function Home() {
                 type={"image/"}
                 text={clickUserImage?.[3] ? null : "Drag Or Click"}
                 image={getImageUrl(clickUserImage?.[3] || null)}
+                objectFit={"fill"}
+                extFunc={imgInitFn}
+              />
+            </div>
+            <div className="block w-1/2">
+              <label htmlFor={`user_img_3`} className="block text-sm font-medium text-gray-700 row">
+                궁극기 이미지
+              </label>
+              <FileDragAndDrop
+                css={"mt-2 w-full col-span-12 h-[200px]"}
+                id={`user_img_4`}
+                type={"image/"}
+                text={clickUserImage?.[4] ? null : "Drag Or Click"}
+                image={getImageUrl(clickUserImage?.[4] || null)}
                 objectFit={"fill"}
                 extFunc={imgInitFn}
               />

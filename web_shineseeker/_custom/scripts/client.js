@@ -1,5 +1,5 @@
 import {devLog} from "./common";
-export {updateDataWithFormInputs, getImageUrl, getImageUrlAsync, cookieFetch, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
+export {updateDataWithFormInputs, getImageUrl, getImageUrlAsync, logSave, cookieFetch, getDomIndex, checkHangulEncode, copyToClipBoard, clickCopyToClipBoard, alertModal};
 /**
  *
  * @param {*} event
@@ -79,6 +79,20 @@ async function getImageUrlAsync(src) {
     return src.src;
   }
   return null;
+}
+
+// log data를 서버로 전송하는 함수
+async function logSave(user, page, log, level = "info") {
+  const formData = new FormData();
+  formData.append("apitype", "logsave");
+  formData.append("log", JSON.stringify({user_name: user, page: page, level: level, log: log}));
+  await fetch("/api/page", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => devLog(data))
+    .catch((error) => console.error("Error:", error));
 }
 
 async function cookieFetch(url, token = null, method = "GET", data = null) {

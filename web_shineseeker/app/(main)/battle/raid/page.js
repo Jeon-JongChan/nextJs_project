@@ -67,14 +67,14 @@ export default function Home() {
         게임 성공
       </button>
       <SpriteAnimation
-        spriteImage="/images/raid/Slash.webp"
-        frameWidth={160} // 한 프레임의 가로 크기
-        frameHeight={160} // 한 프레임의 세로 크기
+        spriteImage="/images/raid/StateDark.webp"
+        frameWidth={100} // 한 프레임의 가로 크기
+        frameHeight={100} // 한 프레임의 세로 크기
         cols={5} // 가로 칸 수
-        rows={1} // 세로 줄 수
+        rows={4} // 세로 줄 수
         frameDuration={100} // 각 프레임의 지속 시간 (밀리초 단위)
-        scale={2}
-        playCount={2}
+        scale={1}
+        playCount={Infinity}
         // css="min-w-[500px] min-h-[500px]"
       />
       <input type="number" max={200} onChange={(e) => setHpCurrent(e.target.value > 200 ? 200 : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" />

@@ -49,16 +49,18 @@ export default function Home() {
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
-      devLog("clickUser", name, data, clickImage);
+      devLog("click", name, data, clickImage);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img`) || input.id.startsWith(`${menuName}_ret_img`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img`) || input.id.startsWith(`${menuName}_ret_img`) || input.id.startsWith(`${menuName}_select`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
           console.error(input, e);
         }
       });
+      setInputOptionList(data.choices ? Object.keys(data.choices) : [0, 1, 2]);
+
       // 2. 이미지 채우기
       setClickImage(data?.[`${menuName}_img`] || "init");
       // 3. 사용효과(select) 채우기
@@ -71,13 +73,35 @@ export default function Home() {
       textareaElements.forEach((textarea) => {
         textarea.value = data[textarea.id];
       });
-      // 5. 결과 부분 file input의 span 채우기
-      const spanElements = document.querySelectorAll(`.${menuName}-form form .grid-file span`);
-      spanElements.forEach((span) => {
-        const spanId = span.id.replace("_span", "");
-        devLog("clickuser span", span, span.id.replace("_span", ""), data[spanId]);
-        span.textContent = data[spanId] ? data[spanId].replace("/temp/uploads/", "") : "선택된 파일 없음";
-      });
+
+      // 5. 선택요소 채우기
+      if (Object.keys(data.choices).length) {
+        for (let index = 0; index < Object.keys(data.choices).length; index++) {
+          devLog(`clickListItem choice : ${index}`, data.choices[index]);
+          const choice = data.choices[index];
+          const selectElement = document.querySelector(`#${menuName}_select_${index}`);
+          if (selectElement) selectElement.value = choice.patrol_select;
+          const typeElement = document.querySelector(`#${menuName}_ret_type_${index}`);
+          if (typeElement) typeElement.value = choice.patrol_ret_type;
+          const moneyElement = document.querySelector(`#${menuName}_ret_money_${index}`);
+          if (moneyElement) moneyElement.value = choice.patrol_ret_money;
+          const countElement = document.querySelector(`#${menuName}_ret_count_${index}`);
+          if (countElement) countElement.value = choice.patrol_ret_count;
+          // const imgElement = document.querySelector(`#${menuName}_ret_img_${index}`);
+          // if (imgElement) imgElement.value = choice.patrol_ret_img;
+          const msgElement = document.querySelector(`#${menuName}_ret_msg_${index}`);
+          if (msgElement) msgElement.value = choice.patrol_ret_msg;
+          const spanElement = document.querySelector(`#${menuName}_ret_img_${index}_span`);
+          if (spanElement) {
+            spanElement.textContent = choice?.patrol_ret_img ? choice.patrol_ret_img.replace("/temp/uploads/", "") : "선택된 파일 없음";
+          }
+        }
+      }
+      let spanElement = document.querySelector(`#${menuName}_img_fail_span`);
+      if (spanElement) {
+        if (data?.[`${menuName}_img_fail`]) spanElement.textContent = data?.[`${menuName}_img_fail`].replace("/temp/uploads/", "");
+        else spanElement.textContent = "선택된 파일 없음";
+      }
     }
   };
 

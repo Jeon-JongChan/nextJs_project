@@ -11,8 +11,9 @@ export async function GET(req) {
   try {
     if (apitype === "member_skill") {
       data = await executeSelectQuery(query.select.user_skill, [userid]);
-    } else if (apitype === "job") {
-      // job의 경우 해당하는 skill값을 배열로 추가해줘야함
+    } else if (apitype === "log") {
+      const page = searchParams.get("page");
+      data = await executeSelectQuery(query.select.log, [userid, page]);
     }
     return NextResponse.json({message: "successfully api", data: data});
   } catch (error) {
@@ -26,11 +27,18 @@ export async function POST(req) {
     const data = await req.formData();
     const apitype = data.get("apitype");
     devLog(data.get("apitype"), data);
-    if (apitype === "member_update_skill") {
+    if (apitype === "logsave") {
+      const logdata = JSON.parse(data.get("log"));
+      if (!logdata?.user_name) {
+        return NextResponse.json({message: "don't save log", data: logdata});
+      }
+      // devLog("logsave", logdata);
+      await saveData("log", logdata);
+    } else if (apitype === "member_update_skill") {
       const userid = data.get("userid");
       const skillname = JSON.parse(data.get("updated_skill"));
       const savedata = {...skillname};
-      devLog("member_update_skill", savedata);
+      // devLog("member_update_skill", savedata);
       await updateData("user", "userid", userid, savedata);
     } else if (apitype === "member_use_item") {
       const userid = data.get("userid");
@@ -38,7 +46,7 @@ export async function POST(req) {
       // 사용한 아이템 사용 및 삭제
       const itemInfo = (await executeSelectQuery(query.select.using_item, [userid, item_name]))?.[0];
       const userInfo = await getDataKey("user", "userid", userid);
-      devLog("member_use_item", item_name);
+      // devLog("member_use_item", item_name);
       if (itemInfo && userInfo) {
         if (itemInfo.item_type === "성장재료") {
           const matchStat = {HP: "user_hp", ATK: "user_atk", DEF: "user_def", LUK: "user_luk", AGI: "user_agi", WIS: "user_wis"};
@@ -50,7 +58,7 @@ export async function POST(req) {
           const randomValue = (Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue) | 0;
           let newStat = userInfo[itemIncreaseStat] + randomValue;
           newStat = newStat > 200 ? 200 : newStat < 0 ? 0 : newStat;
-          devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> member_use_item", itemIncreaseStat, minValue, maxValue, maxValue - minValue + 1, randomValue, newStat);
+          // devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> member_use_item", itemIncreaseStat, minValue, maxValue, maxValue - minValue + 1, randomValue, newStat);
           if (randomValue) await updateData("user", "userid", userid, {[itemIncreaseStat]: newStat});
           await executeQuery(query.delete.user_item_one, [userid, item_name]);
           return NextResponse.json({message: "successfully page api", data: "성장재료 사용 성공"});
@@ -59,7 +67,7 @@ export async function POST(req) {
     } else if (apitype === "member_skill") {
       const userid = data.get("userid");
       const skillInfo = await executeSelectQuery(query.select.member_skill, [userid]);
-      devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 스킬반환!", skillInfo);
+      // devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 스킬반환!", skillInfo);
       returnData = skillInfo;
     }
     return NextResponse.json({message: "successfully page api", data: returnData});

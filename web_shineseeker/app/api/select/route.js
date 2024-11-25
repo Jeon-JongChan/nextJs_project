@@ -58,6 +58,17 @@ export async function GET(req) {
           });
         }
       } else if (apitype === "patrol") {
+        // monster의 경우 해당하는 monster_event값을 배열로 추가해줘야함
+        for (let i = 0; i < data.length; i++) {
+          let choices = await getDataKey("patrol_result", "patrol_name", data[i].patrol_name, true);
+          if (choices.length) {
+            data[i].choices = {};
+            choices.forEach((choice) => {
+              data[i].choices[choice.patrol_ret_idx] = choice;
+            });
+          }
+        }
+      } else if (apitype === "patrol") {
         // patrol의 경우 해당하는 선택지와 결과값을 배열로 추가해줘야함
         for (let i = 0; i < data.length; i++) {
           let patrol_result = await getDataKey("patrol_result", "patrol_name", data[i].patrol_name, true);

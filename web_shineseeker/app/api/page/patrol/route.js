@@ -11,6 +11,8 @@ export async function GET(req) {
   try {
     if (apitype === "patrol_item") {
       data = await executeSelectQuery(query.select.patrol_item, []);
+    } else if (apitype === "patrol_user") {
+      data = await executeSelectQuery(query.select.user_patrol, [userid]);
     }
     return NextResponse.json({message: "successfully api", data: data});
   } catch (error) {
@@ -24,12 +26,21 @@ export async function POST(req) {
     const data = await req.formData();
     const apitype = data.get("apitype");
     devLog(data.get("apitype"), data);
-    if (apitype === "member_update_skill") {
+    if (apitype === "patrol_result") {
       const userid = data.get("userid");
-      const skillname = JSON.parse(data.get("updated_skill"));
-      const savedata = {...skillname};
-      devLog("member_update_skill", savedata);
-      await updateData("user", "userid", userid, savedata);
+      let stamina = parseInt(data.get("stamina"));
+      stamina = stamina < 0 ? 0 : stamina % 6;
+      const result = JSON.parse(data.get("result"));
+      if (result.type === "AKA") {
+        await executeQuery(query.update.user_patrol_result, [stamina, result.value, userid]);
+      } else {
+        await executeQuery(query.update.user_stamina, [stamina, userid]);
+        const count = parseInt(result.value);
+        if (count && result.value >= 0) {
+          await saveData("user_item", Array(count).fill({userid: userid, item: result.type}), true);
+        }
+      }
+      // devLog(`${apitype} : `, userid, stamina, result);
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

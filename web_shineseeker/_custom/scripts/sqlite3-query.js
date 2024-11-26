@@ -15,7 +15,7 @@ const query = {
     skill_option: "CREATE TABLE IF NOT EXISTS skill_option (skill_option_type TEXT, skill_option_range TEXT, skill_option_stat TEXT, skill_option_cost TEXT, updated INTEGER)",
     item: "CREATE TABLE item (item_name TEXT PRIMARY KEY, item_cost TEXT, item_statmin TEXT, item_statmax TEXT, item_type TEXT, item_consumable TEXT, item_addstat TEXT, item_msg TEXT, item_desc TEXT, item_img_0 TEXT, updated INTEGER)",
     item_option: "CREATE TABLE item_option (item_option_type TEXT, item_option_addstat TEXT, updated INTEGER)",
-    patrol: "CREATE TABLE patrol (patrol_name TEXT, patrol_type TEXT, patrol_atk TEXT, patrol_def TEXT, patrol_wis TEXT, patrol_agi TEXT, patrol_luk TEXT, patrol_fail_type TEXT, patrol_fail_money TEXT, patrol_fail_count TEXT, patrol_fail_msg TEXT, patrol_desc TEXT, patrol_img TEXT, patrol_img_fail TEXT, updated INTEGER, PRIMARY KEY(patrol_name, patrol_type))",
+    patrol: "CREATE TABLE patrol (patrol_name TEXT, patrol_type TEXT, patrol_atk INTEGER, patrol_def INTEGER, patrol_wis INTEGER, patrol_agi INTEGER, patrol_luk INTEGER, patrol_fail_type TEXT, patrol_fail_money INTEGER, patrol_fail_count INTEGER, patrol_fail_msg TEXT, patrol_desc TEXT, patrol_img TEXT, patrol_img_fail TEXT, updated INTEGER, PRIMARY KEY(patrol_name, patrol_type))",
     patrol_result: "CREATE TABLE patrol_result (patrol_name TEXT, patrol_ret_type TEXT, patrol_ret_idx INTEGER, patrol_select TEXT, patrol_ret_money TEXT, patrol_ret_count TEXT, patrol_ret_img TEXT, patrol_ret_msg TEXT, updated INTEGER, PRIMARY KEY(patrol_name, patrol_ret_type, patrol_ret_idx))",
     // admin page 페이지 에서 사용하는 테이블
     page: "CREATE TABLE IF NOT EXISTS page (page_name TEXT, id TEXT, value TEXT, updated INTEGER, PRIMARY KEY(page_name, id))",
@@ -28,6 +28,11 @@ const query = {
     member_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",
     patrol_item: "SELECT * FROM item WHERE item_name = '에고'",
     log: "SELECT * FROM log WHERE user_name = ? AND page = ?",
+    user_patrol: "SELECT user_hp, user_atk, user_def, user_wis, user_agi, user_luk, user_stamina FROM user WHERE userid = ?",
+  },
+  update: {
+    user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",
+    user_stamina: "UPDATE user SET user_stamina = ? WHERE userid = ?",
   },
   delete: {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",

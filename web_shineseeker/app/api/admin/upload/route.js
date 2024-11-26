@@ -48,7 +48,7 @@ async function updateUser(data) {
   // 기존 skill 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
   const existingData = await getDataKey("user", "userid", user["userid"]); // skill_name을 기준으로 데이터 조회
   // 기존 이미지 경로가 있고 새로 전송된 이미지가 없을 때 기존 경로 유지
-  ["user_img_0", "user_img_1", "user_img_2", "user_img_3"].forEach((imgKey) => {
+  ["user_img_0", "user_img_1", "user_img_2", "user_img_3", "user_img_4"].forEach((imgKey) => {
     if (!data.has(imgKey) && existingData && existingData[imgKey]) {
       user[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
     } else user[imgKey] = images[imgKey]?.path || null;

@@ -32,7 +32,7 @@ export async function POST(req) {
       if (!logdata?.user_name) {
         return NextResponse.json({message: "don't save log", data: logdata});
       }
-      // devLog("logsave", logdata);
+      devLog("logsave", logdata);
       await saveData("log", logdata);
     } else if (apitype === "member_update_skill") {
       const userid = data.get("userid");

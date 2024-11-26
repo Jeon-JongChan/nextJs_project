@@ -217,6 +217,8 @@ class DBManager {
       if (!Array.isArray(dataArray)) throw new Error("Input data must be an array of objects");
       if (dataArray.length === 0) throw new Error("Input array is empty");
 
+      console.info("sqlite3-adapter.js : multiInsert", table, dataArray, isReplace);
+
       const columns = Object.keys(dataArray[0]).join(", ") + ", updated"; // 컬럼 목록에 updated 필드 추가
 
       const placeholdersArray = dataArray

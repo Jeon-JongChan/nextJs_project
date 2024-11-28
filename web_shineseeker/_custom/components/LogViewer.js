@@ -6,17 +6,19 @@ const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical
   const [log, setLog] = useState([]);
 
   useEffect(() => {
-    const container = logContainerRef.current;
     // 스크롤이 맨 아래에 있는지 확인
-    const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+    setLog(logs);
+  }, [logs]); // logs가 변경될 때 실행
 
+  useEffect(() => {
+    const container = logContainerRef.current;
+    const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
     if (!isAtBottom) {
       // 새로운 로그 추가 시 스크롤을 맨 아래로 이동
       container.scrollTop = container.scrollHeight;
     }
-    setLog(logs);
     devLog("로그뷰어 실행", isAtBottom, container.scrollHeight, container.scrollTop, container.clientHeight);
-  }, [logs]); // logs가 변경될 때 실행
+  }, [log]); // 최초 렌더
 
   return (
     <div

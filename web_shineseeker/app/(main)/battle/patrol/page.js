@@ -54,7 +54,7 @@ export default function Component() {
       devLog(`checkPatrolFail ${elem}`, patrolStat, userdata[`user_${elem}`]);
       if (!patrolStat) continue;
       patrolStat = parseInt(patrolStat);
-      let userStat = parseInt(userdata[`user_${elem}`]);
+      let userStat = parseInt(userdata[`user_${elem}`] || 0);
       if (patrolStat > userStat) {
         check = false;
         break;
@@ -137,7 +137,11 @@ export default function Component() {
 function Selector(props) {
   const changeFunc = props.changeFunc;
   const patrol = props.patrol || null;
-  const stamina = props.stamina || 0;
+  // const stamina = props.stamina || 0;
+  const [stamina, setStamina] = useState(0);
+  useEffect(() => {
+    setStamina(props.stamina || stamina);
+  }, [props.stamina]);
   return (
     <div className="img-patrol-init img-patrol-selector-bg patrol-selector relative w-full" style={{height: "275px"}}>
       {stamina ? (

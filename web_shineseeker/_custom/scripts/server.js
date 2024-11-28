@@ -7,7 +7,7 @@ import {devLog} from "./common.js";
 
 export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKey, executeSelectQuery, executeQuery};
 
-const dev = process.env.NEXT_PUBLIC_DEV !== "true";
+const dev = process.env.NEXT_PUBLIC_DEV === "true";
 const sqlite = new Sqlite(dev); // 기본 dbPath 사용, verbose 출력 활성화
 
 async function saveFiles(files, uploadDir = undefined) {

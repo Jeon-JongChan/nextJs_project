@@ -196,9 +196,9 @@ export default function Home() {
 const inputNames = [
   {header: "일반 설정", label: "직업 이름", id: "job_name", colSpan: 6},
   {header: "기초스테이터스", label: "HP", id: "job_hp", type: "number", colSpan: 2},
-  {label: "ATK", id: "job_atk", type: "number", colSpan: 2},
-  {label: "DEF", id: "job_def", type: "number", colSpan: 2},
-  {label: "WIS", id: "job_wis", type: "number", colSpan: 2},
-  {label: "AGI", id: "job_agi", type: "number", colSpan: 2},
-  {label: "LUK", id: "job_luk", type: "number", colSpan: 2},
+  {label: "ATK", id: "job_atk", type: "number", colSpan: 2, max: 200, min: 0},
+  {label: "DEF", id: "job_def", type: "number", colSpan: 2, max: 200, min: 0},
+  {label: "WIS", id: "job_wis", type: "number", colSpan: 2, max: 200, min: 0},
+  {label: "AGI", id: "job_agi", type: "number", colSpan: 2, max: 200, min: 0},
+  {label: "LUK", id: "job_luk", type: "number", colSpan: 2, max: 200, min: 0},
 ];

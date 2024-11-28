@@ -148,8 +148,9 @@ async function executeSelectQuery(query, value = null) {
     return null; // 실패 시 null 반환
   }
 }
-async function executeQuery(query, value = null) {
+async function executeQuery(table, query, value = null) {
   try {
+    sqlite.updateTableTime(table);
     return sqlite.db.prepare(query).run(value);
   } catch (error) {
     console.error("** server.js(executeSelectQuery) failed:", error);

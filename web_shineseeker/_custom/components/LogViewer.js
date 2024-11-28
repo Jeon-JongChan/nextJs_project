@@ -1,12 +1,12 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {devLog} from "../scripts/common";
 
 const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical: "red"}, css = "", opacity = 0.9}) => {
   const logContainerRef = useRef(null); // 로그 컨테이너 참조
+  const [log, setLog] = useState([]);
 
   useEffect(() => {
     const container = logContainerRef.current;
-
     // 스크롤이 맨 아래에 있는지 확인
     const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
 
@@ -14,6 +14,7 @@ const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical
       // 새로운 로그 추가 시 스크롤을 맨 아래로 이동
       container.scrollTop = container.scrollHeight;
     }
+    setLog(logs);
     devLog("로그뷰어 실행", isAtBottom, container.scrollHeight, container.scrollTop, container.clientHeight);
   }, [logs]); // logs가 변경될 때 실행
 
@@ -30,7 +31,7 @@ const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical
         fontFamily: "monospace", // 로그 스타일
       }}
     >
-      {logs.map((log, index) => (
+      {log.map((log, index) => (
         <div
           key={index}
           style={{

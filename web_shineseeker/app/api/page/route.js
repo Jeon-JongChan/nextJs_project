@@ -64,7 +64,7 @@ export async function POST(req) {
           newStat = newStat > 200 ? 200 : newStat < 0 ? 0 : newStat;
           // devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> member_use_item", itemIncreaseStat, minValue, maxValue, maxValue - minValue + 1, randomValue, newStat);
           if (randomValue) await updateData("user", "userid", userid, {[itemIncreaseStat]: newStat});
-          await executeQuery(query.delete.user_item_one, [userid, item_name]);
+          await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
           return NextResponse.json({message: "successfully page api", data: "성장재료 사용 성공"});
         }
       }
@@ -80,7 +80,7 @@ export async function POST(req) {
       const userMoney = (await executeSelectQuery(query.select.user_money, [userid]))?.[0]?.user_money;
       if (userMoney < item_cost) return NextResponse.json({message: "not enough money", data: userMoney});
       devLog("market_buy_item", item_name, item_cost, userid, userMoney);
-      await executeQuery(query.update.user_money, [userMoney - item_cost, userid]);
+      await executeQuery("user", query.update.user_money, [userMoney - item_cost, userid]);
       await saveData("user_item", {userid: userid, item: item_name});
       return NextResponse.json({message: "successfully page api", data: "아이템 구매 성공"});
     }

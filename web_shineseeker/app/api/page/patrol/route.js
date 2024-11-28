@@ -32,9 +32,9 @@ export async function POST(req) {
       stamina = stamina < 0 ? 0 : stamina % 6;
       const result = JSON.parse(data.get("result"));
       if (result.type === "AKA") {
-        await executeQuery(query.update.user_patrol_result, [stamina, result.value, userid]);
+        await executeQuery("user", query.update.user_patrol_result, [stamina, result.value, userid]);
       } else {
-        await executeQuery(query.update.user_stamina, [stamina, userid]);
+        await executeQuery("user", query.update.user_stamina, [stamina, userid]);
         const count = parseInt(result.value);
         if (count && result.value >= 0) {
           await saveData("user_item", Array(count).fill({userid: userid, item: result.type}), true);

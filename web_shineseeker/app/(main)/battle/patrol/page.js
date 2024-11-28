@@ -85,10 +85,10 @@ export default function Component() {
         const newlog = `${user}의 패트롤 선택 : ${result.patrol_select}`;
         const newRetLog = `${user}의 패트롤 결과 : ${result.patrol_ret_msg} - ${result.patrol_ret_type} ${result.patrol_ret_type === "AKA" ? result.patrol_ret_money : result.patrol_ret_count} 획득`;
         logSave(user, menuName, newlog);
-        setLog([...log, {log: newlog, time: new Date().toLocaleString()}]);
         logSave(user, menuName, newRetLog);
-        setLog([...log, {log: newRetLog, time: new Date().toLocaleString()}]);
-        setLog([...log, {log: `현재 남은 스테미나 : ${userdata.user_stamina - 1}`, time: new Date().toLocaleString()}]);
+        const nowTime = new Date().toLocaleString();
+        setLog([...log, {log: newlog, time: nowTime}, {log: newRetLog, time: nowTime}, {log: `현재 남은 스테미나 : ${userdata.user_stamina - 1}`, time: nowTime}]);
+        devLog("nextProcess log", newlog, newRetLog);
         setResult(result);
 
         // 결과 데이터를 서버로 전송
@@ -120,15 +120,13 @@ export default function Component() {
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
     fetchDataEssential();
-    // const intervalId = setInterval(fetchData, 10 * 1000);
-    // return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
   }, []);
 
   return (
     <>
       <div className="flex flex-col w-full mt-4" style={{width: "840px", height: "600px"}}>
         {isSelector ? <Selector patrol={patrolData} stamina={userdata.user_stamina} changeFunc={nextProcess} /> : <Result result={result} userdata={userdata} changeFunc={nextProcess} />}
-        <LogViewer height="126px" logs={log} css={"rounded-lg mt-2"} opacity={0.8} />
+        {log && <LogViewer height="126px" logs={log} css={"rounded-lg mt-2"} opacity={0.8} />}
       </div>
     </>
   );

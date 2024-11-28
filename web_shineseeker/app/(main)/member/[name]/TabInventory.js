@@ -15,11 +15,13 @@ export default function Component(props) {
   const handleItemSelect = (event, item) => {
     event.stopPropagation();
     if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
+    if (item.item_consumable === "X") return; // 사용불가 아이템일 경우 리턴
     devLog("아이템 선택:", event, event.target, event.clientX, event.clientY, item);
     const rect = event.currentTarget.getBoundingClientRect();
     setSelectedItem({
       index: item.index,
       item: item.item,
+      item_consumable: item.item_consumable,
       position: {x: rect.right, y: rect.bottom}, // 아이템의 오른쪽 아래 위치
     });
   };
@@ -136,7 +138,7 @@ export default function Component(props) {
                   style={{widht: "70px", height: "70px"}}
                   tabIndex={0} // 포커스 가능하도록 설정
                   onBlur={handleBlur} // 외부 클릭 시 선택 해제
-                  onClick={(e) => handleItemSelect(e, {index: index, item: item.item_name})} // 아이템 클릭 시 상태 업데이트
+                  onClick={(e) => handleItemSelect(e, {index: index, item: item.item_name, item_consumable: item.item_consumable})} // 아이템 클릭 시 상태 업데이트
                   draggable="true"
                   onDragStart={dragStart}
                   onDragEnd={dragEnd}

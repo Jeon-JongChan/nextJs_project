@@ -28,6 +28,7 @@ async function updatePage(data, pagename) {
   // const essentialDataList = ["page_name", "page_type"];
   const exceptList = ["file", "apitype", "pagename"];
   let saveArray = [];
+  let marketItemArray = []; // 교환소 너만을 위한 유일한 배열이야
   const setSaveArray = (key, data) => saveArray.push({page_name: pagename, id: key, value: data}); // 편의성을 위한 page 테이블에 저장할 배열 생성함수
 
   // if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
@@ -39,9 +40,14 @@ async function updatePage(data, pagename) {
         let image = null;
         if (value?.type) image = await saveImage(value); // 이미지 저장
         setSaveArray(key, image?.path || null); // 이미지 경로만 저장
+      } else if (key.startsWith("market_item")) {
+        marketItemArray.push(value);
       } else setSaveArray(key, value);
     }
   }
+  // 교환소 아이템 데이터를 저장
+  if (marketItemArray.length) setSaveArray("market_item", JSON.stringify(marketItemArray));
+  if (marketItemArray.length) devLog("updatePage saveArray and Item", saveArray);
 
   // 기존 page 데이터에서 이미지 경로 가져오기 (필요할 때만 업데이트)
   const get_page = await getDataKey("page", "page_name", pagename, true); // page_name을 기준으로 데이터 조회

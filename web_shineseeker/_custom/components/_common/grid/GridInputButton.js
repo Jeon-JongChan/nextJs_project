@@ -27,7 +27,7 @@ export default function Component(props) {
             buttonColorClass[buttonColor],
             hoverColorClass[buttonColor],
           ].join(" ")}
-          onClick={onclick ? () => onclick() : () => null}
+          onClick={onclick ? onclick : () => null}
         >
           {label}
         </button>

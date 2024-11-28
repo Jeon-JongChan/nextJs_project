@@ -9,7 +9,7 @@ export {updateDataWithFormInputs, getImageUrl, getImageUrlAsync, logSave, cookie
  * @param {*} useFileId
  * @returns
  */
-function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFileId = false, isFileDataCheck = true) {
+function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFileId = false, isFileDataCheck = true, exceptId = []) {
   if (!apitype || !url) {
     console.log("updateData : apitype or url is not defined", apitype, url);
     return false;
@@ -20,6 +20,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
     const inputs = event.target.querySelectorAll("input");
 
     inputs.forEach((inputNode) => {
+      if (exceptId.includes(inputNode.id)) return;
       if (inputNode.type === "file") {
         // devLog("client.js updateDataWithFormInputs : handleSubmitUser ", inputNode, inputNode.files, isFileDataCheck, formData);
         if (inputNode?.files.length) {

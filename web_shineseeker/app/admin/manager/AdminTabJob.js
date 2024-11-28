@@ -8,7 +8,7 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
-import InputTextList from "./InputTextList";
+import InputTextList from "../InputTextList";
 import Autocomplete from "/_custom/components/_common/Autocomplete";
 import {getImageUrl} from "@/_custom/scripts/client";
 
@@ -158,12 +158,7 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["상징 아이콘", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore

@@ -29,10 +29,12 @@ const query = {
     patrol_item: "SELECT * FROM item WHERE item_name = '에고'",
     log: "SELECT * FROM log WHERE user_name = ? AND page = ?",
     user_patrol: "SELECT user_hp, user_atk, user_def, user_wis, user_agi, user_luk, user_stamina FROM user WHERE userid = ?",
+    user_money: "SELECT user_money FROM user WHERE userid = ?",
   },
   update: {
     user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",
     user_stamina: "UPDATE user SET user_stamina = ? WHERE userid = ?",
+    user_money: "UPDATE user SET user_money = ? WHERE userid = ?",
   },
   delete: {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",

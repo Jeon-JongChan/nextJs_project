@@ -340,8 +340,6 @@
 .img-market-npc {
   background-image: url("/images/market/06_shop_npc.png");
   background-size: contain;
-  width: 260px;
-  height: 320px;
 }
 .img-market-banner {
   background-image: url("/images/market/06_shop_banner.webp");

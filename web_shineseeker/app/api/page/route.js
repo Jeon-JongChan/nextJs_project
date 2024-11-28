@@ -14,6 +14,8 @@ export async function GET(req) {
     } else if (apitype === "log") {
       const page = searchParams.get("page");
       data = await executeSelectQuery(query.select.log, [userid, page]);
+    } else if (apitype === "user_money") {
+      data = await executeSelectQuery(query.select.user_money, [userid]);
     }
     return NextResponse.json({message: "successfully api", data: data});
   } catch (error) {
@@ -69,6 +71,16 @@ export async function POST(req) {
       const skillInfo = await executeSelectQuery(query.select.member_skill, [userid]);
       // devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 스킬반환!", skillInfo);
       returnData = skillInfo;
+    } else if (apitype === "market_buy_item") {
+      const item_name = data.get("item_name");
+      const item_cost = parseInt(data.get("item_cost") || 0);
+      const userid = data.get("userid");
+      const userMoney = (await executeSelectQuery(query.select.user_money, [userid]))?.[0]?.user_money;
+      if (userMoney < item_cost) return NextResponse.json({message: "not enough money", data: userMoney});
+      devLog("market_buy_item", item_name, item_cost, userid, userMoney);
+      await executeQuery(query.update.user_money, [userMoney - item_cost, userid]);
+      await saveData("user_item", {userid: userid, item: item_name});
+      return NextResponse.json({message: "successfully page api", data: "아이템 구매 성공"});
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

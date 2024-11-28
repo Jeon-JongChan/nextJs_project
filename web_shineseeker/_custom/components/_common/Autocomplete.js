@@ -38,7 +38,7 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
           let name = item?.[autokey];
           return name.toLowerCase().includes(value)
         });
-        console.log("Autocomplete.js --> ", value, data, filtered, data[0]?.[autokey].normalize("NFD"), data[0]?.[autokey].includes(value));
+        // console.log("Autocomplete.js --> ", value, data, filtered, data[0]?.[autokey].normalize("NFD"), data[0]?.[autokey].includes(value));
         setFilteredData(filtered);
         setIsDropdownVisible(filtered.length > 0 && value.trim() !== ""); // 입력값이 있을 때만 드롭다운 표시
         setIsItemSelected(false); // 입력값이 변경되면 항목 선택 상태 초기화

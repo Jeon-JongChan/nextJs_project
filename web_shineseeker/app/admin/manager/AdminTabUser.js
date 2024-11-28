@@ -10,7 +10,7 @@ import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
-import InputTextList from "./InputTextList";
+import InputTextList from "../InputTextList";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "user";
@@ -263,7 +263,7 @@ export default function Home() {
 
   return (
     <div className="flex w-full">
-      <div className="w-1/5 flex flex-col mr-3 ">
+      <div className="w-1/5 flex flex-col mr-3 h-screen overflow-y-auto">
         <h3 className="text-center font-bold text-2xl">유저리스트</h3>
         <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100">
           {Object.keys(userdata).map((key, index) => {
@@ -295,15 +295,7 @@ export default function Home() {
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">
                     {data[0]}
                   </label>
-                  <FileDragAndDrop
-                    css={"mt-2 w-full col-span-4 h-[200px]"}
-                    id={`user_img_${index}`}
-                    type={"image/"}
-                    text={data[1] ? null : "Drag Or Click"}
-                    image={getImageUrl(data[1])}
-                    objectFit={"fill"}
-                    extFunc={imgInitFn}
-                  />
+                  <FileDragAndDrop css={"mt-2 w-full col-span-4 h-[200px]"} id={`user_img_${index}`} type={"image/"} text={data[1] ? null : "Drag Or Click"} image={getImageUrl(data[1])} objectFit={"fill"} extFunc={imgInitFn} />
                 </div>
               );
             })}

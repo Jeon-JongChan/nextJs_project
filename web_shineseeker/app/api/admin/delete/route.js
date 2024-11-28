@@ -15,6 +15,7 @@ export async function POST(req) {
       await deleteData("user_item", "userid", data.get("userid"));
       await deleteData("user_auth", "userid", data.get("userid"));
       await deleteData("user_skill", "userid", data.get("userid"));
+      await deleteData("log", "user_name", data.get("userid"));
       returnData = data.get("userid") + " deleted";
     } else if (apitype === "delete_skill" && data.has("skill")) {
       await deleteData("skill", "skill_name", data.get("skill"));

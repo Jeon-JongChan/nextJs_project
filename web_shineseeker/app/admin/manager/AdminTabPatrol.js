@@ -182,7 +182,7 @@ export default function Home() {
   useEffect(() => {
     //fetchEssentialData();
     fetchData();
-    const intervalId = setInterval(fetchData, 10 * 1000);
+    const intervalId = setInterval(fetchData, 5 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     return () => clearInterval(intervalId);
   }, []);

@@ -27,7 +27,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
   };
   const handleAction = (action) => {
     if (action === "use") {
-      if (money < selectedItem.cost) {
+      if (selectedItem.cost !== 0 && money < selectedItem.cost) {
         setSelectedItem(null);
         alert("돈이 부족합니다.");
         return;
@@ -76,7 +76,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
               <div className="market-itembox-item-info flex flex-col p-1 font-nexon font-bold h-full" style={{width: "100px"}}>
                 <div className="flex flex-col w-full mt-4">
                   <span className="block text-white text-[12px]">{item.item_name}</span>
-                  {item.item_cost && <span className="block text-[10px] text-line-wrap">{item.item_cost} AKA</span>}
+                  {item.item_cost && <span className="block text-[10px] text-line-wrap">{item.item_cost || 0} AKA</span>}
                 </div>
                 {/* <div className="w-full flex flex-row mt-2">
                   <span className="text-white text-[10px] w-[30px]">{item.item_name}</span>

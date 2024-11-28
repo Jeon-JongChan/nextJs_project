@@ -16,6 +16,7 @@ export default function Home({params}) {
   const [maindata, setMainData] = useState({});
   const [skilldata, setSkillData] = useState([]);
   const [itemdata, setItemData] = useState([]);
+  const [jobImage, setJobImage] = useState("images/member/04_member_ch_banner_icon.png");
   const [selectedTab, setSelectedTab] = useState(1);
   // const images = ["https://via.placeholder.com/500?text=Image+1", "https://via.placeholder.com/500?text=Image+2", "https://via.placeholder.com/500?text=Image+3"];
 
@@ -27,12 +28,6 @@ export default function Home({params}) {
     if (newData?.data?.length) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
       const newMainData = newData.data[0];
-      // Object.keys(newMainData).forEach(async (key) => {
-      //   if (key.includes("user_img")) {
-      //     if (newMainData[key]) newMainData[key] = getImageUrl(newMainData[key]);
-      //     devLog("Member user change maindata imgage key", key, newMainData[key]);
-      //   }
-      // });
       setMainData(newMainData);
     }
 
@@ -41,6 +36,13 @@ export default function Home({params}) {
     if (newItemData?.data?.length) {
       devLog(`admin *** ${menuName} page item data 갱신되었습니다 : `, newItemData);
       setItemData(newItemData.data);
+    }
+
+    let jobImageResponse = await fetch(`/api/page?apitype=user_job&getcount=1&userid=${params.name}`);
+    const newJobImageData = await jobImageResponse.json();
+    if (newJobImageData?.data?.length) {
+      devLog(`admin *** ${menuName} page job image data 갱신되었습니다 : `, newJobImageData);
+      setJobImage(newJobImageData.data[0]?.job_img_0 || jobImage);
     }
 
     if (params.name === tokenRef.current?.user?.name) {
@@ -87,7 +89,7 @@ export default function Home({params}) {
             </div>
 
             <div className="absolute img-member-init img-member-char-banner-bg" style={{bottom: "0px", left: "35px"}}>
-              <img src={"/api/image?src=images/member/04_member_ch_banner_icon.png"} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
+              <img src={getImageUrl(jobImage)} alt="banner icon" width={60} height={60} style={{position: "absolute", top: "15px", left: "15px"}} />
               <div className="absolute flex flex-row text-white text-[16px]" style={{width: "200px", height: "25px", top: "15px", left: "90px"}}>
                 <span className="member_banner_title relative">SEEKER&nbsp;</span>
                 <span className="member_banner_title1 relative text-line-wrap" style={{width: "140px"}}>

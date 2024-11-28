@@ -62,7 +62,7 @@ export default function Home() {
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
     fetchData();
-    console.log(fetchIndex);
+    // devLog(fetchIndex);
     // const intervalId = setInterval(fetchData, 10 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     // return () => clearInterval(intervalId);
@@ -75,12 +75,7 @@ export default function Home() {
   return (
     <div className="flex w-full">
       <div className={`w-full flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <h1 className="mt-8 font-bold text-2xl col-span-12">필독 탭 내용 관리</h1>
           {[{label: "커뮤니티"}, {label: "로그작성기준"}, {label: "러닝주의사항"}, {label: "금지사항"}, {label: "하차 및 제명"}].map((data, index) => (
             <GridInputTextArea label={data.label} id={`${menuName}_tab_${index}`} type={"text"} colSpan={12} default={`탭 ${index + 1}의 내용입니다.`} css="border-b" key={index} />

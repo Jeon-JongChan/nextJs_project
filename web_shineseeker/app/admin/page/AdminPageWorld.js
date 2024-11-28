@@ -44,7 +44,7 @@ export default function Home() {
   const imgInitFn = (event) => {
     const id = event.target.id;
     const files = Array.from(event.target.files);
-    console.log("imgInitFn : ", id);
+    devLog("imgInitFn : ", id);
     // id 끝자리에서 index를 추출하여 해당 index의 이미지를 초기화
     if (!id || files.length == 0) return;
     const index = id.slice(-1);
@@ -84,7 +84,7 @@ export default function Home() {
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
     fetchData();
-    console.log(fetchIndex);
+    // devLog(fetchIndex);
     // const intervalId = setInterval(fetchData, 10 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     // return () => clearInterval(intervalId);

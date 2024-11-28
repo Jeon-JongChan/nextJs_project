@@ -7,6 +7,7 @@ import MainLoginForm from "./MainLoginForm";
 import MainAudioPlayer from "./MainAudioPlayer";
 
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
+import {devLog} from "@/_custom/scripts/common";
 
 const menuName = "main";
 export default function Home() {
@@ -19,12 +20,12 @@ export default function Home() {
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
     let response = await fetch(`/api/select?apitype=page&pagename=${menuName}&getcount=1`);
-    console.log("야 메인 땡긴다?", response, tokenRef);
+    devLog("야 메인 땡긴다?", response, tokenRef);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);
     const newData = await response.json();
     if (newData?.data?.length) {
-      console.log(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
+      devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
       setMainData([...newData.data]);
     }
   }
@@ -45,7 +46,7 @@ export default function Home() {
       setSlideData(slideData);
       if (audioData.length) setMainAudioUrl(audioData[0]);
     }
-    console.log("maindata filter :", slideLink, slideData, audioData);
+    devLog("maindata filter :", slideLink, slideData, audioData);
   }, [maindata]);
   return (
     <>

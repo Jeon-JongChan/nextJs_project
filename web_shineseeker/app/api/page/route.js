@@ -16,10 +16,12 @@ export async function GET(req) {
       data = await executeSelectQuery(query.select.log, [userid, page]);
     } else if (apitype === "user_money") {
       data = await executeSelectQuery(query.select.user_money, [userid]);
+    } else if (apitype === "user_job") {
+      data = await executeSelectQuery(query.select.user_job, [userid]);
     }
     return NextResponse.json({message: "successfully api", data: data});
   } catch (error) {
-    console.log("GET error", error);
+    console.error("GET error", error);
     return NextResponse.json({error: error.message}, {status: 500});
   }
 }

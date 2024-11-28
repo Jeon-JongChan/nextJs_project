@@ -89,7 +89,7 @@ export default function FileUpload(props) {
     files.forEach((file) => {
       formData.append("file", file);
     });
-    console.log(files, formData);
+    // console.log(files, formData);
     fetch("/api/upload", {
       method: "POST",
       body: formData,

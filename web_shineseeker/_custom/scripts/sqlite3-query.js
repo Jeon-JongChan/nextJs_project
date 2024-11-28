@@ -30,6 +30,7 @@ const query = {
     log: "SELECT * FROM log WHERE user_name = ? AND page = ?",
     user_patrol: "SELECT user_hp, user_atk, user_def, user_wis, user_agi, user_luk, user_stamina FROM user WHERE userid = ?",
     user_money: "SELECT user_money FROM user WHERE userid = ?",
+    user_job: "SELECT job_name, job_img_0 FROM (SELECT job FROM user WHERE userid = ?) a INNER JOIN job b ON a.job = b.job_name",
   },
   update: {
     user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",

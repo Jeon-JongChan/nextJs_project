@@ -59,7 +59,7 @@ export default function Component(props) {
     timer = new Promise(() => {
       clearTimeout(timer);
       setTimeout(() => {
-        console.log("teleportSlide", index);
+        // console.log("teleportSlide", index);
         setSlideAnimation(false);
         setCurrentSlide(index);
       }, 600);
@@ -94,10 +94,7 @@ export default function Component(props) {
 
   return (
     <div className={`slide-banner w-full max-h-full overflow-hidden relative`} style={{height: "inherit"}}>
-      <div
-        className="flex flex-row h-full z-0 relative"
-        style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
-      >
+      <div className="flex flex-row h-full z-0 relative" style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}>
         {createSlide(slides[slides.length - 1], 1)}
         {slides.map((slide, index) => createSlide(slide, index + 1))}
       </div>

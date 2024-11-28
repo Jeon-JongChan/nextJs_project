@@ -102,7 +102,7 @@ export default function Home() {
         .then((response) => response.json())
         .then((data) => {
           setMainData((prevData) => prevData.filter((prev) => prev[`${menuName}_name`] !== target));
-          console.log(`delete-${menuName} success : `, data, target, userdata);
+          devLog(`delete-${menuName} success : `, data, target, userdata);
         })
         .catch((error) => console.error("Error:", error));
     } catch (e) {
@@ -129,7 +129,7 @@ export default function Home() {
       setSkillList({...skillList});
     }
 
-    console.log(`essential data ${menuName} detail: `, newData);
+    devLog(`essential data ${menuName} detail: `, newData);
   }
 
   // 데이터를 주기적으로 가져오기 위한 함수

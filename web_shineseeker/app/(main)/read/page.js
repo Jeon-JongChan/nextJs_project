@@ -1,6 +1,7 @@
 "use client";
 import React, {useState, useEffect} from "react";
 import TabParagraphVertical from "./TabParagraphVertical";
+import {devLog} from "@/_custom/scripts/common";
 
 const menuName = "read";
 export default function Home() {
@@ -10,12 +11,12 @@ export default function Home() {
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchData() {
     let response = await fetch(`/api/select?apitype=page&getcount=1&pagename=${menuName}&getcount=1`);
-    console.log("야 메인 땡긴다?", response);
+    devLog("야 메인 땡긴다?", response);
     // if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     // else response = await fetch(`/api/select?apitype=${menuName}`);
     const newData = await response.json();
     if (newData?.data?.length) {
-      console.log(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
+      devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
       setMainData([...newData.data]);
     }
   }
@@ -37,7 +38,7 @@ export default function Home() {
         }, {});
       setTabContent(contents);
     }
-    console.log("maindata:", contents);
+    devLog("maindata:", contents);
   }, [maindata]);
   return (
     <>

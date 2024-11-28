@@ -19,7 +19,7 @@ export default function Component(props) {
 
   // 아이템 선택 시 호출될 함수
   const handleSelect = (item) => {
-    console.log("TabStatus - handleSelect :", item, selectedItem, `user_skill${selectedItem + 1}` in props.user, props.user);
+    devLog("TabStatus - handleSelect :", item, selectedItem, `user_skill${selectedItem + 1}` in props.user, props.user);
     if (item) {
       const skillname = item.skill_name;
       const skillimg = item.skill_img_0;
@@ -43,7 +43,7 @@ export default function Component(props) {
           body: formData,
         })
           .then((response) => response.json())
-          .then((data) => console.log(data))
+          .then((data) => devLog(data))
           .catch((error) => console.error("TabStatus - handleSelect update skill Error:", error));
       }
     }

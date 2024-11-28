@@ -27,7 +27,7 @@ const AuthContextInner = ({children}) => {
       userpw,
       //   callbackUrl: "/main", // 로그인 성공 후 이동할 URL
     });
-    console.log("로그인 시도", userid, userpw);
+    // console.log("로그인 시도", userid, userpw);
     if (result.error) {
       console.error("로그인 실패", result.error);
       return null; // 에러가 있을 경우 null 반환

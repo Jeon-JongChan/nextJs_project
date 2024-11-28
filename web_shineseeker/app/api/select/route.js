@@ -90,7 +90,7 @@ export async function GET(req) {
     }
     return NextResponse.json({message: "successfully api but no data", data: null});
   } catch (error) {
-    console.log("GET error", error);
+    console.error("GET error", error);
     return NextResponse.json({error: error.message}, {status: 500});
   }
 }

@@ -9,7 +9,7 @@ export async function middleware(req) {
   const adminRoutes = ["/admin", "/api/admin"];
   const userRoutes = ["/api", "/member", "/market", "/battle"];
 
-  console.log(">>>>>>>>>>>>>>>>>>>>>>> 미들웨어 토큰:", token, pathname);
+  // console.log(">>>>>>>>>>>>>>>>>>>>>>> 미들웨어 토큰:", token, pathname);
   if (!token) {
     // JWT 토큰이 없으면 로그인 페이지로 리다이렉트s
     return NextResponse.redirect(new URL("/api/auth/signin", req.url));

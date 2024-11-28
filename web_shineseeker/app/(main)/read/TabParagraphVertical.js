@@ -1,11 +1,12 @@
 "use client";
 import {useState, useEffect} from "react";
+import {devLog} from "@/_custom/scripts/common";
 
 export default function Component(props) {
   const [activeTab, setActiveTab] = useState("1");
   const [tabContent, setTabContent] = useState({});
   const clickTab = (target, tab) => {
-    console.log(target, target.dataset);
+    devLog(target, target.dataset);
     // 기존 active tab 정상화
     const activeTab = document.querySelector(".img-read-tab-active");
     if (activeTab) {
@@ -25,7 +26,7 @@ export default function Component(props) {
   };
   useEffect(() => {
     if (props?.tabContent) setTabContent(props.tabContent);
-    console.log("TabParagraph props:", props);
+    devLog("TabParagraph props:", props);
   }, [props]);
 
   const tabTextCss = "hover:text-[#806FAF] focus:text-[#806FAF] ";

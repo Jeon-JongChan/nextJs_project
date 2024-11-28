@@ -23,7 +23,7 @@ export default function Home(props) {
   async function fetchDataEssential() {
     let response = await fetch(`/api/select?apitype=page&getcount=1&pagename=${menuName}&getcount=1`);
     const newData = await response.json();
-    console.log("야 메인 땡긴다?", response, newData);
+    devLog("야 메인 땡긴다?", response, newData);
     if (newData?.data?.length) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다: `, newData);
       setMainData([...newData.data]);
@@ -69,7 +69,6 @@ export default function Home(props) {
 
   /* prettier-ignore */
   // useEffect(() => {
-  //   console.log("maindata:", contents);
   // }, [maindata]);
 
   return (

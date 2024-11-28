@@ -1,14 +1,13 @@
 "use client";
 import {useState, useEffect} from "react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
+import {devLog} from "@/_custom/scripts/common";
 
 export default function Home(props) {
   const [baseinfo, setBaseInfo] = useState("");
   const [detailinfo, setDetailInfo] = useState("");
   const [oncetext, setOnceText] = useState("");
   useEffect(() => {
-    console.log("TabInfo useEffect", props);
+    devLog("TabInfo useEffect", props);
     // textarea에 기본정보, 상세정보를 채워넣는다.
     if (props?.user) {
       if (props.user?.usertab_baseinfo) setBaseInfo(props.user.usertab_baseinfo);

@@ -1,6 +1,6 @@
 "use client";
 import {useState, useEffect} from "react";
-import {sleep} from "/_custom/scripts/common.js";
+import {sleep, devLog} from "/_custom/scripts/common.js";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const defaultProps = {
@@ -38,7 +38,7 @@ export default function Component(props) {
     timer = new Promise(() => {
       clearTimeout(timer);
       setTimeout(() => {
-        console.log("teleportSlide", index);
+        devLog("teleportSlide", index);
         setSlideAnimation(false);
         setCurrentSlide(index);
       }, 600);
@@ -68,10 +68,7 @@ export default function Component(props) {
           {/* <button className={"group-hover:opacity-100 transition-opacity duration-300 " + "absolute right-4 top-1/2 transform -translate-y-1/2 arrow-init arrow-world-right"} onClick={nextSlide}></button> */}
         </div>
         <div className="overflow-hidden img-world-slidemask relative" style={{top: "7px", width: "215px", height: "354px"}}>
-          <div
-            className="flex flex-row h-full z-0 relative"
-            style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}
-          >
+          <div className="flex flex-row h-full z-0 relative" style={{width: `${slideCount * 100}%`, transform: `translateX(-${currentSlide * (100 / slideCount)}%)`, transition: `${slideAnimation ? "transform 0.5s ease" : ""}`}}>
             {createSlide(slides[slides.length - 1], 1)}
             {slides.map((slide, index) => createSlide(slide, index + 1))}
           </div>

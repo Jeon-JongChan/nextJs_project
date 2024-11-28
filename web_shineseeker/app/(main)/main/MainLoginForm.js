@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
 import Image from "next/image";
 import Link from "next/link";
+import {devLog} from "@/_custom/scripts/common";
 
 export default function Component() {
   const [user, setUser] = useState({});
@@ -14,10 +15,10 @@ export default function Component() {
     const username = formData.get("userid"); // 사용자명 가져오기
     const password = formData.get("userpw"); // 비밀번호 가져오기
     if (handleLogin) {
-      console.log("로그인 시도:", username, password, handleLogin); // 시도 메시지
+      devLog("로그인 시도:", username, password, handleLogin); // 시도 메시지
       const token = await handleLogin(username, password); // 로그인 처리
       if (token) {
-        console.log("로그인 성공:", token); // 성공 메시지
+        devLog("로그인 성공:", token); // 성공 메시지
       } else {
         console.error("로그인 실패"); // 실패 메시지
       }
@@ -26,14 +27,14 @@ export default function Component() {
 
   const logout = async () => {
     if (handleLogout) {
-      console.log("로그아웃 시도:", tokenRef.current); // 시도 메시지
+      devLog("로그아웃 시도:", tokenRef.current); // 시도 메시지
       await handleLogout(); // 로그아웃 처리
-      console.log("로그아웃 성공", tokenRef.current); // 성공 메시지
+      devLog("로그아웃 성공", tokenRef.current); // 성공 메시지
     }
   };
 
   useEffect(() => {
-    console.log("로그인 컴포넌트 렌더링:", tokenRef.current);
+    devLog("로그인 컴포넌트 렌더링:", tokenRef.current);
     setUser(tokenRef.current?.user);
   }, [tokenRef.current]);
   return (

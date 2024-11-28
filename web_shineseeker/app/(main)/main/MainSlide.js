@@ -1,6 +1,6 @@
 "use client";
 import {useState, useEffect} from "react";
-import {sleep} from "/_custom/scripts/common.js";
+import {sleep, devLog} from "/_custom/scripts/common.js";
 import {getImageUrl} from "@/_custom/scripts/client";
 import Link from "next/link";
 
@@ -31,7 +31,7 @@ export default function Component(props) {
     timer = new Promise(() => {
       clearTimeout(timer);
       setTimeout(() => {
-        console.log("teleportSlide", index);
+        devLog("teleportSlide", index);
         setSlideAnimation(false);
         setCurrentSlide(index);
       }, 600);
@@ -39,7 +39,7 @@ export default function Component(props) {
   };
 
   useEffect(() => {
-    console.log("currentSlide:", slides);
+    devLog("currentSlide:", slides);
     const intervalId = setInterval(nextSlide, 100000); // 3초마다 다음 슬라이드로 이동
     return () => clearInterval(intervalId);
   }, [currentSlide]);

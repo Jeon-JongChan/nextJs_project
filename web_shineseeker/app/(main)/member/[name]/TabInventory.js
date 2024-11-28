@@ -40,7 +40,7 @@ export default function Component(props) {
         body: formData,
       })
         .then((response) => response.json())
-        .then((data) => console.log(data))
+        .then((data) => devLog(data))
         .catch((error) => console.error("TabInventory(handleAction) using Item Error:", error));
     } else if (action === "delete") {
       devLog("아이템 삭제:", selectedItem.item);

@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-const dev = process.env.NEXT_PUBLIC_DEV || "false";
+const dev = process.env.NEXT_PUBLIC_DEV === "true";
 const server = process.env.NEXT_SERVER || "";
 
 let devLog = (...msg) => {
-  if (dev == "true" || dev == "dev") {
+  if (dev) {
     console.log("############### dev Log : " + dev + " ###############\n", ...msg);
   }
 };

@@ -173,7 +173,7 @@ export default function Home() {
         .then((response) => response.json())
         .then((data) => {
           setUserData((prevUsers) => prevUsers.filter((user) => user.userid !== userid));
-          console.log("deleteUser success : ", data, userid, userdata);
+          devLog("deleteUser success : ", data, userid, userdata);
         })
         .catch((error) => console.error("Error:", error));
     } catch (e) {
@@ -249,7 +249,7 @@ export default function Home() {
       devLog(`admin page data 갱신되었습니다(${fetchIndex}): `, newData);
       setUserData([...newData.data]);
     }
-    // console.log(`${fetchIndex} user admin page data : `, newData);
+    // devLog(`${fetchIndex} user admin page data : `, newData);
   }
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
@@ -289,7 +289,7 @@ export default function Home() {
               ["전신", clickUserImage?.[1] || false],
               ["마스코트", clickUserImage?.[2] || false],
             ].map((data, index) => {
-              // console.log(data, data[1] ? null : "Drag Or Click");
+              // devLog(data, data[1] ? null : "Drag Or Click");
               return (
                 <div className="block w-1/4" key={index}>
                   <label htmlFor={`user_img_${index}`} className="block text-sm font-medium text-gray-700 row">

@@ -59,7 +59,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
     setItems(marketItems);
   }, [marketItems]);
   return (
-    <div className="absolute market-itembox grid grid-cols-3 p-2 overflow-y-auto" style={{width: "530px", height: "230px", top: "100px", right: "45px"}}>
+    <div className="absolute market-itembox p-2 grid grid-cols-3 auto-rows-[65px] gap-1 overflow-y-auto" style={{width: "530px", height: "230px", top: "100px", right: "45px"}}>
       {items &&
         items?.map((item, index) => (
           <Tooltip key={index} css={"relative flex"} content={<span>{item.item_desc}</span>}>

@@ -40,8 +40,10 @@ export default function Home(props) {
         const allItems = await itemResponse.json();
         const items = JSON.parse(itemList.value);
         const itemData = allItems.data.filter((item) => items.includes(item.item_name));
-        setItems(itemData || []);
-        devLog(`admin *** ${menuName} *** page ITEM DATA 갱신되었습니다: `, itemList, itemData);
+        if (itemData.length) {
+          setItems([...itemData]);
+          devLog(`admin *** ${menuName} *** page ITEM DATA 갱신되었습니다: `, itemList, itemData);
+        }
       }
     }
 

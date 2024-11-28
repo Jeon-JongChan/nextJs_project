@@ -40,4 +40,9 @@ const query = {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",
   },
 };
-export default query;
+// export default query;
+if (typeof require !== "undefined") {
+  module.exports = query;
+} else {
+  window.query = query; // ES 모듈 방식에서 사용할 경우
+}

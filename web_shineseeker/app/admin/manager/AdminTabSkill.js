@@ -84,6 +84,30 @@ export default function Home() {
     devLog("imgInitFn : ", clickImageCopy);
   };
 
+  const deleteTarget = (e) => {
+    e.preventDefault();
+    const spanElement = e.target.parentElement.querySelector("span[data-name]");
+    const target = spanElement.dataset.name;
+    devLog(`delete ** ${menuName} **`, target);
+    const formData = new FormData();
+    formData.append("apitype", "delete_" + menuName);
+    formData.append(`${menuName}`, target);
+    try {
+      fetch("/api/admin/delete", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setMainData((prevData) => prevData.filter((prev) => prev[`${menuName}_name`] !== target));
+          console.log(`delete-${menuName} success : `, data, target, userdata);
+        })
+        .catch((error) => console.error("Error:", error));
+    } catch (e) {
+      console.error(`delete-${menuName} error : `, e.message);
+    }
+  };
+
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 스킬 항목 선택되었습니다.");
     const response = await fetch("/api/select?apitype=skill_option&getcount=1");
@@ -133,7 +157,7 @@ export default function Home() {
             if (maindata[key]["skill_name"]) {
               return (
                 <Tooltip key={index} content={<span>{maindata[key]["skill_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["skill_name"]} index={index} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["skill_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} />
                 </Tooltip>
               );
             }

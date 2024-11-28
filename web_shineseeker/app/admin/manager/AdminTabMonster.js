@@ -86,6 +86,30 @@ export default function Home() {
     devLog("imgInitFn : ", clickImageCopy);
   };
 
+  const deleteTarget = (e) => {
+    e.preventDefault();
+    const spanElement = e.target.parentElement.querySelector("span[data-name]");
+    const target = spanElement.dataset.name;
+    devLog(`delete ** ${menuName} **`, target);
+    const formData = new FormData();
+    formData.append("apitype", "delete_" + menuName);
+    formData.append(`${menuName}`, target);
+    try {
+      fetch("/api/admin/delete", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setMainData((prevData) => prevData.filter((prev) => prev[`${menuName}_name`] !== target));
+          console.log(`delete-${menuName} success : `, data, target, userdata);
+        })
+        .catch((error) => console.error("Error:", error));
+    } catch (e) {
+      console.error(`delete-${menuName} error : `, e.message);
+    }
+  };
+
   async function fetchEssentialData() {
     console.info("ADMIN DATA MANAGEMENT PAGE : 몬스터 항목 선택되었습니다.");
     const response = await fetch("/api/select?apitype=skill_optiongetcount=1");
@@ -138,7 +162,7 @@ export default function Home() {
             if (maindata[key]["monster_name"]) {
               return (
                 <Tooltip key={index} content={null} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["monster_name"]} index={index} onclick={clickListItem} />
+                  <ListItemIndex label={maindata[key]["monster_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} />
                 </Tooltip>
               );
             }
@@ -146,12 +170,7 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["보스 이미지", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
@@ -167,38 +186,10 @@ export default function Home() {
             {[...Array(5)].map((_, index) => (
               <React.Fragment key={index}>
                 <GridInputText label={"계수(% 미만)"} id={`monster_event_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
-                <GridInputSelectBox
-                  label={"사용스탯"}
-                  id={`monster_event_cost_stat_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_stat || skillDefaultList.skill_stat}
-                />
-                <GridInputSelectBox
-                  label={"효과"}
-                  id={`monster_event_type_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_type || skillDefaultList.skill_type}
-                />
-                <GridInputSelectBox
-                  label={"범위"}
-                  id={`monster_event_range_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_range || skillDefaultList.skill_range}
-                />
-                <GridInputSelectBox
-                  label={"위력스탯"}
-                  id={`monster_event_stat_${index}`}
-                  type={"number"}
-                  colSpan={1}
-                  css={"text-center border"}
-                  options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat}
-                />
+                <GridInputSelectBox label={"사용스탯"} id={`monster_event_cost_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_stat || skillDefaultList.skill_stat} />
+                <GridInputSelectBox label={"효과"} id={`monster_event_type_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_type || skillDefaultList.skill_type} />
+                <GridInputSelectBox label={"범위"} id={`monster_event_range_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_range || skillDefaultList.skill_range} />
+                <GridInputSelectBox label={"위력스탯"} id={`monster_event_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat} />
                 <GridInputText label={"스탯 적용(%)"} id={`monster_event_stat_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
                 <GridInputText label={"출력메세지"} id={`monster_event_msg_${index}`} type={"text"} colSpan={6} css={"text-center border h-[36px]"} />
               </React.Fragment>

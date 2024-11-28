@@ -3,7 +3,7 @@ import Image from "next/image";
 import {useState, useEffect, useCallback} from "react";
 import {devLog} from "@/_custom/scripts/common";
 import LogViewer from "@/_custom/components/LogViewer";
-import {logSave} from "@/_custom/scripts/client";
+import {getImageUrl, logSave} from "@/_custom/scripts/client";
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
 
 const menuName = "patrol";
@@ -143,7 +143,7 @@ function Selector(props) {
       {stamina ? (
         <>
           <div className="absolute patrol-selector-icon w-[140px] h-[140px]" style={{top: "75px", left: "100px"}}>
-            <img src={patrol.patrol_img || "https://via.placeholder.com/500?text=Image+1"} className="w-full h-full" />
+            <img src={getImageUrl(patrol.patrol_img) || "https://via.placeholder.com/500?text=Image+1"} className="w-full h-full" />
           </div>
           <div className="absolute patrol-selector-area w-[400px] h-[20px] text-[#9889FF]" style={{top: "60px", left: "290px"}}>
             <span>★ {patrol.patrol_name || "관리자에게 문의하세요"}</span>

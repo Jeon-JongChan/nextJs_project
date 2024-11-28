@@ -11,6 +11,7 @@ export default function Home(props) {
   const npcTextColor = " text-[#7b3e51]";
   const [npcName, setNpcName] = useState("요정헤이프릴");
   const [npcText, setNpcText] = useState(`오늘은 어떤 물품을 교환하시겠어요? \n천천히 둘러보세요~`);
+  const [npcImage, setNpcImage] = useState("/images/market/06_shop_npc.png");
   const [maindata, setMainData] = useState([]);
   const [username, setUsername] = useState("플레이어");
   const [money, setMoney] = useState(0);
@@ -30,8 +31,11 @@ export default function Home(props) {
       const npcNameData = newData.data.filter((data) => data.id === "market_npc_name")[0];
       setNpcName(npcNameData?.value || npcName);
       // npc 대사 갱신
-      const npcTextList = newData.data.filter((data) => data.id === "market_text")[0];
-      setNpcText(npcTextList?.value || npcText);
+      const npcTextData = newData.data.filter((data) => data.id === "market_text")[0];
+      setNpcText(npcTextData?.value || npcText);
+      // npc 대사 갱신
+      const npcImageData = newData.data.filter((data) => data.id === "market_img_npc")[0];
+      setNpcImage(npcImageData?.value || npcText);
 
       // 아이템 리스트 갱신
       const itemList = newData.data.filter((data) => data.id === "market_item")[0];
@@ -71,7 +75,7 @@ export default function Home(props) {
   return (
     <div id="market" className="relative" style={{width: "923px", height: "353px"}}>
       <div className="relative img-market-init img-market-bg flex w-full h-full">
-        <div className="relative img-market-npc flex" style={{width: "260px", height: "320px",top: "25px", left: "30px"}}>
+        <div className="relative img-market-npc flex" style={{width: "260px", height: "320px",top: "25px", left: "30px", backgroundImage: `url(${getImageUrl(npcImage)})`}}>
           <div className="absolute market_npc_banner img-market-banner" style={{width: "301px", height: "103px", bottom: "20px", left: "20px"}}>
             <span className="absolute text-white text-[16px]" style={{left: "15px"}}>
               {npcName}

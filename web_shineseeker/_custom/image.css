@@ -338,8 +338,7 @@
   background-image: url("/images/market/06_shop_bg.png");
 }
 .img-market-npc {
-  background-image: url("/images/market/06_shop_npc.png");
-  background-size: contain;
+  background-size: cover;
 }
 .img-market-banner {
   background-image: url("/images/market/06_shop_banner.webp");

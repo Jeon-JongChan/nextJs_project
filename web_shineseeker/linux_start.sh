@@ -58,6 +58,9 @@ else
     echo "변경 사항이 없습니다. 빌드 생략."
 fi
 
+npm run start:cron & # 정기적 반복 작업 실행
+echo "Cron작업 백그라운드로 실행 중..."
+
 # 7. 프로덕션 모드로 실행
 echo "Next.js 애플리케이션을 프로덕션 모드로 실행 중..."
 # root권한때문에 잘 안됨 npm run start -- -p 80

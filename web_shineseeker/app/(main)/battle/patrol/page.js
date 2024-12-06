@@ -170,7 +170,7 @@ function Selector(props) {
           </div>
           <div className="absolute patrol-selector-text w-[440px] font-nexon text-white" style={{top: "90px", left: "290px"}}>
             <span className="font-bold">[고갈] </span>
-            <p className="h-[55px] overflow-y-hidden no-scrollbar">게임은 다음날 가능합니다</p>
+            <p className="h-[55px] overflow-y-hidden no-scrollbar">패트롤은 다음날 가능합니다</p>
           </div>
         </>
       )}

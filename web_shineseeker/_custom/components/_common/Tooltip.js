@@ -1,19 +1,29 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 // Tooltip 컴포넌트
-const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}}) => {
+const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reverse = false}) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isReverse, setIsReverse] = useState(false);
+
+  useEffect(() => {
+    setIsReverse(reverse);
+  }, [reverse]);
 
   return (
     <div className={"tooltip-container " + css} style={style} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
+      {isVisible && content && (
+        <div className={"tooltip " + tooltipCss} style={{bottom: isReverse ? "auto" : "110%", top: isReverse ? "110%" : "auto"}}>
+          {content}
+        </div>
+      )}
       {children}
-      {isVisible && content && <div className={"tooltip " + tooltipCss}>{content}</div>}
       <style jsx>{`
         .tooltip-container {
           position: relative;
           display: inline-block;
         }
         .tooltip {
+          position: absolute;
           visibility: ${isVisible ? "visible" : "hidden"};
           opacity: ${isVisible ? "1" : "0"};
           background-color: #333;
@@ -21,9 +31,7 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}}) => 
           text-align: center;
           border-radius: 4px;
           padding: 5px;
-          position: absolute;
           z-index: 100;
-          bottom: 125%; /* Position above the element */
           left: 50%;
           margin-left: -60px; /* Center the tooltip */
           transition: opacity 0.3s;
@@ -31,12 +39,13 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}}) => 
         .tooltip::after {
           content: "";
           position: absolute;
-          top: 100%; /* At the bottom of the tooltip */
           left: 50%;
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;
-          border-color: #333 transparent transparent transparent;
+          border-color: ${isReverse ? "transparent transparent #333 transparent" : "#333 transparent transparent transparent"};
+          top: ${isReverse ? "auto" : "100%"}; /* Move the arrow to the top or bottom */
+          bottom: ${isReverse ? "100%" : "auto"}; /* Position arrow depending on the reverse prop */
         }
       `}</style>
     </div>
@@ -44,12 +53,3 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}}) => 
 };
 
 export default Tooltip;
-/* 사용 예시
-const App = () => (
-  <div>
-    <Tooltip content="This is a tooltip!">
-      <button>Hover me</button>
-    </Tooltip>
-  </div>
-);
-*/

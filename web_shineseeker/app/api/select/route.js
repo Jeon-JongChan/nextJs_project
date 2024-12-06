@@ -31,7 +31,11 @@ export async function GET(req) {
           }
           // 유저별 스킬 목록 전부 추가
           let skill = await getDataKey("user_skill", "userid", data[i].userid, true);
-          if (skill?.length) data[i].skills = skill.map((skill) => skill.skill_name);
+          if (skill?.length)
+            data[i].skills = skill.map((skill) => ({
+              name: skill.skill_name,
+              desc: skill.skill_desc,
+            }));
           users.push(data[i]);
         }
         // userid가 존재하는 경우 해당 값만 보내도록 한다

@@ -10,6 +10,7 @@ import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import InputTextList from "../InputTextList";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "market";
 export default function Home() {
@@ -140,10 +141,23 @@ export default function Home() {
   return (
     <div className="flex w-full">
       <div className={`w-full flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <GridInputText label={"상점 주인 이름"} id={"market_npc_name"} type={"text"} colSpan={12} css="border-b" />
           <h1 className="mt-8 font-bold text-2xl col-span-12">상점 NPC 이미지</h1>
-          <FileDragAndDrop css={"mt-2 w-full col-span-3 h-[500px]"} id={`market_img_npc`} type={"image/"} text={savedImage ? null : "Drag Or Click"} image={savedImage} objectFit={"fill"} extFunc={imgInitFn} />
+          <FileDragAndDrop
+            css={"mt-2 w-full col-span-3 h-[500px]"}
+            id={`market_img_npc`}
+            type={"image/"}
+            text={savedImage ? null : "Drag Or Click"}
+            image={getImageUrl(savedImage)}
+            objectFit={"fill"}
+            extFunc={imgInitFn}
+          />
           <div className="relative col-span-8 grid grid-cols-8">
             <div className="relative col-span-8 mt-2 user-itemlist h-[455px] border overflow-y-auto">
               <h3 className="text-center font-bold text-2xl">상점 아이템 리스트</h3>

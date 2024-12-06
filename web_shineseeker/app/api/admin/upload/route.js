@@ -147,7 +147,8 @@ async function updatMonster(data) {
       else if (key.startsWith("skill_option")) skills_detail[key] = value; // 스킬 상세정보 저장
       else if (key.startsWith("monster_event")) {
         let index = parseInt(key.split("_").pop());
-        monster_event[index][key.replace(`_${index}`, "")] = value;
+        if (key.startsWith("monster_event_img")) images[key] = await saveImage(value); // 이미지 저장
+        else monster_event[index][key.replace(`_${index}`, "")] = value;
       } else monster[key] = value; // 유저 정보 저장
     }
   }
@@ -160,6 +161,22 @@ async function updatMonster(data) {
       monster[imgKey] = existingData[imgKey]; // 기존 이미지 경로 유지
     } else monster[imgKey] = images[imgKey]?.path || null;
   });
+  // 몬스터 이벤트의 이미지가 기존에는 있고 새로 전송된 이미지는 없을 경우 기존경로 유지
+  const eventExistingData = await getDataKey("monster_event", "monster_name", monster["monster_name"], true); // skill_name을 기준으로 데이터 조회
+  devLog("eventExistingData", eventExistingData);
+  let eventImgData = eventExistingData?.reduce((acc, cur) => {
+    acc[`monster_event_img_${cur.monster_event_idx}`] = cur.monster_event_img;
+    devLog("acc", acc, cur);
+    return acc;
+  }, {});
+  devLog("eventImgData", eventExistingData);
+
+  ["monster_event_img_0", "monster_event_img_1", "monster_event_img_2", "monster_event_img_3", "monster_event_img_4"].forEach((imgKey, index) => {
+    if (!data.has(imgKey) && eventImgData && eventImgData[imgKey]) {
+      monster_event[index]["monster_event_img"] = eventImgData[imgKey]; // 기존 이미지 경로 유지
+    } else monster_event[index]["monster_event_img"] = images[imgKey]?.path || null;
+  });
+
   // await deleteData("monster_event", "monster_name", monster.monster_name); // 기존 정보 삭제
   monster_event.forEach((monster_skill, idx) => {
     monster_skill["monster_name"] = monster["monster_name"];

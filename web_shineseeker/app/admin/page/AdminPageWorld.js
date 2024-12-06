@@ -5,6 +5,7 @@ import {devLog} from "@/_custom/scripts/common";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextArea";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "world";
 export default function Home() {
@@ -97,7 +98,12 @@ export default function Home() {
   return (
     <div className="flex w-full">
       <div className={`w-full flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <h1 className="mt-8 font-bold text-2xl col-span-12">세계관 페이지 슬라이드 관리</h1>
           {slideList.map((_, index) => (
             <FileDragAndDrop
@@ -106,7 +112,7 @@ export default function Home() {
               id={`world_img_slide_${index}`}
               type={"image/"}
               text={savedImage?.[index] ? null : "Drag Or Click"}
-              image={savedImage?.[index]}
+              image={getImageUrl(savedImage?.[index])}
               objectFit={"fill"}
               extFunc={imgInitFn}
             />
@@ -119,7 +125,7 @@ export default function Home() {
           </div>
           <h1 className="mt-8 font-bold text-2xl col-span-12">세계관 탭 내용 관리</h1>
           {[{label: "세계"}, {label: "샤인시커"}, {label: "포텐셜"}, {label: "시커하이브"}, {label: "사도"}].map((data, index) => (
-            <GridInputTextArea label={data.label} id={`world_tab_${index}`} type={"text"} colSpan={12} default={`탭 ${index + 1}의 내용입니다.`} css="border-b" key={index} />
+            <GridInputTextArea label={data.label} id={`world_tab_${index}`} type={"text"} colSpan={12} default={`탭 ${index + 1}의 내용입니다.`} css="border-b font-nexon text-[12px]" key={index} />
           ))}
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>

@@ -83,6 +83,12 @@ export async function POST(req) {
       await executeQuery("user", query.update.user_money, [userMoney - item_cost, userid]);
       await saveData("user_item", {userid: userid, item: item_name});
       return NextResponse.json({message: "successfully page api", data: "아이템 구매 성공"});
+    } else if (apitype === "member_update_skill_desc") {
+      const userid = data.get("userid");
+      const skillname = data.get("skill_name");
+      const skilldesc = data.get("skill_desc");
+      // devLog("member_update_skill_desc", savedata);
+      await executeQuery("user_skill", query.update.user_skill, [skilldesc, userid, skillname]);
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

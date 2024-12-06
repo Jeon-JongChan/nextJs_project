@@ -5,6 +5,7 @@ import {devLog} from "@/_custom/scripts/common";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
+import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "main";
 export default function Home() {
@@ -104,7 +105,12 @@ export default function Home() {
   return (
     <div className="flex w-full">
       <div className={`w-full flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <h1 className="mt-8 font-bold text-2xl col-span-12">메인 페이지 슬라이드 관리</h1>
           {slideList.map((_, index) => (
             <div key={index} className="flex flex-col col-span-4 justify-center">
@@ -114,7 +120,7 @@ export default function Home() {
                 id={`main_img_slide_${index}`}
                 type={"image/"}
                 text={savedImage?.[index] ? null : "Drag Or Click"}
-                image={savedImage?.[index]}
+                image={getImageUrl(savedImage?.[index])}
                 objectFit={"fill"}
                 extFunc={imgInitFn}
               />

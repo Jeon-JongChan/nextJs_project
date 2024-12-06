@@ -1,7 +1,7 @@
 "use client";
 import {useState, useEffect, useRef} from "react";
-import Image from "next/image";
 import ItemSelectorModal from "@/_custom/components/ItemSelectorModal";
+import ChangeSpellModal from "./ChangeSpellModal";
 import {devLog} from "@/_custom/scripts/common";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import {getImageUrl} from "@/_custom/scripts/client";
@@ -9,34 +9,36 @@ import {getImageUrl} from "@/_custom/scripts/client";
 export default function Component(props) {
   const tabTextBg = " bg-[#0f113f] max-h-[30px] px-4";
   const tabTextCorol = " text-[#c493ff] text-[16px]";
+  const [maindata, setMainData] = useState({});
   const [status, setStatus] = useState({user_hp: 0, user_wis: 0, user_atk: 0, user_agi: 0, user_def: 0, user_luk: 0});
   const [oncetext, setOnceText] = useState("");
   const [spell, setSpell] = useState([]);
 
-  /*<<<<<<<<<<<< 모달 부분 변수 및 함수 <<<<<<<<<<<<*/
+  /*<<<<<<<<<<<< 스킬 변경 모달 부분 변수 및 함수 <<<<<<<<<<<<*/
   const modalRef = useRef(null);
   const [selectedItem, setSelectedItem] = useState(null);
 
   // 아이템 선택 시 호출될 함수
   const handleSelect = (item) => {
-    devLog("TabStatus - handleSelect :", item, selectedItem, `user_skill${selectedItem + 1}` in props.user, props.user);
+    const selectedItemIdx = selectedItem.idx;
+    devLog("TabStatus - handleSelect :", item, selectedItemIdx, `user_skill${selectedItemIdx + 1}` in maindata, maindata);
     if (item) {
       const skillname = item.skill_name;
       const skillimg = item.skill_img_0;
       const newSpell = [...spell];
-      newSpell[selectedItem] = {name: skillname, img: skillimg};
+      newSpell[selectedItemIdx] = {name: skillname, img: skillimg};
       setSpell(newSpell);
 
-      if (`user_skill${selectedItem + 1}` in props.user) {
-        devLog("TabStatus - handleSelect update user :", props.user?.[`user_skill${selectedItem + 1}`], skillname);
-        props.user[`user_skill${selectedItem + 1}`] = skillname;
+      if (`user_skill${selectedItemIdx + 1}` in maindata) {
+        devLog("TabStatus - handleSelect update user :", maindata?.[`user_skill${selectedItemIdx + 1}`], skillname);
+        maindata[`user_skill${selectedItemIdx + 1}`] = skillname;
 
         // 서버에 변경사항 저장
         const formData = new FormData();
         formData.append("apitype", "member_update_skill");
-        formData.append("userid", props.user.userid);
+        formData.append("userid", maindata.userid);
         const updateSkillData = {};
-        updateSkillData[`user_skill${selectedItem + 1}`] = skillname;
+        updateSkillData[`user_skill${selectedItemIdx + 1}`] = skillname;
         formData.append("updated_skill", JSON.stringify(updateSkillData));
         fetch("/api/page", {
           method: "POST",
@@ -47,16 +49,81 @@ export default function Component(props) {
           .catch((error) => console.error("TabStatus - handleSelect update skill Error:", error));
       }
     }
+    setSelectedItem(null);
   };
 
   // 모달 열기 및 데이터 전달
-  const openModalWithData = async (idx) => {
+  const openModalWithData = async (event, idx) => {
     devLog("openModalWithData", idx, props.currentUser, props.user, props.skill, props?.skill?.length);
     if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
-    if (props?.skill?.length) modalRef.current.openModal(props.skill); // openModal 호출
-    setSelectedItem(idx);
+    // 스펠의 이미지가 있을경우 선택지를 제공
+    if (spell[idx]?.img) {
+      handleChoice(event, idx);
+    } else {
+      // 스펠 이미지가 없을 경우 모달을 열어서 선택하도록 함
+      openModal(idx); // openModal 호출
+    }
   };
-  /*>>>>>>>>>>>>>  모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
+
+  const openModal = (idx) => {
+    setSelectedItem({idx: idx});
+    if (props?.skill?.length) modalRef.current.openModal(props.skill); // openModal 호출
+  };
+  /*>>>>>>>>>>>>> 스킬 모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
+  /*<<<<<<<<<<<< 설명 변경 모달 부분 변수 및 함수 <<<<<<<<<<<<*/
+  const descModalRef = useRef(null);
+  const submitSpellDesc = (spellIdx, spellDesc) => {
+    devLog("submitSpellDesc", spell[spellIdx], spellIdx, spellDesc);
+    // 스펠 인덱스에 해당하는 부분만 바꿔서 스테이트 새로 저장
+    const newSpell = [...spell];
+    newSpell[spellIdx] = {...newSpell[spellIdx], desc: spellDesc};
+    setSpell(newSpell);
+    // 서버에 변경사항 저장
+    const formData = new FormData();
+    formData.append("apitype", "member_update_skill_desc");
+    formData.append("userid", props.currentUser);
+    formData.append("skill_name", spell[spellIdx].name);
+    formData.append("skill_desc", spellDesc);
+    fetch("/api/page", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => devLog(data))
+      .catch((error) => console.error("TabStatus(handleChoiceAction) change spell Error:", error));
+
+    setSelectedItem(null);
+  };
+  /*>>>>>>>>>>>>> 설명 모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
+
+  /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 선택 버튼 및 설명 교체 띄우기 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+  const handleChoice = (event, index) => {
+    event.stopPropagation();
+    devLog("스펠 선택:", event, event.target, event.clientX, event.clientY, spell[index]);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setSelectedItem({
+      idx: index,
+      spell: spell[index].name,
+      desc: spell[index].desc,
+      position: {x: rect.right, y: rect.bottom}, // 아이템의 오른쪽 아래 위치
+    });
+  };
+
+  const handleChoiceAction = () => {
+    devLog(`${selectedItem.spell} 스펠 변경 창`);
+    // 서버에 변경사항 저장
+    descModalRef.current.openModal(selectedItem);
+    setSelectedItem(null);
+  };
+
+  const handleBlur = (event) => {
+    if (event.relatedTarget) return;
+    if (selectedItem && selectedItem.spell) {
+      devLog("아이템 선택 해제:", event, event.relatedTarget);
+      setSelectedItem(null);
+    }
+  };
+  /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 선택 버튼 띄우기 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 
   const getSpellImage = (spellname) => {
     if (props?.skill) {
@@ -68,6 +135,7 @@ export default function Component(props) {
 
   useEffect(() => {
     if (props?.user) {
+      setMainData(props.user);
       setStatus({
         user_hp: props.user?.user_hp || 0,
         user_wis: props.user?.user_wis || 0,
@@ -79,7 +147,7 @@ export default function Component(props) {
 
       let spellArr = [];
       for (let i = 1; i <= 5; i++) {
-        spellArr.push({name: props.user[`user_skill${i}`], img: getSpellImage(props.user[`user_skill${i}`])});
+        spellArr.push({name: props.user[`user_skill${i}`], img: getSpellImage(props.user[`user_skill${i}`]), desc: props.user?.skills?.[i - 1]?.desc});
       }
       setSpell(spellArr);
       devLog("TabStatus useEffect", props, spellArr);
@@ -132,8 +200,24 @@ export default function Component(props) {
         <h1 className="text-white text-[16px] mt-4">스펠</h1>
         <div className="grid grid-cols-5 gap-12">
           {[0, 1, 2, 3, 4].map((index) => (
-            <Tooltip key={index} content={spell?.[index]?.img ? <span>{spell?.[index].name}</span> : null}>
-              <div onClick={() => openModalWithData(index)} className="img-member-init img-member-tab-imagebox flex justify-center items-center font-nexon text-white text-[45px]">
+            <Tooltip
+              key={index}
+              content={
+                spell?.[index]?.img ? (
+                  <span>
+                    {spell[index].name}
+                    <br />
+                    {spell[index]?.desc || ""}
+                  </span>
+                ) : null
+              }
+            >
+              <div
+                tabIndex={0} // 포커스 가능하도록 설정
+                onBlur={handleBlur} // 외부 클릭 시 선택 해제
+                onClick={(e) => openModalWithData(e, index)}
+                className="img-member-init img-member-tab-imagebox flex justify-center items-center font-nexon text-white text-[45px]"
+              >
                 {spell?.[index]?.img ? <img src={getImageUrl(spell[index].img)} className="w-[45px] h-[45px]" /> : <span style={{position: "relative", top: "3px"}}>+</span>}
               </div>
             </Tooltip>
@@ -144,6 +228,24 @@ export default function Component(props) {
         &quot;{oncetext}&quot;
       </h1>
       <ItemSelectorModal ref={modalRef} onSelect={handleSelect} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
+      <ChangeSpellModal ref={descModalRef} onButtonClick={submitSpellDesc} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
+      {/* 선택된 아이템의 액션 버튼 */}
+      {selectedItem && selectedItem?.spell && (
+        <div
+          className={`fixed bg-white p-2 rounded shadow-lg flex flex-col space-y-2 z-50`}
+          style={{
+            top: `${selectedItem.position.y + window.scrollY - 10}px`, // 아이템의 오른쪽 아래로 위치
+            left: `${selectedItem.position.x + window.scrollX - 10}px`,
+          }}
+        >
+          <button className="text-blue-500" onClick={() => handleChoiceAction()}>
+            스킬설명수정
+          </button>
+          <button className="text-red-500" onClick={() => openModal(selectedItem.idx)}>
+            스킬교체
+          </button>
+        </div>
+      )}
     </>
   );
 }

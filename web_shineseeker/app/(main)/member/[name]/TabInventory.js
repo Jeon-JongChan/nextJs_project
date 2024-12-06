@@ -115,9 +115,9 @@ export default function Component(props) {
     // event.currentTarget.appendChild(draggedItem);
   }
   return (
-    <div className="flex flex-col w-full px-6 py-2">
-      <h1 className="text-[16px] text-white mb-2 mt-4">게임 인벤토리</h1>
-      <div className="flex flex-wrap drop-parent" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
+    <div className="relative flex flex-col w-full px-6 py-2">
+      <h1 className="relative text-[16px] text-white mb-2 mt-4">인벤토리</h1>
+      <div className="relative flex flex-wrap drop-parent" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
         {items.map(
           (item, index) =>
             item?.item_img_0 && (
@@ -131,6 +131,7 @@ export default function Component(props) {
                   </span>
                 }
                 css={"flex"}
+                reverse={index < 6 ? true : false}
                 tooltipCss="min-w-[150px]"
               >
                 <div

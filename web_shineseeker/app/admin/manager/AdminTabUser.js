@@ -125,7 +125,7 @@ export default function Home() {
       });
       // 5. 아이템 및 스킬 채우기
       setItemList(data?.items ? [...data.items] : []);
-      setSkillList(data?.skills ? [...data.skills] : []);
+      setSkillList(data?.skills ? [...data.skills.map((skill) => skill.name)] : []);
     }
   };
 

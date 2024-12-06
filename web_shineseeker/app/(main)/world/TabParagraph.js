@@ -20,7 +20,7 @@ export default function Component(props) {
     setActiveTab(parseInt(tab));
   };
   const TabContent = ({tab}) => {
-    const className = "w-full h-full max-h-[320px] text-white text-x-wrap";
+    const className = "w-full h-full max-h-[320px] text-white text-x-wrap text-[12px] font-nexon";
     return <pre className={className}>{tabContent?.[tab - 1]}</pre>;
   };
 

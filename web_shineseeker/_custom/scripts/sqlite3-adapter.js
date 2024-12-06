@@ -1,15 +1,19 @@
 // import Database from "better-sqlite3";
 // sqlite3-adapter.js
 let Database = null;
-
 // CommonJS 방식으로 import
 if (typeof require !== "undefined") {
+  // CommonJS 환경에서는 require 사용
   Database = require("better-sqlite3");
-  // console.log("sqlite3-adapter Database is CommonJS : ", Database);
 } else {
-  // ES 모듈 방식으로 import
-  Database = import("./_custom/scripts/sqlite3-adapter.js");
-  console.log("sqlite3-adapter Database is ES : ", Database);
+  // ES 모듈 환경에서는 import 사용
+  import("better-sqlite3")
+    .then((mod) => {
+      Database = mod.default; // 비동기적으로 import 후, Database를 설정
+    })
+    .catch((error) => {
+      console.error("Failed to load the module with import:", error);
+    });
 }
 
 let dev = process.env.NEXT_PUBLIC_DEV || "false";
@@ -296,12 +300,14 @@ class DBManager {
   }
 }
 
-// 모듈을 CommonJS 방식으로도 사용 가능하게 함
-// if (typeof module !== "undefined" && module.exports) {
-if (typeof require !== "undefined") {
-  module.exports = DBManager;
-} else {
-  window.DBManager = DBManager; // ES 모듈 방식에서 사용할 경우
+// 모듈을 CommonJS 방식으로 내보내기
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = DBManager; // CommonJS 방식으로 내보내기
+}
+
+// ES 모듈 방식으로 내보내기 (default export 처리)
+if (typeof exports === "object" && typeof module !== "undefined") {
+  module.exports.default = DBManager; // default export로도 내보내기
 }
 
 // export default DBManager;

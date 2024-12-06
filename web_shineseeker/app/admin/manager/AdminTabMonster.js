@@ -5,8 +5,8 @@ import {devLog} from "@/_custom/scripts/common";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
-import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextArea";
 import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
+import GridFile from "/_custom/components/_common/grid/GridFile";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
@@ -50,7 +50,7 @@ export default function Home() {
       devLog("clickUser", name, data, clickImage, skillList);
 
       updataFormInputList.forEach((input) => {
-        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`skill_option_`)) return; // 특수 input은 제외
+        if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_event_img`) || input.id.startsWith(`skill_option_`)) return; // 특수 input은 제외
         try {
           input.value = data[input.id];
         } catch (e) {
@@ -68,6 +68,12 @@ export default function Home() {
       const textareaElements = document.querySelectorAll(`.${menuName}-form form textarea`);
       textareaElements.forEach((textarea) => {
         textarea.value = data[textarea.id];
+      });
+
+      // 5. 사용 스킬 이미지명 넣기
+      ["monster_event_img_0", "monster_event_img_1", "monster_event_img_2", "monster_event_img_3", "monster_event_img_4"].forEach((id, index) => {
+        const spanElement = document.querySelector(`#${id}_span`);
+        if (spanElement) spanElement.innerText = data[id];
       });
     }
   };
@@ -170,7 +176,12 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
+        <form
+          onSubmit={handleSubmitUser}
+          data-apitype={`update_${menuName}`}
+          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
+          style={{minHeight: "400px"}}
+        >
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["보스 이미지", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
@@ -182,8 +193,9 @@ export default function Home() {
           </div>
           <MakeInputList inputNameObjects={inputNames} checkboxOptionObjects={Object.keys(skillList).length ? skillList : null} />
           <div className="relative col-span-12 grid grid-cols-12 job-skill-list">
-            <h1 className="mt-8 font-bold text-2xl col-span-12">습득가능스펠</h1>
-            {[...Array(5)].map((_, index) => (
+            <h1 className="mt-8 font-bold text-2xl col-span-12">보스 데미지별 사용 스킬</h1>
+            {[...Array(5)].map((_, index) =>
+              //prettier-ignore
               <React.Fragment key={index}>
                 <GridInputText label={"계수(% 미만)"} id={`monster_event_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
                 <GridInputSelectBox label={"사용스탯"} id={`monster_event_cost_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_stat || skillDefaultList.skill_stat} />
@@ -191,9 +203,10 @@ export default function Home() {
                 <GridInputSelectBox label={"범위"} id={`monster_event_range_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_range || skillDefaultList.skill_range} />
                 <GridInputSelectBox label={"위력스탯"} id={`monster_event_stat_${index}`} type={"number"} colSpan={1} css={"text-center border"} options={skillList?.skill_cost_stat || skillDefaultList.skill_cost_stat} />
                 <GridInputText label={"스탯 적용(%)"} id={`monster_event_stat_rate_${index}`} type={"number"} colSpan={1} css={"text-center border h-[36px]"} />
-                <GridInputText label={"출력메세지"} id={`monster_event_msg_${index}`} type={"text"} colSpan={6} css={"text-center border h-[36px]"} />
+                <GridInputText label={"출력메세지"} id={`monster_event_msg_${index}`} type={"text"} colSpan={3} css={"text-center border h-[36px]"} />
+                <GridFile label={"스킬이미지"} id={`monster_event_img_${index}`} colSpan={3} buttonWidth={"w-1/4"} />
               </React.Fragment>
-            ))}
+            )}
           </div>
           <h1 className="mt-8 col-span-full font-bold text-2xl">이벤트 조건 입력칸 ( 구분자 &apos;,&apos; 로 / 스킬페이지와 연동됨 )</h1>
           <GridInputText label={"효과 유형"} id={"skill_option_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(",")} css="border-b" />

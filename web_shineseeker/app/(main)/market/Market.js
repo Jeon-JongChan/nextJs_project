@@ -59,10 +59,10 @@ export default function Home({userid, marketItems, money, setMoney}) {
     setItems(marketItems);
   }, [marketItems]);
   return (
-    <div className="absolute market-itembox p-2 grid grid-cols-3 auto-rows-[65px] gap-1 overflow-y-auto" style={{width: "530px", height: "230px", top: "100px", right: "45px"}}>
+    <div className="absolute market-itembox p-2 grid grid-cols-3 auto-rows-[65px] gap-1 overflow-y-auto" style={{width: "530px", height: "230px", top: "80px", right: "45px", marginTop: "20px"}}>
       {items &&
         items?.map((item, index) => (
-          <Tooltip key={index} css={"relative flex"} content={<span>{item.item_desc}</span>}>
+          <Tooltip key={index} css={"relative flex"} reverse={index < 3 ? true : false} content={<span>{item.item_desc}</span>}>
             <div
               className="relative flex market-itembox-item img-market-init img-market-itemframe"
               style={{width: "150px", height: "65px"}}
@@ -70,8 +70,17 @@ export default function Home({userid, marketItems, money, setMoney}) {
               tabIndex={0} // 포커스 가능하도록 설정
               onBlur={handleBlur} // 외부 클릭 시 선택 해제
             >
-              <div className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]" style={{width: "45px", height: "45px", margin: "10px 2px 6px 7px"}}>
-                <img src={getImageUrl(item.item_img_0) || "https://via.placeholder.com/100?text=Image"} className="relative max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px]" width={40} height={40} alt="item image" />
+              <div
+                className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]"
+                style={{width: "45px", height: "45px", margin: "10px 2px 6px 7px"}}
+              >
+                <img
+                  src={getImageUrl(item.item_img_0) || "https://via.placeholder.com/100?text=Image"}
+                  className="relative max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px]"
+                  width={40}
+                  height={40}
+                  alt="item image"
+                />
               </div>
               <div className="market-itembox-item-info flex flex-col p-1 font-nexon font-bold h-full" style={{width: "100px"}}>
                 <div className="flex flex-col w-full mt-4">

@@ -21,7 +21,7 @@ export default function Component(props) {
     setActiveTab(tab);
   };
   const TabContent = ({tab}) => {
-    const className = "w-full h-full text-white max-h-[480px] text-x-wrap";
+    const className = "w-full h-full text-white max-h-[480px] text-x-wrap font-nexon text-[12px]";
     return <pre className={className}>{tabContent?.[tab - 1]}</pre>;
   };
   useEffect(() => {

@@ -4,7 +4,7 @@ import GridTextArea from "@/_custom/components/_common/grid/GridInputTextArea";
 import GridInputButton from "@/_custom/components/_common/grid/GridInputButton";
 
 // 모달 컴포넌트
-const ModalExample = forwardRef(({onButtonClick, title = "아이템 선택"}, ref) => {
+function ChangeSpellModal({onButtonClick, title = "아이템 선택"}, ref) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false); // 애니메이션을 제어하는 상태
   const [spellDesc, setSpellDesc] = useState("");
@@ -60,6 +60,6 @@ const ModalExample = forwardRef(({onButtonClick, title = "아이템 선택"}, re
       )}
     </div>
   );
-});
+}
 
-export default ModalExample;
+export default forwardRef(ChangeSpellModal);

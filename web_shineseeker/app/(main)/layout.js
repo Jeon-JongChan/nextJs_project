@@ -11,12 +11,20 @@ import Link from "next/link";
 
 export default function Layout({children}) {
   const pathname = usePathname();
+  const hrefList = ["world", "read", "member", "battle", "market"];
   const [path, setPath] = useState("");
 
-  // 특정 페이지에서는 레이아웃을 무시
-  if (pathname === "/battle/raid") {
-    return <>{children}</>;
-  }
+  useEffect(() => {
+    // path를 /로 나누어서 첫번째 path를 가져옴
+    setPath(pathname);
+    const firstPath = pathname.split("/")[1];
+    cancleActiveTab();
+    if (hrefList.includes(firstPath)) {
+      const activeTab = document.querySelector(`a[href="/${firstPath}"]`);
+      activeTab.classList.add("nav-active");
+      activeTab.style.color = "#806faf";
+    }
+  }, [pathname]);
 
   const cancleActiveTab = () => {
     const activeTab = document.querySelector(".nav-active");
@@ -26,22 +34,11 @@ export default function Layout({children}) {
     }
   };
 
-  const hrefList = ["world", "read", "member", "battle", "market"];
+  // 특정 페이지에서는 레이아웃을 무시
+  if (pathname === "/battle/raid") {
+    return <>{children}</>;
+  }
 
-  useEffect(() => {
-    // path를 /로 나누어서 첫번째 path를 가져옴
-    const firstPath = path.split("/")[1];
-    cancleActiveTab();
-    if (hrefList.includes(firstPath)) {
-      const activeTab = document.querySelector(`a[href="/${firstPath}"]`);
-      activeTab.classList.add("nav-active");
-      activeTab.style.color = "#806faf";
-    }
-  }, [path]);
-
-  useEffect(() => {
-    setPath(pathname);
-  }, [pathname]);
   return (
     <>
       <div className="flex flex-col justify-center p-10 items-center h-screen img-home-bg">

@@ -14,7 +14,7 @@ export async function GET(req) {
     if (data) {
       if (apitype === "user") {
         // user_name 별 userid별로 정렬
-        data = data.sort((a, b) => a.user_name.localeCompare(b.user_name));
+        data = data.sort((a, b) => a.userid.localeCompare(b.userid));
         // user의 경우 item, role 값을 추가해줘야 함
         let users = [];
         for (let i = 0; i < data.length; i++) {

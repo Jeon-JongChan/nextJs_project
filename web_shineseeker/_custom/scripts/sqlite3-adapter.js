@@ -265,9 +265,9 @@ class DBManager {
 
   // 검색 함수 (전체 행 조회)
   searchByKeyAll(table, key, keyValue, isLimit = true, options = {}) {
-    const {limit = 10, offset = 0} = options;
+    const {limit = 10, offset = 0, order = 0, orderDirection = "ASC"} = options;
     try {
-      const stmt = this.db.prepare(`SELECT * FROM ${table} WHERE ${key} = ? ${isLimit ? "LIMIT ? OFFSET ?" : ""}`);
+      const stmt = this.db.prepare(`SELECT * FROM ${table} WHERE ${key} = ? ${isLimit ? "LIMIT ? OFFSET ?" : ""} ${order ? `ORDER BY ${order} ${orderDirection}` : ""}`);
       return isLimit ? stmt.all(keyValue, limit, offset) : stmt.all(keyValue);
     } catch (error) {
       console.error("** Sql-adapter.js(searchByKey) Search failed:", error);
@@ -276,11 +276,11 @@ class DBManager {
   }
   // 다중 행 검색 함수 (옵션 추가)
   searchAll(table, isLimit = true, options = {}) {
-    const {limit = 10, offset = 0} = options;
+    const {limit = 10, offset = 0, order = 0, orderDirection = "ASC"} = options;
     try {
-      let stmt = this.db.prepare(`SELECT * FROM ${table}`);
+      let stmt = this.db.prepare(`SELECT * FROM ${table} ${order ? `ORDER BY ${order} ${orderDirection}` : ""}`);
       if (isLimit) {
-        stmt = this.db.prepare(`SELECT * FROM ${table} LIMIT ? OFFSET ?`);
+        stmt = this.db.prepare(`SELECT * FROM ${table} LIMIT ? OFFSET ? ${order ? `ORDER BY ${order} ${orderDirection}` : ""}`);
         return stmt.all(limit, offset);
       } else {
         return stmt.all();

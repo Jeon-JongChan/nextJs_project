@@ -9,12 +9,11 @@ export async function GET(req) {
   const apioption = searchParams.get("apioption");
 
   try {
-    let data = await getData(apitype, getcount == 1 ? 0 : 60, true);
+    let data = await getData(apitype, getcount == 1 ? 0 : 60, true, {order: 1});
     // devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
-        // user_name 별 userid별로 정렬
-        data = data.sort((a, b) => a.userid.localeCompare(b.userid));
+        // user_name 별 userid별로 정렬 data = data.sort((a, b) => a.userid.localeCompare(b.userid));
         // user의 경우 item, role 값을 추가해줘야 함
         let users = [];
         for (let i = 0; i < data.length; i++) {
@@ -32,7 +31,7 @@ export async function GET(req) {
             data[i].role = role.role;
           }
           // 유저별 스킬 목록 전부 추가
-          let skill = await getDataKey("user_skill", "userid", data[i].userid, true);
+          let skill = await getDataKey("user_skill", "userid", data[i].userid, true, {order: 2});
           if (skill?.length)
             data[i].skills = skill.map((skill) => ({
               name: skill.skill_name,

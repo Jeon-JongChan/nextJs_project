@@ -21,8 +21,10 @@ export default function Layout({children}) {
     cancleActiveTab();
     if (hrefList.includes(firstPath)) {
       const activeTab = document.querySelector(`a[href="/${firstPath}"]`);
-      activeTab.classList.add("nav-active");
-      activeTab.style.color = "#806faf";
+      if (activeTab) {
+        activeTab.classList.add("nav-active");
+        activeTab.style.color = "#806faf";
+      }
     }
   }, [pathname]);
 
@@ -49,7 +51,7 @@ export default function Layout({children}) {
                 <Image src="/images/home/01_home_title_homebutton.png" width={282} height={53} />
               </Link>
             </div>
-            {path && <Nav path={path} />}
+            <Nav />
           </nav>
           {children}
         </main>

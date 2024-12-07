@@ -8,6 +8,7 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import MakeInputList from "./MakeInputList";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "skill";
@@ -15,6 +16,7 @@ export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
   const [skillList, setSkillList] = useState({});
+  const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -35,6 +37,7 @@ export default function Home() {
 
     devLog("handleSubmitUser", apitype);
     updateDataWithFormInputs(e, apitype, "admin/upload", addObject, true);
+    setNoti("정보가 업데이트 되었습니다.");
   };
 
   const clickListItem = (e) => {
@@ -188,6 +191,7 @@ export default function Home() {
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
 }

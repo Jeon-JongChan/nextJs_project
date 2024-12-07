@@ -1,19 +1,26 @@
 "use client";
+import {useState, useEffect} from "react";
 import Link from "next/link";
+import {devLog} from "@/_custom/scripts/common";
 
-export default function Component() {
+export default function Component(props) {
   const clickTab = (e) => {
     // 기존 active tab 정상화
+    cancleActiveTab();
+    e.target.classList.add("nav-active");
+    e.target.style.color = "#806faf";
+  };
+
+  const cancleActiveTab = () => {
     const activeTab = document.querySelector(".nav-active");
     if (activeTab) {
       activeTab.classList.remove("nav-active");
       activeTab.style.color = "white";
     }
-    e.target.classList.add("nav-active");
-    e.target.style.color = "#806faf";
   };
   const linkStyle = "text-white hover:text-gray-300 px-3 pb-2 pt-8 top-1 col-span-1 text-center relative img-nav-btn-init hover:text-[#806FAF] focus:text-[#806FAF]";
   const navSize = " ";
+
   return (
     <>
       <div className="relative grid grid-cols-5 items-center gap-x-4 img-nav-bg" style={{minWidth: "687px"}}>

@@ -4,6 +4,7 @@ import ItemSelectorModal from "@/_custom/components/ItemSelectorModal";
 import ChangeSpellModal from "./ChangeSpellModal";
 import {devLog} from "@/_custom/scripts/common";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 export default function Component(props) {
@@ -13,6 +14,7 @@ export default function Component(props) {
   const [status, setStatus] = useState({user_hp: 0, user_wis: 0, user_atk: 0, user_agi: 0, user_def: 0, user_luk: 0});
   const [oncetext, setOnceText] = useState("");
   const [spell, setSpell] = useState([]);
+  const [noti, setNoti] = useState(null);
 
   /*<<<<<<<<<<<< 스킬 변경 모달 부분 변수 및 함수 <<<<<<<<<<<<*/
   const modalRef = useRef(null);
@@ -21,12 +23,16 @@ export default function Component(props) {
   // 아이템 선택 시 호출될 함수
   const handleSelect = (item) => {
     const selectedItemIdx = selectedItem.idx;
-    devLog("TabStatus - handleSelect :", item, selectedItemIdx, `user_skill${selectedItemIdx + 1}` in maindata, maindata);
     if (item) {
       const skillname = item.skill_name;
       const skillimg = item.skill_img_0;
+      let skilldesc = null;
+      if (maindata?.skills) {
+        skilldesc = maindata.skills.find((skill) => skill.name === skillname)?.desc;
+      }
+      devLog("TabStatus - handleSelect 초오ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ기:", skillname, skillimg, skilldesc);
       const newSpell = [...spell];
-      newSpell[selectedItemIdx] = {name: skillname, img: skillimg};
+      newSpell[selectedItemIdx] = {name: skillname, img: skillimg, desc: skilldesc};
       setSpell(newSpell);
 
       if (`user_skill${selectedItemIdx + 1}` in maindata) {
@@ -45,7 +51,10 @@ export default function Component(props) {
           body: formData,
         })
           .then((response) => response.json())
-          .then((data) => devLog(data))
+          .then((data) => {
+            devLog(data);
+            setNoti(`${selectedItemIdx + 1} 번째 스킬이 변경되었습니다.`);
+          })
           .catch((error) => console.error("TabStatus - handleSelect update skill Error:", error));
       }
     }
@@ -89,7 +98,10 @@ export default function Component(props) {
       body: formData,
     })
       .then((response) => response.json())
-      .then((data) => devLog(data))
+      .then((data) => {
+        devLog(data);
+        setNoti("스킬 설명이 변경되었습니다.");
+      })
       .catch((error) => console.error("TabStatus(handleChoiceAction) change spell Error:", error));
 
     setSelectedItem(null);
@@ -147,7 +159,8 @@ export default function Component(props) {
 
       let spellArr = [];
       for (let i = 1; i <= 5; i++) {
-        spellArr.push({name: props.user[`user_skill${i}`], img: getSpellImage(props.user[`user_skill${i}`]), desc: props.user?.skills?.[i - 1]?.desc});
+        let spellDesc = props.user?.skills?.find((skill) => skill.name === props.user[`user_skill${i}`])?.desc;
+        spellArr.push({name: props.user[`user_skill${i}`], img: getSpellImage(props.user[`user_skill${i}`]), desc: spellDesc});
       }
       setSpell(spellArr);
       devLog("TabStatus useEffect", props, spellArr);
@@ -229,6 +242,7 @@ export default function Component(props) {
       </h1>
       <ItemSelectorModal ref={modalRef} onSelect={handleSelect} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
       <ChangeSpellModal ref={descModalRef} onButtonClick={submitSpellDesc} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
       {/* 선택된 아이템의 액션 버튼 */}
       {selectedItem && selectedItem?.spell && (
         <div

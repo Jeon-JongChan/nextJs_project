@@ -10,6 +10,7 @@ import GridFile from "/_custom/components/_common/grid/GridFile";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "monster";
@@ -17,6 +18,7 @@ export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
   const [skillList, setSkillList] = useState({});
+  const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -37,6 +39,7 @@ export default function Home() {
 
     devLog("handleSubmitUser", apitype);
     updateDataWithFormInputs(e, apitype, "admin/upload", addObject, true);
+    setNoti("정보가 업데이트 되었습니다.");
   };
 
   const clickListItem = (e) => {
@@ -176,12 +179,7 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <div className="relative col-span-12 mt-4 flex gap-1">
             {[["보스 이미지", clickImage?.[0] || false]].map((data, index) =>
               //prettier-ignore
@@ -216,6 +214,7 @@ export default function Home() {
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
 }

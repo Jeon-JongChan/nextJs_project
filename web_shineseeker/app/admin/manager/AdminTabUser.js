@@ -11,6 +11,7 @@ import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import InputTextList from "../InputTextList";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "user";
@@ -23,6 +24,7 @@ export default function Home() {
   const [skillList, setSkillList] = useState([]);
   const [allItems, setAllItems] = useState([]);
   const [allSkills, setAllSkills] = useState([]);
+  const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
   // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)
@@ -90,6 +92,7 @@ export default function Home() {
 
     devLog("handleSubmitUser", apitype);
     updateDataWithFormInputs(e, apitype, "admin/upload", addObject, true);
+    setNoti("유저 정보가 업데이트 되었습니다.");
   };
 
   const clickUser = (e) => {
@@ -369,6 +372,7 @@ export default function Home() {
       <div className="w-1/5 flex"></div>
       <Autocomplete id={"#user_item_add"} data={allItems} autokey={"item_name"} />
       <Autocomplete id={"#user_skillList_add"} data={allSkills} autokey={"skill_name"} />
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
 }

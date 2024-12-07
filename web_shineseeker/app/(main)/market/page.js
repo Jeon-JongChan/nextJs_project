@@ -91,7 +91,7 @@ export default function Home(props) {
           </div>
         </div>
         <Market userid={tokenRef.current?.user?.name} marketItems = {items} money = {money} setMoney = {(value)=>setMoney(value)}/>
-        <div className="absolute market-costbox flex justify-center items-center" style={{width: "160px", height: "40px", top: "20px", right: "55px"}}>
+        <div className="absolute market-costbox flex justify-center items-center" style={{width: "155px", height: "40px", top: "20px", right: "50px"}}>
           <span className="inline-block text-[20px] w-[160px] text-right text-line-wrap">{money}</span>
           <span className="text-[18px] text-[#ff7ea7] ml-2">AKA</span>
           <span className="absolute text-[#b094f3] w-[300px] text-right font-nexon font-bold text-[12px]" style={{top: "60px", right: "20px"}}>

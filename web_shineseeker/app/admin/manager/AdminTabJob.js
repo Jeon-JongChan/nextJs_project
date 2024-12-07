@@ -10,6 +10,7 @@ import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
 import InputTextList from "../InputTextList";
 import Autocomplete from "/_custom/components/_common/Autocomplete";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "job";
@@ -18,6 +19,7 @@ export default function Home() {
   const [clickImage, setClickImage] = useState([]);
   const [jobSkillList, setJobSkillList] = useState([]);
   const [autoList, setAutoList] = useState([]);
+  const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -38,6 +40,7 @@ export default function Home() {
 
     devLog("handleSubmitUser", apitype);
     updateDataWithFormInputs(e, apitype, "admin/upload", addObject, true);
+    setNoti("정보가 업데이트 되었습니다.");
   };
 
   const addItem = (e) => {
@@ -212,6 +215,7 @@ export default function Home() {
         </div>
       </div>
       <Autocomplete id={"#job_skill_add"} data={autoList} autokey={"skill_name"} />
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
 }

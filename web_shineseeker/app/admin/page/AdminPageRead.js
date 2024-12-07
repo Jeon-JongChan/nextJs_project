@@ -4,10 +4,12 @@ import React, {useState, useEffect} from "react";
 import {devLog} from "@/_custom/scripts/common";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextArea";
+import NotificationModal from "@/_custom/components/NotificationModal";
 
 const menuName = "read";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
+  const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
   const handleSubmitUser = (e) => {
@@ -28,6 +30,7 @@ export default function Home() {
 
     devLog("handleSubmitUser", apitype);
     updateDataWithFormInputs(e, apitype, "admin/upload-page", addObject, true, false); // 이미지 파일 없는경우에도 id값 포함해서 보내기 위해 설정
+    setNoti("정보가 업데이트 되었습니다.");
   };
 
   const fillNode = () => {
@@ -83,6 +86,7 @@ export default function Home() {
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
+      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
 }

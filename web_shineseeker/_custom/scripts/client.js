@@ -50,6 +50,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
       .catch((error) => console.error("Error:", error));
   } catch (e) {
     console.error("client.js updateDataWithFormInputs : updateData error : ", e.message);
+    return false;
   }
   return true;
 }
@@ -57,7 +58,7 @@ function updateDataWithFormInputs(event, apitype, url, addObjectData = {}, useFi
 // 이미지 URL 변환 함수
 function getImageUrl(src) {
   // src가 http:// 또는 https:// 로 시작하는지 확인
-  if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src) || src == "init") {
+  if (/^https?:\/\//.test(src) || /^\/api\/image(\?)?src=/.test(src) || /^blob:/.test(src) || src == "init") {
     // devLog("client.js : getImageUrl src : ", src, /^\/api\/image(\?)?src=/.test(src));
     return src; // URL 그대로 반환
   } else if (src) {

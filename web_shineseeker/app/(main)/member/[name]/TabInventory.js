@@ -2,7 +2,8 @@
 import {useState, useEffect} from "react";
 import Image from "next/image";
 import {devLog} from "@/_custom/scripts/common";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+// import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 export default function Component(props) {
@@ -117,7 +118,7 @@ export default function Component(props) {
   return (
     <div className="relative flex flex-col w-full px-6 py-2">
       <h1 className="relative text-[16px] text-white mb-2 mt-4">인벤토리</h1>
-      <div className="relative flex flex-wrap drop-parent" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
+      <div className="relative flex flex-wrap drop-parent overflow-x-hidden overflow-y-auto h-[268px] max-w-[500px]" draggable="true" onDragOver={dragOver} onDrop={parentDrop}>
         {items.map(
           (item, index) =>
             item?.item_img_0 && (
@@ -130,9 +131,11 @@ export default function Component(props) {
                     {item.item_desc}
                   </span>
                 }
-                css={"flex"}
-                reverse={index < 6 ? true : false}
+                css={"flex relative"}
+                // reverse={index < 6 || item.item_desc.length > 50 ? true : false}
                 tooltipCss="min-w-[150px]"
+                maxWidth={350}
+                baseLeft={60}
               >
                 <div
                   className="relative img-member-init img-member-tab-imagebox flex justify-center items-center cursor-move inventory-item ml-2"

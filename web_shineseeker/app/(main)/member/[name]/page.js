@@ -136,7 +136,7 @@ export default function Home({params}) {
               </button>
             ))}
           </div>
-          <div className={`img-member-tab-bg w-full ` + `${selectedTab === 3 ? "overflow-y-hidden" : ""}`} style={{height: "325px", marginTop: "0"}}>
+          <div className={`img-member-tab-bg w-full`} style={{height: "325px", marginTop: "0"}}>
             {selectedTab === 1 ? (
               <TabInfo user={maindata} />
             ) : selectedTab === 2 ? (

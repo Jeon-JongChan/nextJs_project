@@ -8,6 +8,7 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import MakeInputList from "./MakeInputList";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
+import Autocomplete from "/_custom/components/_common/Autocomplete";
 import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
@@ -16,6 +17,7 @@ export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
   const [itemOptionList, setItemOptionList] = useState({});
+  const [autoList, setAutoList] = useState([]);
   const [noti, setNoti] = useState(null);
 
   let fetchIndex = 0;
@@ -113,6 +115,14 @@ export default function Home() {
   };
 
   async function fetchEssentialData() {
+    console.info("ADMIN DATA MANAGEMENT PAGE : 스킬 항목 선택되었습니다.");
+    const responseSkill = await fetch("/api/select?apitype=skill&getcount=1");
+    const newDataSkill = await responseSkill.json();
+    if (newDataSkill?.data?.length) {
+      setAutoList(newDataSkill.data);
+    }
+    devLog("essential data skill detail: ", newDataSkill);
+
     console.info("ADMIN DATA MANAGEMENT PAGE : 아이템 항목 선택되었습니다.");
     const response = await fetch("/api/select?apitype=item_option&getcount=1");
     const newData = await response.json();
@@ -191,6 +201,7 @@ export default function Home() {
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
+      <Autocomplete id={"#item_etc"} data={autoList} autokey={"skill_name"} />
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );
@@ -212,5 +223,6 @@ const inputNames = [
   {label: "추가능력치", id: "item_addstat", inputType: "checkbox", class: "item_option_addstat", colSpan: 2},
   {label: "증가최소수치", id: "item_statmin", type: "number", css: " h-[36px]", colSpan: 2},
   {label: "증가최대수치", id: "item_statmax", type: "number", css: " h-[36px]", colSpan: 2},
-  {label: "메세지기능", id: "item_msg", inputType: "checkbox", class: "item_option_msg", colSpan: 2},
+  // {label: "메세지기능", id: "item_msg", inputType: "checkbox", class: "item_option_msg", colSpan: 2},
+  {label: "기타 값 (스킬책 등)", id: "item_etc", colSpan: 6},
 ];

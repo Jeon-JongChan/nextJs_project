@@ -13,7 +13,7 @@ const query = {
     monster_event: "CREATE TABLE monster_event (monster_name TEXT, monster_event_idx INTEGER, monster_event_rate TEXT, monster_event_stat_rate TEXT, monster_event_msg TEXT, monster_event_cost_stat TEXT, monster_event_type TEXT, monster_event_range TEXT, monster_event_stat TEXT, monster_event_img	TEXT, updated INTEGER , PRIMARY KEY (monster_name, monster_event_idx))",
     skill: `CREATE TABLE IF NOT EXISTS skill (skill_name TEXT PRIMARY KEY, skill_desc TEXT, skill_rate TEXT, skill_control_rate TEXT, skill_effect_usage TEXT, skill_type TEXT, skill_range TEXT, skill_stat TEXT, skill_operator TEXT, skill_cost_stat TEXT, skill_cost TEXT, skill_control_cost TEXT, skill_min INTEGER, skill_max INTEGER, skill_img_0 TEXT, skill_img_1 TEXT, updated INTEGER)`,
     skill_option: "CREATE TABLE IF NOT EXISTS skill_option (skill_option_type TEXT, skill_option_range TEXT, skill_option_stat TEXT, skill_option_cost TEXT, updated INTEGER)",
-    item: "CREATE TABLE item (item_name TEXT PRIMARY KEY, item_cost TEXT, item_statmin TEXT, item_statmax TEXT, item_type TEXT, item_consumable TEXT, item_addstat TEXT, item_msg TEXT, item_desc TEXT, item_img_0 TEXT, updated INTEGER)",
+    item: "CREATE TABLE item (item_name TEXT PRIMARY KEY, item_cost TEXT, item_statmin TEXT, item_statmax TEXT, item_type TEXT, item_consumable TEXT, item_addstat TEXT, item_etc TEXT, item_desc TEXT, item_img_0 TEXT, updated INTEGER)",
     item_option: "CREATE TABLE item_option (item_option_type TEXT, item_option_addstat TEXT, updated INTEGER)",
     patrol: "CREATE TABLE patrol (patrol_name TEXT, patrol_type TEXT, patrol_atk INTEGER, patrol_def INTEGER, patrol_wis INTEGER, patrol_agi INTEGER, patrol_luk INTEGER, patrol_fail_type TEXT, patrol_fail_money INTEGER, patrol_fail_count INTEGER, patrol_fail_msg TEXT, patrol_desc TEXT, patrol_img TEXT, patrol_img_fail TEXT, updated INTEGER, PRIMARY KEY(patrol_name, patrol_type))",
     patrol_result: "CREATE TABLE patrol_result (patrol_name TEXT, patrol_ret_type TEXT, patrol_ret_idx INTEGER, patrol_select TEXT, patrol_ret_money TEXT, patrol_ret_count TEXT, patrol_ret_img TEXT, patrol_ret_msg TEXT, updated INTEGER, PRIMARY KEY(patrol_name, patrol_ret_type, patrol_ret_idx))",
@@ -22,7 +22,7 @@ const query = {
     log: "CREATE TABLE IF NOT EXISTS log (user_name TEXT, page TEXT, level TEXT, log TEXT, updated INTEGER)",
   },
   select: {
-    user_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",
+    user_skill: "SELECT B.*, A.skill_desc user_skill_desc FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by A.skill_name",
     user_item: "SELECT B.* FROM (SELECT * FROM user_item WHERE userid = ?) A INNER JOIN item B ON A.item = B.item_name order by a.updated",
     using_item: "SELECT B.* FROM (SELECT * FROM user_item WHERE userid = ? AND item = ?) A INNER JOIN item B ON A.item = B.item_name LIMIT 1",
     member_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",

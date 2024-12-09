@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
-import {getData, saveData, getDataKey} from "@/_custom/scripts/server";
+import {getData, saveData, getDataKey, executeSelectQuery} from "@/_custom/scripts/server";
+import query from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 // upload에 대한 post 요청을 처리하는 함수
 export async function GET(req) {
@@ -31,11 +32,12 @@ export async function GET(req) {
             data[i].role = role.role;
           }
           // 유저별 스킬 목록 전부 추가
-          let skill = await getDataKey("user_skill", "userid", data[i].userid, true, {order: 2});
+          // let skill = await getDataKey("user_skill", "userid", data[i].userid, true, {order: 2});
+          let skill = await executeSelectQuery(query.select.user_skill, [data[i].userid]);
           if (skill?.length)
             data[i].skills = skill.map((skill) => ({
               name: skill.skill_name,
-              desc: skill.skill_desc,
+              desc: skill.user_skill_desc || skill.skill_desc,
             }));
           users.push(data[i]);
         }

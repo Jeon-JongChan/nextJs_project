@@ -1,6 +1,7 @@
 "use client";
 import {useState, useEffect} from "react";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+// import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import {getImageUrl} from "@/_custom/scripts/client";
 import {devLog} from "@/_custom/scripts/common";
 
@@ -33,7 +34,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
         return;
       }
       devLog("아이템 구매:", selectedItem.item);
-      setItems((prevItems) => prevItems.filter((_, i) => i !== selectedItem.index));
+      // setItems((prevItems) => prevItems.filter((_, i) => i !== selectedItem.index));
       // 서버에 변경사항 저장
       const formData = new FormData();
       formData.append("apitype", "market_buy_item");
@@ -62,7 +63,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
     <div className="absolute market-itembox p-2 grid grid-cols-3 auto-rows-[65px] gap-1 overflow-y-auto" style={{width: "530px", height: "230px", top: "80px", right: "45px", marginTop: "20px"}}>
       {items &&
         items?.map((item, index) => (
-          <Tooltip key={index} css={"relative flex"} reverse={index < 3 ? true : false} content={<span>{item.item_desc}</span>}>
+          <Tooltip key={index} css={"relative flex"} content={<span>{item.item_desc}</span>}>
             <div
               className="relative flex market-itembox-item img-market-init img-market-itemframe"
               style={{width: "150px", height: "65px"}}

@@ -29,7 +29,8 @@ export async function POST(req) {
     if (apitype === "patrol_result") {
       const userid = data.get("userid");
       let stamina = parseInt(data.get("stamina"));
-      stamina = stamina < 0 ? 0 : stamina % 6;
+      // stamina = stamina < 0 ? 0 : stamina % 6;
+      stamina = stamina < 0 ? 0 : stamina;
       const result = JSON.parse(data.get("result"));
       if (result.type === "AKA") {
         await executeQuery("user", query.update.user_patrol_result, [stamina, result.value, userid]);
@@ -41,6 +42,13 @@ export async function POST(req) {
         }
       }
       // devLog(`${apitype} : `, userid, stamina, result);
+    } else if (apitype === "patrol_stamina") {
+      // 악용 방지를 위해 패트롤 시작시 무조건 스태미너 1 감소
+      const userid = data.get("userid");
+      let stamina = parseInt(data.get("stamina"));
+      stamina = stamina < 0 ? 0 : stamina;
+      await executeQuery("user", query.update.user_stamina, [stamina, userid]);
+      returnData = "스태미나 시작 감소 성공적";
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

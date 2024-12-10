@@ -9,6 +9,7 @@ import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelect
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import Tooltip from "@/_custom/components/_common/Tooltip";
 import MakeInputList from "./MakeInputList";
+import UserLogViewer from "./UserLogViewer";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import InputTextList from "../InputTextList";
 import NotificationModal from "@/_custom/components/NotificationModal";
@@ -24,6 +25,7 @@ export default function Home() {
   const [skillList, setSkillList] = useState([]);
   const [allItems, setAllItems] = useState([]);
   const [allSkills, setAllSkills] = useState([]);
+  const [userLog, setUserLog] = useState([]);
   const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
@@ -50,7 +52,7 @@ export default function Home() {
     {label: "비밀번호", id: "userpw", colSpan: 3},
     {label: "첫번째 닉네임", id: "username1", colSpan: 3},
     {label: "두번째 닉네임", id: "username2", colSpan: 3},
-    {label: "유저 현재 스테미나", id: "user_stamina", type: "number", max: 5, min: 0, css: " h-[36px]", colSpan: 6},
+    {label: "유저 현재 스테미나", id: "user_stamina", type: "number", max: 100, min: 0, css: " h-[36px]", colSpan: 6},
     {label: "직업", id: "job", colSpan: 6, inputType: "checkbox", class: "job", onchange: changeHandler},
     {label: "추가정보", id: "addinfo1", colSpan: 6},
     {label: "추가정보2", id: "addinfo2", colSpan: 6},
@@ -129,6 +131,7 @@ export default function Home() {
       // 5. 아이템 및 스킬 채우기
       setItemList(data?.items ? [...data.items] : []);
       setSkillList(data?.skills ? [...data.skills.map((skill) => skill.name)] : []);
+      if (data?.logs?.length) setUserLog([...data.logs]);
     }
   };
 
@@ -248,7 +251,6 @@ export default function Home() {
     else response = await fetch("/api/select?apitype=user&apioption=admin");
     const newData = await response.json();
     if (newData?.data?.length) {
-      1;
       devLog(`admin page data 갱신되었습니다(${fetchIndex}): `, newData);
       setUserData([...newData.data]);
     }
@@ -369,7 +371,15 @@ export default function Home() {
           <GridInputButton label={"추가"} type={"button"} onclick={addSkill} />
         </div>
       </div>
-      <div className="w-1/5 flex"></div>
+      <div className="w-1/5 flex flex-col mr-3 h-screen overflow-y-auto">
+        <h3 className="text-center font-bold text-2xl">유저로그</h3>
+        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100">
+          {/* {userLog.map((log, index) => {
+            return <ListItemIndex index={index} label={log.log} />;
+          })} */}
+          <UserLogViewer logs={userLog} />
+        </div>
+      </div>
       <Autocomplete id={"#user_item_add"} data={allItems} autokey={"item_name"} />
       <Autocomplete id={"#user_skillList_add"} data={allSkills} autokey={"skill_name"} />
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}

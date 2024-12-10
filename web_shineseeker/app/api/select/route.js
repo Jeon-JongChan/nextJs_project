@@ -39,6 +39,12 @@ export async function GET(req) {
               name: skill.skill_name,
               desc: skill.user_skill_desc || skill.skill_desc,
             }));
+
+          // apioption이 admin인경우 log도 추가
+          if (apioption === "admin") {
+            let logs = await getDataKey("log", "user_name", data[i].userid, true);
+            if (logs?.length) data[i].logs = logs;
+          }
           users.push(data[i]);
         }
         // userid가 존재하는 경우 해당 값만 보내도록 한다

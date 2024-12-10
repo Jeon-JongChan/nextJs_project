@@ -208,7 +208,7 @@ export default function Home() {
 }
 
 const itemDefaultList = {
-  item_option_type: ["성장재료", "이벤트", "우편"],
+  item_option_type: ["성장재료", "이벤트", "우편", "스킬북"],
   item_option_addstat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
   item_option_consumable: ["O", "X"],
   item_option_msg: ["X", "O"],

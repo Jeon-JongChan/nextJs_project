@@ -66,6 +66,14 @@ export async function POST(req) {
           if (randomValue) await updateData("user", "userid", userid, {[itemIncreaseStat]: newStat});
           await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
           return NextResponse.json({message: "successfully page api", data: "성장재료 사용 성공"});
+        } else if (itemInfo.item_type === "스킬북") {
+          const skillInfo = (await executeSelectQuery(query.select.skill_book, [itemInfo.item_name]))?.[0];
+          if (!skillInfo) return NextResponse.json({message: "skill book not found", data: itemInfo.item_name});
+          const userSkill = (await executeSelectQuery(query.select.user_skill, [userid]))?.[0];
+          if (userSkill?.[skillInfo.skill_name]) return NextResponse.json({message: "already have skill", data: skillInfo.skill_name});
+          await executeQuery("user", query.update.user_skill, [skillInfo.skill_desc, userid, skillInfo.skill_name]);
+          await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
+          return NextResponse.json({message: "successfully page api", data: "스킬북 사용 성공"});
         }
       }
     } else if (apitype === "member_skill") {

@@ -17,7 +17,7 @@ const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical
       // 새로운 로그 추가 시 스크롤을 맨 아래로 이동
       container.scrollTop = container.scrollHeight;
     }
-    devLog("로그뷰어 실행", isAtBottom, container.scrollHeight, container.scrollTop, container.clientHeight);
+    // devLog("로그뷰어 실행", isAtBottom, container.scrollHeight, container.scrollTop, container.clientHeight);
   }, [log]); // 최초 렌더
 
   return (

@@ -23,7 +23,7 @@ export default function Component() {
     devLog("야 메인 땡긴다?", response, tokenRef);
     const newData = await response.json();
     if (newData?.data?.length) {
-      devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, newData.data[0]?.items);
+      // devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, newData.data[0]?.items);
       setMaindata(newData.data);
       const newMainData = newData.data[randomIndex(newData.data.length)];
       setPatrolData(newMainData);
@@ -31,14 +31,25 @@ export default function Component() {
     let staminaResponse = await fetch(`/api/page/${menuName}?apitype=patrol_user&userid=${tokenRef.current?.user?.name}`);
     const staminaData = await staminaResponse.json();
     if (staminaData?.data?.length) {
-      devLog(`admin *** ${menuName} page stamina data 갱신되었습니다 : `, staminaData);
+      // devLog(`admin *** ${menuName} page stamina data 갱신되었습니다 : `, staminaData);
+      // 최초 시작 시 바로 스태미나 1 깎기 ( 악용 방지 )
+      staminaData.data[0].user_stamina = staminaData.data[0].user_stamina > 0 ? staminaData.data[0].user_stamina - 1 : 0;
       setUserdata(staminaData.data[0]);
+      const formData = new FormData();
+      formData.append("apitype", "patrol_stamina");
+      formData.append("userid", tokenRef.current?.user?.name);
+      formData.append("stamina", staminaData.data[0].user_stamina);
+      let startStaminaMinusRespone = await fetch(`/api/page/${menuName}?apitype=patrol_stamina`, {
+        method: "POST",
+        body: formData,
+      });
+      let awaitstartStaminaMinus = await startStaminaMinusRespone.json();
     }
 
     let logResponse = await fetch(`/api/page?apitype=log&userid=${tokenRef.current?.user?.name}&page=${menuName}`);
     const newLogData = await logResponse.json();
     if (newLogData?.data?.length) {
-      devLog(`admin *** ${menuName} page log data 갱신되었습니다 : `, newLogData);
+      // devLog(`admin *** ${menuName} page log data 갱신되었습니다 : `, newLogData);
       newLogData.data.forEach((log) => {
         log.time = new Date(log.updated).toLocaleString();
       });
@@ -51,7 +62,7 @@ export default function Component() {
     let check = true;
     for (let elem of checkElement) {
       let patrolStat = result[`patrol_${elem}`];
-      devLog(`checkPatrolFail ${elem}`, patrolStat, userdata[`user_${elem}`]);
+      // devLog(`checkPatrolFail ${elem}`, patrolStat, userdata[`user_${elem}`]);
       if (!patrolStat) continue;
       patrolStat = parseInt(patrolStat);
       let userStat = parseInt(userdata[`user_${elem}`] || 0);
@@ -60,7 +71,7 @@ export default function Component() {
         break;
       }
     }
-    devLog("checkPatrolFail", check, result);
+    // devLog("checkPatrolFail", check, result);
     return check;
   };
   const nextProcess = (idx, selector = "patrol") => {
@@ -88,7 +99,7 @@ export default function Component() {
         logSave(user, menuName, newRetLog);
         const nowTime = new Date().toLocaleString();
         setLog([...log, {log: newlog, time: nowTime}, {log: newRetLog, time: nowTime}, {log: `현재 남은 스테미나 : ${userdata.user_stamina - 1}`, time: nowTime}]);
-        devLog("nextProcess log", newlog, newRetLog);
+        // devLog("nextProcess log", newlog, newRetLog);
         setResult(result);
 
         // 결과 데이터를 서버로 전송
@@ -120,7 +131,7 @@ export default function Component() {
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
     fetchDataEssential();
-  }, []);
+  }, [tokenRef.current]);
 
   return (
     <>
@@ -152,12 +163,12 @@ function Selector(props) {
           </div>
           <div className="absolute patrol-selector-text w-[440px] font-nexon text-white" style={{top: "90px", left: "290px"}}>
             <span className="font-bold">[{patrol.patrol_type}] </span>
-            <p className="h-[55px] overflow-y-hidden no-scrollbar">{patrol.patrol_desc || "관리자에게 연락하세요"}</p>
+            <p className="h-[55px] overflow-y-hidden no-scrollbar text-[11px]">{patrol.patrol_desc || "관리자에게 연락하세요"}</p>
           </div>
           <div className="absolute patrol-selector-choices w-[456px] h-[60px] text-white flex flex-row justify-between" style={{top: "175px", left: "290px"}}>
             {patrol?.choices &&
               Object.keys(patrol.choices).map((key, idx) => (
-                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden" onClick={() => changeFunc(key)}>
+                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden text-[11px] tracking-tight leading-none" onClick={() => changeFunc(key)}>
                   {patrol.choices[key].patrol_select}
                 </button>
               ))}

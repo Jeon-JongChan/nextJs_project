@@ -163,12 +163,12 @@ function Selector(props) {
           </div>
           <div className="absolute patrol-selector-text w-[440px] font-nexon text-white" style={{top: "90px", left: "290px"}}>
             <span className="font-bold">[{patrol.patrol_type}] </span>
-            <p className="h-[55px] overflow-y-hidden no-scrollbar text-[11px]">{patrol.patrol_desc || "관리자에게 연락하세요"}</p>
+            <p className="h-[55px] overflow-y-hidden no-scrollbar text-[12px]">{patrol.patrol_desc || "관리자에게 연락하세요"}</p>
           </div>
           <div className="absolute patrol-selector-choices w-[456px] h-[60px] text-white flex flex-row justify-between" style={{top: "175px", left: "290px"}}>
             {patrol?.choices &&
               Object.keys(patrol.choices).map((key, idx) => (
-                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden text-[11px] tracking-tight leading-none" onClick={() => changeFunc(key)}>
+                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden text-[12px] tracking-tight leading-none font-nexon" onClick={() => changeFunc(key)}>
                   {patrol.choices[key].patrol_select}
                 </button>
               ))}

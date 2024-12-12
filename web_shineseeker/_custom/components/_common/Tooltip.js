@@ -15,7 +15,7 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
       let target = content.props.children;
       // 배열인지 텍스트인지 구분 후 글씨 개수가 30개 이상일경우 최대한도 400px 기준으로 크기를 강제 조절
       let textLength = Array.isArray(target) ? target.reduce((maxLength, str) => Math.max(maxLength, str.length || 0), 0) : target.length;
-      devLog("Tooltip content:", target, textLength);
+      // devLog("Tooltip content:", target, textLength);
       let multiple = Math.floor(textLength / 30) ? Math.floor(textLength / 30) : 1;
       setWidth(150 * multiple > maxWidth ? maxWidth : 100 * multiple);
       let leftMinus = multiple < 4 ? 10 * multiple : 35;
@@ -26,7 +26,7 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
   return (
     <div className={"tooltip-container " + css} style={style} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
       {isVisible && content && (
-        <div className={`tooltip ` + tooltipCss} style={{bottom: isReverse ? "auto" : "110%", top: isReverse ? "110%" : "auto", maxWidth: `${maxWidth}px`, width: `${width}px`}}>
+        <div className={`tooltip whitespace-pre-wrap break-all ` + tooltipCss} style={{bottom: isReverse ? "auto" : "110%", top: isReverse ? "110%" : "auto", maxWidth: `${maxWidth}px`, width: `${width}px`}}>
           {content}
         </div>
       )}

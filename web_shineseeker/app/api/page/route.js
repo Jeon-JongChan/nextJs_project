@@ -47,11 +47,19 @@ export async function POST(req) {
     } else if (apitype === "member_use_item") {
       const userid = data.get("userid");
       const item_name = data.get("item_name");
+      const item_type = data.get("item_type");
       // 사용한 아이템 사용 및 삭제
       const itemInfo = (await executeSelectQuery(query.select.using_item, [userid, item_name]))?.[0];
       const userInfo = await getDataKey("user", "userid", userid);
       // devLog("member_use_item", item_name);
-      if (itemInfo && userInfo) {
+      if (item_type && item_type === "사용된우편") {
+        const updateMail = data.get("updated");
+        const mailname = item_name.replace(" - 사용된 우편", "");
+        devLog("member_use_item mmmmmmmmmmmmmmmmail", userid, mailname, updateMail);
+        await executeQuery("user", query.delete.user_mail_one, [userid, mailname, updateMail]);
+        return NextResponse.json({message: "successfully page api", data: "사용 우편 삭제 성공"});
+      } else if (itemInfo && userInfo) {
+        await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
         if (itemInfo.item_type === "성장재료") {
           const matchStat = {HP: "user_hp", ATK: "user_atk", DEF: "user_def", LUK: "user_luk", AGI: "user_agi", WIS: "user_wis"};
           const itemIncreaseStat = matchStat?.[itemInfo.item_addstat];
@@ -64,15 +72,14 @@ export async function POST(req) {
           newStat = newStat > 200 ? 200 : newStat < 0 ? 0 : newStat;
           // devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> member_use_item", itemIncreaseStat, minValue, maxValue, maxValue - minValue + 1, randomValue, newStat);
           if (randomValue) await updateData("user", "userid", userid, {[itemIncreaseStat]: newStat});
-          await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
           return NextResponse.json({message: "successfully page api", data: "성장재료 사용 성공"});
-        } else if (itemInfo.item_type === "스킬북") {
-          const skillInfo = (await executeSelectQuery(query.select.skill_book, [itemInfo.item_name]))?.[0];
-          if (!skillInfo) return NextResponse.json({message: "skill book not found", data: itemInfo.item_name});
-          const userSkill = (await executeSelectQuery(query.select.user_skill, [userid]))?.[0];
-          if (userSkill?.[skillInfo.skill_name]) return NextResponse.json({message: "already have skill", data: skillInfo.skill_name});
-          await executeQuery("user", query.update.user_skill, [skillInfo.skill_desc, userid, skillInfo.skill_name]);
-          await executeQuery("user", query.delete.user_item_one, [userid, item_name]);
+        } else if (itemInfo.item_type === "스킬책") {
+          const skillInfo = await getDataKey("skill", "skill_name", itemInfo.item_etc);
+          if (!skillInfo) return NextResponse.json({message: "skill not found", data: itemInfo.item_name});
+          const userSkill = await executeSelectQuery(query.select.check_user_skill, [userid, itemInfo.item_etc]);
+          if (userSkill) return NextResponse.json({message: "already have skill", data: skillInfo.skill_name});
+          devLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> member_use_item", skillInfo, userSkill);
+          await saveData("user_skill", {userid: userid, skill_name: skillInfo.skill_name});
           return NextResponse.json({message: "successfully page api", data: "스킬북 사용 성공"});
         }
       }
@@ -97,6 +104,14 @@ export async function POST(req) {
       const skilldesc = data.get("skill_desc");
       // devLog("member_update_skill_desc", savedata);
       await executeQuery("user_skill", query.update.user_skill, [skilldesc, userid, skillname]);
+    } else if (apitype === "member_use_mail") {
+      const userid = data.get("userid");
+      const recipient = data.get("recipient");
+      const item_name = data.get("item_name");
+      const mail = data.get("mail");
+      // devLog("member_use_mail", userid, from, item_name, mail);
+      await executeQuery("user", query.delete.user_item_one, [recipient, item_name]);
+      await saveData("user_mail", {userid: userid, recipient: recipient, item_name: item_name, mail: mail, status: "new"});
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

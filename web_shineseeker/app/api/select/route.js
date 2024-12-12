@@ -26,10 +26,16 @@ export async function GET(req) {
           // 유저별 아이템 추가
           let items = await getDataKey("user_item", "userid", data[i].userid, true);
           if (items?.length) data[i].items = items.map((item) => item.item);
-          let role = await getDataKey("user_auth", "userid", data[i].userid);
-          if (role?.userpw) {
-            data[i].userpw = role.userpw;
-            data[i].role = role.role;
+          // 유저 메일이 있는 경우 아이템 규격에 맞게 메일을 추가
+          let mails = await executeSelectQuery(query.select.user_mail, [data[i].userid]);
+          if (mails?.length) data[i].mails = mails;
+
+          if (apioption === "admin") {
+            let role = await getDataKey("user_auth", "userid", data[i].userid);
+            if (role?.userpw) {
+              data[i].userpw = role.userpw;
+              data[i].role = role.role;
+            }
           }
           // 유저별 스킬 목록 전부 추가
           // let skill = await getDataKey("user_skill", "userid", data[i].userid, true, {order: 2});

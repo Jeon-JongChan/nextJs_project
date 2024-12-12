@@ -15,9 +15,9 @@ const LogViewer = ({logs}) => {
   const pages = Array.from(new Set(logs.map((log) => log.page)));
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="w-full px-1">
       {/* 드롭다운 */}
-      <div className="mb-4">
+      <div className="mb-1">
         <label htmlFor="page-select" className="block mb-2 font-semibold text-gray-700">
           페이지 선택:
         </label>
@@ -32,10 +32,10 @@ const LogViewer = ({logs}) => {
       </div>
 
       {/* 로그 목록 */}
-      <div className="max-h-80 overflow-y-auto border border-gray-300 rounded-md p-4 bg-white">
+      <div className="max-h-screen overflow-y-auto border border-gray-300 rounded-md py-4 px-1 bg-white">
         {filteredLogs.map((log, index) => (
           <div key={index} className="flex justify-between items-center mb-2 p-2 bg-gray-100 rounded-md last:mb-0">
-            <span className="font-semibold text-gray-800">[{log.page}]</span>
+            <span className="font-semibold text-gray-800 mr-1">[{log.page}]</span>
             <span className="text-gray-600">{log.log}</span>
           </div>
         ))}

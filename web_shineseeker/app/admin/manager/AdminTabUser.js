@@ -371,14 +371,9 @@ export default function Home() {
           <GridInputButton label={"추가"} type={"button"} onclick={addSkill} />
         </div>
       </div>
-      <div className="w-1/5 flex flex-col mr-3 h-screen overflow-y-auto">
+      <div className="w-1/5 flex flex-col mr-3">
         <h3 className="text-center font-bold text-2xl">유저로그</h3>
-        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100">
-          {/* {userLog.map((log, index) => {
-            return <ListItemIndex index={index} label={log.log} />;
-          })} */}
-          <UserLogViewer logs={userLog} />
-        </div>
+        <UserLogViewer logs={userLog} />
       </div>
       <Autocomplete id={"#user_item_add"} data={allItems} autokey={"item_name"} />
       <Autocomplete id={"#user_skillList_add"} data={allSkills} autokey={"skill_name"} />

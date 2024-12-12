@@ -57,7 +57,9 @@ async function updateUser(data) {
   await deleteData("user_skill", "userid", user.userid); // 기존 스킬리스트 정보 삭제
   devLog("updateUser all data", user, items, skills);
   items.forEach((item, idx) => saveData("user_item", {userid: user.userid, item: item})); // 아이템 정보를 user_item 객체에 추가
-  skills.forEach((skill, idx) => saveData("user_skill", {userid: user.userid, skill_name: skill})); // 스킬리스트 정보를 user_skill 객체에 추가
+  skills.forEach((skill, idx) => {
+    if (skill) saveData("user_skill", {userid: user.userid, skill_name: skill});
+  }); // 스킬리스트 정보를 user_skill 객체에 추가
   await saveData("user", user);
   await saveData("user_auth", auth);
 

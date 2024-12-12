@@ -7,6 +7,7 @@ const query = {
     user_item: "CREATE TABLE IF NOT EXISTS user_item (userid TEXT, item TEXT, updated INTEGER)",
     user_skill: "CREATE TABLE IF NOT EXISTS user_skill (userid TEXT, skill_name TEXT, skill_desc	TEXT, updated INTEGER , PRIMARY KEY(userid, skill_name))",
     user_auth: "CREATE TABLE IF NOT EXISTS user_auth (userid TEXT, userpw TEXT, role TEXT DEFAULT 'user', updated INTEGER, PRIMARY KEY(userid))",
+    user_mail: "CREATE TABLE IF NOT EXISTS user_mail (userid TEXT, recipient TEXT, item_name TEXT, mail TEXT, status TEXT, updated INTEGER)",
     job: "CREATE TABLE IF NOT EXISTS job (job_name TEXT PRIMARY KEY, job_hp TEXT, job_atk TEXT, job_def TEXT, job_wis TEXT, job_agi TEXT, job_luk TEXT, job_img_0 TEXT, updated INTEGER)",
     job_skill: "CREATE TABLE IF NOT EXISTS job_skill (job_name TEXT, skill_name TEXT, updated INTEGER, PRIMARY KEY (job_name, skill_name))",
     monster: "CREATE TABLE monster (monster_name TEXT PRIMARY KEY, monster_hp TEXT, monster_atk TEXT, monster_def TEXT, monster_wis TEXT, monster_agi TEXT, monster_luk TEXT, monster_skill_rate_0 TEXT, monster_skill_rate_1 TEXT, monster_skill_rate_2 TEXT, monster_skill_rate_3 TEXT, monster_skill_rate_4 TEXT, monster_skill_0 TEXT, monster_skill_1 TEXT, monster_skill_2 TEXT, monster_skill_3 TEXT, monster_skill_4 TEXT, monster_img_0 TEXT, updated INTEGER)",
@@ -31,6 +32,8 @@ const query = {
     user_patrol: "SELECT user_hp, user_atk, user_def, user_wis, user_agi, user_luk, user_stamina FROM user WHERE userid = ?",
     user_money: "SELECT user_money FROM user WHERE userid = ?",
     user_job: "SELECT job_name, job_img_0 FROM (SELECT job FROM user WHERE userid = ?) a INNER JOIN job b ON a.job = b.job_name",
+    check_user_skill: "SELECT * FROM user_skill WHERE userid = ? and skill_name = ?",
+    user_mail: "SELECT A.*, B.item_img_0, '사용된우편' item_type FROM (SELECT * FROM user_mail WHERE userid = ?) A INNER JOIN item B ON A.item_name = B.item_name",
   },
   update: {
     user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",
@@ -40,6 +43,7 @@ const query = {
   },
   delete: {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",
+    user_mail_one: "DELETE FROM user_mail WHERE userid = ? AND item_name = ? AND updated = ? LIMIT 1",
   },
 };
 // export default query;

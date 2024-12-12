@@ -35,7 +35,7 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
           setTop(top - (tooltipHeight + 10)); // 부모 엘리먼트 아래에 툴팁 배치 (10px 간격)
         }
         //638 911.5 100     70          82          100             78              900.5
-        devLog("Tooltip position:", tooltipElement, top, left, width, height, tooltipHeight, tooltipWidth, containerWidth, left + Math.floor((containerWidth - tooltipWidth) / 2));
+        // devLog("Tooltip position:", tooltipElement, top, left, width, height, tooltipHeight, tooltipWidth, containerWidth, left + Math.floor((containerWidth - tooltipWidth) / 2));
       }
     }
   }, [content]);
@@ -58,7 +58,7 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
     <div className={"tooltip-container " + css} style={style} ref={tooltipContainerRef} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
       <div
         ref={tooltipRef}
-        className={`tooltip ` + tooltipCss}
+        className={`tooltip whitespace-pre-wrap break-all ` + tooltipCss}
         style={{
           visible: isVisible && content ? "visible" : "hidden",
           position: "fixed",

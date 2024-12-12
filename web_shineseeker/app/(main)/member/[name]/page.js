@@ -126,12 +126,7 @@ export default function Home({params}) {
         <div className="relative" style={{width: "550px", height: "365px", marginTop: "45px"}}>
           <div className="flex w-full justify-end gap-3">
             {[1, 2, 3].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`}
-                style={{width: "85px", height: "35px"}}
-              >
+              <button key={tab} onClick={() => setSelectedTab(tab)} className={`img-member-init ${selectedTab === tab ? "img-member-tab-btn-select" : "img-member-tab-btn"} block w-full text-white`} style={{width: "85px", height: "35px"}}>
                 {tab === 1 ? "정보" : tab === 2 ? "스테이터스" : "인벤토리"}
               </button>
             ))}

@@ -20,8 +20,8 @@ export default function Component(props) {
   const modalRef = useRef(null);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // 아이템 선택 시 호출될 함수
-  const handleSelect = (item) => {
+  // 스킬 선택 시 호출될 함수
+  const handleSkillSelect = (item) => {
     const selectedItemIdx = selectedItem.idx;
     if (item) {
       const skillname = item.skill_name;
@@ -30,7 +30,7 @@ export default function Component(props) {
       if (maindata?.skills) {
         skilldesc = maindata.skills.find((skill) => skill.name === skillname)?.desc;
       }
-      devLog("TabStatus - handleSelect 초오ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ기:", skillname, skillimg, skilldesc);
+      // devLog("TabStatus - handleSelect 초오ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ기:", skillname, skillimg, skilldesc);
       const newSpell = [...spell];
       newSpell[selectedItemIdx] = {name: skillname, img: skillimg, desc: skilldesc};
       setSpell(newSpell);
@@ -61,24 +61,12 @@ export default function Component(props) {
     setSelectedItem(null);
   };
 
-  // 모달 열기 및 데이터 전달
-  const openModalWithData = async (event, idx) => {
-    devLog("openModalWithData", idx, props.currentUser, props.user, props.skill, props?.skill?.length);
-    if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
-    // 스펠의 이미지가 있을경우 선택지를 제공
-    if (spell[idx]?.img) {
-      handleChoice(event, idx);
-    } else {
-      // 스펠 이미지가 없을 경우 모달을 열어서 선택하도록 함
-      openModal(idx); // openModal 호출
-    }
-  };
-
   const openModal = (idx) => {
     setSelectedItem({idx: idx});
     if (props?.skill?.length) modalRef.current.openModal(props.skill); // openModal 호출
   };
   /*>>>>>>>>>>>>> 스킬 모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
+
   /*<<<<<<<<<<<< 설명 변경 모달 부분 변수 및 함수 <<<<<<<<<<<<*/
   const descModalRef = useRef(null);
   const submitSpellDesc = (spellIdx, spellDesc) => {
@@ -108,7 +96,21 @@ export default function Component(props) {
   };
   /*>>>>>>>>>>>>> 설명 모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
 
-  /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 선택 버튼 및 설명 교체 띄우기 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+  /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 선택 버튼 및 설명 교체 버튼 띄우기 및 조정 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+  // 모달 열기 및 데이터 전달
+  const openModalWithData = async (event, idx) => {
+    devLog("openModalWithData", idx, props.currentUser, props.user, props.skill, props?.skill?.length);
+    if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
+    // 스펠의 이미지가 있을경우 선택지를 제공
+    if (spell[idx]?.img) {
+      handleChoice(event, idx);
+    } else {
+      // 스펠 이미지가 없을 경우 모달을 열어서 선택하도록 함
+      openModal(idx); // openModal 호출
+    }
+  };
+
   const handleChoice = (event, index) => {
     event.stopPropagation();
     devLog("스펠 선택:", event, event.target, event.clientX, event.clientY, spell[index]);
@@ -135,7 +137,7 @@ export default function Component(props) {
       setSelectedItem(null);
     }
   };
-  /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 선택 버튼 띄우기 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+  /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 선택 버튼 및 설명 교체 버튼 띄우기 및 조정 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 
   const getSpellImage = (spellname) => {
     if (props?.skill) {
@@ -240,8 +242,8 @@ export default function Component(props) {
       <h1 className="member_once_text absolute text-white text-[16px]" style={{bottom: "20px", left: "25px"}}>
         &quot;{oncetext}&quot;
       </h1>
-      <ItemSelectorModal ref={modalRef} onSelect={handleSelect} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
-      <ChangeSpellModal ref={descModalRef} onButtonClick={submitSpellDesc} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
+      <ItemSelectorModal ref={modalRef} onSelect={handleSkillSelect} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
+      <ChangeSpellModal ref={descModalRef} onButtonClick={submitSpellDesc} title={"스킬 설명 교체"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
       {/* 선택된 아이템의 액션 버튼 */}
       {selectedItem && selectedItem?.spell && (

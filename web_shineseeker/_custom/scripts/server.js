@@ -5,7 +5,7 @@ import Sqlite from "./sqlite3-adapter.js";
 import SqliteQuery from "./sqlite3-query.js";
 import {devLog} from "./common.js";
 
-export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKey, executeSelectQuery, executeQuery};
+export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKey, executeSelectQuery, executeQuery, updateTableTime};
 
 const dev = process.env.NEXT_PUBLIC_DEV === "true";
 const sqlite = new Sqlite(dev); // 기본 dbPath 사용, verbose 출력 활성화
@@ -156,4 +156,8 @@ async function executeQuery(table, query, value = null) {
     console.error("** server.js(executeSelectQuery) failed:", error);
     return null; // 실패 시 null 반환
   }
+}
+
+async function updateTableTime(table) {
+  sqlite.updateTableTime(table);
 }

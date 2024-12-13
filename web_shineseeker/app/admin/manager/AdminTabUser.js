@@ -132,6 +132,7 @@ export default function Home() {
       setItemList(data?.items ? [...data.items] : []);
       setSkillList(data?.skills ? [...data.skills.map((skill) => skill.name)] : []);
       if (data?.logs?.length) setUserLog([...data.logs]);
+      else setUserLog([]);
     }
   };
 
@@ -213,6 +214,34 @@ export default function Home() {
       listCopy.splice(index, 1); // 아이템 삭제
       setSkillList(listCopy);
     }
+  };
+
+  // 로그 초기화
+  const initLog = (e, page) => {
+    e.preventDefault();
+    devLog("initLog", page);
+    // 서버에 초기화 요청
+    const formData = new FormData();
+    formData.append("apitype", "delete_log");
+    formData.append("userid", selectedUser);
+    formData.append("page", page);
+    fetch("/api/page", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        devLog("initLog success : ", data, page);
+        setNoti(`유저 ${page}로그가 초기화 되었습니다`, data);
+        // userdata에 있는 로그 초기화
+        const userIndex = userdata.findIndex((user) => user.userid === selectedUser);
+        if (userIndex > -1) {
+          if (page === "all") userdata[userIndex].logs = [];
+          else userdata[userIndex].logs = userdata[userIndex].logs.filter((log) => log.page !== page);
+          setUserLog([...userdata[userIndex].logs]);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
   };
 
   async function fetchEssentialData() {
@@ -373,7 +402,7 @@ export default function Home() {
       </div>
       <div className="w-1/5 flex flex-col mr-3">
         <h3 className="text-center font-bold text-2xl">유저로그</h3>
-        <UserLogViewer logs={userLog} />
+        <UserLogViewer logs={userLog} onInitButton={initLog} />
       </div>
       <Autocomplete id={"#user_item_add"} data={allItems} autokey={"item_name"} />
       <Autocomplete id={"#user_skillList_add"} data={allSkills} autokey={"skill_name"} />

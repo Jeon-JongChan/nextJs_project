@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-const LogViewer = ({logs}) => {
+const LogViewer = ({logs, onInitButton = null}) => {
   const [selectedPage, setSelectedPage] = useState("all");
 
   // 드롭다운 선택 변경 핸들러
@@ -15,13 +15,13 @@ const LogViewer = ({logs}) => {
   const pages = Array.from(new Set(logs.map((log) => log.page)));
 
   return (
-    <div className="w-full px-1">
+    <div className="w-full px-1 font-nexon">
       {/* 드롭다운 */}
       <div className="mb-1">
         <label htmlFor="page-select" className="block mb-2 font-semibold text-gray-700">
           페이지 선택:
         </label>
-        <select id="page-select" value={selectedPage} onChange={handlePageChange} className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select id="page-select" value={selectedPage} onChange={handlePageChange} className="w-2/3 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
           <option value="all">전체</option>
           {pages.map((page) => (
             <option key={page} value={page}>
@@ -29,6 +29,9 @@ const LogViewer = ({logs}) => {
             </option>
           ))}
         </select>
+        <button className="flex-1 w-1/3 border rounded-md bg-indigo-600 hover:bg-indigo-700 text-white h-[36px]" onClick={onInitButton ? (e) => onInitButton(e, selectedPage) : null}>
+          초기화
+        </button>
       </div>
 
       {/* 로그 목록 */}

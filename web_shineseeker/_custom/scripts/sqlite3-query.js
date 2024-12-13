@@ -44,6 +44,8 @@ const query = {
   delete: {
     user_item_one: "DELETE FROM user_item WHERE userid = ? AND item = ? LIMIT 1",
     user_mail_one: "DELETE FROM user_mail WHERE userid = ? AND item_name = ? AND updated = ? LIMIT 1",
+    user_log: "DELETE FROM log WHERE user_name = ?",
+    user_log_page: "DELETE FROM log WHERE user_name = ? AND page = ?",
   },
 };
 // export default query;

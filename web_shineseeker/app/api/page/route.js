@@ -38,6 +38,14 @@ export async function POST(req) {
       }
       devLog("logsave", logdata);
       await saveData("log", logdata);
+    } else if (apitype === "delete_log") {
+      const userid = data.get("userid");
+      const page = data.get("page");
+      const checkUser = await getDataKey("user", "userid", userid);
+      if (!checkUser) return NextResponse.json({message: "user not found", data: userid});
+      if (page === "all") await executeQuery("log", query.delete.user_log, [userid]);
+      else await executeQuery("log", query.delete.user_log_page, [userid, page]);
+      return NextResponse.json({message: "successfully page api", data: "로그 삭제 성공"});
     } else if (apitype === "member_update_skill") {
       const userid = data.get("userid");
       const skillname = JSON.parse(data.get("updated_skill"));

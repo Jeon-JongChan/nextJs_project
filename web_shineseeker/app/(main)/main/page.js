@@ -15,6 +15,7 @@ export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [slideData, setSlideData] = useState([]);
   const [buttonData, setButtonData] = useState([]);
+  const [buttonLink, setButtonLink] = useState([]);
   const [mainAudioUrl, setMainAudioUrl] = useState("");
   const [user, setUser] = useState({});
   let fetchIndex = 0;
@@ -44,10 +45,19 @@ export default function Home() {
       slideLink = maindata.filter((data) => data.id.includes("main_slide_link") && data.value).map((data) => data.value);
       slideData = maindata.filter((data) => data.id.includes("main_img_slide") && data.value).map((data, idx) => ({imageUrl: data.value, link: slideLink[idx]}));
       audioData = maindata.filter((data) => data.id.includes("main_youtube") && data.value).map((data) => data.value);
-      buttonLink = maindata.filter((data) => data.id.includes("main_button_link") && data.value).map((data) => data.value);
-      buttonData = maindata.filter((data) => data.id.includes("main_img_button") && data.value).map((data, idx) => ({imageUrl: data.value, link: buttonLink[idx]}));
+      buttonLink = {};
+      maindata.filter((data) => data.id.includes("main_button_link") && data.value).forEach((data) => {
+        let idx = data.id.split("_").pop();
+        buttonLink[idx] = data.value
+      });
+      buttonData = {}; 
+      maindata.filter((data) => data.id.includes("main_img_button") && data.value).forEach((data) => {
+        let idx = data.id.split("_").pop();
+        buttonData[idx] =  {imageUrl: data.value, link: buttonLink[idx]} 
+      });
       setSlideData(slideData);
       setButtonData(buttonData);
+      setButtonLink(buttonLink);
       if (audioData.length) setMainAudioUrl(audioData[0]);
     }
     devLog("maindata filter :", slideLink, slideData, audioData);
@@ -70,7 +80,7 @@ export default function Home() {
         </div>
         <div className="relative flex" style={{marginLeft: "64px"}}>
           {[1, 2, 3].map((idx) => (
-            <Link key={idx} className="relative main-button" href={buttonData?.[idx - 1]?.link || "/main"}>
+            <Link key={idx} className="relative main-button" href={buttonLink?.[idx - 1] || "/main"}>
               <Image src={buttonData?.[idx - 1]?.imageUrl || `/images/home/01_home_button0${idx}.png`} width={170} height={90} alt="Shineseeker" />
             </Link>
           ))}

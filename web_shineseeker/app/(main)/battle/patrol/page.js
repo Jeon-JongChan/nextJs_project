@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import {useState, useEffect, useCallback} from "react";
+import {useState, useEffect, useCallback, useRef} from "react";
 import {devLog} from "@/_custom/scripts/common";
 import LogViewer from "@/_custom/components/LogViewer";
 import {getImageUrl, logSave} from "@/_custom/scripts/client";
@@ -9,6 +9,7 @@ import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 �
 const menuName = "patrol";
 export default function Component() {
   const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
+  const clickCnt = useRef(0);
   const [isSelector, setIsSelector] = useState(true); // 텍스트가 접혀있는지 여부를 추적하는 상태
   const [maindata, setMaindata] = useState({}); // 메인 데이터를 추적하는 상태
   const [patrolData, setPatrolData] = useState({}); // 메인 데이터를 추적하는 상태
@@ -93,12 +94,14 @@ export default function Component() {
               patrol_ret_img: patrolData.patrol_img_fail,
               patrol_ret_idx: idx,
             };
+
+        const newStamina = clickCnt.current === 0 ? userdata.user_stamina : userdata.user_stamina - 1; // 최초 시작 시 이미 깎이므로 스태미나 그대로
         const newlog = `${user}의 패트롤 선택 : ${result.patrol_select}`;
         const newRetLog = `${user}의 패트롤 결과 : ${result.patrol_ret_msg} - ${result.patrol_ret_type} ${result.patrol_ret_type === "AKA" ? result.patrol_ret_money : result.patrol_ret_count} 획득`;
         logSave(user, menuName, newlog);
         logSave(user, menuName, newRetLog);
         const nowTime = new Date().toLocaleString();
-        setLog([...log, {log: newlog, time: nowTime}, {log: newRetLog, time: nowTime}, {log: `현재 남은 스테미나 : ${userdata.user_stamina - 1}`, time: nowTime}]);
+        setLog([...log, {log: newlog, time: nowTime}, {log: newRetLog, time: nowTime}, {log: `현재 남은 스테미나 : ${newStamina}`, time: nowTime}]);
         // devLog("nextProcess log", newlog, newRetLog);
         setResult(result);
 
@@ -106,7 +109,7 @@ export default function Component() {
         const formData = new FormData();
         formData.append("apitype", "patrol_result");
         formData.append("userid", user);
-        formData.append("stamina", userdata.user_stamina - 1);
+        formData.append("stamina", newStamina);
         formData.append("result", JSON.stringify({type: result.patrol_ret_type, value: result.patrol_ret_type === "AKA" ? result.patrol_ret_money : result.patrol_ret_count}));
 
         fetch("/api/page/patrol", {
@@ -118,9 +121,10 @@ export default function Component() {
           .catch((error) => console.error("Error:", error));
 
         const newUserdata = {...userdata};
-        newUserdata.user_stamina -= 1;
+        newUserdata.user_stamina = newStamina;
         setUserdata(newUserdata);
       }
+      clickCnt.current += 1;
     } else if (selector === "result") {
       const index = randomIndex(maindata.length);
       setPatrolData(maindata[index]);

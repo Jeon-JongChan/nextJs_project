@@ -2,7 +2,7 @@
 import {useState, useEffect} from "react";
 // import Tooltip from "@/_custom/components/_common/Tooltip";
 import Tooltip from "@/_custom/components/_common/TooltipFixed";
-import {getImageUrl} from "@/_custom/scripts/client";
+import {getImageUrl, logSave} from "@/_custom/scripts/client";
 import {devLog} from "@/_custom/scripts/common";
 
 const menuName = "market";
@@ -41,6 +41,9 @@ export default function Home({userid, marketItems, money, setMoney}) {
       formData.append("item_name", selectedItem.item_name);
       formData.append("item_cost", selectedItem.cost);
       formData.append("userid", userid);
+
+      logSave(userid, "market", `아이템 구매 : ${selectedItem.item_name}`);
+
       fetch("/api/page", {
         method: "POST",
         body: formData,
@@ -71,17 +74,8 @@ export default function Home({userid, marketItems, money, setMoney}) {
               tabIndex={0} // 포커스 가능하도록 설정
               onBlur={handleBlur} // 외부 클릭 시 선택 해제
             >
-              <div
-                className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]"
-                style={{width: "45px", height: "45px", margin: "10px 2px 6px 7px"}}
-              >
-                <img
-                  src={getImageUrl(item.item_img_0) || "https://via.placeholder.com/100?text=Image"}
-                  className="relative max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px]"
-                  width={40}
-                  height={40}
-                  alt="item image"
-                />
+              <div className="market-itembox-item-image flex justify-center items-center max-h-[45px] min-h-[45px] max-w-[45px] min-w-[45px]" style={{width: "45px", height: "45px", margin: "10px 2px 6px 7px"}}>
+                <img src={getImageUrl(item.item_img_0) || "https://via.placeholder.com/100?text=Image"} className="relative max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px]" width={40} height={40} alt="item image" />
               </div>
               <div className="market-itembox-item-info flex flex-col p-1 font-nexon font-bold h-full" style={{width: "100px"}}>
                 <div className="flex flex-col w-full mt-4">

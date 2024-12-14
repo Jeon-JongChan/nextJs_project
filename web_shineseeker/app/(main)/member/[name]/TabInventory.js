@@ -5,7 +5,7 @@ import {devLog} from "@/_custom/scripts/common";
 import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import MailModal from "./MailModal";
 import NotificationModal from "@/_custom/components/NotificationModal";
-import {getImageUrl} from "@/_custom/scripts/client";
+import {getImageUrl, logSave} from "@/_custom/scripts/client";
 import {update} from "@/_custom/scripts/sqlite3-query";
 
 export default function Component(props) {
@@ -45,6 +45,8 @@ export default function Component(props) {
       formData.append("item_etc", selectedItem.item_etc);
       formData.append("item_type", selectedItem.item_type);
       formData.append("updated", selectedItem.updated);
+
+      logSave(props.currentUser, "member", `아이템 사용 : ${selectedItem.item}`);
       fetch("/api/page", {
         method: "POST",
         body: formData,

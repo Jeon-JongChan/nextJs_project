@@ -13,7 +13,11 @@ export async function GET(req) {
       data = await executeSelectQuery(query.select.user_skill, [userid]);
     } else if (apitype === "log") {
       const page = searchParams.get("page");
-      data = await executeSelectQuery(query.select.log, [userid, page]);
+      const limit = parseInt(searchParams.get("limit"));
+      if (limit) {
+        const time = new Date().getTime() - 24 * 60 * 60 * 1000;
+        data = await executeSelectQuery(query.select.log_time, [userid, page, time]);
+      } else data = await executeSelectQuery(query.select.log, [userid, page]);
     } else if (apitype === "user_money") {
       data = await executeSelectQuery(query.select.user_money, [userid]);
     } else if (apitype === "user_job") {

@@ -29,6 +29,7 @@ const query = {
     member_skill: "SELECT B.* FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by a.updated",
     patrol_item: "SELECT * FROM item WHERE item_name = '에고'",
     log: "SELECT * FROM log WHERE user_name = ? AND page = ?",
+    log_time: "SELECT * FROM log WHERE user_name = ? AND page = ? AND updated >= ?",
     user_patrol: "SELECT user_hp, user_atk, user_def, user_wis, user_agi, user_luk, user_stamina FROM user WHERE userid = ?",
     user_money: "SELECT user_money FROM user WHERE userid = ?",
     user_job: "SELECT job_name, job_img_0 FROM (SELECT job FROM user WHERE userid = ?) a INNER JOIN job b ON a.job = b.job_name",

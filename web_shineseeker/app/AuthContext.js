@@ -51,7 +51,7 @@ const AuthContextInner = ({children}) => {
   useEffect(() => {
     const initializeSession = async () => {
       const newSession = await getSession();
-      console.log("getSession으로 초기화:", newSession);
+      // console.log("getSession으로 초기화:", newSession);
       if (newSession) {
         tokenRef.current = newSession;
         setUser(newSession.user); // 사용자 정보 업데이트

@@ -40,7 +40,7 @@ export default function Component() {
       const newMainData = newData.data[randomIndex(newData.data.length)];
       setPatrolData(newMainData);
     }
-    let logResponse = await fetch(`/api/page?apitype=log&userid=${tokenRef.current?.user?.name}&page=${menuName}`);
+    let logResponse = await fetch(`/api/page?apitype=log&userid=${tokenRef.current?.user?.name}&page=${menuName}&limit=24`);
     const newLogData = await logResponse.json();
     if (newLogData?.data?.length) {
       // devLog(`admin *** ${menuName} page log data 갱신되었습니다 : `, newLogData);

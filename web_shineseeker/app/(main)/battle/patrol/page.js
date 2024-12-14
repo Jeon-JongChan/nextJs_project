@@ -11,7 +11,7 @@ export default function Component() {
   const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
   const clickCnt = useRef(0);
   const [isSelector, setIsSelector] = useState(true); // 텍스트가 접혀있는지 여부를 추적하는 상태
-  const [maindata, setMaindata] = useState({}); // 메인 데이터를 추적하는 상태
+  const [maindata, setMaindata] = useState(null); // 메인 데이터를 추적하는 상태
   const [patrolData, setPatrolData] = useState({}); // 메인 데이터를 추적하는 상태
   const [userdata, setUserdata] = useState(0); // 스태미나 데이터를 추적하는 상태
   const [log, setLog] = useState([]); // 로그 데이터를 추적하는 상태
@@ -20,8 +20,16 @@ export default function Component() {
   const randomIndex = (max) => Math.floor(Math.random() * max);
 
   const fetchDataEssential = useCallback(async () => {
+    if (!tokenRef.current?.user?.name) {
+      devLog("야 유저없어서 메인 데이터 없다", tokenRef.current?.user?.name);
+      return;
+    }
+    if (maindata) {
+      devLog("야 메인 데이터 있어서 땡기지 않는다", maindata);
+      return;
+    }
     let response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
-    devLog("야 메인 땡긴다?", response, tokenRef);
+    devLog("야 메인 땡긴다?", response, tokenRef, clickCnt);
     const newData = await response.json();
     if (newData?.data?.length) {
       // devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, newData.data[0]?.items);
@@ -29,12 +37,23 @@ export default function Component() {
       const newMainData = newData.data[randomIndex(newData.data.length)];
       setPatrolData(newMainData);
     }
+    let logResponse = await fetch(`/api/page?apitype=log&userid=${tokenRef.current?.user?.name}&page=${menuName}`);
+    const newLogData = await logResponse.json();
+    if (newLogData?.data?.length) {
+      // devLog(`admin *** ${menuName} page log data 갱신되었습니다 : `, newLogData);
+      newLogData.data.forEach((log) => {
+        log.time = new Date(log.updated).toLocaleString();
+      });
+      setLog(newLogData.data);
+    }
+
     let staminaResponse = await fetch(`/api/page/${menuName}?apitype=patrol_user&userid=${tokenRef.current?.user?.name}`);
     const staminaData = await staminaResponse.json();
     if (staminaData?.data?.length) {
       // devLog(`admin *** ${menuName} page stamina data 갱신되었습니다 : `, staminaData);
       // 최초 시작 시 바로 스태미나 1 깎기 ( 악용 방지 )
       staminaData.data[0].user_stamina = staminaData.data[0].user_stamina > 0 ? staminaData.data[0].user_stamina - 1 : 0;
+      // setLog([...log, {log: `스태미나 1 감소, ${clickCnt.current}, ${isSelector}, ${staminaData.data[0].user_stamina}`, time: new Date().toLocaleString()}]);
       setUserdata(staminaData.data[0]);
       const formData = new FormData();
       formData.append("apitype", "patrol_stamina");
@@ -45,16 +64,6 @@ export default function Component() {
         body: formData,
       });
       let awaitstartStaminaMinus = await startStaminaMinusRespone.json();
-    }
-
-    let logResponse = await fetch(`/api/page?apitype=log&userid=${tokenRef.current?.user?.name}&page=${menuName}`);
-    const newLogData = await logResponse.json();
-    if (newLogData?.data?.length) {
-      // devLog(`admin *** ${menuName} page log data 갱신되었습니다 : `, newLogData);
-      newLogData.data.forEach((log) => {
-        log.time = new Date(log.updated).toLocaleString();
-      });
-      setLog(newLogData.data);
     }
   }, [maindata]);
 
@@ -75,7 +84,8 @@ export default function Component() {
     // devLog("checkPatrolFail", check, result);
     return check;
   };
-  const nextProcess = (idx, selector = "patrol") => {
+  const nextProcess = (e, idx, selector = "patrol") => {
+    e.preventDefault();
     if (!userdata) {
       alert("유저정보를 올바르게 읽지 못했습니다");
       return;
@@ -172,7 +182,7 @@ function Selector(props) {
           <div className="absolute patrol-selector-choices w-[456px] h-[60px] text-white flex flex-row justify-between" style={{top: "175px", left: "290px"}}>
             {patrol?.choices &&
               Object.keys(patrol.choices).map((key, idx) => (
-                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden text-[12px] tracking-tight leading-none font-nexon" onClick={() => changeFunc(key)}>
+                <button key={idx} className="relative w-[130px] h-[55px] px-2 overflow-hidden text-[12px] tracking-tight leading-none font-nexon" onClick={(e) => changeFunc(e, key)}>
                   {patrol.choices[key].patrol_select}
                 </button>
               ))}
@@ -212,7 +222,7 @@ function Result(props) {
       <div className="absolute patrol-result-stamina flex flex-row justify-center w-[140px] h-[30px] text-[#2D3458]" style={{top: "55px", right: "55px"}}>
         <span>스태미나</span> <span className="text-[#D13586] patrol-result-remain ml-2">{props?.userdata?.user_stamina || 0}&nbsp;</span> <span>/ 5</span>
       </div>
-      <button className="absolute patrol-result-next img-patrol-init img-patrol-result-next" style={{top: "90px", right: "40px"}} onClick={() => changeFunc(data.patrol_ret_idx, "result")}></button>
+      <button className="absolute patrol-result-next img-patrol-init img-patrol-result-next" style={{top: "90px", right: "40px"}} onClick={() => changeFunc(e, data.patrol_ret_idx, "result")}></button>
     </div>
   );
 }

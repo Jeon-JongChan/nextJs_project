@@ -22,14 +22,17 @@ export default function Component() {
   const fetchDataEssential = useCallback(async () => {
     if (!tokenRef.current?.user?.name) {
       devLog("야 유저없어서 메인 데이터 없다", tokenRef.current?.user?.name);
+      console.log("야 유저없어서 메인 데이터 없다", tokenRef.current?.user?.name);
       return;
     }
     if (maindata) {
       devLog("야 메인 데이터 있어서 땡기지 않는다", maindata);
+      console.log("야 메인 데이터 있어서 땡기지 않는다", maindata);
       return;
     }
     let response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     devLog("야 메인 땡긴다?", response, tokenRef, clickCnt);
+    console.log("야 메인 땡긴다?", response, tokenRef, clickCnt);
     const newData = await response.json();
     if (newData?.data?.length) {
       // devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, newData.data[0]?.items);

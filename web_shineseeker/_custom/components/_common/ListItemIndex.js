@@ -15,8 +15,9 @@ export default function Component(props) {
   let index = props?.index || 0;
   let deleteButton = props?.deleteButton || false;
   let deleteFunc = props?.deleteFunc || null;
+  let alignDir = props?.alignDir || "center";
 
-  let classText = "relative shadow rounded-md max-h-20 text-center text-sm sm:text-xs col-span-1";
+  let classText = `relative shadow rounded-md max-h-20 text-${alignDir} text-sm sm:text-xs col-span-1`;
 
   return (
     <>

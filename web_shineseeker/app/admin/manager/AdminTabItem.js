@@ -7,7 +7,7 @@ import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import MakeInputList from "./MakeInputList";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import Autocomplete from "/_custom/components/_common/Autocomplete";
 import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
@@ -168,12 +168,12 @@ export default function Home() {
     <div className="flex w-full">
       <div className="w-1/5 flex flex-col mr-3 ">
         <h3 className="text-center font-bold text-2xl">아이템리스트</h3>
-        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100">
+        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100 max-h-screen overflow-y-auto">
           {Object.keys(maindata).map((key, index) => {
             if (maindata[key]["item_name"]) {
               return (
                 <Tooltip key={index} content={<span>{maindata[key]["item_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["item_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} />
+                  <ListItemIndex label={maindata[key]["item_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} alignDir={"left"} />
                 </Tooltip>
               );
             }

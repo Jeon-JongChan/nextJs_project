@@ -8,7 +8,7 @@ import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import GridFile from "/_custom/components/_common/grid/GridFile";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import MakeInputList from "./MakeInputList";
 import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
@@ -171,7 +171,7 @@ export default function Home() {
             if (maindata[key]["monster_name"]) {
               return (
                 <Tooltip key={index} content={null} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["monster_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} />
+                  <ListItemIndex label={maindata[key]["monster_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} alignDir={"left"} />
                 </Tooltip>
               );
             }

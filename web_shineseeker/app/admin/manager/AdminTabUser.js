@@ -7,7 +7,7 @@ import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import MakeInputList from "./MakeInputList";
 import UserLogViewer from "./UserLogViewer";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
@@ -299,12 +299,12 @@ export default function Home() {
     <div className="flex w-full">
       <div className="w-1/5 flex flex-col mr-3 h-screen overflow-y-auto">
         <h3 className="text-center font-bold text-2xl">유저리스트</h3>
-        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100">
+        <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100 max-h-screen overflow-y-auto">
           {Object.keys(userdata).map((key, index) => {
             if (userdata[key]["userid"]) {
               return (
-                <Tooltip key={index} content={<span>이것은 테스트 툴팁입니다!</span>} css={"w-full"}>
-                  <ListItemIndex index={index} label={userdata[key]["userid"]} onclick={clickUser} deleteButton={true} deleteFunc={deleteUser} />
+                <Tooltip key={index} content={null} css={"w-full"}>
+                  <ListItemIndex index={index} label={userdata[key]["userid"]} onclick={clickUser} deleteButton={true} deleteFunc={deleteUser} alignDir={"left"} />
                 </Tooltip>
               );
             }

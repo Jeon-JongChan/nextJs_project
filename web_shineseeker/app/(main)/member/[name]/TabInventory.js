@@ -52,7 +52,10 @@ export default function Component(props) {
         body: formData,
       })
         .then((response) => response.json())
-        .then((data) => devLog(data))
+        .then((data) => {
+          devLog(data);
+          setNoti("아이템을 사용했습니다");
+        })
         .catch((error) => console.error("TabInventory(handleAction) using Item Error:", error));
     } else if (action === "delete") {
       devLog("아이템 삭제:", selectedItem.item);
@@ -229,7 +232,7 @@ export default function Component(props) {
         )}
       </div>
       <MailModal ref={mailModal} title={"메세지 입력 창"} onButtonClick={submitMail} />
-      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
+      {noti && <NotificationModal message={noti} css="font-nexon text-black" onClose={() => setNoti(null)} />}
       {/* 선택된 아이템의 액션 버튼 */}
       {selectedItem && (
         <div

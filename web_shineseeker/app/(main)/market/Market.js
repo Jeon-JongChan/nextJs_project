@@ -2,6 +2,7 @@
 import {useState, useEffect} from "react";
 // import Tooltip from "@/_custom/components/_common/Tooltip";
 import Tooltip from "@/_custom/components/_common/TooltipFixed";
+import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl, logSave} from "@/_custom/scripts/client";
 import {devLog} from "@/_custom/scripts/common";
 
@@ -9,6 +10,7 @@ const menuName = "market";
 export default function Home({userid, marketItems, money, setMoney}) {
   const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 상태
   const [items, setItems] = useState([]);
+  const [noti, setNoti] = useState(null);
 
   const handleItemSelect = (event, item) => {
     event.stopPropagation();
@@ -51,6 +53,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
         .then((response) => response.json())
         .then((data) => {
           setMoney(money - selectedItem.cost);
+          setNoti("아이템을 구매했습니다");
           console.info("아이템 사용 성공적 메세지 : ", data);
         })
         .catch((error) => console.error("Market(handleAction) using Item Error:", error));
@@ -94,6 +97,7 @@ export default function Home({userid, marketItems, money, setMoney}) {
           </Tooltip>
         ))}
       {/* 선택된 아이템의 액션 버튼 */}
+      {noti && <NotificationModal message={noti} css="font-nexon text-black" onClose={() => setNoti(null)} />}
       {selectedItem && (
         <div
           className={`fixed bg-white p-2 rounded shadow-lg flex flex-col space-y-2 z-50`}

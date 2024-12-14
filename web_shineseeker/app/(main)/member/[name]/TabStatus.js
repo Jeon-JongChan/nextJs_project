@@ -244,7 +244,7 @@ export default function Component(props) {
       </h1>
       <ItemSelectorModal ref={modalRef} onSelect={handleSkillSelect} title={"스킬 선택"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
       <ChangeSpellModal ref={descModalRef} onButtonClick={submitSpellDesc} title={"스킬 설명 교체"} dataNameKey={"skill_name"} dataImageKey={"skill_img_0"} />
-      {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
+      {noti && <NotificationModal message={noti} css="font-nexon text-black" onClose={() => setNoti(null)} />}
       {/* 선택된 아이템의 액션 버튼 */}
       {selectedItem && selectedItem?.spell && (
         <div

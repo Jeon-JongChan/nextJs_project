@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 
 // NotificationModal 컴포넌트
-const NotificationModal = ({type = "INFO", message = "", duration = 3000, onClose}) => {
+const NotificationModal = ({onClose, type = "INFO", message = "", duration = 3000, css = ""}) => {
   const [isVisible, setIsVisible] = useState(false); // 초기엔 보이지 않음
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const NotificationModal = ({type = "INFO", message = "", duration = 3000, onClos
 
   return (
     <div className={`fixed bottom-4 left-4 p-4 text-white rounded shadow-lg transition-all duration-500 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} ${bgColor}`}>
-      <span className="text-xl font-bold">{message}</span>
+      <span className={"text-xl font-bold " + css}>{message}</span>
     </div>
   );
 };

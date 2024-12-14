@@ -16,6 +16,7 @@ export const AuthProvider = ({children}) => {
 
 const AuthContextInner = ({children}) => {
   const {data: session} = useSession();
+  console.log("AuthContextInner 초기화", session);
   const tokenRef = useRef(null); // useRef로 토큰 관리
   const [user, setUser] = useState(null); // 사용자 정보 관리 (선택 사항)
 
@@ -27,17 +28,19 @@ const AuthContextInner = ({children}) => {
       userpw,
       //   callbackUrl: "/main", // 로그인 성공 후 이동할 URL
     });
-    // console.log("로그인 시도", userid, userpw);
-    if (!tokenRef.current && result.error) {
-      console.error("로그인 실패");
-      return null; // 에러가 있을 경우 null 반환
-    } else {
-      const newSession = await getSession(); // 새로운 세션 가져오기
-      setUser(newSession.user); // 사용자 정보 업데이트
-      tokenRef.current = newSession; // useRef 업데이트
-      console.log("AuthContext 로그인 성공", newSession, result);
-      return newSession.user; // 새로운 토큰 반환
+    if (result.error) {
+      console.error("로그인 실패:", result.error);
+      return null;
     }
+
+    const newSession = await getSession();
+    if (newSession) {
+      tokenRef.current = newSession; // 토큰 업데이트
+      setUser(newSession.user); // 사용자 상태 업데이트
+      console.log("로그인 성공:", newSession);
+      return newSession.user;
+    }
+    return null;
   };
 
   const handleLogout = async (redirect = false) => {
@@ -47,6 +50,19 @@ const AuthContextInner = ({children}) => {
   };
 
   useEffect(() => {
+    const initializeSession = async () => {
+      const newSession = await getSession();
+      console.log("getSession으로 초기화:", newSession);
+      if (newSession) {
+        tokenRef.current = newSession;
+        setUser(newSession.user); // 사용자 정보 업데이트
+      }
+    };
+    initializeSession();
+  }, []);
+
+  useEffect(() => {
+    console.log("AuthContextInner useEffect session 갱신", session);
     if (session) {
       tokenRef.current = session; // JWT 토큰을 useRef에 저장
     } else {

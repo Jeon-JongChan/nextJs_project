@@ -28,7 +28,7 @@ const AuthContextInner = ({children}) => {
       //   callbackUrl: "/main", // 로그인 성공 후 이동할 URL
     });
     // console.log("로그인 시도", userid, userpw);
-    if (result.error) {
+    if (!tokenRef.current && result.error) {
       console.error("로그인 실패", result.error, user);
       return null; // 에러가 있을 경우 null 반환
     } else {

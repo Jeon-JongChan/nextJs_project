@@ -16,7 +16,6 @@ export const AuthProvider = ({children}) => {
 
 const AuthContextInner = ({children}) => {
   const {data: session} = useSession();
-  console.log("AuthContextInner 초기화", session);
   const tokenRef = useRef(null); // useRef로 토큰 관리
   const [user, setUser] = useState(null); // 사용자 정보 관리 (선택 사항)
 
@@ -62,7 +61,7 @@ const AuthContextInner = ({children}) => {
   }, []);
 
   useEffect(() => {
-    console.log("AuthContextInner useEffect session 갱신", session);
+    // console.log("AuthContextInner useEffect session 갱신", session);
     if (session) {
       tokenRef.current = session; // JWT 토큰을 useRef에 저장
     } else {

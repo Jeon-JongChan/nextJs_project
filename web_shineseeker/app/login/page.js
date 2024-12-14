@@ -15,7 +15,7 @@ export default function LoginForm() {
       if (token) {
         console.log("로그인 성공:", token); // 성공 메시지
       } else {
-        console.error("로그인 실패"); // 실패 메시지
+        console.error("로그인 실패 login 컴포넌트"); // 실패 메시지
       }
     }
   };

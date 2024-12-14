@@ -20,7 +20,7 @@ export default function Component() {
       if (token) {
         devLog("로그인 성공:", token); // 성공 메시지
       } else {
-        console.error("로그인 실패"); // 실패 메시지
+        console.error("로그인 실패 --- ", token); // 실패 메시지
       }
     }
   };

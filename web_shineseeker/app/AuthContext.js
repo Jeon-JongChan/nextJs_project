@@ -29,14 +29,14 @@ const AuthContextInner = ({children}) => {
     });
     // console.log("로그인 시도", userid, userpw);
     if (!tokenRef.current && result.error) {
-      console.error("로그인 실패", result.error, user);
+      console.error("로그인 실패");
       return null; // 에러가 있을 경우 null 반환
     } else {
       const newSession = await getSession(); // 새로운 세션 가져오기
+      setUser(newSession.user); // 사용자 정보 업데이트
       tokenRef.current = newSession; // useRef 업데이트
       console.log("AuthContext 로그인 성공", newSession, result);
-      setUser(newSession.user); // 사용자 정보 업데이트
-      return newSession.accessToken; // 새로운 토큰 반환
+      return newSession.user; // 새로운 토큰 반환
     }
   };
 

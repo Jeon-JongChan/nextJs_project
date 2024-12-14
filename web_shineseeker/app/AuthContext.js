@@ -29,7 +29,7 @@ const AuthContextInner = ({children}) => {
     });
     // console.log("로그인 시도", userid, userpw);
     if (result.error) {
-      console.error("로그인 실패", result.error);
+      console.error("로그인 실패", result.error, user);
       return null; // 에러가 있을 경우 null 반환
     } else {
       const newSession = await getSession(); // 새로운 세션 가져오기

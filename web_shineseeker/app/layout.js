@@ -15,7 +15,7 @@ export default function RootLayout({children}) {
       {/* <body className={inter.className}> */}
       <body className="font-dnf">
         <AuthProvider>{children}</AuthProvider>
-        <DevelopModal />
+        {/* <DevelopModal /> */}
       </body>
     </html>
   );

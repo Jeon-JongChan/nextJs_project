@@ -29,7 +29,9 @@ export async function POST(req) {
     if (apitype === "patrol_result") {
       const userid = data.get("userid");
       let stamina = parseInt(data.get("stamina"));
+      devLog("stamina1", stamina);
       stamina = stamina < 0 ? 0 : stamina % 6;
+      devLog("stamina2", stamina);
       // stamina = stamina < 0 ? 0 : stamina;
       const result = JSON.parse(data.get("result"));
       if (result.type === "AKA") {

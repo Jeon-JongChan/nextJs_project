@@ -9,7 +9,7 @@ const sqlite = new Sqlite(dev);
 // 크론 작업 설정
 const startCronJobs = () => {
   // 예: 매일 자정에 실행
-  cron.schedule("0 0 * * *", () => {
+  cron.schedule("0 15 * * *", () => {
     console.log("Running daily task...");
     const query = `UPDATE user SET user_stamina = 5`;
     sqlite.db.prepare(query).run();

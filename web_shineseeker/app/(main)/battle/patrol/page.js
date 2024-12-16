@@ -10,6 +10,7 @@ const menuName = "patrol";
 export default function Component() {
   const {tokenRef} = useAuth() || {}; // handleLogin 가져오기
   const clickCnt = useRef(0);
+  const theFirstStamina = useRef(0);
   const [isSelector, setIsSelector] = useState(true); // 텍스트가 접혀있는지 여부를 추적하는 상태
   const [maindata, setMaindata] = useState(null); // 메인 데이터를 추적하는 상태
   const [patrolData, setPatrolData] = useState({}); // 메인 데이터를 추적하는 상태
@@ -54,6 +55,8 @@ export default function Component() {
     const staminaData = await staminaResponse.json();
     if (staminaData?.data?.length) {
       // devLog(`admin *** ${menuName} page stamina data 갱신되었습니다 : `, staminaData);
+      // 최초 시작 시 스태미나가 1일 경우 고갈되는 경우를 방지하기 위해 최초 스태미나 체크
+      theFirstStamina.current = staminaData.data[0].user_stamina;
       // 최초 시작 시 바로 스태미나 1 깎기 ( 악용 방지 )
       staminaData.data[0].user_stamina = staminaData.data[0].user_stamina > 0 ? staminaData.data[0].user_stamina - 1 : 0;
       // setLog([...log, {log: `스태미나 1 감소, ${clickCnt.current}, ${isSelector}, ${staminaData.data[0].user_stamina}`, time: new Date().toLocaleString()}]);
@@ -153,7 +156,11 @@ export default function Component() {
   return (
     <>
       <div className="flex flex-col w-full mt-4" style={{width: "840px", height: "600px"}}>
-        {isSelector ? <Selector patrol={patrolData} stamina={userdata.user_stamina} changeFunc={nextProcess} /> : <Result result={result} userdata={userdata} changeFunc={nextProcess} />}
+        {isSelector ? (
+          <Selector patrol={patrolData} stamina={userdata.user_stamina} changeFunc={nextProcess} clickCnt={clickCnt.current} theFirstStamina={theFirstStamina.current} />
+        ) : (
+          <Result result={result} userdata={userdata} changeFunc={nextProcess} />
+        )}
         {log && <LogViewer height="126px" logs={log} css={"rounded-lg mt-2"} opacity={0.8} />}
       </div>
     </>
@@ -163,6 +170,8 @@ export default function Component() {
 function Selector(props) {
   const changeFunc = props.changeFunc;
   const patrol = props.patrol || null;
+  const clickCnt = props.clickCnt || 0;
+  const theFirstStamina = props.theFirstStamina || 0;
   // const stamina = props.stamina || 0;
   const [stamina, setStamina] = useState(0);
   useEffect(() => {
@@ -170,7 +179,7 @@ function Selector(props) {
   }, [props.stamina]);
   return (
     <div className="img-patrol-init img-patrol-selector-bg patrol-selector relative w-full" style={{height: "275px"}}>
-      {stamina ? (
+      {(clickCnt === 0 && theFirstStamina === 1 && stamina === 0) || stamina ? (
         <>
           <div className="absolute patrol-selector-icon w-[140px] h-[140px]" style={{top: "75px", left: "100px"}}>
             <img src={getImageUrl(patrol.patrol_img) || "https://via.placeholder.com/500?text=Image+1"} className="w-full h-full" />
@@ -225,11 +234,7 @@ function Result(props) {
       <div className="absolute patrol-result-stamina flex flex-row justify-center w-[140px] h-[30px] text-[#2D3458]" style={{top: "55px", right: "55px"}}>
         <span>스태미나</span> <span className="text-[#D13586] patrol-result-remain ml-2">{props?.userdata?.user_stamina || 0}&nbsp;</span> <span>/ 5</span>
       </div>
-      <button
-        className="absolute patrol-result-next img-patrol-init img-patrol-result-next"
-        style={{top: "90px", right: "40px"}}
-        onClick={(e) => changeFunc(e, data.patrol_ret_idx, "result")}
-      ></button>
+      <button className="absolute patrol-result-next img-patrol-init img-patrol-result-next" style={{top: "90px", right: "40px"}} onClick={(e) => changeFunc(e, data.patrol_ret_idx, "result")}></button>
     </div>
   );
 }

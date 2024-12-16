@@ -5,6 +5,7 @@ import TabStatus from "./TabStatus";
 import TabInventory from "./TabInventory";
 // import CharacterButton from "@/public/images/member/04_member_ch_button.png";
 import DefaultCharacterImage from "@/public/images/member/04_member_ch02.png";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
 import {devLog} from "@/_custom/scripts/common";
 import {getImageUrl, getImageUrlAsync} from "@/_custom/scripts/client";
@@ -103,9 +104,14 @@ export default function Home({params}) {
                 <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
                   {maindata?.addinfo1}
                 </span>
-                <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
+                {/* <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
                   {maindata?.addinfo2}
-                </span>
+                </span> */}
+                <Tooltip content={maindata?.addinfo2} fixWidth={450} fixLeft={430}>
+                  <span className="text-[11px] text-line-wrap block" style={{width: "200px"}}>
+                    {maindata?.addinfo2}
+                  </span>
+                </Tooltip>
               </div>
             </div>
 

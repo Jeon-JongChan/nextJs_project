@@ -37,9 +37,12 @@ const LogViewer = ({logs, onInitButton = null}) => {
       {/* 로그 목록 */}
       <div className="max-h-screen overflow-y-auto border border-gray-300 rounded-md py-4 px-1 bg-white">
         {filteredLogs.map((log, index) => (
-          <div key={index} className="flex justify-between items-center mb-2 p-2 bg-gray-100 rounded-md last:mb-0">
-            <span className="font-semibold text-gray-800 mr-1">[{log.page}]</span>
-            <span className="text-gray-600">{log.log}</span>
+          <div key={index} className="flex flex-col justify-between items-center mb-2 p-2 bg-gray-100 rounded-md last:mb-0">
+            <div className="flex">
+              <span className="font-semibold text-gray-800 mr-1">[{log.page}]</span>
+              <span className="text-gray-600">{log.log}</span>
+            </div>
+            <span className="text-gray-600">{new Date(log.updated).toLocaleString()}</span>
           </div>
         ))}
         {filteredLogs.length === 0 && <div className="text-center text-gray-500 mt-4">로그 데이터가 없습니다.</div>}

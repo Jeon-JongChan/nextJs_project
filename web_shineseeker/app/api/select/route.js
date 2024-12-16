@@ -87,16 +87,13 @@ export async function GET(req) {
             });
           }
         }
-      } else if (apitype === "patrol") {
-        // patrol의 경우 해당하는 선택지와 결과값을 배열로 추가해줘야함
+      } else if (apitype === "raid") {
+        // raid의 경우 해당하는 raid_userlist값을 배열로 추가해줘야함
         for (let i = 0; i < data.length; i++) {
-          let patrol_result = await getDataKey("patrol_result", "patrol_name", data[i].patrol_name, true);
-          patrol_result.forEach((result) => {
-            for (let key in result) {
-              if (key === "patrol_ret_idx" || key === "patrol_name") continue;
-              else data[i][`${key}_${result.patrol_ret_idx}`] = result[key];
-            }
-          });
+          let raid_userlist = await getDataKey("raid_userlist", "raid_name", data[i].raid_name, true);
+          if (raid_userlist.length) {
+            data[i].raid_userlist = raid_userlist;
+          }
         }
       } else if (apitype === "page") {
         // page의 경우 각 탭별로 데이터를 보내줌

@@ -21,6 +21,9 @@ const query = {
     // admin page 페이지 에서 사용하는 테이블
     page: "CREATE TABLE IF NOT EXISTS page (page_name TEXT, id TEXT, value TEXT, updated INTEGER, PRIMARY KEY(page_name, id))",
     log: "CREATE TABLE IF NOT EXISTS log (user_name TEXT, page TEXT, level TEXT, log TEXT, updated INTEGER)",
+    system_log: "CREATE TABLE IF NOT EXISTS system_log (log TEXT, updated INTEGER)",
+    raid: 'CREATE TABLE IF NOT EXISTS raid (raid_name TEXT PRIMARY KEY, monter_name TEXT, raid_reader TEXT, total_user INTEGER, updated INTEGER)',
+    raid_userlist: 'CREATE TABLE IF NOT EXISTS raid_list (raid_name TEXT PRIMARY KEY, raid_user TEXT, raid_order INTEGER, updated INTEGER)'
   },
   select: {
     user_skill: "SELECT B.*, A.skill_desc user_skill_desc FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by A.skill_name",

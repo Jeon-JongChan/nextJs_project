@@ -7,6 +7,7 @@ import AdminTabMonster from "./AdminTabMonster";
 import AdminTabSkill from "./AdminTabSkill";
 import AdminTabItem from "./AdminTabItem";
 import AdminTabPatrol from "./AdminTabPatrol";
+import AdminTabRaid from "./AdminTabRaid";
 
 export default function Home() {
   const tabList = ["유저관리", "직업", "몬스터", "스펠", "아이템", "패트롤", "레이드"];
@@ -40,6 +41,7 @@ export default function Home() {
       {activeTab === tabList[3] && <AdminTabSkill />}
       {activeTab === tabList[4] && <AdminTabItem />}
       {activeTab === tabList[5] && <AdminTabPatrol />}
+      {activeTab === tabList[6] && <AdminTabRaid />}
     </div>
   );
 }

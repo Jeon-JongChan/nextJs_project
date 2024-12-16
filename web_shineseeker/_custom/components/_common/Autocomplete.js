@@ -20,8 +20,9 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
 
   // id가 변경되면 input에 이벤트 리스너를 추가하는 effect
   useEffect(() => {
+    console.log("Autocomplete.js useEffect", id, data);
     inputElement = document.querySelector(id);
-    if (inputElement && data.length > 0) {
+    if (inputElement && data?.length > 0) {
       // input 요소의 넓이를 설정
       setDropdownWidth(inputElement.offsetWidth);
 

@@ -52,7 +52,7 @@ export default function Home() {
     {label: "비밀번호", id: "userpw", colSpan: 3},
     {label: "첫번째 닉네임", id: "username1", colSpan: 3},
     {label: "두번째 닉네임", id: "username2", colSpan: 3},
-    {label: "유저 현재 스테미나", id: "user_stamina", type: "number", max: 100, min: 0, css: " h-[36px]", colSpan: 6},
+    {label: "유저 현재 스테미나", id: "user_stamina", type: "number", max: 5, min: 0, css: " h-[36px]", colSpan: 6},
     {label: "직업", id: "job", colSpan: 6, inputType: "checkbox", class: "job", onchange: changeHandler},
     {label: "추가정보", id: "addinfo1", colSpan: 6},
     {label: "추가정보2", id: "addinfo2", colSpan: 6},
@@ -297,7 +297,7 @@ export default function Home() {
 
   return (
     <div className="flex w-full">
-      <div className="w-1/5 flex flex-col mr-3 h-screen overflow-y-auto">
+      <div className="w-2/12 flex flex-col mr-3 h-screen overflow-y-auto">
         <h3 className="text-center font-bold text-2xl">유저리스트</h3>
         <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100 max-h-screen overflow-y-auto">
           {Object.keys(userdata).map((key, index) => {
@@ -311,7 +311,7 @@ export default function Home() {
           })}
         </div>
       </div>
-      <div className="w-3/5 flex flex-col user-form">
+      <div className="w-7/12 flex flex-col user-form">
         {/* <h3 className="text-center">유저리스트</h3> */}
         <form onSubmit={handleSubmitUser} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}} data-apitype="update_user">
           <GridInputSelectBox label={"유저권한"} id={"role"} colSpan={3} options={["user", "admin"]} />
@@ -400,7 +400,7 @@ export default function Home() {
           <GridInputButton label={"추가"} type={"button"} onclick={addSkill} />
         </div>
       </div>
-      <div className="w-1/5 flex flex-col mr-3">
+      <div className="w-3/12 flex flex-col mr-3">
         <h3 className="text-center font-bold text-2xl">유저로그</h3>
         <UserLogViewer logs={userLog} onInitButton={initLog} />
       </div>

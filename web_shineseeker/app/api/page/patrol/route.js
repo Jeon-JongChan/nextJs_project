@@ -29,8 +29,8 @@ export async function POST(req) {
     if (apitype === "patrol_result") {
       const userid = data.get("userid");
       let stamina = parseInt(data.get("stamina"));
-      // stamina = stamina < 0 ? 0 : stamina % 6;
-      stamina = stamina < 0 ? 0 : stamina;
+      stamina = stamina < 0 ? 0 : stamina % 6;
+      // stamina = stamina < 0 ? 0 : stamina;
       const result = JSON.parse(data.get("result"));
       if (result.type === "AKA") {
         await executeQuery("user", query.update.user_patrol_result, [stamina, result.value, userid]);
@@ -41,6 +41,7 @@ export async function POST(req) {
           await saveData("user_item", Array(count).fill({userid: userid, item: result.type}), true);
         }
       }
+      await saveData("system_log", {log: `patrol user :  ${userid} / current Stamina : ${stamina} / result : ${JSON.stringify(result)}`});
       // devLog(`${apitype} : `, userid, stamina, result);
     } else if (apitype === "patrol_stamina") {
       // 악용 방지를 위해 패트롤 시작시 무조건 스태미너 1 감소

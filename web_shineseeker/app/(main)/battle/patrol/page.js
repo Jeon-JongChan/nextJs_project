@@ -212,7 +212,7 @@ function Result(props) {
   return (
     <div className="img-patrol-init img-patrol-result-bg patrol-result relative w-full" style={{height: "275px"}}>
       <div className="absolute patrol-result-icon w-[100px] h-[100px]" style={{top: "65px", left: "369px"}}>
-        <img src={data?.patrol_ret_img || "https://via.placeholder.com/500?text=Image+1"} className="w-full h-full" />
+        <img src={getImageUrl(data?.patrol_ret_img) || "https://via.placeholder.com/500?text=Image+1"} className="w-full h-full" />
       </div>
       <div className="absolute patrol-result-text w-[500px] h-[20px] text-center text-[#494EAF] text-line-warp" style={{top: "195px", left: "170px"}}>
         <span>{data?.patrol_ret_msg || "장애가 발생했습니다. 관리자에게 연락하세요"}</span>
@@ -225,7 +225,11 @@ function Result(props) {
       <div className="absolute patrol-result-stamina flex flex-row justify-center w-[140px] h-[30px] text-[#2D3458]" style={{top: "55px", right: "55px"}}>
         <span>스태미나</span> <span className="text-[#D13586] patrol-result-remain ml-2">{props?.userdata?.user_stamina || 0}&nbsp;</span> <span>/ 5</span>
       </div>
-      <button className="absolute patrol-result-next img-patrol-init img-patrol-result-next" style={{top: "90px", right: "40px"}} onClick={(e) => changeFunc(e, data.patrol_ret_idx, "result")}></button>
+      <button
+        className="absolute patrol-result-next img-patrol-init img-patrol-result-next"
+        style={{top: "90px", right: "40px"}}
+        onClick={(e) => changeFunc(e, data.patrol_ret_idx, "result")}
+      ></button>
     </div>
   );
 }

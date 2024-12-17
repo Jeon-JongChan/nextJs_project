@@ -63,6 +63,7 @@ export default function Component(props) {
 
   const openModal = (idx) => {
     setSelectedItem({idx: idx});
+    devLog("openModal", props?.skill);
     if (props?.skill?.length) modalRef.current.openModal(props.skill); // openModal 호출
   };
   /*>>>>>>>>>>>>> 스킬 모달 변수 및 함수 끝 >>>>>>>>>>>>>*/
@@ -100,13 +101,14 @@ export default function Component(props) {
 
   // 모달 열기 및 데이터 전달
   const openModalWithData = async (event, idx) => {
-    devLog("openModalWithData", idx, props.currentUser, props.user, props.skill, props?.skill?.length);
-    if (!(props?.user && props?.currentUser && props.user.userid === props.currentUser)) return;
+    devLog("openModalWithData", idx, props.currentUser, props.user, props.currentUser.length, props.skill, props?.skill?.length);
+    if (!(props?.user && props?.currentUser && props.user.userid == props.currentUser)) return;
     // 스펠의 이미지가 있을경우 선택지를 제공
     if (spell[idx]?.img) {
       handleChoice(event, idx);
     } else {
       // 스펠 이미지가 없을 경우 모달을 열어서 선택하도록 함
+      devLog("openModalWithData >>>>>> openModal", idx);
       openModal(idx); // openModal 호출
     }
   };

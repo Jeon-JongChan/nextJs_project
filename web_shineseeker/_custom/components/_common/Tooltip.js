@@ -35,8 +35,12 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
   return (
     <div className={"tooltip-container " + css} style={style} onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
       {isVisible && content && (
-        <div className={`tooltip whitespace-pre-wrap break-all ` + tooltipCss} style={{bottom: isReverse ? "auto" : "110%", top: isReverse ? "110%" : "auto", maxWidth: `${maxWidth}px`, width: `${width}px`}}>
+        <div
+          className={`tooltip whitespace-pre-wrap break-all ` + tooltipCss}
+          style={{bottom: isReverse ? "auto" : "110%", top: isReverse ? "110%" : "auto", maxWidth: `${maxWidth}px`, width: `${width}px`, left: fixLeft ? `${left}px` : ""}}
+        >
           {content}
+          {/* {isVisible && content && <span className="tooltip-arrow" />} */}
         </div>
       )}
       {children}
@@ -59,10 +63,22 @@ const Tooltip = ({children, content, css = "", tooltipCss = "", style = {}, reve
           margin-left: -60px; /* Center the tooltip */
           transition: opacity 0.3s;
         }
+        // .tooltip-arrow {
+        //   position: absolute;
+        //   left: 50%;
+        //   transform: translateX(-50%);
+        //   width: 0;
+        //   height: 0;
+        //   border-width: 5px;
+        //   border-style: solid;
+        //   border-color: ${isReverse ? "transparent transparent #333 transparent" : "#333 transparent transparent transparent"};
+        //   top: ${isReverse ? "auto" : "100%"};
+        //   bottom: ${isReverse ? "100%" : "auto"};
+        // }
         .tooltip::after {
           content: "";
           position: absolute;
-          left: ${left}%;
+          left: 50%;
           margin-left: -5px;
           border-width: 5px;
           border-style: solid;

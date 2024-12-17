@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {getData, saveData, getDataKey, executeSelectQuery} from "@/_custom/scripts/server";
+import {getData, getDataKeyTimeCheck, getDataKey, executeSelectQuery} from "@/_custom/scripts/server";
 import query from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 // upload에 대한 post 요청을 처리하는 함수
@@ -10,7 +10,11 @@ export async function GET(req) {
   const apioption = searchParams.get("apioption");
 
   try {
-    let data = await getData(apitype, getcount == 1 ? 0 : 60, true, {order: 1});
+    let data = null;
+    if (apioption === "one_user") {
+      let userid = searchParams.get("userid");
+      data = await getDataKeyTimeCheck(apitype, "userid", userid, getcount == "1" ? 0 : 60, true);
+    } else data = await getData(apitype, getcount == 1 ? 0 : 60, true, {order: 1});
     // devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {

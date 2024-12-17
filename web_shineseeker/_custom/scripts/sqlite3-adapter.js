@@ -270,7 +270,7 @@ class DBManager {
       const stmt = this.db.prepare(`SELECT * FROM ${table} WHERE ${key} = ? ${isLimit ? "LIMIT ? OFFSET ?" : ""} ${order ? `ORDER BY ${order} ${orderDirection}` : ""}`);
       return isLimit ? stmt.all(keyValue, limit, offset) : stmt.all(keyValue);
     } catch (error) {
-      console.error("** Sql-adapter.js(searchByKey) Search failed:", error);
+      console.error("** Sql-adapter.js(searchByKeyAll) Search failed:", error);
       return null; // 실패 시 null 반환
     }
   }

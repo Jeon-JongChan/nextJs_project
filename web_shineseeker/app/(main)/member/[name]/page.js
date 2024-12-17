@@ -5,7 +5,7 @@ import TabStatus from "./TabStatus";
 import TabInventory from "./TabInventory";
 // import CharacterButton from "@/public/images/member/04_member_ch_button.png";
 import DefaultCharacterImage from "@/public/images/member/04_member_ch02.png";
-import Tooltip from "@/_custom/components/_common/TooltipFixed";
+import Tooltip from "@/_custom/components/_common/Tooltip";
 import {useAuth} from "@/app/AuthContext"; // AuthContext의 경로에 따라 조정
 import {devLog} from "@/_custom/scripts/common";
 import {getImageUrl, getImageUrlAsync} from "@/_custom/scripts/client";
@@ -23,9 +23,9 @@ export default function Home({params}) {
 
   // 데이터를 주기적으로 가져오기 위한 함수
   async function fetchDataEssential() {
-    let response = await fetch(`/api/select?apitype=user&getcount=1&userid=${params.name}`);
-    devLog("야 메인 땡긴다?", response);
+    let response = await fetch(`/api/select?apitype=user&apioption=one_user&getcount=1&userid=${params.name}`);
     const newData = await response.json();
+    devLog("야 메인 땡긴다?", newData);
     if (newData?.data?.length) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다 : `, newData, params, newData.data[0]?.items);
       const newMainData = newData.data[0];
@@ -46,8 +46,9 @@ export default function Home({params}) {
       setJobImage(newJobImageData.data[0]?.job_img_0 || jobImage);
     }
 
-    if (params.name === tokenRef.current?.user?.name) {
-      devLog(`${params.name}님 환영합니다.`);
+    const decodingName = decodeURIComponent(params.name);
+    devLog(`${decodingName}님 환영합니다. ====> ${tokenRef.current?.user?.name}`);
+    if (decodingName === tokenRef.current?.user?.name) {
       // let skillResponse = await fetch(`/api/select?apitype=skill&getcount=1`);
       let skillResponse = await fetch(`/api/page?apitype=member_skill&userid=${params.name}`);
       const newSkillData = await skillResponse.json();
@@ -58,7 +59,7 @@ export default function Home({params}) {
     }
   }
   const fetchData = async () => {
-    let response = await fetch(`/api/select?apitype=user&userid=${params.name}`);
+    let response = await fetch(`/api/select?apitype=user&apioption=one_user&userid=${params.name}`);
     const newData = await response.json();
     if (newData?.data?.length) {
       const newMainData = newData.data[0];
@@ -107,7 +108,7 @@ export default function Home({params}) {
                 {/* <span className="text-[11px] text-line-wrap" style={{width: "200px"}}>
                   {maindata?.addinfo2}
                 </span> */}
-                <Tooltip content={maindata?.addinfo2} fixWidth={450} fixLeft={430}>
+                <Tooltip content={maindata?.addinfo2} fixWidth={450} fixLeft={-70}>
                   <span className="text-[11px] text-line-wrap block" style={{width: "200px"}}>
                     {maindata?.addinfo2}
                   </span>

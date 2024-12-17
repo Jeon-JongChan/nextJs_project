@@ -5,7 +5,7 @@ import Sqlite from "./sqlite3-adapter.js";
 import SqliteQuery from "./sqlite3-query.js";
 import {devLog} from "./common.js";
 
-export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKey, executeSelectQuery, executeQuery, updateTableTime};
+export {saveFiles, saveImage, saveData, updateData, deleteData, truncateData, getData, getDataKeyTimeCheck, getDataKey, executeSelectQuery, executeQuery, updateTableTime};
 
 const dev = process.env.NEXT_PUBLIC_DEV === "true";
 const sqlite = new Sqlite(dev); // 기본 dbPath 사용, verbose 출력 활성화
@@ -119,6 +119,26 @@ async function getData(table, timeSecondgap = 0, isAll = false, options = {}) {
     return null;
   } catch (e) {
     console.error("server.js getData Function : ", e);
+    return null;
+  }
+}
+
+/**
+ * @param {*} table
+ * @param {int} timeSecondgap
+ * @returns
+ */
+async function getDataKeyTimeCheck(table, key, keyValue, timeSecondgap = 0, isAll = false, options = {}) {
+  try {
+    let result = null;
+    if (!sqlite.tableExists(table)) return null;
+    if (timeSecondgap) {
+      const tableTime = sqlite.getTableTime(table);
+      if (tableTime > Date.now() - timeSecondgap * 1000) return sqlite.searchByKeyAll(table, key, keyValue, !isAll, options);
+    } else return sqlite.searchByKeyAll(table, key, keyValue, !isAll, options);
+    return null;
+  } catch (e) {
+    console.error("server.js getDataKeyTimeCheck Function : ", e);
     return null;
   }
 }

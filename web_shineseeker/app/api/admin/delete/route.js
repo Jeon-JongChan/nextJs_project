@@ -20,6 +20,7 @@ export async function POST(req) {
       returnData = data.get("userid") + " deleted";
     } else if (apitype === "delete_skill" && data.has("skill")) {
       await deleteData("skill", "skill_name", data.get("skill"));
+      await deleteData("skill_operator", "skill_name", data.get("skill"));
       returnData = data.get("skill") + " deleted";
     } else if (apitype === "delete_job" && data.has("job")) {
       await deleteData("job", "job_name", data.get("job"));

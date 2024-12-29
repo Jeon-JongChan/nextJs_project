@@ -221,6 +221,9 @@ export default function Home() {
         {[...Array(5)].map((_, index) => (
           <Autocomplete key={index} id={`#monster_event_skill_${index}`} data={autoList} autokey={"skill_name"} />
         ))}
+        {[...Array(5)].map((_, index) => (
+          <Autocomplete key={index} id={`#monster_skill_${index}`} data={autoList} autokey={"skill_name"} />
+        ))}
       </div>
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
@@ -241,14 +244,14 @@ const inputNames = [
   {label: "WIS", id: "monster_wis", type: "number", colSpan: 2},
   {label: "AGI", id: "monster_agi", type: "number", colSpan: 2},
   {label: "LUK", id: "monster_luk", type: "number", colSpan: 2},
-  {header: "보유스펠(일반공격)", label: "스펠", id: "monster_skill_0", inputType: "checkbox", class: "skill", colSpan: 3},
+  {header: "보유스펠(일반공격)", label: "스펠", id: "monster_skill_0", class: "skill", colSpan: 3, css: " h-[36px]"},
   {label: "사용확률(%)", id: "monster_skill_rate_0", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {nolabel: true, id: "monster_skill_1", inputType: "checkbox", class: "skill", delimiter: true, colSpan: 3},
+  {nolabel: true, id: "monster_skill_1", class: "skill", delimiter: true, colSpan: 3, css: " h-[36px]"},
   {nolabel: true, id: "monster_skill_rate_1", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {nolabel: true, id: "monster_skill_2", inputType: "checkbox", class: "skill", delimiter: true, colSpan: 3},
+  {nolabel: true, id: "monster_skill_2", class: "skill", delimiter: true, colSpan: 3, css: " h-[36px]"},
   {nolabel: true, id: "monster_skill_rate_2", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {nolabel: true, id: "monster_skill_3", inputType: "checkbox", class: "skill", delimiter: true, colSpan: 3},
+  {nolabel: true, id: "monster_skill_3", class: "skill", delimiter: true, colSpan: 3, css: " h-[36px]"},
   {nolabel: true, id: "monster_skill_rate_3", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {nolabel: true, id: "monster_skill_4", inputType: "checkbox", class: "skill", delimiter: true, colSpan: 3},
+  {nolabel: true, id: "monster_skill_4", class: "skill", delimiter: true, colSpan: 3, css: " h-[36px]"},
   {nolabel: true, id: "monster_skill_rate_4", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
 ];

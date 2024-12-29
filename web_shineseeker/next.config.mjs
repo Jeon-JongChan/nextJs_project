@@ -32,6 +32,8 @@ async function initializeDatabase() {
   sqlite.db.exec(sql.create.user);
   sqlite.db.exec(sql.create.user_auth);
   sqlite.db.exec(sql.create.log);
+  sqlite.db.exec(sql.create.raid);
+  sqlite.db.exec(sql.create.raid_list);
 
   // admin 계정이 없으면 초기화해주면서 추가
   const prepare = sqlite.db.prepare("SELECT * FROM user_auth WHERE userid = ?");

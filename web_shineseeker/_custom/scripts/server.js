@@ -68,17 +68,22 @@ function checkDuplicateImageFile(name, size) {
 
 async function saveData(table, data, isObjectArray = false) {
   // jsondb.updateObject(key, data);
-  if (!sqlite.tableExists(table)) {
-    const isQuery = SqliteQuery?.create?.[table];
-    if (isQuery) sqlite.db.exec(isQuery);
-    else if (!isQuery && !isObjectArray) sqlite.createTableFromObject(table, data, true);
-    else {
-      if (Array.isArray(data)) sqlite.createTableFromObject(table, data[0], true);
-      else sqlite.createTableFromObject(table, data, true);
+  try {
+    if (!sqlite.tableExists(table)) {
+      const isQuery = SqliteQuery?.create?.[table];
+      if (isQuery) sqlite.db.exec(isQuery);
+      else if (!isQuery && !isObjectArray) sqlite.createTableFromObject(table, data, true);
+      else {
+        if (Array.isArray(data)) sqlite.createTableFromObject(table, data[0], true);
+        else sqlite.createTableFromObject(table, data, true);
+      }
     }
+    if (!isObjectArray) sqlite.insert(table, data);
+    else sqlite.multiInsert(table, data);
+  } catch (e) {
+    console.error("server.js saveData Function : ", e);
+    return null;
   }
-  if (!isObjectArray) sqlite.insert(table, data);
-  else sqlite.multiInsert(table, data);
 }
 
 async function updateData(table, key, keyValue, data) {
@@ -146,13 +151,15 @@ async function getDataKeyTimeCheck(table, key, keyValue, timeSecondgap = 0, isAl
 /**
  * @param {*} key
  * @param {int} timeSecondgap
+ * @param {*} isAll
+ * @param {*} options
  * @returns
  */
 async function getDataKey(table, key, keyValue, isAll = false, options = {}) {
   try {
-    // devLog("server.js getDataKey", table, key, keyValue, isAll);
+    // devLog("server.js getDataKey", table, key, keyValue, isAll, options);
     if (!sqlite.tableExists(table)) return null;
-    if (isAll) return sqlite.searchByKeyAll(table, key, keyValue, !isAll, (options = {}));
+    if (isAll) return sqlite.searchByKeyAll(table, key, keyValue, !isAll, options);
     else return sqlite.searchByKey(table, key, keyValue);
   } catch (e) {
     console.error("server.js getDataKey Function : ", e);

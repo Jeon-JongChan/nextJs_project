@@ -2,6 +2,7 @@
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import React, {useState, useEffect} from "react";
 import {devLog} from "@/_custom/scripts/common";
+import {getImageUrl} from "@/_custom/scripts/client";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
@@ -11,7 +12,6 @@ import MakeInputList from "./MakeInputList";
 import InputTextList from "../InputTextList";
 import Autocomplete from "/_custom/components/_common/Autocomplete";
 import NotificationModal from "@/_custom/components/NotificationModal";
-import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "job";
 export default function Home() {

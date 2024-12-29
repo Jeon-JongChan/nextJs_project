@@ -16,6 +16,8 @@ export default function Component(props) {
   let onclick = props?.onclick || null;
   let buttonColor = props?.buttonColor || "blue";
   let css = props?.css || "";
+  let buttonCss = props?.buttonCss || "";
+  let disable = props?.disable || false;
   return (
     <>
       {/* <div className="grid grid-cols-6 gap-6"> 같은 그리드 시스템 필요. 또는 public GridBorderBox와 같이사용*/}
@@ -26,8 +28,10 @@ export default function Component(props) {
             "w-full inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
             buttonColorClass[buttonColor],
             hoverColorClass[buttonColor],
+            buttonCss,
           ].join(" ")}
           onClick={onclick ? onclick : () => null}
+          disabled={disable ? true : false}
         >
           {label}
         </button>

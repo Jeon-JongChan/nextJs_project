@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
-import {saveFiles, saveImage, saveData, getDataKey, deleteData, truncateData} from "@/_custom/scripts/server";
+import {saveFiles, saveImage, saveData, getDataKey, executeQuery, deleteData, truncateData} from "@/_custom/scripts/server";
+import query from "@/_custom/scripts/sqlite3-query";
 import {devLog} from "@/_custom/scripts/common";
 
 const imageDir = "/temp/uploads";
@@ -35,6 +36,15 @@ export async function POST(req) {
       await deleteData("patrol", "patrol_name", data.get("patrol"));
       await deleteData("patrol_result", "patrol_name", data.get("patrol"));
       returnData = data.get("patrol") + " deleted";
+    } else if (apitype === "delete_raid" && data.has("raid")) {
+      let raid = data.get("raid");
+      await deleteData("raid", "raid_name", raid);
+      returnData = raid + " deleted";
+    } else if (apitype === "delete_raid_list" && data.has("raid")) {
+      let raid = data.get("raid_user");
+      devLog("delete_raid_list", raid);
+      await deleteData("raid_list", "raid_user", raid);
+      returnData = raid + " deleted";
     }
     return NextResponse.json({message: "upload And Images uploaded successfully " + returnData});
   } catch (error) {

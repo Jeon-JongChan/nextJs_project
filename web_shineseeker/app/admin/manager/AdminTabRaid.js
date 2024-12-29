@@ -10,10 +10,10 @@ import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import NotificationModal from "@/_custom/components/NotificationModal";
 import {getImageUrl} from "@/_custom/scripts/client";
 
-const menuName = "menu";
+const menuName = "raid";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
-  const [monster, setMonster] = useState(null);
+  const [monster, setMonster] = useState([]);
   const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
@@ -42,11 +42,11 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
-    devLog("clickListItem", patrolOptionList, maindata);
+    devLog("clickListItem", maindata);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
-      devLog("click", name, data, clickImage);
+      devLog("click", name, data);
 
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img`) || input.id.startsWith(`${menuName}_ret_img`) || input.id.startsWith(`${menuName}_select`)) return; // 특수 input은 제외
@@ -56,7 +56,6 @@ export default function Home() {
           console.error(input, e);
         }
       });
-      setInputOptionList(data.choices ? Object.keys(data.choices) : [0, 1, 2]);
 
       // 3. 사용효과(select) 채우기
       const selectElements = document.querySelectorAll(`.${menuName}-form form select`);
@@ -96,10 +95,10 @@ export default function Home() {
   };
 
   async function fetchEssentialData() {
-    console.info("ADMIN DATA MANAGEMENT PAGE : 패트롤 항목 선택되었습니다.");
+    console.info("ADMIN DATA MANAGEMENT PAGE : 몬스터 항목 선택되었습니다.");
     const response = await fetch("/api/select?apitype=monster&getcount=1");
     const newData = await response.json();
-    if (newData?.data?.length) setMonster(...newData?.data);
+    if (newData?.data?.length) setMonster([...newData.data]);
     devLog("essential data monster: ", newData);
   }
 
@@ -109,7 +108,7 @@ export default function Home() {
     if (fetchIndex++ == 0) response = await fetch(`/api/select?apitype=${menuName}&getcount=1`);
     else response = await fetch(`/api/select?apitype=${menuName}`);
     const newData = await response.json();
-    if (newData?.data?.length) {
+    if (newData?.data) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
       setMainData([...newData.data]);
     }
@@ -117,7 +116,7 @@ export default function Home() {
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    //fetchEssentialData();
+    fetchEssentialData();
     fetchData();
     const intervalId = setInterval(fetchData, 5 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
@@ -130,10 +129,10 @@ export default function Home() {
         <h3 className="text-center font-bold text-2xl">레이드 리스트</h3>
         <div className="flex flex-wrap w-full row-gap-0 h-fit bg-slate-100 max-h-screen overflow-y-auto">
           {Object.keys(maindata).map((key, index) => {
-            if (maindata[key]["patrol_name"]) {
+            if (maindata[key]["raid_name"]) {
               return (
-                <Tooltip key={index} content={<span>{maindata[key]["patrol_desc"]}</span>} css={"w-full"}>
-                  <ListItemIndex label={maindata[key]["patrol_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} alignDir={"left"} />
+                <Tooltip key={index} content={<span>보스몬스터 : {maindata[key]["monster_name"]}</span>} css={"w-full"}>
+                  <ListItemIndex label={maindata[key]["raid_name"]} index={index} onclick={clickListItem} deleteButton={true} deleteFunc={deleteTarget} alignDir={"left"} />
                 </Tooltip>
               );
             }
@@ -141,17 +140,12 @@ export default function Home() {
         </div>
       </div>
       <div className={`w-4/5 flex flex-col ${menuName}-form`}>
-        <form
-          onSubmit={handleSubmitUser}
-          data-apitype={`update_${menuName}`}
-          className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full"
-          style={{minHeight: "400px"}}
-        >
+        <form onSubmit={handleSubmitUser} data-apitype={`update_${menuName}`} className="grid grid-cols-12 gap-1 shadow sm:overflow-hidden sm:rounded-md p-4 bg-slate-100 w-full" style={{minHeight: "400px"}}>
           <MakeInputList inputNameObjects={inputNames} />
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
-      {monster && <Autocomplete id={"#monster_name"} data={monster} autokey={"monster_name"} />}
+      <Autocomplete id={"#monster_name"} data={monster} autokey={"monster_name"} />
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );

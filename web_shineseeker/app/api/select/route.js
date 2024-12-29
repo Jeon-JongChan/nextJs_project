@@ -13,8 +13,8 @@ export async function GET(req) {
     let data = null;
     if (apioption === "one_user") {
       let userid = searchParams.get("userid");
-      data = await getDataKeyTimeCheck(apitype, "userid", userid, getcount == "1" ? 0 : 60, true);
-    } else data = await getData(apitype, getcount == 1 ? 0 : 60, true, {order: 1});
+      data = await getDataKeyTimeCheck(apitype, "userid", userid, getcount == "1" ? 0 : 15, true);
+    } else data = await getData(apitype, getcount == 1 ? 0 : 15, true, {order: 1});
     // devLog(`select ${getcount} 번째 GET ::::::: `, searchParams, apitype, data);
     if (data) {
       if (apitype === "user") {
@@ -73,12 +73,14 @@ export async function GET(req) {
         // monster의 경우 해당하는 monster_event값을 배열로 추가해줘야함
         for (let i = 0; i < data.length; i++) {
           let monster_events = await getDataKey("monster_event", "monster_name", data[i].monster_name, true);
-          monster_events.forEach((event) => {
-            for (let key in event) {
-              if (key === "monster_event_idx" || key === "monster_name") continue;
-              else data[i][`${key}_${event.monster_event_idx}`] = event[key];
-            }
-          });
+          if (monster_events?.length) {
+            monster_events.forEach((event) => {
+              for (let key in event) {
+                if (key === "monster_event_idx" || key === "monster_name") continue;
+                else data[i][`${key}_${event.monster_event_idx}`] = event[key];
+              }
+            });
+          }
         }
       } else if (apitype === "patrol") {
         // monster의 경우 해당하는 monster_event값을 배열로 추가해줘야함
@@ -94,9 +96,22 @@ export async function GET(req) {
       } else if (apitype === "raid") {
         // raid의 경우 해당하는 raid_userlist값을 배열로 추가해줘야함
         for (let i = 0; i < data.length; i++) {
-          let raid_userlist = await getDataKey("raid_userlist", "raid_name", data[i].raid_name, true);
-          if (raid_userlist.length) {
-            data[i].raid_userlist = raid_userlist;
+          let raid_userlist = await getDataKey("raid_list", "raid_name", data[i].raid_name, true, {order: "raid_order, raid_user"});
+          if (raid_userlist?.length) {
+            data[i].userlist = raid_userlist;
+          }
+        }
+      } else if (apitype === "skill") {
+        // skill의 경우 해당하는 skill_operator값을 배열로 추가해줘야함
+        for (let i = 0; i < data.length; i++) {
+          let operators = await getDataKey("skill_operator", "skill_name", data[i].skill_name, true, {order: "skill_operator_order"});
+          if (operators) {
+            // skill_operator_order를 key로 가진 객체의 배열을 생성하여 추가
+            let temp = {};
+            operators.forEach((operator) => {
+              temp[operator.skill_operator_order] = operator;
+            });
+            data[i].operators = temp;
           }
         }
       } else if (apitype === "page") {

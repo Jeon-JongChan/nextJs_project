@@ -12,6 +12,7 @@ export async function POST(req) {
     const pagename = apitype.split("_").pop() || "main";
     devLog("upload-page => ", data.get("apitype"), data, pagename);
     if (apitype === "update_main") returnData = await updatePage(data, pagename);
+    else if (apitype === "update_raid") returnData = await updateRaidList(data, pagename);
     else returnData = await updatePage(data, pagename);
     return NextResponse.json({message: "upload And Images uploaded successfully", returnData: returnData});
   } catch (error) {
@@ -63,4 +64,33 @@ async function updatePage(data, pagename) {
   await saveData("page", saveArray, true); // 새로운 데이터 저장
 
   return saveArray;
+}
+/*==============================================================================================================================================*/
+/*================================================================== 레이드 리스트 갱신 ==================================================================*/
+/*==============================================================================================================================================*/
+async function updateRaidList(data, pagename) {
+  const essentialDataList = ["raid_name"];
+  const exceptList = ["file", "apitype"];
+  let raid_users = [], raid = {}, raid_name = null; // prettier-ignore
+  if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
+  raid_name = data.get("raid_name");
+  // 이미지를 제외한 데이터만 추출
+  for (const [key, value] of data.entries()) {
+    if (!exceptList.includes(key)) {
+      if (key.startsWith("raid_user")) {
+        if (!value) continue;
+        let index = key.split("_").pop();
+        let raid_order = data.get(`raid_order_${index}`);
+        raid_users.push({raid_name : raid_name, raid_user: value, raid_order : raid_order});
+      }
+      else if (key.startsWith("raid_order")) continue // 스킬 상세정보 저장
+      else raid[key] = value; // 스킬 정보 저장
+    }
+  }
+  
+  devLog("update all data ######################## ", raid, raid_users);
+  deleteData("raid_list", "raid_name", raid.raid_name); // 기존값 삭제 (삭제요소 대비)
+  await saveData("raid_list", raid_users, true); // 새로운 데이터 저장
+  await saveData("raid", raid); // 새로운 데이터 저장
+
 }

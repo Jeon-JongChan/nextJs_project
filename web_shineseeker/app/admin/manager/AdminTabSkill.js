@@ -2,20 +2,23 @@
 import {updateDataWithFormInputs} from "/_custom/scripts/client";
 import React, {useState, useEffect} from "react";
 import {devLog} from "@/_custom/scripts/common";
+import {getImageUrl} from "@/_custom/scripts/client";
+import NotificationModal from "@/_custom/components/NotificationModal";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
+import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
 import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
+import GridInputSelectBox from "/_custom/components/_common/grid/GridInputSelectBox";
 import MakeInputList from "./MakeInputList";
-import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
-import Tooltip from "@/_custom/components/_common/TooltipFixed";
-import NotificationModal from "@/_custom/components/NotificationModal";
-import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "skill";
 export default function Home() {
   const [maindata, setMainData] = useState([]);
   const [clickImage, setClickImage] = useState([]);
   const [skillList, setSkillList] = useState({});
+  const [skillOperatorIndex, setSkillOperatorIndex] = useState([]);
+  const [clickedSkill, setClickedSkill] = useState(null);
   const [noti, setNoti] = useState(null);
   let fetchIndex = 0;
 
@@ -44,11 +47,12 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
-    devLog("clickListItem", skillList, maindata);
+    if (data?.operators) setSkillOperatorIndex([...Object.keys(data.operators)]);
+    devLog("clickListItem", skillList, maindata, data?.operators, [...Object.keys(data.operators)]);
     if (data) {
       // 1. 일반 input 값 채우기
       const updataFormInputList = document.querySelectorAll(`.${menuName}-form form input`);
-      devLog("clickUser", name, data, clickImage);
+      // devLog("clickUser", name, data, clickImage);
 
       updataFormInputList.forEach((input) => {
         if (input.id.startsWith(`${menuName}_img_`) || input.id.startsWith(`${menuName}_option_`)) return; // 특수 input은 제외
@@ -65,12 +69,63 @@ export default function Home() {
       selectElements.forEach((select) => {
         select.value = data[select.id];
       });
-      // textarea 채우기
+      // 4.textarea 채우기
       const textareaElements = document.querySelectorAll(`.${menuName}-form form textarea`);
       textareaElements.forEach((textarea) => {
         textarea.value = data[textarea.id];
       });
+      setClickedSkill(data);
     }
+  };
+
+  const manageOption = (e, index = -1) => {
+    e.stopPropagation();
+    devLog("manageOption", skillOperatorIndex, index);
+    // prettier-ignore
+    if (index === -1) {
+      // 길이가 0이면 그냥 추가 (id는 0부터 시작이지만, 객체 순서는 1부터 시작이므로 1 추가)
+      if (skillOperatorIndex.length === 0) {
+        setSkillOperatorIndex(['1']);
+      } else {
+        // 길이가 0이 아니면 마지막 index에 +1 추가 (max값 가져와서 추가)
+        const newSkillOperatorIndex = [...skillOperatorIndex];
+        const maxIndex = Math.max(...newSkillOperatorIndex.map((i) => parseInt(i)));
+        devLog("쌈뽕하게 최대값 추가라이거여", maxIndex, newSkillOperatorIndex);
+        newSkillOperatorIndex.push((maxIndex + 1).toString());
+        setSkillOperatorIndex(newSkillOperatorIndex);
+      }
+    }
+    else {
+      // index 값이 있으면 해당 index를 제외한 나머지만 배열에 넣기
+      const deleteIdx = (index + 1).toString();
+      const newSkillOperatorIndex = skillOperatorIndex.filter((idx, i) => idx !== deleteIdx);
+      setSkillOperatorIndex(newSkillOperatorIndex);
+      // clickedSkill에서 operators 객체에 index+1에 해당하는 객체가 있으면 제거 후 다시 저장
+      if (clickedSkill?.operators?.[deleteIdx]) {
+      devLog("delete operator", deleteIdx, clickedSkill.operators, clickedSkill.operators[deleteIdx]);
+      delete clickedSkill.operators[deleteIdx];
+      devLog("delete operator >>>>>>>>>>>>>>>>>>> ", deleteIdx, clickedSkill.operators, clickedSkill.operators[deleteIdx]);
+
+      fillOperator(clickedSkill.operators);
+    }
+    }
+  };
+
+  const fillOperator = (operators) => {
+    const newSkillOperatorIndex = [...Object.keys(operators)];
+    newSkillOperatorIndex.forEach((index) => {
+      let idx = parseInt(index) - 1;
+      const operator = operators[index];
+      devLog("fillOperator", idx, operator);
+      let temp = document.querySelector(`#skill_operator_order_${idx}`);
+      if (temp) temp.value = operator.skill_operator_order;
+      temp = document.querySelector(`#skill_operator_type_${idx}`);
+      if (temp) temp.value = operator.skill_operator_type;
+      temp = document.querySelector(`#skill_operator_value_${idx}`);
+      if (temp) temp.value = operator.skill_operator_value;
+      temp = document.querySelector(`#skill_operator_etc_${idx}`);
+      if (temp) temp.value = operator.skill_operator_etc;
+    });
   };
 
   // fileDragAndDrop에서 이미지를 바꿀경우 상위 stat 수정
@@ -137,19 +192,34 @@ export default function Home() {
     else response = await fetch(`/api/select?apitype=${menuName}`);
     const newData = await response.json();
     if (newData?.data?.length) {
-      devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
-      setMainData([...newData.data]);
+      let data = newData.data;
+      devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, data);
+      setMainData([...data]);
+      // 클릭된 스킬이 있으면 갱신
+      if (clickedSkill) {
+        const newClickedSkill = data.find((d) => d[`skill_name`] === clickedSkill[`skill_name`]);
+        setClickedSkill(newClickedSkill);
+      }
     }
   }
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
-    fetchEssentialData();
+    // fetchEssentialData();
     fetchData();
     const intervalId = setInterval(fetchData, 5 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
     return () => clearInterval(intervalId);
   }, []);
+
+  //클릭 시 연산자 데이터를 추가해주는 useEffect
+  useEffect(() => {
+    // 5. 만들어진 스킬 연산자 채우기
+    let data = clickedSkill;
+    if (data?.operators) {
+      fillOperator(data?.operators);
+    }
+  }, [clickedSkill]);
 
   return (
     <div className="flex w-full">
@@ -183,11 +253,25 @@ export default function Home() {
             )}
           </div>
           <MakeInputList inputNameObjects={inputNames} checkboxOptionObjects={ Object.keys(skillList).length ? skillList : skillDefaultList} />
-          <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
+          <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 데미지 연산자</h1>
+          {skillOperatorIndex.map((index, idx) => {
+            index = parseInt(index) - 1;
+            return (
+            <div key={index} className="grid grid-cols-12 gap-1 col-span-full">
+              <GridInputText label={"계산순서"} id={`skill_operator_order_${index}`} type={"number"} colSpan={2} default={index+1} css="border-b h-[36px]" numberMin={1} />
+              <GridInputSelectBox label={"계산연산값"} id={`skill_operator_type_${index}`} type={"text"} colSpan={2} options={skillDefaultList.skill_operator_option} css="font-nexon"/>
+              <GridInputText label={"값"} id={`skill_operator_value_${index}`} type={"number"} colSpan={2} css="border-b h-[36px]" />
+              <GridInputText label={"기타"} id={`skill_operator_etc_${index}`} type={"text"} colSpan={2} default={""} css="border-b h-[36px]" />
+              <GridInputButton colSpan={4} label={"연산 삭제"} type="button" buttonColor="red" onclick={(e) => manageOption(e, index)} css="relative top-[17px]"/>
+            </div>
+          )})}
+          <div className="col-span-8" />
+          <GridInputButton colSpan={4} label={"연산 추가 생성"} type="button" onclick={(e) => manageOption(e)} />
+          {/* <h1 className="mt-8 col-span-full font-bold text-2xl">스킬 사용효과 리스트 입력칸 ( 구분자 &apos;,&apos; 로 해주세요 )</h1>
           <GridInputText label={"스킬 유형"} id={"skill_option_type"} type={"text"} colSpan={12} default={skillDefaultList.skill_type.join(',') } css="border-b" />
-          <GridInputText label={"스킬 범위"} id={"skill_option_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" />
-          <GridInputText label={"위력 능력치"} id={"skill_option_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(',')} css="border-b" />
-          <GridInputText label={"스킬소비항목"} id={"skill_option_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(',')} css="border-b" />
+          <GridInputText label={"스킬 범위"} id={"skill_option_range"} type={"text"} colSpan={12} default={skillDefaultList.skill_range.join(',')} css="border-b" /> */}
+          {/* <GridInputText label={"위력 능력치"} id={"skill_option_stat"} type={"text"} colSpan={12} default={skillDefaultList.skill_stat.join(',')} css="border-b" /> */}
+          {/* <GridInputText label={"스킬소비항목"} id={"skill_option_cost"} type={"text"} colSpan={12} default={skillDefaultList.skill_cost_stat.join(',')} css="border-b" /> */}
           <GridInputButton colSpan={12} label={"submit"} type="submit" />
         </form>
       </div>
@@ -197,11 +281,12 @@ export default function Home() {
 }
 
 const skillDefaultList = {
-  skill_type: ["공격", "방어", "회복", "정지", "조정"],
-  skill_range: ["자신", "아군", "적", "전체"],
-  skill_operator_option: ["곱", "합", "잔여곱"],
-  skill_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
-  skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
+  skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁극기"],
+  skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
+  skill_operator_option: ["HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
+  // skill_operator_option: ["곱", "합", "잔여곱"],
+  // skill_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
+  // skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
 };
 // ** id에 하이푼(-) 대신 언더바(_) 사용할 것 (sql 컬럼명과 동일하게)
 const inputNames = [
@@ -210,13 +295,15 @@ const inputNames = [
   {label: "설명", id: "skill_desc", inputType: "textarea", colSpan: 12},
   {header: "사용효과", label: "유형", id: "skill_type", inputType: "checkbox", class: "skill_type", colSpan: 2},
   {label: "범위", id: "skill_range", inputType: "checkbox", class: "skill_range", colSpan: 2},
-  {label: "위력능력치", id: "skill_stat", inputType: "checkbox", class: "skill_stat", colSpan: 2},
-  {label: "적용비율(%)", id: "skill_rate", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
-  {label: "스킬소비연산", id: "skill_operator", inputType: "checkbox", class: "skill_operator_option", colSpan: 1},
-  {label: "스킬소비항목", id: "skill_cost_stat", inputType: "checkbox", class: "skill_stat", colSpan: 1},
-  {label: "소비계수", id: "skill_cost", type: "number", css: " h-[36px]", colSpan: 2},
-  {label: "조정 능력치 (조정시 사용됨)", id: "skill_control_cost", inputType: "checkbox", class: "skill_stat", colSpan: 3},
-  {label: "조정 능력 계수", id: "skill_control_rate", class: "skill", css: " h-[36px]", colSpan: 2},
-  {label: "랜덤 최소 계수", id: "skill_min", class: "skill", css: " h-[36px]", colSpan: 2},
-  {label: "랜덤 최대 계수", id: "skill_max", class: "skill", css: " h-[36px]", colSpan: 2},
+  {label: "시작 턴", id: "skill_start_turn", type: "number", class: "skill", css: " h-[36px]", colSpan: 2, numberMin: 0},
+  {label: "지속 턴", id: "skill_duration_turn", type: "number", class: "skill", css: " h-[36px]", colSpan: 2, numberMin: 0},
+  // {label: "위력능력치", id: "skill_stat", inputType: "checkbox", class: "skill_stat", colSpan: 2},
+  // {label: "적용비율(%)", id: "skill_rate", type: "number", class: "skill", css: " h-[36px]", colSpan: 2},
+  // {label: "스킬소비연산", id: "skill_operator", inputType: "checkbox", class: "skill_operator_option", colSpan: 1},
+  // {label: "스킬소비항목", id: "skill_cost_stat", inputType: "checkbox", class: "skill_stat", colSpan: 1},
+  // {label: "소비계수", id: "skill_cost", type: "number", css: " h-[36px]", colSpan: 2},
+  // {label: "조정 능력치 (조정시 사용됨)", id: "skill_control_cost", inputType: "checkbox", class: "skill_stat", colSpan: 3},
+  // {label: "조정 능력 계수", id: "skill_control_rate", class: "skill", css: " h-[36px]", colSpan: 2},
+  // {label: "랜덤 최소 계수", id: "skill_min", class: "skill", css: " h-[36px]", colSpan: 2},
+  // {label: "랜덤 최대 계수", id: "skill_max", class: "skill", css: " h-[36px]", colSpan: 2},
 ];

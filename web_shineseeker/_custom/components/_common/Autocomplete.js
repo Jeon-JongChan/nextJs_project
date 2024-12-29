@@ -20,49 +20,53 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
 
   // id가 변경되면 input에 이벤트 리스너를 추가하는 effect
   useEffect(() => {
-    console.log("Autocomplete.js useEffect", id, data);
-    inputElement = document.querySelector(id);
-    if (inputElement && data?.length > 0) {
-      // input 요소의 넓이를 설정
-      setDropdownWidth(inputElement.offsetWidth);
+    try {
+      inputElement = document.querySelector(id);
+      // console.log("Autocomplete.js useEffect", id, inputElement, data);
+      if (inputElement && data?.length > 0) {
+        // input 요소의 넓이를 설정
 
-      const handleInputChange = (e) => {
-        e.preventDefault();
-        const value = e.target.value;
-        setInputValue(value);
+        setDropdownWidth(inputElement.offsetWidth);
 
-        // 입력값에 맞게 필터링
-        // prettier-ignore
-        const filtered = data.filter(item => {
-          // console.log("Autocomplete.js  filterd --> ",item, value, item.item_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()))
-          // item.item_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
+        const handleInputChange = (e) => {
+          e.preventDefault();
+          const value = e.target.value;
+          setInputValue(value);
+
+          // 입력값에 맞게 필터링
+          // prettier-ignore
+          const filtered = data.filter(item => {
           let name = item?.[autokey];
           return name.toLowerCase().includes(value)
         });
-        // console.log("Autocomplete.js --> ", value, data, filtered, data[0]?.[autokey].normalize("NFD"), data[0]?.[autokey].includes(value));
-        setFilteredData(filtered);
-        setIsDropdownVisible(filtered.length > 0 && value.trim() !== ""); // 입력값이 있을 때만 드롭다운 표시
-        setIsItemSelected(false); // 입력값이 변경되면 항목 선택 상태 초기화
-      };
+          console.log("Autocomplete.js --> ", value, data, filtered, data[0]?.[autokey].normalize("NFD"), data[0]?.[autokey].includes(value));
+          setFilteredData(filtered);
+          setIsDropdownVisible(filtered.length > 0 && value.trim() !== ""); // 입력값이 있을 때만 드롭다운 표시
+          setIsItemSelected(false); // 입력값이 변경되면 항목 선택 상태 초기화
+        };
 
-      const handleBlur = () => {
-        if (!isItemSelected) {
-          setTimeout(() => setIsDropdownVisible(false), 200);
-        }
-      };
+        const handleBlur = () => {
+          if (!isItemSelected) {
+            setTimeout(() => setIsDropdownVisible(false), 200);
+          }
+        };
 
-      // 이벤트 리스너 추가
-      inputElement.addEventListener("input", handleInputChange);
-      inputElement.addEventListener("blur", handleBlur);
+        // 이벤트 리스너 추가
+        inputElement.addEventListener("input", handleInputChange);
+        inputElement.addEventListener("blur", handleBlur);
 
-      // 드롭다운을 input의 하위 DOM으로 이동
-      inputElement.parentNode.insertBefore(dropdownRef.current, inputElement.nextSibling);
+        // 드롭다운을 input의 하위 DOM으로 이동
 
-      // 컴포넌트 언마운트 시 리스너 제거
-      return () => {
-        inputElement.removeEventListener("input", handleInputChange);
-        inputElement.removeEventListener("blur", handleBlur);
-      };
+        inputElement.parentNode.insertBefore(dropdownRef.current, inputElement.nextSibling);
+
+        // 컴포넌트 언마운트 시 리스너 제거
+        return () => {
+          inputElement.removeEventListener("input", handleInputChange);
+          inputElement.removeEventListener("blur", handleBlur);
+        };
+      }
+    } catch (e) {
+      console.log("Autocomplete.js --> ", e);
     }
   }, [data, id]);
 
@@ -79,7 +83,7 @@ export default function Autocomplete({data, id, onSelect, autokey = "name", heig
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative autocomplete" ref={dropdownRef}>
       {isDropdownVisible && filteredData.length > 0 && (
         <ul
           className="absolute left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg overflow-auto z-10"

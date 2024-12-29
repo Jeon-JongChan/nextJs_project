@@ -6,9 +6,10 @@ import AdminPageWorld from "./AdminPageWorld";
 import AdminPageRead from "./AdminPageRead";
 import AdminPageMarket from "./AdminPageMarket";
 import AdminPageBattle from "./AdminPageBattle";
+import AdminPageRaid from "./AdminPageRaid";
 
 export default function Home() {
-  const tabList = ["메인화면", "세계관", "필독", "교환소", "배틀"];
+  const tabList = ["메인화면", "세계관", "필독", "교환소", "배틀", "레이드방관리"];
   const [activeTab, setActiveTab] = useState(tabList[0]);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function Home() {
       {activeTab === tabList[2] && <AdminPageRead />}
       {activeTab === tabList[3] && <AdminPageMarket />}
       {activeTab === tabList[4] && <AdminPageBattle />}
+      {activeTab === tabList[5] && <AdminPageRaid />}
     </div>
   );
 }

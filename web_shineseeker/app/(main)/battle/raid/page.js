@@ -1,11 +1,11 @@
 "use client";
 import {useState} from "react";
-import Image from "next/image";
-import {devLog} from "/_custom/scripts/common";
-import {updateDataWithFormInputs} from "/_custom/scripts/client";
-import RaidProcessButton from "@/public/images/raid/05_raid_03_gobutton.png";
 import {getImageUrl} from "@/_custom/scripts/client";
+import {devLog} from "/_custom/scripts/common";
+import Image from "next/image";
+import RaidProcessButton from "@/public/images/raid/05_raid_03_gobutton.png";
 import SpriteAnimation from "@/_custom/components/SpriteAnimation";
+import ImageOverlay from "./ImageOverlay";
 
 export default function Home() {
   const [isGameEnded, setIsGameEnded] = useState(false);
@@ -16,33 +16,6 @@ export default function Home() {
   const hpMax = 200;
   const iconUrls = ["/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp", "/images/04_member_box.webp"];
   const MemberPosCss = ["top-[0px] left-[0px]", "top-[145px] left-[0px]", "top-[290px] left-[0px]", "top-[0px] right-[0px]", "top-[145px] right-[0px]", "top-[290px] right-[0px]"];
-
-  function Ended({isClear = true, image = "", item = ""}) {
-    return (
-      <div className={"fixed flex flex-col items-center justify-center w-screen h-screen z-50 top-0 left-0 " + (isClear ? "img-home-bg" : "bg-black")}>
-        <div className={"relative flex flex-col items-center justify-center text-white " + (isClear ? "img-raid-success-frame" : "bg-black")} style={{width: "670px", height: "420px"}}>
-          {isClear ? (
-            <>
-              <h6 className="relative text-[60px] font-bold">VICTORY!</h6>
-              <div className="relative flex items-center justify-center img-raid-icon-frame" style={{width: "145px", height: "145px"}}>
-                <img src={getImageUrl(image)} alt="raid-item" style={{width: "130px", height: "130px"}} />
-              </div>
-              <span className="relative text-[24px]">레이드를 성공했습니다.</span>
-              <span className="relative text-[24px]">{item} 을(를) 획득했습니다.</span>
-            </>
-          ) : (
-            <>
-              <h6 className="relative text-[60px] font-bold">DEFEAT!</h6>
-              <span className="relative text-[24px]">레이드에 실패했습니다....</span>
-            </>
-          )}
-        </div>
-        <button className="relative text-[24px] text-white" style={{top: "-445px", right: "-260px"}} onClick={() => setIsGameEnded(false)}>
-          홈으로 돌아가기▶
-        </button>
-      </div>
-    );
-  }
 
   return isGameEnded ? (
     <Ended isClear={isGameClear} item={"사람얼굴"} image={"/images/04_member_box.webp"} />
@@ -66,7 +39,7 @@ export default function Home() {
       >
         게임 성공
       </button>
-      <SpriteAnimation
+      {/* <SpriteAnimation
         spriteImage="/images/raid/StateDark.webp"
         frameWidth={100} // 한 프레임의 가로 크기
         frameHeight={100} // 한 프레임의 세로 크기
@@ -76,7 +49,8 @@ export default function Home() {
         scale={1}
         playCount={Infinity}
         // css="min-w-[500px] min-h-[500px]"
-      />
+      /> */}
+      <ImageOverlay show={"/images/raid/StateDark.webp"} onClose={() => devLog("Overlay Closed")} />
       <input type="number" max={200} onChange={(e) => setHpCurrent(e.target.value > 200 ? 200 : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" />
       <div className="absolute flex flex-col items-center" style={{width: "760px", height: "600px", top: "-30px"}}>
         <div className="relative block text-white text-[24px]">보스 이름</div>
@@ -139,6 +113,33 @@ function HPBar({maxHP, currentHP}) {
       <div className="absolute top-0 left-0 h-full bg-green-500 rounded-full transition-all duration-300" style={{width: `${hpPercentage}%`}} />
       {/* 흰색 바 (HP가 부족한 부분, 오른쪽에만 표시) */}
       {/* <div className="absolute top-0 right-0 h-full bg-white rounded-full transition-all duration-300" style={{width: `${100 - hpPercentage}%`}} /> */}
+    </div>
+  );
+}
+
+function Ended({isClear = true, image = "", item = ""}) {
+  return (
+    <div className={"fixed flex flex-col items-center justify-center w-screen h-screen z-50 top-0 left-0 " + (isClear ? "img-home-bg" : "bg-black")}>
+      <div className={"relative flex flex-col items-center justify-center text-white " + (isClear ? "img-raid-success-frame" : "bg-black")} style={{width: "670px", height: "420px"}}>
+        {isClear ? (
+          <>
+            <h6 className="relative text-[60px] font-bold">VICTORY!</h6>
+            <div className="relative flex items-center justify-center img-raid-icon-frame" style={{width: "145px", height: "145px"}}>
+              <img src={getImageUrl(image)} alt="raid-item" style={{width: "130px", height: "130px"}} />
+            </div>
+            <span className="relative text-[24px]">레이드를 성공했습니다.</span>
+            <span className="relative text-[24px]">{item} 을(를) 획득했습니다.</span>
+          </>
+        ) : (
+          <>
+            <h6 className="relative text-[60px] font-bold">DEFEAT!</h6>
+            <span className="relative text-[24px]">레이드에 실패했습니다....</span>
+          </>
+        )}
+      </div>
+      <button className="relative text-[24px] text-white" style={{top: "-445px", right: "-260px"}} onClick={() => setIsGameEnded(false)}>
+        홈으로 돌아가기▶
+      </button>
     </div>
   );
 }

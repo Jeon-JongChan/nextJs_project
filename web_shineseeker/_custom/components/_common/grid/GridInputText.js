@@ -36,6 +36,7 @@ export default function Component(props) {
   let css = props?.css || "";
   let numberMax = props?.numberMax || null;
   let numberMin = props?.numberMin || props?.numberMin === 0 ? 0 : null;
+  let step = props?.step || false;
 
   return (
     <>
@@ -58,6 +59,7 @@ export default function Component(props) {
           readOnly={readonly}
           className={[css, "mt-1 block w-full focus:outline-none rounded-md", "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500", readonlyClass].join(" ")}
           defaultValue={defaultValue || ""}
+          step={step ? step : undefined}
         />
       </div>
     </>

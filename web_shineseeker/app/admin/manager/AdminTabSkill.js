@@ -260,7 +260,7 @@ export default function Home() {
             <div key={index} className="grid grid-cols-12 gap-1 col-span-full">
               <GridInputText label={"계산순서"} id={`skill_operator_order_${index}`} type={"number"} colSpan={2} default={index+1} css="border-b h-[36px]" numberMin={1} />
               <GridInputSelectBox label={"계산연산값"} id={`skill_operator_type_${index}`} type={"text"} colSpan={2} options={skillDefaultList.skill_operator_option} css="font-nexon"/>
-              <GridInputText label={"값"} id={`skill_operator_value_${index}`} type={"number"} colSpan={2} css="border-b h-[36px]" />
+              <GridInputText label={"값"} id={`skill_operator_value_${index}`} type={"number"} colSpan={2} css="border-b h-[36px]" step={0.001} />
               <GridInputText label={"기타"} id={`skill_operator_etc_${index}`} type={"text"} colSpan={2} default={""} css="border-b h-[36px]" />
               <GridInputButton colSpan={4} label={"연산 삭제"} type="button" buttonColor="red" onclick={(e) => manageOption(e, index)} css="relative top-[17px]"/>
             </div>
@@ -281,9 +281,9 @@ export default function Home() {
 }
 
 const skillDefaultList = {
-  skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁극기"],
+  skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁-공격", "궁-방어", "궁-속도", "궁-도발", "궁-회복", "궁-부활", "궁-조정"],
   skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
-  skill_operator_option: ["HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
+  skill_operator_option: ["본인소모", "HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
   // skill_operator_option: ["곱", "합", "잔여곱"],
   // skill_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],
   // skill_cost_stat: ["HP", "ATK", "DEF", "WIS", "AGI", "LUK"],

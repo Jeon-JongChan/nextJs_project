@@ -2,7 +2,7 @@ import http from "http";
 import next from "next";
 import {Server} from "socket.io";
 const dev = process.env.NODE_ENV !== "production";
-const hostname = process.env.NEXTAUTH_URL || "http://localhost";
+const hostname = process.env.NEXTAUTH_URL || process.env.IP || "http://localhost";
 const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({dev, hostname, port});

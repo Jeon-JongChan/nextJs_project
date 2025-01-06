@@ -10,6 +10,7 @@ import NextIndicator from "@/public/images/next.webp";
 import LogViewer from "@/_custom/components/LogViewer";
 import SpriteAnimation from "@/_custom/components/SpriteAnimation";
 import ImageOverlay from "./ImageOverlay";
+import {parse} from "next/dist/build/swc";
 
 export default function Home({params}) {
   const [isGameEnded, setIsGameEnded] = useState(false);
@@ -38,6 +39,12 @@ export default function Home({params}) {
       newData.data.users.forEach((user, index) => {
         raidTargetUsers.current.push(user.userid);
         user.maxHP = user.user_hp;
+        user.hp = user.user_hp;
+        user.wis = user.user_wis;
+        user.agi = user.user_agi;
+        user.luk = user.user_luk;
+        user.def = user.user_def;
+        user.atk = user.user_atk;
         if (!user?.skillImages) user.skillImages = [];
         if (!user?.effectImages) user.effectImages = [];
         user.skills.forEach((skill) => {
@@ -51,7 +58,15 @@ export default function Home({params}) {
     }
     if (newData?.data?.boss) {
       devLog("보스데이터 가져오기 완료 ::::", newData.data.boss);
-      setBoss(newData.data.boss[0]);
+      let boss = newData.data.boss[0];
+      boss.maxHP = boss.monster_hp;
+      boss.hp = boss.monster_hp;
+      boss.wis = boss.monster_wis;
+      boss.agi = boss.monster_agi;
+      boss.luk = boss.monster_luk;
+      boss.def = boss.monster_def;
+      boss.atk = boss.monster_atk;
+      setBoss(boss);
       setHpCurrent(newData.data.boss[0].monster_hp);
       setOrder((prevOrder) => [...prevOrder, {userid: "boss", order: order.length, active: false}]);
     }
@@ -122,7 +137,109 @@ export default function Home({params}) {
       e.target.value = "";
     }
   };
+  const makeRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  function battleCalculation(skill, my = null) {
+    devLog("battleCalculation", skill);
+    my = my ? my : tokenRef?.current?.user?.name;
+    let range = skill.skill_range;
+    let operator = skill.operator;
+    let myData = my === "boss" ? boss : users.find((user) => user.userid === my);
 
+    let returnData = {};
+    let targetName = [];
+    let Consumption = {};
+    let damage = 0;
+    let prevOperator = null;
+    let turnModify = 0;
+    // skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁-공격", "궁-방어", "궁-속도", "궁-도발", "궁-회복", "궁-부활", "궁-조정"],
+    // skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
+    // skill_operator_option: ["본인소모", "HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
+    /******************************************** 범위 계산 */
+    if (range === "자신") {
+      targetName.push(my);
+    } else if (range === "아군전체") {
+      targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+    } else if (range === "아군(자신제외1체)") {
+      let temp = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+      // 랜덤한 정수 ( temp 배열 길이 이내 ) 생성 ( 최소값 1 )
+      let random = makeRandomNumber(0, temp.length - 1);
+      targetName.push(temp[random]);
+    } else if (range === "아군전체(자신제외)") {
+      targetName = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+    } else if (range === "적(1체)") {
+      if (my === "boss") {
+        let temp = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+        let random = makeRandomNumber(0, temp.length - 1);
+        targetName.push(temp[random]);
+      } else targetName.push("boss");
+    } else if (range === "적전체") {
+      if (my === "boss") targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+      else targetName.push("boss");
+    } else if (range === "전체") {
+      targetName = order.map((item) => item.userid);
+    }
+    /******************************************** 소모량 및 데미지 계산 */
+    operator.forEach((op) => {
+      let type = op.skill_operator_type;
+      let value = parseFloat(op.skill_operator_value);
+      let etc = op.skill_operator_etc;
+      let cal = 0;
+
+      if (type === "본인소모") {
+        if (["HP", "LUK"].includes(etc)) {
+          Consumption.value = -value;
+          Consumption.type = etc;
+        }
+      } else if (type === "HPx") {
+        cal += myData.hp * value;
+      } else if (type === "ATKx") {
+        cal += myData.atk * value;
+      } else if (type === "DEFx") {
+        cal += myData.def * value;
+      } else if (type === "WISx") {
+        cal += myData.wis * value;
+      } else if (type === "AGIx") {
+        cal += myData.agi * value;
+      } else if (type === "LUKx") {
+        cal += myData.luk * value;
+      } else if (type === "랜덤값") {
+        let random = makeRandomNumber(-value, value + 1);
+        cal += random;
+      } else if (type === "랜덤값+랜덤보정값") {
+        let random = makeRandomNumber(-value, value + 1);
+        let Adjustment = parseFloat(etc) || 0;
+        cal += random + Adjustment;
+      } else if (type === "더하기") {
+        cal += value;
+      } else if (type === "곱하기") {
+        cal = damage * value;
+      } else if (type === "사이곱") {
+        prevOperator = "*";
+      } else if (type === "사이더하기") {
+        prevOperator = "+";
+      } else if (type === "턴조정") {
+        // 턴 조정
+        turnModify = value;
+      }
+
+      if (prevOperator === "*") {
+        damage *= cal;
+      } else if (prevOperator === "+") {
+        damage += cal;
+      } else {
+        damage += cal;
+      }
+    });
+
+    returnData.target = targetName;
+    returnData.Consumption = Consumption;
+    returnData.damage = damage;
+    returnData.turnModify = turnModify;
+    return returnData;
+  }
+  /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
   useEffect(() => {
     socketDataRef.current = {type: "", data: null};
     fetchData();
@@ -147,8 +264,9 @@ export default function Home({params}) {
             let targetSkill = targetUser ? targetUser.userSkill.find((skill) => skill?.skill_name === data.clickedSkill) : null;
             if (targetUser && targetSkill) {
               // 적용할 대상 계산
+              let type = targetSkill.skill_type;
               order.forEach((item, index) => {
-                if (item.userid === data.clickUser) {
+                if (calculationData.target?.includes(item.userid)) {
                   item.effect = targetSkill.skill_img_1 || "/images/raid/Slash.webp";
                 }
               });
@@ -221,7 +339,7 @@ export default function Home({params}) {
       {/* <button className="fixed text-[40px] top-0" onClick={() => {setIsGameEnded(true); setIsGameClear(false);}}>게임 실패</button>
       <button className="fixed text-[40px] top-0 left-[40px]" onClick={() => { setIsGameEnded(true); setIsGameClear(true);}}>게임 성공</button>
       {/* <ImageOverlay image={"/images/ultimate.webp"} onClose={() => devLog("Overlay Closed")} /> */}
-      <input type="number" max={parseInt(boss?.monster_hp) || 100} onChange={(e) => setHpCurrent(e.target.value > parseInt(boss?.monster_hp) ? parseInt(boss.monster_hp) : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" />
+      {/* <input type="number" max={parseInt(boss?.monster_hp) || 100} onChange={(e) => setHpCurrent(e.target.value > parseInt(boss?.monster_hp) ? parseInt(boss.monster_hp) : e.target.value)} className="fixed text-[40px] top-0 right-[40px]" /> */}
       <div className="absolute flex flex-col items-center" style={{width: "760px", height: "600px", top: "-30px"}}>
         {order?.[order.length - 1]?.active && <Image src={NextIndicator} alt="next-indicator" width={64} height={64} className="absolute top-[-50px] rotate-90" />}
         <div className="relative block text-white text-[24px]">{boss?.monster_name || "보스 이름"}</div>

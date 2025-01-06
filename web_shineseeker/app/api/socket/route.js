@@ -17,7 +17,6 @@ const addUserToRoom = (roomId, username) => {
     return true;
   }
   return false;
-  0;
 };
 
 /**
@@ -44,10 +43,16 @@ const getUsersInRoom = (roomId) => {
 
 // 기본적으로 Next.js의 socket은 서버리스 환경에서는 `server` 객체에만 존재하므로, 소켓 서버가 없으면 생성해줍니다.
 export async function GET(req, res) {
+  if (!res.socket) {
+    console.error("소켓 객체가 없습니다. 서버 설정을 확인하세요.", req.socket);
+    res.status(500).end("소켓 객체를 찾을 수 없습니다.");
+    return;
+  }
+
   // 기존에 소켓 서버가 초기화되어 있지 않으면 초기화합니다.
   if (!res.socket.server.io) {
     const io = new Server(res.socket.server, {
-      path: "/api/socket", // path를 명시하여 클라이언트와 서버 간 경로를 설정합니다.
+      path: "/api/socket",
       addTrailingSlash: false,
       cors: {
         origin: "*", // 모든 도메인에서 접근 가능
@@ -55,6 +60,7 @@ export async function GET(req, res) {
     });
 
     res.socket.server.io = io;
+    console.log("소켓 서버가 초기화되었습니다.");
 
     io.on("connection", (socket) => {
       console.log("클라이언트 연결됨:", socket.id);

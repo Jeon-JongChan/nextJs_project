@@ -44,6 +44,8 @@ const query = {
     raid_user: "SELECT IFNULL((SELECT 1 FROM raid WHERE raid_reader=? LIMIT 1), 0) isreader, IFNULL((SELECT 1 FROM raid_list WHERE raid_user=? LIMIT 1), 0) isuser",
     raid_create_user: "SELECT IFNULL((SELECT 1 FROM raid WHERE raid_name=? and raid_reader = ?), 0) isreader",
     raid_last_order: "SELECT MAX(total_user) total_user, MAX(raid_order) last_order FROM (SELECT raid_name, total_user FROM raid WHERE raid_name = ?) a INNER JOIN raid_list b ON a.raid_name = b.raid_name",
+    raid_user_list: "SELECT B.* , raid_order FROM ( SELECT * FROM raid_list WHERE raid_name=? ) A INNER JOIN user B ON B.userid=A.raid_user ORDER BY A.raid_order",
+    raid_monster: "SELECT A.raid_reader, total_user, B.* FROM ( SELECT * FROM raid WHERE raid_name = ? ) A INNER JOIN monster B ON B.monster_name=A.monster_name",
   },
   update: {
     user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",

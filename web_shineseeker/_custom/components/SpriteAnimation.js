@@ -98,7 +98,7 @@ const SpriteAnimation = forwardRef(
       };
     }, [isVisible]);
 
-    return isVisible ? (
+    return isVisible && spriteImage ? (
       <div
         ref={spriteRef}
         className={css}

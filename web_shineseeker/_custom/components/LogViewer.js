@@ -33,7 +33,7 @@ const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical
         fontFamily: "monospace", // 로그 스타일
       }}
     >
-      {log.map((log, index) => (
+      {log?.map((log, index) => (
         <div
           key={index}
           style={{

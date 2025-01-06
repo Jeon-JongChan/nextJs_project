@@ -54,6 +54,7 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
+    setJobSkillList([]);
     devLog("clickListItem", jobSkillList, maindata);
     if (data) {
       // 1. 일반 input 값 채우기

@@ -133,7 +133,7 @@ export default function Home() {
         setNoti("레이드 참가 실패했습니다. 관리자에게 문의하세요.");
       });
   };
-  const handleSpectate = (e) => {
+  const handleSpectate = (e, raid_name) => {
     e.stopPropagation();
     const targetRaid = e.target.parentElement.parentElement.querySelector(".raid-title")?.innerText;
     if (!targetRaid || !user) {
@@ -146,6 +146,12 @@ export default function Home() {
       alert("이미 레이드에 참가한 유저입니다.");
       return;
     }
+
+    if (raid?.userlist.length < raid.total_user) {
+      alert("레이드 인원이 부족합니다.");
+      return;
+    }
+    if (raid_name) window.location.href = "/battle/raid/" + raid_name;
   };
   const handleStart = (e) => {
     e.preventDefault();
@@ -155,15 +161,15 @@ export default function Home() {
       return;
     }
     if (clickedRaidRef.current.raid_reader !== user) {
-      alert("레이드 방장만 시작할 수 있습니다.");
-      return;
+      // alert("레이드 방장만 시작할 수 있습니다.");
+      // return;
     }
     if (clickedRaidRef.current.userlist.length < clickedRaidRef.current.total_user) {
       alert("레이드 인원이 부족합니다.");
       return;
     }
     // battle/raid 페이지로 이동
-    window.location.href = "/battle/raid";
+    window.location.href = "/battle/raid/" + clickedRaidRef.current.raid_name;
   };
   // ++++++++++++++++++++++++++++  버튼 클릭 이벤트 완료  ++++++++++++++++++++++++++++
   const fetchData = useCallback(async () => {
@@ -241,7 +247,7 @@ export default function Home() {
                       </div>
                       <div className="flex-1 px-[7px] py-[6px]" style={{maxWidth: "118px", width: "118px"}}>
                         {raid.userlist.length >= (raid?.total_user || 6) ? (
-                          <button onClick={(e) => handleSpectate(e)} className="bg-gray-500 text-white px-2 rounded hover:bg-gray-600">
+                          <button onClick={(e) => handleSpectate(e, raid.raid_name)} className="bg-gray-500 text-white px-2 rounded hover:bg-gray-600">
                             관전하기
                           </button>
                         ) : (
@@ -320,6 +326,11 @@ export default function Home() {
                   수정하기
                 </button>
               </>
+            ) : null}
+            {clickedRaidRef.current?.userlist?.find((raid) => raid.raid_user === user) !== undefined && clickedRaidRef.current?.raid_reader !== user ? (
+              <button onClick={(e) => handleStart(e)} className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400 ml-3">
+                참가하기
+              </button>
             ) : null}
             {clickedRaidRef.current?.userlist?.find((raid) => raid.raid_user === user) !== undefined ? (
               <button onClick={(e) => exitRaid(e)} className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400 ml-3">

@@ -47,6 +47,7 @@ export default function Home() {
     const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     const data = maindata?.[listIndex];
+    setSkillOperatorIndex([]);
     if (data?.operators) setSkillOperatorIndex([...Object.keys(data.operators)]);
     devLog("clickListItem", skillList, maindata, data?.operators, [...Object.keys(data.operators)]);
     if (data) {

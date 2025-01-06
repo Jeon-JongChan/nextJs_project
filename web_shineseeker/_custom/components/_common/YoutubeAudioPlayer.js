@@ -38,7 +38,7 @@ const YouTubeAudioPlayer = ({css, videoUrl, istitle = false, parentRef}) => {
 
     return () => {
       if (playerRef.current) {
-        playerRef.current.destroy(); // 컴포넌트 언마운트 시 제거
+        playerRef.current?.destroy(); // 컴포넌트 언마운트 시 제거
       }
     };
   }, []);

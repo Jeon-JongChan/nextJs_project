@@ -37,7 +37,7 @@ export default function Layout({children}) {
   };
 
   // 특정 페이지에서는 레이아웃을 무시
-  if (pathname === "/battle/raid") {
+  if (pathname.startsWith("/battle/raid")) {
     return <>{children}</>;
   }
 

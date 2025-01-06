@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {saveData, executeSelectQuery, executeQuery, updateTableTime} from "@/_custom/scripts/server";
+import {saveData, executeSelectQuery, executeQuery, updateTableTime, getDataKey} from "@/_custom/scripts/server";
 import {devLog} from "@/_custom/scripts/common";
 import query from "@/_custom/scripts/sqlite3-query";
 // upload에 대한 post 요청을 처리하는 함수
@@ -11,8 +11,49 @@ export async function GET(req) {
   try {
     if (apitype === "member_skill") {
       data = await executeSelectQuery(query.select.user_skill, [userid]);
-    } else if (apitype === "job") {
-      // job의 경우 해당하는 skill값을 배열로 추가해줘야함
+    } else if (apitype === "raid_data") {
+      const raidName = searchParams.get("raid_name");
+      if (!raidName) return NextResponse.json({message: "레이드 이름이 없습니다."}, {status: 400}); // 레이드 이름이 없을 경우 에러
+
+      data = await executeSelectQuery(query.select.raid_user_list, [raidName]);
+      data.forEach(async (user) => {
+        const skills = await executeSelectQuery(query.select.user_skill, [user.userid]);
+        skills.forEach(async (s) => {
+          const operator = await getDataKey("skill_operator", "skill_name", s.skill_name, true, {order: "skill_operator_order"});
+          s.operator = operator;
+        });
+        user.skills = skills;
+
+        const userSkill = [];
+        ["user_skill1", "user_skill2", "user_skill3", "user_skill4", "user_skill5"].forEach(async (skill, idx) => {
+          userSkill.push(user.skills.find((s) => s.skill_name === user[skill]));
+        });
+        user.userSkill = userSkill;
+      });
+
+      const boss = await executeSelectQuery(query.select.raid_monster, [raidName]);
+      if (boss) {
+        let rateArr = [];
+        let skills = [];
+        [boss.monster_skill_0, boss.monster_skill_1, boss.monster_skill_2, boss.monster_skill_3, boss.monster_skill_4].forEach(async (skill, idx) => {
+          if (skill) {
+            const skillData = await getDataKey("skill", "skill_name", skill, true);
+            skillData.operator = await getDataKey("skill_operator", "skill_name", skill, true, {order: "skill_operator_order"});
+            skillData.rate = boss["monster_skill_rate_" + idx];
+            // rate 의 10을 나눈 몫만큼 idx를 rateArr에 추가
+            for (let i = 0; i < skillData.rate / 10; i++) {
+              rateArr.push(idx);
+            }
+            skills.push(skillData);
+          }
+        });
+        boss.skills = skills;
+        boss.rateArr = rateArr;
+        const raidEvent = await getDataKey("monster_event", "monster_name", boss.monster_name, true, {order: "monster_event_idx"});
+        boss.event = raidEvent;
+      }
+
+      return NextResponse.json({message: "successfully raid 조회", data: {users: data, boss: boss}});
     }
     return NextResponse.json({message: "successfully api", data: data});
   } catch (error) {

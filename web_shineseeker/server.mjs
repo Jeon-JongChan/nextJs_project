@@ -1,10 +1,21 @@
 import http from "http";
 import next from "next";
 import {Server} from "socket.io";
+
+let port = 3000;
+// 기본 포트 설정
+
+// 명령어 인수 배열
+const args = process.argv;
+
+// '-p' 옵션이 있는지 확인하고 값을 설정
+const portIndex = args.indexOf("-p");
+if (portIndex !== -1 && args[portIndex + 1]) {
+  port = parseInt(args[portIndex + 1], 10);
+}
+// when using middleware `hostname` and `port` must be provided below
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.NEXTAUTH_URL || process.env.IP || "http://localhost";
-const port = 3000;
-// when using middleware `hostname` and `port` must be provided below
 const app = next({dev, hostname, port});
 const handler = app.getRequestHandler();
 app.prepare().then(() => {

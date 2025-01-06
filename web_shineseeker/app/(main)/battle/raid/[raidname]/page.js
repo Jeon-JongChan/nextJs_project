@@ -136,6 +136,175 @@ export default function Home({params}) {
       e.target.value = "";
     }
   };
+  const makeRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  function battleCalculation(skill, my = null) {
+    devLog("battleCalculation", skill);
+    my = my ? my : tokenRef?.current?.user?.name;
+    let range = skill.skill_range;
+    let operator = skill.operator;
+    let myData = my === "boss" ? boss : users.find((user) => user.userid === my);
+
+    let returnData = {};
+    let targetName = [];
+    let Consumption = {};
+    let damage = 0;
+    let prevOperator = null;
+    let turnModify = 0;
+    // skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁-공격", "궁-방어", "궁-속도", "궁-도발", "궁-회복", "궁-부활", "궁-조정"],
+    // skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
+    // skill_operator_option: ["본인소모", "HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
+    /******************************************** 범위 계산 */
+    if (range === "자신") {
+      targetName.push(my);
+    } else if (range === "아군전체") {
+      targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+    } else if (range === "아군(자신제외1체)") {
+      let temp = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+      // 랜덤한 정수 ( temp 배열 길이 이내 ) 생성 ( 최소값 1 )
+      let random = makeRandomNumber(0, temp.length - 1);
+      targetName.push(temp[random]);
+    } else if (range === "아군전체(자신제외)") {
+      targetName = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+    } else if (range === "적(1체)") {
+      if (my === "boss") {
+        let temp = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+        let random = makeRandomNumber(0, temp.length - 1);
+        targetName.push(temp[random]);
+      } else targetName.push("boss");
+    } else if (range === "적전체") {
+      if (my === "boss") targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+      else targetName.push("boss");
+    } else if (range === "전체") {
+      targetName = order.map((item) => item.userid);
+    }
+    /******************************************** 소모량 및 데미지 계산 */
+    operator.forEach((op) => {
+      let type = op.skill_operator_type;
+      let value = parseFloat(op.skill_operator_value);
+      let etc = op.skill_operator_etc;
+      let cal = 0;
+
+      if (type === "본인소모") {
+        if (["HP", "LUK"].includes(etc)) {
+          Consumption.value = -value;
+          Consumption.type = etc;
+        }
+      } else if (type === "HPx") {
+        cal += myData.hp * value;
+      } else if (type === "ATKx") {
+        cal += myData.atk * value;
+      } else if (type === "DEFx") {
+        cal += myData.def * value;
+      } else if (type === "WISx") {
+        cal += myData.wis * value;
+      } else if (type === "AGIx") {
+        cal += myData.agi * value;
+      } else if (type === "LUKx") {
+        cal += myData.luk * value;
+      } else if (type === "랜덤값") {
+        let random = makeRandomNumber(-value, value + 1);
+        cal += random;
+      } else if (type === "랜덤값+랜덤보정값") {
+        let random = makeRandomNumber(-value, value + 1);
+        let Adjustment = parseFloat(etc) || 0;
+        cal += random + Adjustment;
+      } else if (type === "더하기") {
+        cal += value;
+      } else if (type === "곱하기") {
+        cal = damage * value;
+      } else if (type === "사이곱") {
+        prevOperator = "*";
+      } else if (type === "사이더하기") {
+        prevOperator = "+";
+      } else if (type === "턴조정") {
+        // 턴 조정
+        turnModify = value;
+      }
+
+      if (prevOperator === "*") {
+        damage *= cal;
+      } else if (prevOperator === "+") {
+        damage += cal;
+      } else {
+        damage += cal;
+      }
+    });
+
+    returnData.target = targetName;
+    returnData.Consumption = Consumption;
+    returnData.damage = damage;
+    returnData.turnModify = turnModify;
+    return returnData;
+  }
+  /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
+  useEffect(() => {
+    socketDataRef.current = {type: "", data: null};
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    socketClient.joinRoom();
+  }, [tokenRef?.current?.user?.name, socketClient.socketRef]);
+
+  useEffect(() => {
+    async function gameManager() {
+      // devLog("--------------------- socketDataRef.current: 변경", socketState);
+      if (socketState) {
+        devLog("changeState 데이터 수신:", socketStㄴate, socketDataRef);
+        let data = socketDataRef.current.data;
+        if (socketDataRef.current.type === "chat") {
+          setLog((prevLog) => [...prevLog, {log: `${data?.username} : ${data?.chat}`, time: new Date().toLocaleTimeString()}]);
+        } else if (socketDataRef.current.type === "data") {
+          if (data?.nextIndex < order.length) {
+            // 스킬 계산 및 적용
+            let targetUser = users.find((user) => user.userid === data.clickUser);
+            let targetSkill = targetUser ? targetUser.userSkill.find((skill) => skill?.skill_name === data.clickedSkill) : null;
+            if (targetUser && targetSkill) {
+              // 적용할 대상 계산
+              let calc = battleCalculation(targetSkill);
+              let type = targetSkill.skill_type;
+              order.forEach((item, index) => {
+                if (calc.target?.includes(item.userid)) {
+                  item.effect = targetSkill.skill_img_1 || "/images/raid/Slash.webp";
+                }
+              });
+              await sleep(1000);
+            }
+
+            // 현재 작업할 유저 표시
+            setOrder((prevOrder) => {
+              return prevOrder.map((item, index) => ({
+                ...item,
+                active: index === data.nextIndex,
+              }));
+            });
+
+            if (order?.[data.nextIndex].userid === "boss") {
+              await sleep(5000);
+              // 보스 공격 랜덤계산
+
+              // 보스 공격 스킬 확인 및 송신
+              let transformData = {};
+              let orderIndex = data.nextIndex;
+              transformData.nextIndex = orderIndex + 1 >= order.length ? 0 : orderIndex + 1;
+              transformData.clickedSkill = null;
+              transformData.clickUser = order[orderIndex].userid;
+              socketClient.sendData(transformData);
+            }
+          }
+        }
+        setSocketState(false);
+      } else {
+        // 초기화
+        order.forEach((item, index) => {
+          item.effect = null;
+        });
+      }
+    }
+    gameManager();
+  }, [socketState]);
 
   function RaidMember({bgImage, hpCurrent, hpMax, icons = [], css = "", next = false, effect = null}) {
     return (

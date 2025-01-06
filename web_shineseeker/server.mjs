@@ -66,7 +66,7 @@ app.prepare().then(() => {
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`> Ready on ${hostname}:${port}`);
+      console.log(`> Ready on ${hostname}:${port}, env: ${process.env.NEXTAUTH_URL} env Ip : ${process.env.IP}`);
     });
 
   // Next.js 서버가 시작될 때 데이터베이스 초기화 실행

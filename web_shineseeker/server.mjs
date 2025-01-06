@@ -1,13 +1,5 @@
 import http from "http";
 import next from "next";
-import {Server} from "socket.io";
-
-const dev = process.env.NODE_ENV !== "production";
-const hostname = process.env.NEXTAUTH_URL || "http://localhost";
-const port = 3000;
-// when using middleware `hostname` and `port` must be provided below
-const app = next({dev, hostname, port});
-const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
   const httpServer = http.createServer(handler);
@@ -70,4 +62,9 @@ app.prepare().then(() => {
     .listen(port, () => {
       console.log(`> Ready on ${hostname}:${port}`);
     });
+
+  // Next.js 서버가 시작될 때 데이터베이스 초기화 실행
+  // initializeDatabase().catch((error) => {
+  //   console.error("Database initialization failed:", error);
+  // });
 });

@@ -15,11 +15,6 @@ export async function middleware(req) {
     return NextResponse.redirect(new URL("/api/auth/signin", req.url));
   }
 
-  if (pathname.startsWith("/api/socket")) {
-    // 소켓서버 관련 경로는 그대로 진행
-    return NextResponse.next();
-  }
-
   // 관리자(admin) 경로 접근 제어
   if (adminRoutes.some((route) => pathname.startsWith(route))) {
     if (token.role !== "admin") {

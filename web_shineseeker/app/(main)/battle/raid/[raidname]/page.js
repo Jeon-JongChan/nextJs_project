@@ -23,6 +23,7 @@ export default function Home({params}) {
   const socketDataRef = useRef(null);
   const socketClient = SocketClient({roomId: params.raidname, username: tokenRef?.current?.user?.name, onChat: onChat, onData: onData});
   const [socketState, setSocketState] = useState(false);
+  const [effectState, setEffectState] = useState(false);
   const [order, setOrder] = useState([]);
   const [users, setUsers] = useState([]);
   const [boss, setBoss] = useState({});
@@ -136,108 +137,6 @@ export default function Home({params}) {
       e.target.value = "";
     }
   };
-  const makeRandomNumber = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-  function battleCalculation(skill, my = null) {
-    devLog("battleCalculation", skill);
-    my = my ? my : tokenRef?.current?.user?.name;
-    let range = skill.skill_range;
-    let operator = skill.operator;
-    let myData = my === "boss" ? boss : users.find((user) => user.userid === my);
-
-    let returnData = {};
-    let targetName = [];
-    let Consumption = {};
-    let damage = 0;
-    let prevOperator = null;
-    let turnModify = 0;
-    // skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁-공격", "궁-방어", "궁-속도", "궁-도발", "궁-회복", "궁-부활", "궁-조정"],
-    // skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
-    // skill_operator_option: ["본인소모", "HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
-    /******************************************** 범위 계산 */
-    if (range === "자신") {
-      targetName.push(my);
-    } else if (range === "아군전체") {
-      targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
-    } else if (range === "아군(자신제외1체)") {
-      let temp = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
-      // 랜덤한 정수 ( temp 배열 길이 이내 ) 생성 ( 최소값 1 )
-      let random = makeRandomNumber(0, temp.length - 1);
-      targetName.push(temp[random]);
-    } else if (range === "아군전체(자신제외)") {
-      targetName = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
-    } else if (range === "적(1체)") {
-      if (my === "boss") {
-        let temp = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
-        let random = makeRandomNumber(0, temp.length - 1);
-        targetName.push(temp[random]);
-      } else targetName.push("boss");
-    } else if (range === "적전체") {
-      if (my === "boss") targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
-      else targetName.push("boss");
-    } else if (range === "전체") {
-      targetName = order.map((item) => item.userid);
-    }
-    /******************************************** 소모량 및 데미지 계산 */
-    operator.forEach((op) => {
-      let type = op.skill_operator_type;
-      let value = parseFloat(op.skill_operator_value);
-      let etc = op.skill_operator_etc;
-      let cal = 0;
-
-      if (type === "본인소모") {
-        if (["HP", "LUK"].includes(etc)) {
-          Consumption.value = -value;
-          Consumption.type = etc;
-        }
-      } else if (type === "HPx") {
-        cal += myData.hp * value;
-      } else if (type === "ATKx") {
-        cal += myData.atk * value;
-      } else if (type === "DEFx") {
-        cal += myData.def * value;
-      } else if (type === "WISx") {
-        cal += myData.wis * value;
-      } else if (type === "AGIx") {
-        cal += myData.agi * value;
-      } else if (type === "LUKx") {
-        cal += myData.luk * value;
-      } else if (type === "랜덤값") {
-        let random = makeRandomNumber(-value, value + 1);
-        cal += random;
-      } else if (type === "랜덤값+랜덤보정값") {
-        let random = makeRandomNumber(-value, value + 1);
-        let Adjustment = parseFloat(etc) || 0;
-        cal += random + Adjustment;
-      } else if (type === "더하기") {
-        cal += value;
-      } else if (type === "곱하기") {
-        cal = damage * value;
-      } else if (type === "사이곱") {
-        prevOperator = "*";
-      } else if (type === "사이더하기") {
-        prevOperator = "+";
-      } else if (type === "턴조정") {
-        // 턴 조정
-        turnModify = value;
-      }
-
-      if (prevOperator === "*") {
-        damage *= cal;
-      } else if (prevOperator === "+") {
-        damage += cal;
-      } else {
-        damage += cal;
-      }
-    });
-
-    returnData.target = targetName;
-    returnData.Consumption = Consumption;
-    returnData.damage = damage;
-    returnData.turnModify = turnModify;
-    return returnData;
-  }
   /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
   useEffect(() => {
     socketDataRef.current = {type: "", data: null};
@@ -252,7 +151,7 @@ export default function Home({params}) {
     async function gameManager() {
       // devLog("--------------------- socketDataRef.current: 변경", socketState);
       if (socketState) {
-        devLog("changeState 데이터 수신:", socketStㄴate, socketDataRef);
+        devLog("changeState 데이터 수신:", socketState, socketDataRef);
         let data = socketDataRef.current.data;
         if (socketDataRef.current.type === "chat") {
           setLog((prevLog) => [...prevLog, {log: `${data?.username} : ${data?.chat}`, time: new Date().toLocaleTimeString()}]);
@@ -262,26 +161,30 @@ export default function Home({params}) {
             let targetUser = users.find((user) => user.userid === data.clickUser);
             let targetSkill = targetUser ? targetUser.userSkill.find((skill) => skill?.skill_name === data.clickedSkill) : null;
             if (targetUser && targetSkill) {
-              // 적용할 대상 계산
-              let calc = battleCalculation(targetSkill);
+              // 적용할 대상 계산 ( 반환값 : target / consumption / damage / turnModify
+              let calc = battleCalculation(targetSkill, data.clickUser, boss, users, order);
+              devLog("====================================================================================계산결과:", calc);
               let type = targetSkill.skill_type;
               order.forEach((item, index) => {
                 if (calc.target?.includes(item.userid)) {
                   item.effect = targetSkill.skill_img_1 || "/images/raid/Slash.webp";
                 }
               });
-              await sleep(1000);
+              setEffectState(true);
+              await sleep(3000);
+              setEffectState(false);
             }
 
-            // 현재 작업할 유저 표시
-            setOrder((prevOrder) => {
-              return prevOrder.map((item, index) => ({
-                ...item,
-                active: index === data.nextIndex,
-              }));
-            });
-
-            if (order?.[data.nextIndex].userid === "boss") {
+            // 이전 작업자의 동작을 완료하고 현재 작업자 표시 ( 보스 아닐경우 )
+            if (order?.[data.nextIndex].userid !== "boss") {
+              setOrder((prevOrder) => {
+                return prevOrder.map((item, index) => ({
+                  ...item,
+                  active: index === data.nextIndex,
+                }));
+              });
+            } else if (order?.[data.nextIndex].userid === "boss" && tokenRef.current.user.name === data.clickUser) {
+              // 보스일 경우 추가 작업 ( 이전 작업자만 진행 )
               await sleep(5000);
               // 보스 공격 랜덤계산
 
@@ -326,7 +229,7 @@ export default function Home({params}) {
             </button>
           ))}
         </div>
-         <SpriteAnimation spriteImage={getImageUrl(effect)} frameWidth={100} frameHeight={100} cols={5} rows={1} playCount={1} css="left-[70px] bottom-[10px]"/>
+         {effectState && <SpriteAnimation spriteImage={getImageUrl(effect)} frameWidth={100} frameHeight={100} cols={5} rows={1} playCount={1} css="left-[70px] bottom-[10px]"/>}
         {next && <Image src={NextIndicator} alt="next-indicator" width={128} height={128} className="absolute bottom-[2px] left-[-150px]" />}
       </div>
     );
@@ -411,4 +314,106 @@ function Ended({isClear = true, image = "", item = ""}) {
       </button>
     </div>
   );
+}
+
+function makeRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function battleCalculation(skill, my, boss, users, order) {
+  devLog("battleCalculation", skill);
+  let range = skill.skill_range;
+  let operator = skill.operator;
+  let myData = my === "boss" ? boss : users.find((user) => user.userid === my);
+
+  let returnData = {};
+  let targetName = [];
+  let Consumption = {};
+  let damage = 0;
+  let prevOperator = null;
+  let turnModify = 0;
+  // skill_type: ["공격", "방어", "속도", "도발", "회복", "부활", "조정", "궁-공격", "궁-방어", "궁-속도", "궁-도발", "궁-회복", "궁-부활", "궁-조정"],
+  // skill_range: ["자신", "아군전체", "아군(자신제외1체)", "아군전체(자신제외)", "적(1체)", "적전체", "전체"],
+  // skill_operator_option: ["본인소모", "HPx", "ATKx", "DEFx", "WISx", "AGIx", "LUKx", "랜덤값", "랜덤값+랜덤보정값", "더하기", "곱하기", "사이곱", "사이더하기", "턴조정"],
+  /******************************************** 범위 계산 */
+  if (range === "자신") {
+    targetName.push(my);
+  } else if (range === "아군전체") {
+    targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+  } else if (range === "아군(자신제외1체)") {
+    let temp = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+    // 랜덤한 정수 ( temp 배열 길이 이내 ) 생성 ( 최소값 1 )
+    let random = makeRandomNumber(0, temp.length - 1);
+    targetName.push(temp[random]);
+  } else if (range === "아군전체(자신제외)") {
+    targetName = order.filter((item) => ["boss", my].includes(item.userid)).map((item) => item.userid);
+  } else if (range === "적(1체)") {
+    if (my === "boss") {
+      let temp = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+      let random = makeRandomNumber(0, temp.length - 1);
+      targetName.push(temp[random]);
+    } else targetName.push("boss");
+  } else if (range === "적전체") {
+    if (my === "boss") targetName = order.filter((item) => item.userid !== "boss").map((item) => item.userid);
+    else targetName.push("boss");
+  } else if (range === "전체") {
+    targetName = order.map((item) => item.userid);
+  }
+  /******************************************** 소모량 및 데미지 계산 */
+  operator.forEach((op) => {
+    let type = op.skill_operator_type;
+    let value = parseFloat(op.skill_operator_value);
+    let etc = op.skill_operator_etc;
+    let cal = 0;
+
+    if (type === "본인소모") {
+      if (["HP", "LUK"].includes(etc)) {
+        Consumption.value = -value;
+        Consumption.type = etc;
+      }
+    } else if (type === "HPx") {
+      cal += myData.hp * value;
+    } else if (type === "ATKx") {
+      cal += myData.atk * value;
+    } else if (type === "DEFx") {
+      cal += myData.def * value;
+    } else if (type === "WISx") {
+      cal += myData.wis * value;
+    } else if (type === "AGIx") {
+      cal += myData.agi * value;
+    } else if (type === "LUKx") {
+      cal += myData.luk * value;
+    } else if (type === "랜덤값") {
+      let random = makeRandomNumber(-value, value + 1);
+      cal += random;
+    } else if (type === "랜덤값+랜덤보정값") {
+      let random = makeRandomNumber(-value, value + 1);
+      let Adjustment = parseFloat(etc) || 0;
+      cal += random + Adjustment;
+    } else if (type === "더하기") {
+      cal += value;
+    } else if (type === "곱하기") {
+      cal = damage * value;
+    } else if (type === "사이곱") {
+      prevOperator = "*";
+    } else if (type === "사이더하기") {
+      prevOperator = "+";
+    } else if (type === "턴조정") {
+      // 턴 조정
+      turnModify = value;
+    }
+
+    if (prevOperator === "*") {
+      damage *= cal;
+    } else if (prevOperator === "+") {
+      damage += cal;
+    } else {
+      damage += cal;
+    }
+  });
+
+  returnData.target = targetName;
+  returnData.Consumption = Consumption;
+  returnData.damage = damage;
+  returnData.turnModify = turnModify;
+  return returnData;
 }

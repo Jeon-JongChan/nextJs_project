@@ -17,6 +17,7 @@ export default function Home() {
   const [buttonData, setButtonData] = useState([]);
   const [buttonLink, setButtonLink] = useState([]);
   const [mainAudioUrl, setMainAudioUrl] = useState("");
+  const [activePatrol, setActivePatrol] = useState("");
   const [user, setUser] = useState({});
   let fetchIndex = 0;
   // 데이터를 주기적으로 가져오기 위한 함수
@@ -29,6 +30,8 @@ export default function Home() {
     if (newData?.data?.length) {
       devLog(`admin *** ${menuName} *** page data 갱신되었습니다(${fetchIndex}): `, newData);
       setMainData([...newData.data]);
+      let patrol = newData.data.find((data) => data.id === "battle_active_status_patrol")?.[0]?.value;
+      setActivePatrol(patrol);
     }
   }
   // 최초 데이터 빠르게 가져오기 위한 useEffect
@@ -67,7 +70,7 @@ export default function Home() {
       <div className="relative flex" style={{minWidth: "932px", height: "311px"}}>
         <div className="relative login col-span-2 max-h-full mr-4" style={{minWidth: "254px", height: "311px"}}>
           <div className="relative img-login-bg flex flex-col items-center h-full">
-            <MainLoginForm />
+            <MainLoginForm activePatrol={activePatrol} />
           </div>
         </div>
         <div className="col-span-4 max-h-full" style={{height: "inherit"}}>

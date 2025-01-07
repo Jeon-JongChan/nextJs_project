@@ -118,6 +118,10 @@ export async function GET(req) {
         // page의 경우 각 탭별로 데이터를 보내줌
         const pagename = searchParams.get("pagename");
         let returndata = data.filter((page) => page.page_name === pagename);
+        if (pagename === "main") {
+          let patrol = data.filter((page) => page.page_name === "battle" && page.id === "battle_active_status_patrol");
+          if (patrol?.[0]) returndata.push(patrol[0]);
+        }
         data = returndata;
         //data.forEach((page) => {if (page.id.startsWith(`${pagename}_img`)) page.value = "/temp/upload/" + page.value}); // 이미지 경로 추가
       }

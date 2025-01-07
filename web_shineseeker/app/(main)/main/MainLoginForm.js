@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import {devLog} from "@/_custom/scripts/common";
 
-export default function Component() {
+export default function Component(props) {
   const [user, setUser] = useState({});
   const {handleLogin, handleLogout, tokenRef} = useAuth() || {}; // handleLogin 가져오기
+  const [activePatrol, setActivePatrol] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ export default function Component() {
   useEffect(() => {
     devLog("로그인 컴포넌트 렌더링:", tokenRef.current);
     setUser(tokenRef.current?.user);
+    if (props?.activePatrol && props?.activePatrol === "O") setActivePatrol(true);
   }, [tokenRef.current]);
   return (
     <>
@@ -64,9 +66,13 @@ export default function Component() {
           </pre>
           <div className="absolute rounded-lg grid grid-cols-3 text-center font-dnf text-[20px]" style={{width: "182px", bottom: "40px", left: "40px"}}>
             <div className="col-span-1">
-              <Link href="/battle/patrol" className="text-[#6231C5]">
-                패트롤
-              </Link>
+              {activePatrol ? (
+                <Link href="/battle/patrol" className="text-[#6231C5]">
+                  패트롤
+                </Link>
+              ) : (
+                <span className="text-gray-700">패트롤</span>
+              )}
               <span className="text-black" style={{marginLeft: "2px"}}>
                 |
               </span>

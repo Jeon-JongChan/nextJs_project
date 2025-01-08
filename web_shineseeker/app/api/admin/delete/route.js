@@ -40,6 +40,7 @@ export async function POST(req) {
     } else if (apitype === "delete_raid" && data.has("raid")) {
       let raid = data.get("raid");
       await deleteData("raid", "raid_name", raid);
+      await deleteData("raid_list", "raid_user", raid); // raid_list에서도 삭제
       returnData = raid + " deleted";
     } else if (apitype === "delete_raid_list" && data.has("raid")) {
       let raid = data.get("raid_user");

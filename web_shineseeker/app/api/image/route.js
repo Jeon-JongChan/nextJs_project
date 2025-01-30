@@ -45,7 +45,7 @@ export async function GET(request) {
         .resize(width, height, {fit: "inside"}) // 비율 유지하며 리사이징
         .toBuffer();
     }
-    devLog("app/api/getImage/route.js : image", src);
+    // devLog("app/api/getImage/route.js : image", src);
 
     // 이미지 압축 (gzip)
     const compressedImage = zlib.gzipSync(image);

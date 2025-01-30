@@ -7,7 +7,7 @@ import GridInputTextArea from "/_custom/components/_common/grid/GridInputTextAre
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
 import FileDragAndDrop from "/_custom/components/_common/FileDragAndDrop";
-import Tooltip from "@/_custom/components/_common/Tooltip";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
 import InputTextList from "../InputTextList";
 import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import NotificationModal from "@/_custom/components/NotificationModal";

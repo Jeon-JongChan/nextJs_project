@@ -182,7 +182,7 @@ export default function Home() {
       setMainData([...newData.data]);
       setRaids([]); // 중복을 방지하기 위해 초기화
       newData.data.forEach((raid) => {
-        setRaids((prev) => [...prev, raid.raid_name]);
+        if (!raid.raid_reader) setRaids((prev) => [...prev, raid.raid_name]);
       });
       if (clickedRaidRef.current) {
         // 클릭된 레이드가 있을 경우 해당 레이드 정보 갱신
@@ -197,7 +197,7 @@ export default function Home() {
         }
       }
     }
-  }, [clickedRaidRef]);
+  }, []);
 
   useEffect(() => {
     devLog(`admin *** ${menuName} *** page useEffect`, tokenRef);
@@ -273,7 +273,7 @@ export default function Home() {
               </div>
               <div className={`flex text-black text-center`}>
                 <div className="flex-1 border-r border-gray-300 px-4">
-                  <GridInputSelectBox id={"raid-namelist"} type={"text"} colSpan={12} options={[...raids]} />
+                  <GridInputSelectBox id={"raid-namelist"} type={"text"} colSpan={12} options={raids} />
                 </div>
                 <div className="flex-1 border-r border-gray-300 px-4 py-2">
                   <input type="number" min={0} max={6} default={6} id={"raid-headcount"} className="w-full h-full rounded-md text-center pl-[20px]" />
@@ -319,7 +319,10 @@ export default function Home() {
           <div className="flex flex-row mt-[40px] justify-end">
             {clickedRaidRef.current?.raid_reader === user ? (
               <>
-                <button onClick={(e) => handleStart(e)} className="flex justify-center items-center w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400">
+                <button
+                  onClick={(e) => handleStart(e)}
+                  className="flex justify-center items-center w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400"
+                >
                   시작하기
                 </button>
                 <button onClick={(e) => modifyRaid(e)} className="w-[110px] h-[45px] border-4 border-sky-400 bg-black text-white rounded hover:bg-gray-800 hover:text-sky-400 ml-3">

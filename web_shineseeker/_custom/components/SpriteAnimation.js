@@ -14,6 +14,8 @@ const SpriteAnimation = forwardRef(
       css = "",
       playCount = Infinity, // 재생 횟수 (기본값: 무한)
       defaultVisible = true, // 컴포넌트 초기 가시성
+      floatingNumberSize = 24,
+      floatingNumber = null,
     },
     ref
   ) => {
@@ -99,21 +101,50 @@ const SpriteAnimation = forwardRef(
     }, [isVisible]);
 
     return isVisible && spriteImage ? (
-      <div
-        ref={spriteRef}
-        className={css}
-        style={{
-          width: frameWidth * scale,
-          height: frameHeight * scale,
-          backgroundImage: `url(${spriteImage})`,
-          backgroundSize: `${frameWidth * cols * scale}px ${frameHeight * rows * scale}px`,
-          backgroundRepeat: "no-repeat",
-          position: "absolute",
-          transformOrigin: "top left",
-          zIndex: 10,
-          display: isVisible ? "block" : "none",
-        }}
-      ></div>
+      <>
+        {floatingNumber && (
+          <div className="absolute flex w-full justify-center mt-5 text-white" style={{fontSize: `${floatingNumberSize}px`}}>
+            <span className={`floating-number`}>{floatingNumber}</span>
+          </div>
+        )}
+
+        <div
+          ref={spriteRef}
+          className={css}
+          style={{
+            width: frameWidth * scale,
+            height: frameHeight * scale,
+            backgroundImage: `url(${spriteImage})`,
+            backgroundSize: `${frameWidth * cols * scale}px ${frameHeight * rows * scale}px`,
+            backgroundRepeat: "no-repeat",
+            position: "absolute",
+            transformOrigin: "top left",
+            zIndex: 10,
+            display: isVisible ? "block" : "none",
+          }}
+        ></div>
+
+        <style jsx>{`
+          .floating-number {
+            position: absolute;
+            font-weight: bold;
+            // color: red;
+            opacity: 1;
+            animation: floatUp 1.5s ease-out forwards;
+          }
+
+          @keyframes floatUp {
+            0% {
+              transform: translateY(0);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(-50px);
+              opacity: 0;
+            }
+          }
+        `}</style>
+      </>
     ) : null;
   }
 );

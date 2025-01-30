@@ -7,6 +7,9 @@ import GridInputButton from "/_custom/components/_common/grid/GridInputButton";
 import GridInputText from "/_custom/components/_common/grid/GridInputText";
 import NotificationModal from "@/_custom/components/NotificationModal";
 import ListItemIndex from "/_custom/components/_common/ListItemIndex";
+import Tooltip from "@/_custom/components/_common/TooltipFixed";
+import InputTextList from "../InputTextList";
+import Autocomplete from "@/_custom/components/_common/Autocomplete";
 import {getImageUrl} from "@/_custom/scripts/client";
 
 const menuName = "raid";
@@ -15,6 +18,8 @@ export default function Home() {
   const [userlist, setUserList] = useState([]);
   const [listCount, setListCount] = useState(0);
   const [clickedIndex, setClickedIndex] = useState(null);
+  const [itemList, setItemList] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [noti, setNoti] = useState(null);
 
   const optionText = ["O", "X"];
@@ -37,8 +42,31 @@ export default function Home() {
     });
 
     devLog("handleSubmitUser", apitype);
-    updateDataWithFormInputs(e, apitype, "admin/upload-page", addObject, true, false); // 이미지 파일 없는경우에도 id값 포함해서 보내기 위해 설정
+    updateDataWithFormInputs(e, apitype, "admin/upload-page", addObject, true, false, ["raid_item_add"]); // 이미지 파일 없는경우에도 id값 포함해서 보내기 위해 설정
     setNoti("정보가 업데이트 되었습니다.");
+  };
+
+  const addItem = (e) => {
+    e.preventDefault();
+    const item = document.querySelector("#raid_item_add").value;
+    devLog("addItem", item);
+    if (item) {
+      setItemList([...itemList, {item_name: item}]);
+    }
+  };
+
+  const deleteItem = (e) => {
+    const inputElement = e.target.parentElement.querySelector("input");
+    const item = inputElement.value;
+
+    // 삭제할 아이템의 인덱스를 찾고 복사본에 반영
+    const itemIndex = itemList.indexOf(item);
+    if (itemIndex > -1) {
+      const itemListCopy = [...itemList];
+      itemListCopy.splice(itemIndex, 1); // 아이템 삭제
+      setItemList(itemListCopy);
+    }
+    e.preventDefault();
   };
 
   const deleteTarget = (e) => {
@@ -116,6 +144,18 @@ export default function Home() {
 
   // 최초 데이터 빠르게 가져오기 위한 useEffect
   useEffect(() => {
+    const fetchEssentialData = async () => {
+      console.info("ADMIN DATA MANAGEMENT PAGE : 유저관리 항목 선택되었습니다.");
+      // 스킬 데이터 가져오기
+      // 아이템 전부 가져오기
+      const response3 = await fetch("/api/select?apitype=item&getcount=1");
+      const newData3 = await response3.json();
+
+      if (newData3?.data) setAllItems([...newData3.data]);
+
+      devLog("essential data fetch user : ", newData3);
+    };
+    fetchEssentialData();
     fetchData();
     const intervalId = setInterval(fetchData, 5 * 1000);
     // 컴포넌트가 언마운트될 때 clearInterval로 인터벌 해제
@@ -125,9 +165,11 @@ export default function Home() {
   // 데이터 클릭시 값을 입력해주기
   const clickListItem = (e) => {
     setUserList([]);
+    setItemList([]);
     // const name = e.target.dataset.name;
     const listIndex = e.target.dataset.index;
     setClickedIndex(listIndex);
+
     if (maindata?.[listIndex]?.total_user) setListCount(maindata?.[listIndex].total_user);
     else setListCount(0);
   };
@@ -145,6 +187,11 @@ export default function Home() {
         else if (input.id.startsWith("raid_order_")) input.value = targetUser?.raid_order || null;
         // devLog("clicked useEffect input", input.id, input.value, index <= userlist.length);
       });
+    }
+    const itemlist = maindata?.[clickedIndex]?.items;
+    if (itemlist) {
+      devLog("clickListItem", maindata?.[clickedIndex].items);
+      setItemList(itemlist);
     }
 
     // 필수 요소 채우기
@@ -202,10 +249,29 @@ export default function Home() {
                   </div>
                 );
               })}
+            <div className="relative col-span-8 grid grid-cols-8">
+              <div className="relative col-span-8 mt-2 user-itemlist h-[455px] border overflow-y-auto">
+                <h3 className="text-center font-bold text-2xl">상점 아이템 리스트</h3>
+                <div className="flex flex-wrap w-full row-gap-0 min-h-10 h-fit bg-slate-100 ">
+                  {itemList &&
+                    itemList.map((item, index) => (
+                      <Tooltip key={`${item.item_name}-${index}`} content={<span>{item.item_name}</span>} css={"w-1/6"}>
+                        <InputTextList nolabel={true} readonly={true} default={item.item_name} id={`raid_item_${index}`} type={"text"} css={"text-center border"} deleteButton={true} deleteFunc={deleteItem} />
+                      </Tooltip>
+                    ))}
+                </div>
+              </div>
+              <div className="flex flex-wrap col-span-9 row-gap-0 min-h-10 h-fit bg-slate-100 items-center justify-center">
+                <h3 className="text-center font-bold text-2xl mr-4">상점 아이템 추가</h3>
+                <GridInputText nolabel={true} id={"raid_item_add"} type={"text"} css={"text-center border"} />
+                <GridInputButton label={"추가"} type={"button"} onclick={(e) => addItem(e)} />
+              </div>
+            </div>
             <GridInputButton colSpan={12} label={"submit"} type="submit" />
           </div>
         </form>
       </div>
+      <Autocomplete id={"#raid_item_add"} data={allItems} autokey={"item_name"} />
       {noti && <NotificationModal message={noti} onClose={() => setNoti(null)} />}
     </div>
   );

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {devLog} from "../scripts/common";
 
-const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical: "red"}, css = "", opacity = 0.9}) => {
+const LogViewer = ({logs, height = "300px", logColors = {info: "white", critical: "red", system: "yellow"}, css = "", opacity = 0.9}) => {
   const logContainerRef = useRef(null); // 로그 컨테이너 참조
   const [log, setLog] = useState([]);
 

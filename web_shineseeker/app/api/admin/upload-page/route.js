@@ -72,6 +72,7 @@ async function updateRaidList(data, pagename) {
   const essentialDataList = ["raid_name"];
   const exceptList = ["file", "apitype"];
   let raid_users = [], raid = {}, raid_name = null; // prettier-ignore
+  let raidItemArray = []; // 아이템 배열 리스트
   if (!essentialDataList.every((key) => data.has(key)) && !data?.key) throw new Error("One or more fields are missing");
   raid_name = data.get("raid_name");
   // 이미지를 제외한 데이터만 추출
@@ -81,16 +82,18 @@ async function updateRaidList(data, pagename) {
         if (!value) continue;
         let index = key.split("_").pop();
         let raid_order = data.get(`raid_order_${index}`);
-        raid_users.push({raid_name : raid_name, raid_user: value, raid_order : raid_order});
-      }
-      else if (key.startsWith("raid_order")) continue // 스킬 상세정보 저장
-      else raid[key] = value; // 스킬 정보 저장
+        raid_users.push({raid_name: raid_name, raid_user: value, raid_order: raid_order});
+      } else if (key.startsWith("raid_item")) {
+        raidItemArray.push({raid_name: raid_name, item_name: value});
+      } else if (key.startsWith("raid_order")) continue;
+      else raid[key] = value;
     }
   }
-  
+
   devLog("update all data ######################## ", raid, raid_users);
   deleteData("raid_list", "raid_name", raid.raid_name); // 기존값 삭제 (삭제요소 대비)
+  deleteData("raid_item", "raid_name", raid.raid_name); // 기존값 삭제 (삭제요소 대비)
+  await saveData("raid_item", raidItemArray, true); // 새로운 데이터 저장
   await saveData("raid_list", raid_users, true); // 새로운 데이터 저장
   await saveData("raid", raid); // 새로운 데이터 저장
-
 }

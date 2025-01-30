@@ -31,28 +31,41 @@ export async function GET(req) {
         user.userSkill = userSkill;
       });
 
-      const boss = await executeSelectQuery(query.select.raid_monster, [raidName]);
+      const boss = (await executeSelectQuery(query.select.raid_monster, [raidName]))[0];
       if (boss) {
-        let rateArr = [];
-        let skills = [];
-        [boss.monster_skill_0, boss.monster_skill_1, boss.monster_skill_2, boss.monster_skill_3, boss.monster_skill_4].forEach(async (skill, idx) => {
+        boss.rateArr = [];
+        boss.skills = [];
+        await [boss.monster_skill_0, boss.monster_skill_1, boss.monster_skill_2, boss.monster_skill_3, boss.monster_skill_4].forEach(async (skill, idx) => {
           if (skill) {
-            const skillData = await getDataKey("skill", "skill_name", skill, true);
-            skillData.operator = await getDataKey("skill_operator", "skill_name", skill, true, {order: "skill_operator_order"});
-            skillData.rate = boss["monster_skill_rate_" + idx];
-            // rate 의 10을 나눈 몫만큼 idx를 rateArr에 추가
-            for (let i = 0; i < skillData.rate / 10; i++) {
-              rateArr.push(idx);
+            const skillData = (await getDataKey("skill", "skill_name", skill, true))[0];
+            if (!skillData) {
+              skills.push(null);
+            } else {
+              // devLog("raid_data boss", skill, skillData);
+              skillData.operator = await getDataKey("skill_operator", "skill_name", skill, true, {order: "skill_operator_order"});
+              skillData.rate = boss["monster_skill_rate_" + idx];
+              // rate 의 10을 나눈 몫만큼 idx를 rateArr에 추가
+              for (let i = 0; i < skillData.rate / 10; i++) {
+                boss.rateArr.push(idx);
+              }
+              boss.skills.push(skillData);
             }
-            skills.push(skillData);
           }
         });
-        boss.skills = skills;
-        boss.rateArr = rateArr;
+
         const raidEvent = await getDataKey("monster_event", "monster_name", boss.monster_name, true, {order: "monster_event_idx"});
         boss.event = raidEvent;
+        for (let i = 0; i < raidEvent.length; i++) {
+          const event = raidEvent[i];
+          if (event.monster_event_skill) {
+            let skill = (await getDataKey("skill", "skill_name", event.monster_event_skill, true))[0];
+            if (skill) {
+              skill.operator = await getDataKey("skill_operator", "skill_name", skill.skill_name, true, {order: "skill_operator_order"});
+            }
+            boss.event[i].skill = skill;
+          }
+        }
       }
-
       return NextResponse.json({message: "successfully raid 조회", data: {users: data, boss: boss}});
     }
     return NextResponse.json({message: "successfully api", data: data});
@@ -77,10 +90,13 @@ export async function POST(req) {
       if (raidUserCheck?.[0]?.isreader || raidUserCheck?.[0]?.isuser) {
         return NextResponse.json({message: "이미 레이드를 생성한 유저입니다."}, {status: 400});
       }
-      // 2. raid 생성
+      // 2. raid에 이미 reader가 있는지 확인
+      const raidReaderCheck = await executeSelectQuery(query.select.raid_reader, [raidName]);
+      if (raidReaderCheck?.[0]?.raid_reader) return NextResponse.json({message: "이미 생성된 레이드입니다."}, {status: 400});
+      // 3. raid 생성
       const raidData = await executeQuery("raid", query.update.raid_create, [userid, raidHeadcount, raidName]);
       devLog("create_raid", userid, raidName, raidHeadcount, raidData);
-      // 3. raid_list에 생성한 reader 추가
+      // 4. raid_list에 생성한 reader 추가
       if (raidData?.changes) await saveData("raid_list", {raid_name: raidName, raid_user: userid, raid_order: 1});
       else return NextResponse.json({error: "레이드 생성에 실패했습니다."}, {status: 400});
       returnData = raidName + " 생성 완료";
@@ -147,6 +163,12 @@ export async function POST(req) {
         return NextResponse.json({message: "레이드에 참여하지 않은 유저입니다."}, {status: 400});
       }
       return NextResponse.json({message: returnData});
+    } else if (apitype === "raid_clear") {
+      const raidName = data.get("raid_name");
+      const userid = data.get("userid");
+      const itemname = data.get("itemname");
+      saveData("user_item", {userid: userid, item: itemname});
+      return NextResponse.json({message: raidName + " 레이드 클리어 아이템 추가 완료"});
     }
     return NextResponse.json({message: "successfully page api", data: returnData});
   } catch (error) {

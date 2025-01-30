@@ -7,6 +7,16 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      keyframes: {
+        "filter-change": {
+          "0%": {filter: "brightness(1) invert(0)"},
+          "50%": {filter: "brightness(0) invert(1)"},
+          "100%": {filter: "brightness(1) invert(0)"},
+        },
+      },
+      animation: {
+        "filter-change": "filter-change 1s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

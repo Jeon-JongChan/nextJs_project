@@ -97,8 +97,12 @@ export async function GET(req) {
         // raid의 경우 해당하는 raid_userlist값을 배열로 추가해줘야함
         for (let i = 0; i < data.length; i++) {
           let raid_userlist = await getDataKey("raid_list", "raid_name", data[i].raid_name, true, {order: "raid_order, raid_user"});
+          let raid_items = await executeSelectQuery(query.select.raid_items, [data[i].raid_name]);
           if (raid_userlist?.length) {
             data[i].userlist = raid_userlist;
+          }
+          if (raid_items?.length) {
+            data[i].items = raid_items;
           }
         }
       } else if (apitype === "skill") {

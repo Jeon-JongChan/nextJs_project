@@ -27,6 +27,7 @@ const query = {
     system_log: "CREATE TABLE IF NOT EXISTS system_log (log TEXT, updated INTEGER)",
     raid: 'CREATE TABLE IF NOT EXISTS raid (raid_name TEXT PRIMARY KEY, monster_name TEXT, raid_reader TEXT, total_user INTEGER, status INTEGER, updated INTEGER)',
     raid_list: 'CREATE TABLE IF NOT EXISTS raid_list (raid_name TEXT, raid_user TEXT, raid_order INTEGER, status INTEGER, updated INTEGER, PRIMARY KEY(raid_user))',
+    raid_item: 'CREATE TABLE IF NOT EXISTS raid_item (raid_name TEXT, item_name TEXT, updated INTEGER)'
   },
   select: {
     user_skill: "SELECT B.*, A.skill_desc user_skill_desc FROM (SELECT * FROM user_skill WHERE userid = ?) A INNER JOIN skill B ON A.skill_name = B.skill_name order by A.skill_name",
@@ -41,11 +42,13 @@ const query = {
     user_job: "SELECT job_name, job_img_0 FROM (SELECT job FROM user WHERE userid = ?) a INNER JOIN job b ON a.job = b.job_name",
     check_user_skill: "SELECT * FROM user_skill WHERE userid = ? and skill_name = ?",
     user_mail: "SELECT A.*, B.item_img_0, '사용된우편' item_type FROM (SELECT * FROM user_mail WHERE userid = ?) A INNER JOIN item B ON A.item_name = B.item_name",
+    raid_reader: "SELECT raid_reader FROM raid WHERE raid_name = ?",
     raid_user: "SELECT IFNULL((SELECT 1 FROM raid WHERE raid_reader=? LIMIT 1), 0) isreader, IFNULL((SELECT 1 FROM raid_list WHERE raid_user=? LIMIT 1), 0) isuser",
     raid_create_user: "SELECT IFNULL((SELECT 1 FROM raid WHERE raid_name=? and raid_reader = ?), 0) isreader",
     raid_last_order: "SELECT MAX(total_user) total_user, MAX(raid_order) last_order FROM (SELECT raid_name, total_user FROM raid WHERE raid_name = ?) a INNER JOIN raid_list b ON a.raid_name = b.raid_name",
     raid_user_list: "SELECT B.* , raid_order FROM ( SELECT * FROM raid_list WHERE raid_name=? ) A INNER JOIN user B ON B.userid=A.raid_user ORDER BY A.raid_order",
     raid_monster: "SELECT A.raid_reader, total_user, B.* FROM ( SELECT * FROM raid WHERE raid_name = ? ) A INNER JOIN monster B ON B.monster_name=A.monster_name",
+    raid_items: "SELECT B.* FROM (SELECT * FROM raid_item WHERE raid_name = ?) A INNER JOIN item B ON A.item_name = B.item_name",
   },
   update: {
     user_patrol_result: "UPDATE user SET user_stamina = ?, user_money = user_money + ? WHERE userid = ?",

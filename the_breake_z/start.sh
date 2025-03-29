@@ -2,25 +2,25 @@
 #!/bin/bash
 echo "*********************************************>> NODE START SHELL"
 
-nodejsVersion=20.10.0
-nodeFolderName="node-v$nodejsVersion-win-x64"
-nodejsUrl="https://nodejs.org/dist/v$nodejsVersion/$nodeFolderName.zip"
+nodejsVersion=22.14.0
+nodeFolderName="node-v$nodejsVersion-linux-x64"
+nodejsUrl="https://nodejs.org/dist/v$nodejsVersion/$nodeFolderName.tar.xz"
 outputPath="$(pwd)/node_temp"
 NODEPATH="$(pwd)/node"
 
-if [ ! -f "$outputPath.zip" ]; then
+if [ ! -f "$outputPath.tar.xz" ]; then
     # Node.js Portable download
-    wget -O "$outputPath.zip" "$nodejsUrl"
+    wget -O "$outputPath.tar.xz" "$nodejsUrl"
 fi
 
 if [ ! -d "$NODEPATH" ]; then
     mkdir "$NODEPATH"
     # ZIP file extract to node folder and delete zip file
-    unzip -q "$outputPath.zip" -d "$outputPath"
+    tar -xvf "$outputPath.tar.xz" -C "$outputPath"
     # Extracted files move to the desired folder
     cp -r "$outputPath/$nodeFolderName/"* "$NODEPATH"
     # Delete ZIP file and extracted folder
-    rm -f "$outputPath.zip"
+    rm -f "$outputPath.tar.xz"
     rm -rf "$outputPath"
 fi
 

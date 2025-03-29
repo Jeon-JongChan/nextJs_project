@@ -97,7 +97,7 @@ const server = {
     if (ret?.cnt === 0) {
       // create table
       try {
-        const create = require("/scripts/query/create.js");
+        const create = require("./query/create.js");
         for (let v of Object.values(create)) {
           server.db.prepare(v).run();
         }

@@ -59,17 +59,17 @@ export default function Layout() {
   }
 
   function initAdmin() {
-    if (syncInterval.current !== {}) {
+    if (!syncInterval.current) {
       syncInterval.current = new asyncInterval(() => {
         syncList("poketmon");
         syncList("local");
         syncList("spec");
-        syncList("personality");
+        // syncList("personality");
         syncDataAdmin();
       }, syncTime);
       syncInterval.current.start();
     }
-    if (syncNoCheckInterval.current !== {}) {
+    if (!syncNoCheckInterval.current) {
       syncNoCheckInterval.current = new asyncInterval(async () => {
         devLog("syncNoCheckInterval. syncNoCheckTime : ", syncNoCheckTime);
         await initState();
@@ -95,7 +95,7 @@ export default function Layout() {
     }
   }
   function syncDataAdmin(isCheck = true) {
-    let syncList = ["poketmon", "local", "personality", "spec"];
+    let syncList = ["poketmon", "local", "spec"];
     // devLog("Battle syncDataBattle", localData);
     try {
       syncList.forEach(async (element) => {
@@ -111,12 +111,21 @@ export default function Layout() {
    * @param {*} e 이벤트
    */
   async function clickPoketmonList(e) {
-    let name = e.target.getAttribute("alt");
+    // let name = e.target.getAttribute("alt");
+    // localData.poketmon = await syncData("poketmon", localData.poketmon, "clickPoketmonList");
+    // let inputData = localData.poketmon.data.filter((data) => {
+    //   if (data.NAME == name) return true;
+    //   return false;
+    // })[0];
+    event.stopPropagation();
+    let name = e.target.getAttribute("data-name");
     localData.poketmon = await syncData("poketmon", localData.poketmon, "clickPoketmonList");
-    let inputData = localData.poketmon.data.filter((data) => {
-      if (data.NAME == name) return true;
-      return false;
-    })[0];
+    devLog(localData);
+    let inputData = localData["poketmon"]?.data?.find((data) => data.NAME === name);
+    if (!inputData) {
+      devLog("clickListItem - inputData is null", " : ", inputData);
+      return;
+    }
 
     let inputNameList = ["name", "personality", "local", "rare", "spec1", "spec2", "spec3", "levelmin", "levelmax"];
     let dataNameObject = {
@@ -235,17 +244,17 @@ export default function Layout() {
       <Nav></Nav>
       <div className="mt-2">
         <ul className="flex items-center justify-center space-x-4">
-          <button onClick={() => changeTab("#adminpage-addPoketmon")}>
-            <li className="apply-tab-item">포켓몬 추가</li>
-          </button>
-          <button onClick={() => changeTab("#adminpage-addPersonality")}>
-            <li className="apply-tab-item">포켓몬 성격</li>
-          </button>
           <button onClick={() => changeTab("#adminpage-addLocal")}>
-            <li className="apply-tab-item">포켓몬 지역</li>
+            <li className="apply-tab-item">에리어</li>
           </button>
+          <button onClick={() => changeTab("#adminpage-addPoketmon")}>
+            <li className="apply-tab-item">포켓몬</li>
+          </button>
+          {/* <button onClick={() => changeTab("#adminpage-addPersonality")}>
+            <li className="apply-tab-item">포켓몬 성격</li>
+          </button> */}
           <button onClick={() => changeTab("#adminpage-addSpec")}>
-            <li className="apply-tab-item">포켓몬 특성</li>
+            <li className="apply-tab-item">특성</li>
           </button>
         </ul>
       </div>
@@ -256,11 +265,13 @@ export default function Layout() {
               <div className="mx-auto py-4 px-4">
                 <h2 className="sr-only">Products</h2>
 
-                <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6 h-screen overflow-y-auto scrollbar-remove" data-cnt={0} data-lastid={0} data-updatedt={""}>
+                {/* <div className="poketmon-list grid grid-cols-1 gap-y-10 gap-x-6 h-screen overflow-y-auto scrollbar-remove" data-cnt={0} data-lastid={0} data-updatedt={""}> */}
+                <div className="poketmon-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-cnt={0} data-lastid={0}>
                   {images.length > 0
                     ? images.map((data, idx, array) => {
                         //   devLog("poketmonImages data : ", data, array);
-                        return <ImageLayerText key={idx} optimize={false} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
+                        // return <ImageLayerText key={idx} optimize={false} imageSrc={data.PATH} imageAlt={data.NAME} onclick={clickPoketmonList}></ImageLayerText>;
+                        return <ListItem key={idx} label={data.NAME} onclick={clickPoketmonList}></ListItem>;
                       })
                     : ""}
                 </div>
@@ -278,12 +289,8 @@ export default function Layout() {
             <div className="bg-white">
               <div className="mx-auto py-2 px-4">
                 <h2 className="sr-only">Products</h2>
-                <div
-                  className="personality-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                  data-cnt={0}
-                  data-lastid={0}
-                >
-                  {personailies.length > 0 ? personailies.map((data, idx, array) => <ListItem key={idx} label={data.NAME} count={data.POKETMON_CNT}></ListItem>) : ""}
+                <div className="personality-list grid gap-y-1 gap-x-6 max-h-screen min-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-cnt={0} data-lastid={0}>
+                  {personailies.length > 0 ? personailies.map((data, idx, array) => <ListItem key={idx} label={data.NAME} count={data.POKETMON_CNT} onclick={clickListItem}></ListItem>) : ""}
                 </div>
               </div>
             </div>

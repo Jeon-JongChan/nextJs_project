@@ -1,36 +1,36 @@
 const query = {
   create_table_local: `
-    CREATE TABLE LOCAL (
+    CREATE TABLE IF NOT EXISTS LOCAL (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(50) UNIQUE NOT NULL
     )
     `,
   create_table_spec: `
-    CREATE TABLE SPEC (
+    CREATE TABLE IF NOT EXISTS SPEC (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(20) UNIQUE NOT NULL
     )
     `,
   create_table_personality: `
-    CREATE TABLE PERSONALITY (
+    CREATE TABLE IF NOT EXISTS PERSONALITY (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(20) UNIQUE NOT NULL
     )
     `,
   create_table_image: `
-    CREATE TABLE IMAGE (
+    CREATE TABLE IF NOT EXISTS IMAGE (
         ID      INTEGER PRIMARY KEY,
         PATH    VARCHAR(100) UNIQUE NOT NULL
     )
     `,
   create_table_type: `
-    CREATE TABLE TYPE (
+    CREATE TABLE IF NOT EXISTS TYPE (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(10) UNIQUE NOT NULL
     )
     `,
   create_table_poketmon: `
-    CREATE TABLE POKETMON (
+    CREATE TABLE IF NOT EXISTS POKETMON (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(20) UNIQUE NOT NULL,
         RARE        FLOAT,
@@ -40,7 +40,7 @@ const query = {
     )
     `,
   create_table_poketmon_spec: `
-    CREATE TABLE POKETMON_SPEC (
+    CREATE TABLE IF NOT EXISTS POKETMON_SPEC (
         POKETMON_ID INTEGER NOT NULL,
         SPEC_ID     INTEGER NOT NULL,
         PRIORITY    INTEGER NOT NULL,
@@ -49,7 +49,7 @@ const query = {
     )
     `,
   create_table_poketmon_image: `
-    CREATE TABLE POKETMON_IMAGE (
+    CREATE TABLE IF NOT EXISTS POKETMON_IMAGE (
         POKETMON_ID INTEGER NOT NULL,
         IMAGE_ID    INTEGER NOT NULL,
         FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
@@ -57,7 +57,7 @@ const query = {
     )
     `,
   create_table_poketmon_local: `
-    CREATE TABLE POKETMON_LOCAL (
+    CREATE TABLE IF NOT EXISTS POKETMON_LOCAL (
         POKETMON_ID INTEGER NOT NULL,
         LOCAL_ID    INTEGER NOT NULL,
         FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
@@ -65,7 +65,7 @@ const query = {
     )
     `,
   create_table_poketmon_personality: `
-    CREATE TABLE POKETMON_PERSONALITY (
+    CREATE TABLE IF NOT EXISTS POKETMON_PERSONALITY (
         POKETMON_ID INTEGER NOT NULL,
         PERSONALITY_ID INTEGER NOT NULL,
         FOREIGN KEY (POKETMON_ID) REFERENCES POKETMON (ID) ON DELETE CASCADE
@@ -73,7 +73,7 @@ const query = {
     )
     `,
   create_table_boilerplate: `
-    CREATE TABLE BOILERPLATE (
+    CREATE TABLE IF NOT EXISTS BOILERPLATE (
         ID      INTEGER PRIMARY KEY,
         NAME    NVARCHAR(20) UNIQUE NOT NULL,
         PAGE    NVARCHAR(20) NOT NULL,
@@ -83,9 +83,15 @@ const query = {
     )
     `,
   create_table_tracejobs: `
-    CREATE TABLE TRACEJOBS (
+    CREATE TABLE IF NOT EXISTS TRACEJOBS (
         KEY     VARCHAR(64),
         JOB     VARCHAR(100)
+    )
+    `,
+  create_table_side: `
+    CREATE TABLE IF NOT EXISTS SIDE (
+        NAME    VARCHAR(64) PRIMARY KEY,
+        TEXT    VARCHAR(1000)
     )
     `,
 };

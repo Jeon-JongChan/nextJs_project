@@ -35,19 +35,19 @@ export default function Component() {
                 }
             }
         }
-
-        sendData.append("image", iimage.files[0]);
+        if(iimage) {
+            sendData.append("image", iimage.files[0]);
+            iimage.file = null;
+            iimage.value = null;
+            imageFrame.style.backgroundImage = "url()";
+            iimage.dispatchEvent(new Event("change"));
+            devLog("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
+        }
         let baseurl = host + "/api/upload/poketmon";
         let res = await fetch(baseurl, {
             method: "POST",
             body: sendData,
         });
-        iimage.file = null;
-        iimage.value = null;
-        imageFrame.style.backgroundImage = "url()";
-        iimage.dispatchEvent(new Event("change"));
-        devLog("submitPoketmonData input image - ", iimage, iimage.value, " file", iimage.files[0]);
-
         adminSync.current = target;
     }
     function clickDelete() {
@@ -55,7 +55,7 @@ export default function Component() {
     }
     async function init() {
         localData = await initAutoComplete("i-name", "poketmon", localData);
-        localData = await initAutoComplete("i-personality", "personality", localData);
+        // localData = await initAutoComplete("i-personality", "personality", localData);
         localData = await initAutoComplete("i-local", "local", localData);
         localData = await initAutoComplete("i-spec1", "spec", localData);
         localData = await initAutoComplete("i-spec2", "spec", localData);
@@ -71,8 +71,8 @@ export default function Component() {
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="poketmoninput-frame grid grid-cols-6 gap-6">
-                                <GridInputText id={"i-name"} label={"포켓폰 이름"} colSpan={3} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
-                                <GridInputText id={"i-personality"} label={"성격"} colSpan={3}></GridInputText>
+                                <GridInputText id={"i-name"} label={"포켓폰 이름"} colSpan={6} smallLabel={"* 삭제할경우 필수 요인"}></GridInputText>
+                                {/* <GridInputText id={"i-personality"} label={"성격"} colSpan={3}></GridInputText> */}
                                 <GridInputText id={"i-local"} label={"출몰지"} colSpan={3}></GridInputText>
                                 <GridInputText id={"i-rare"} label={"출현율"} colSpan={3}></GridInputText>
                                 <GridInputText id={"i-spec1"} label={"특성 1"} colSpan={2}></GridInputText>
@@ -85,7 +85,7 @@ export default function Component() {
                     </div>
                 </div>
                 <div className="my-2">
-                    <GridBorderBox propComponent={GridInputPhoto} propComponentProperty={{ label: "포켓몬 사진", id: "i-image" }}></GridBorderBox>
+                    {/* <GridBorderBox propComponent={GridInputPhoto} propComponentProperty={{ label: "포켓몬 사진", id: "i-image" }}></GridBorderBox> */}
                     <div className="shadow rounded-md">
                         <div className="bg-white px-4 py-3">
                             <div className="grid grid-cols-6 gap-6">

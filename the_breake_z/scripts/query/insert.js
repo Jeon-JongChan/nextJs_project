@@ -142,7 +142,12 @@ const query = {
         WHERE POKETMON.NAME = @poketmon_name AND SPEC.NAME = @spec_name
         ON CONFLICT(POKETMON_ID, SPEC_ID) DO UPDATE SET PRIORITY=@priority
         `,
+    side: `
+        INSERT OR REPLACE INTO SIDE (NAME, TEXT)
+        VALUES (@name, @text)
+        ON CONFLICT(NAME) DO UPDATE SET
+        TEXT=@text
+    `,
   },
 };
-
 module.exports = query;

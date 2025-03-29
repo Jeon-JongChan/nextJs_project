@@ -292,14 +292,18 @@ function clickCopyToClipBoard(e) {
       //   alertModal("텍스트만 복사되었습니다.");
       //   devLog("Text copied to clipboard...");
       // });
-      let htmlContent = node?.innerHtml;
+      let htmlContent = e.currentTarget.innerHTML;
+      htmlContent = htmlContent.replace(/(\r\n|\n|\r)/gm, "<br>"); // 공백 유지 및 개행을 <br> 태그로 변환
       navigator.clipboard.write([
         new ClipboardItem({
           "text/plain": new Blob([content], {type: "text/plain"}),
           "text/html": new Blob([htmlContent], {type: "text/html"}),
         }),
       ]);
+      alertModal("텍스트가 복사되었습니다.");
+      devLog("clickCopyToClipBoard Secure : ", htmlContent, node);
     } else {
+      devLog("clickCopyToClipBoard unsecuredCopy : ", content);
       unsecuredCopyToClipboard(content);
     }
   } catch (e) {

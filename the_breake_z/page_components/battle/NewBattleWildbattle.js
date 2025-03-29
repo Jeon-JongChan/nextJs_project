@@ -21,6 +21,8 @@ export default function Layout(props) {
 
   let pageName = "wildbattle";
   const boilerplateSync = useRef();
+  const boilerplateLeftRef = useRef();
+  const boilerplateRightRef = useRef();
   const [boilerplateLeft, setBoilerplateLeft] = useState({});
   const [boilerplateRight, setBoilerplateRight] = useState({});
   const [boilerplateViewTypeLeft, setBoilerplateViewTypeLeft] = useState("list");
@@ -47,8 +49,10 @@ export default function Layout(props) {
           devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.", localData?.boilerplate, localData?.boilerplate?.[pageName], boilerplateSync.current);
           if (localData?.boilerplate?.["battleLeft"] && localData?.boilerplate?.["battleRight"]) {
             devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다", localData);
-            setBoilerplateLeft(localData?.boilerplate?.["battleLeft"]);
-            setBoilerplateRight(localData?.boilerplate?.["battleRight"]);
+            boilerplateLeftRef.current = localData.boilerplate.battleLeft.map((item) => ({...item}));
+            boilerplateRightRef.current = localData.boilerplate.battleRight.map((item) => ({...item}));
+            setBoilerplateLeft([...boilerplateLeftRef.current]);
+            setBoilerplateRight([...boilerplateRightRef.current]);
             boilerplateSync.current.stop();
             return null;
           }
@@ -58,28 +62,27 @@ export default function Layout(props) {
     }
   }
   function replaceBoilerplate(tagName, replaceValue) {
-    let replaceList;
-
-    replaceList = [...boilerplateLeft];
-    if (!replaceList) return;
-    for (let key in replaceList) {
-      replaceList[key].TEXT = replaceList[key].TEXT.replaceAll(tagName, replaceValue);
-    }
-    devLog("replaceBoilerplate : ", boilerplateLeft, replaceList);
-    setBoilerplateLeft(replaceList);
-
-    replaceList = [...boilerplateRight];
-    if (!replaceList) return;
-    for (let key in replaceList) {
-      replaceList[key].TEXT = replaceList[key].TEXT.replaceAll(tagName, replaceValue);
-    }
-
-    setBoilerplateRight(replaceList);
+    devLog("replaceBoilerplate : ", boilerplateLeft, boilerplateRight);
+    setBoilerplateLeft((prevLeft) =>
+      prevLeft.map((item) => ({
+        ...item,
+        TEXT: item.TEXT.replaceAll(tagName, replaceValue),
+      }))
+    );
+    setBoilerplateRight((prevRight) =>
+      prevRight.map((item) => ({
+        ...item,
+        TEXT: item.TEXT.replaceAll(tagName, replaceValue),
+      }))
+    );
   }
+
   function createTextWildBattle() {
     let inputTargets = ["trainer", "poketmon", "attack", "tech", "etc"];
     let matcher = {trainer: "이름", poketmon: "포켓몬", attack: "공격방식", tech: "공격기술", etc: "기타"};
 
+    setBoilerplateLeft(boilerplateLeftRef.current.map((item) => ({...item})));
+    setBoilerplateRight(boilerplateRightRef.current.map((item) => ({...item})));
     // 첫번째 줄에 대한 값을 수집하고 갱신
     for (let tag of inputTargets) {
       let inputNode = document.querySelector(`#i-wildbattle-first-${tag}`);

@@ -19,26 +19,12 @@ export default function Layout(props) {
   let localData = useContext(LocalDataContext);
   let pageName = "research";
   const boilerplateSync = useRef();
-  const [boilerplate, setBoilerplate] = useState({});
+  const boilerplateLeftRef = useRef(null);
+  const boilerplateRightRef = useRef(null);
   const [boilerplateLeft, setBoilerplateLeft] = useState({});
   const [boilerplateRight, setBoilerplateRight] = useState({});
-  const [boilerplateViewType, setBoilerplateViewType] = useState("list");
   const [boilerplateViewTypeLeft, setBoilerplateViewTypeLeft] = useState("list");
   const [boilerplateViewTypeRight, setBoilerplateViewTypeRight] = useState("list");
-
-  const [researchImage, setResearchImage] = useState("");
-  const [researchImage2, setResearchImage2] = useState("");
-  const [researchImage3, setResearchImage3] = useState("");
-  const [wildCaptureFirst, setWildCaptureFirst] = useState(0);
-  const [wildCaptureSecond, setWildCaptureSecond] = useState(0);
-  const [wildCaptureBattle, setWildCaptureBattle] = useState(0);
-  const [traceRate, setTraceRate] = useState(0);
-  const [traceFailText, setTraceFailText] = useState(`
-    
-    
-    
-    
-    `);
 
   let randFunc = useRef();
   let randTenFunc = useRef();
@@ -69,9 +55,13 @@ export default function Layout(props) {
           boilerplateSync.current = new asyncInterval(() => {
             devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 기다리고 있습니다.");
             if (localData?.boilerplate?.["researchLeft"] && localData?.boilerplate?.["researchRight"]) {
-              devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다", localData);
-              setBoilerplateLeft(localData?.boilerplate?.["researchLeft"]);
-              setBoilerplateRight(localData?.boilerplate?.["researchRight"]);
+              devLog(pageName + " 페이지에서 전역변수로 인한 늦은 상용문구 출력을 완료했습니다", localData, boilerplateLeftRef.current);
+              // 깊은 복사로 참조 저장
+              boilerplateLeftRef.current = localData.boilerplate.researchLeft.map((item) => ({...item}));
+              boilerplateRightRef.current = localData.boilerplate.researchRight.map((item) => ({...item}));
+              devLog("상용문구 출력을 테스트...", boilerplateLeftRef.current, ...boilerplateRightRef.current);
+              setBoilerplateLeft([...boilerplateLeftRef.current]);
+              setBoilerplateRight([...boilerplateRightRef.current]);
               boilerplateSync.current.stop();
               return null;
             }
@@ -111,24 +101,21 @@ export default function Layout(props) {
   }
 
   function replaceBoilerplate(tagName, replaceValue) {
-    let replaceList;
-
-    replaceList = [...boilerplateLeft];
-    if (!replaceList) return;
-    for (let key in replaceList) {
-      replaceList[key].TEXT = replaceList[key].TEXT.replaceAll(tagName, replaceValue);
-    }
-    devLog("replaceBoilerplate : ", boilerplateLeft, replaceList);
-    setBoilerplateLeft(replaceList);
-
-    replaceList = [...boilerplateRight];
-    if (!replaceList) return;
-    for (let key in replaceList) {
-      replaceList[key].TEXT = replaceList[key].TEXT.replaceAll(tagName, replaceValue);
-    }
-
-    setBoilerplateRight(replaceList);
+    devLog("replaceBoilerplate : ", boilerplateLeft, boilerplateRight);
+    setBoilerplateLeft((prevLeft) =>
+      prevLeft.map((item) => ({
+        ...item,
+        TEXT: item.TEXT.replaceAll(tagName, replaceValue),
+      }))
+    );
+    setBoilerplateRight((prevRight) =>
+      prevRight.map((item) => ({
+        ...item,
+        TEXT: item.TEXT.replaceAll(tagName, replaceValue),
+      }))
+    );
   }
+
   function createTextResearch() {
     devLog("createTextResearch", localData);
     let targetList = ["trainer", "poketmon", "spec", "level", "personality", "music"];
@@ -143,6 +130,9 @@ export default function Layout(props) {
       devLog("createTextResearch poketmonInLocal is null");
       return;
     }
+    devLog(">>>>>>>>>>>>>>>>>>>>", boilerplateLeftRef.current);
+    setBoilerplateLeft(boilerplateLeftRef.current.map((item) => ({...item})));
+    setBoilerplateRight(boilerplateRightRef.current.map((item) => ({...item})));
     // 1번 포켓몬 선택
     let detailData = randomResearch(poketmonInLocal);
     // prettier-ignore
@@ -184,34 +174,6 @@ export default function Layout(props) {
     replaceBoilerplate("$$레벨3", inputValues["level"]);
     replaceBoilerplate("$$특성3", inputValues["spec"]);
   }
-  function calCaptureRate() {
-    let inputList = ["i-research-wildname", "i-research-wildhealth", "i-research-wildball"];
-    let ballStat = {
-      몬스터볼: 1.2,
-      수퍼볼: 1.5,
-      하이퍼볼: 1.8,
-    };
-
-    // inputList 에 있는 값으로 node 가져오기
-    let inputNodes = [];
-    inputList.forEach((element, idx) => {
-      inputNodes[idx] = document.querySelector("#" + element).value;
-    });
-    let selectedBallStat = ballStat[inputNodes[2]] || 1.2;
-    setWildCaptureFirst(50 * selectedBallStat);
-    setWildCaptureSecond(25 * selectedBallStat);
-    setWildCaptureBattle((100 - inputNodes[1]) * selectedBallStat);
-  }
-  function startTrace() {
-    let failtext = localData.boilerplate?.failtext;
-    let target = document.querySelector("#i-research-tracecount");
-    let targetValue = parseInt(target.value);
-    let rate = targetValue < 15 ? 1 + (4 * targetValue - 4) : 100;
-    setTraceRate(rate);
-    // devLog(" startTrace : ", traceFailText, getRandomInt(0, traceFailText.length), traceFailText[getRandomInt(0, traceFailText.length)]);
-    if (failtext?.length < 1) return;
-    setTraceFailText(failtext[getRandomInt(0, failtext.length)].TEXT);
-  }
 
   function makeBoilerplate(boilerplate, viewType = "list") {
     if (!boilerplate.length) return null;
@@ -246,7 +208,7 @@ export default function Layout(props) {
                     <div className="shadow rounded-md">
                       <div className="bg-white px-4 py-3">
                         <div className="research-frame grid grid-cols-6 gap-6">
-                          <GridInputText id={"i-research-local"} dataName={"local"} colSpan={6} label={"에어리어"}></GridInputText>
+                          <GridInputText id={"i-research-local"} dataName={"local"} colSpan={6} label={"에리어"}></GridInputText>
                           <GridInputButton label={"생성"} type="button" onclick={createTextResearch} colSpan={6}></GridInputButton>
                         </div>
                       </div>
@@ -254,8 +216,8 @@ export default function Layout(props) {
                   </div>
                   <div className="my-4">
                     <div className="grid grid-cols-6 gap-6 my-4">
-                      <GridInputButton label={"드롭다운"} buttonColor={"zinc"} onclick={() => setBoilerplateViewType("dropdown")} colSpan={3} type="button"></GridInputButton>
-                      <GridInputButton label={"리스트"} type="button" onclick={() => setBoilerplateViewType("list")} colSpan={3}></GridInputButton>
+                      <GridInputButton label={"드롭다운"} buttonColor={"zinc"} onclick={() => setBoilerplateViewTypeLeft("dropdown")} colSpan={3} type="button"></GridInputButton>
+                      <GridInputButton label={"리스트"} type="button" onclick={() => setBoilerplateViewTypeLeft("list")} colSpan={3}></GridInputButton>
                     </div>
                     {boilerplateLeft && makeBoilerplate(boilerplateLeft, boilerplateViewTypeLeft)}
                   </div>
@@ -269,8 +231,8 @@ export default function Layout(props) {
                 <div className="flex flex-col w-full">
                   <div className="my-4">
                     <div className="grid grid-cols-6 gap-6 my-4">
-                      <GridInputButton label={"드롭다운"} buttonColor={"zinc"} onclick={() => setBoilerplateViewType("dropdown")} colSpan={3} type="button"></GridInputButton>
-                      <GridInputButton label={"리스트"} type="button" onclick={() => setBoilerplateViewType("list")} colSpan={3}></GridInputButton>
+                      <GridInputButton label={"드롭다운"} buttonColor={"zinc"} onclick={() => setBoilerplateViewTypeRight("dropdown")} colSpan={3} type="button"></GridInputButton>
+                      <GridInputButton label={"리스트"} type="button" onclick={() => setBoilerplateViewTypeRight("list")} colSpan={3}></GridInputButton>
                     </div>
                     {boilerplateRight && makeBoilerplate(boilerplateRight, boilerplateViewTypeRight)}
                   </div>

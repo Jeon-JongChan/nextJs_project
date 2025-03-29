@@ -85,9 +85,9 @@ const server = {
     console.log("서버시작시 필수요소를 생성합니다");
     try {
       // 필요 폴더 생성
-      if (!fs.existsSync(defaultbuildMediaPath)) fs.mkdirSync(defaultbuildMediaPath);
-      if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp"));
-      if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images"));
+      if (!fs.existsSync(defaultbuildMediaPath)) fs.mkdirSync(defaultbuildMediaPath, {recursive: true});
+      if (!fs.existsSync(path.join(process.cwd() + "/public/temp"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp", {recursive: true}));
+      if (!fs.existsSync(path.join(process.cwd() + "/public/temp/images"))) fs.mkdirSync(path.join(process.cwd() + "/public/temp/images", {recursive: true}));
     } catch (e) {
       console.log("폴더 생성 에러", e);
     }

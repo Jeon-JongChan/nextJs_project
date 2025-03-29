@@ -303,7 +303,7 @@ function clickCopyToClipBoard(e) {
       alertModal("텍스트가 복사되었습니다.");
       devLog("clickCopyToClipBoard Secure : ", htmlContent, node);
     } else {
-      devLog("clickCopyToClipBoard unsecuredCopy : ", content);
+      devLog("clickCopyToClipBoard unsecuredCopy : ", content, [window.isSecureContext, navigator.clipboard]);
       unsecuredCopyToClipboard(content);
     }
   } catch (e) {

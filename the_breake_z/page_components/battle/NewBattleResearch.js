@@ -93,7 +93,15 @@ export default function Layout(props) {
       limit--;
       let tempPoketmon = poketmonInLocal[getRandomInt(0, poketmonInLocal.length)];
       if (skipValues.includes(tempPoketmon)) continue;
-      detailData = tempPoketmon;
+
+      let rare = tempPoketmon?.RARE;
+      if (rare === "") rare = 50;
+      rare = rare * 0.01;
+      if (Math.random() < rare) {
+        devLog("createTextResearch detailData select : ", tempPoketmon.NAME, rare, tempPoketmon.RARE, "limit : ", limit);
+        detailData = tempPoketmon;
+        break;
+      }
     }
     if (detailData == null) {
       devLog("createTextResearch detailData not select");

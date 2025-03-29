@@ -286,13 +286,19 @@ function copyToClipBoard(query) {
 function clickCopyToClipBoard(e) {
   var node = e.target;
   var content = node?.innerText;
-
   try {
     if (window.isSecureContext && navigator.clipboard) {
-      navigator.clipboard.writeText(content).then(() => {
-        alertModal("텍스트만 복사되었습니다.");
-        devLog("Text copied to clipboard...");
-      });
+      // navigator.clipboard.writeText(content).then(() => {
+      //   alertModal("텍스트만 복사되었습니다.");
+      //   devLog("Text copied to clipboard...");
+      // });
+      let htmlContent = node?.innerHtml;
+      navigator.clipboard.write([
+        new ClipboardItem({
+          "text/plain": new Blob([content], {type: "text/plain"}),
+          "text/html": new Blob([htmlContent], {type: "text/html"}),
+        }),
+      ]);
     } else {
       unsecuredCopyToClipboard(content);
     }

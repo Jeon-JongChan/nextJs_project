@@ -170,9 +170,9 @@ export default function Layout(props) {
     replaceBoilerplate("$$레벨2", inputValues["level"]);
     replaceBoilerplate("$$특성2", inputValues["spec"]);
     devLog("2번쨰 포켓몬", detailData2);
-    if (!detailData3) return; // 포켓몬이 나오지 않는다면 그만 종료
     // 3번 포켓몬 선택
     let detailData3 = randomResearch(poketmonInLocal, [detailData.NAME, detailData2.NAME]);
+    if (!detailData3) return; // 포켓몬이 나오지 않는다면 그만 종료
     // prettier-ignore
     poketmonInLocal = poketmonInLocal.filter((element) => { return element.NAME !== detailData3.NAME }); //선택된 포켓몬은 제외하고 반환
     let randomSpecIdx3 = getRandomInt(1, 4);
@@ -223,8 +223,8 @@ export default function Layout(props) {
           boilerplate.map((element, index) => {
             return (
               <div key={index} className="shadow rounded-md p-1 mb-1 bg-slate-300">
-                <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove">
-                  {element.TEXT}
+                <pre onClick={clickCopyToClipBoard} className="bg-white p-2 text-sm font-medium text-gray-700 overflow-x-auto scrollbar-remove" dangerouslySetInnerHTML={{__html: element.TEXT}}>
+                  {/* {element.TEXT} */}
                 </pre>
               </div>
             );
